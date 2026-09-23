@@ -14,7 +14,11 @@ export interface ToolContext {
   cfg: Config;
   now: string;
   rand: () => number;
-  counters: { toolCalls: number; researchCalls: number; llmUsd: number };
+  counters: { toolCalls: number; researchCalls: number; llmUsd: number; webSearches: number; webFetches: number };
+  /** Which brain is driving the cycle: simulated research tools are hidden from the LLM from Phase 2. */
+  brain: "llm" | "heuristic";
+  /** URLs actually returned by web search / fetch in this cycle (used to validate cited sources). */
+  webSources: Set<string>;
   log: (type: string, message: string, data?: unknown) => void;
   /** Set when the cycle timed out: every further tool call is refused. */
   aborted: boolean;
@@ -36,6 +40,8 @@ export interface ToolDef {
   phase: number;
   /** Counts against the per-tick research budget. */
   research?: boolean;
+  /** Research backed by the simulator: from Phase 2 only the offline heuristic brain may use it. */
+  simulatedResearch?: boolean;
   run(ctx: ToolContext, input: Record<string, unknown>): Promise<unknown> | unknown;
 }
 

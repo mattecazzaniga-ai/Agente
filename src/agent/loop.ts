@@ -141,7 +141,19 @@ async function tickAgent(
   report.brain = brain.name;
   agent.last_think_at = now;
 
-  const ctx: ToolContext = { state, agent, cfg, now, rand, counters: { toolCalls: 0, researchCalls: 0, llmUsd: 0 }, log, aborted: false, cycleEnd: null };
+  const ctx: ToolContext = {
+    state,
+    agent,
+    cfg,
+    now,
+    rand,
+    counters: newCounters(),
+    brain: brain.name === "heuristic" ? "heuristic" : "llm",
+    webSources: new Set(),
+    log,
+    aborted: false,
+    cycleEnd: null,
+  };
   const remainingUsd = cfg.limits.maxLlmUsdPerDay - llmSpentToday(state, now);
   let active = ctx;
   try {
@@ -151,7 +163,7 @@ async function tickAgent(
     log("brain_error", (err as Error).message);
     if (brain.name !== "heuristic") {
       // Keep the business running even if the API is down.
-      active = { ...ctx, aborted: false, cycleEnd: null, counters: { toolCalls: 0, researchCalls: 0, llmUsd: 0 } };
+      active = { ...ctx, aborted: false, cycleEnd: null, counters: newCounters(), brain: "heuristic" };
       await new HeuristicBrain().think(active);
       report.brain = `${brain.name} → heuristic (error)`;
     }
@@ -165,7 +177,12 @@ async function tickAgent(
     const d = day(now);
     state.global.llm_spend_by_day[d] = Math.round(((state.global.llm_spend_by_day[d] ?? 0) + usd) * 1e6) / 1e6;
     if (cfg.economy.chargeLlmCostToCapital) book(agent, 0, money(usd * cfg.economy.usdToEur));
-    log("llm_cost", `$${usd.toFixed(4)} this cycle`);
+    log("llm_cost", `$${usd.toFixed(4)} this cycle (${ctx.counters.webSearches} web searches, ${ctx.counters.webFetches} page fetches)`);
+  }
+  if (ctx.counters.webSearches > 0) {
+    const d = day(now);
+    const byDay = (state.global.web_searches_by_day ??= {});
+    byDay[d] = (byDay[d] ?? 0) + ctx.counters.webSearches;
   }
 
   const end = active.cycleEnd;
@@ -182,6 +199,10 @@ async function tickAgent(
     if (child) log("agent_reproduced", `${agent.name} ha generato ${child.name} con €${child.capital}: ${child.strategy.thesis.slice(0, 160)}`);
   }
   return finish(agent, report, now);
+}
+
+function newCounters(): ToolContext["counters"] {
+  return { toolCalls: 0, researchCalls: 0, llmUsd: 0, webSearches: 0, webFetches: 0 };
 }
 
 /** Cost control: only wake the (paid) LLM brain when there is a decision to make. */

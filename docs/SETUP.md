@@ -42,16 +42,18 @@ Actions → **agent** → Run workflow:
 
 **Stop immediato senza commit:** variabile `AGENT_KILL_SWITCH` = `1`, oppure `AGENT_ENABLED` = `false` (ferma lo scheduler).
 
-## C. Abilitare Claude come cervello (⚠ SPESA REALE — richiede la tua conferma)
+## C. Abilitare Claude come cervello + ricerca web (Phase 2) — ⚠ SPESA REALE, confermata
 
-Senza questi passi l'agente usa il cervello euristico gratuito.
+Il workflow è già configurato per usare Claude (`LLM_ENABLED` vale `true` di default) e la Phase 2 (`AGENT_PHASE` = `2`). Manca solo la chiave: finché il secret non esiste, l'agente usa il cervello euristico gratuito.
 
 1. Crea una API key su console.anthropic.com e imposta **un limite di spesa mensile** sull'account (Settings → Limits): è la tua protezione di ultimo livello.
 2. Settings → Secrets and variables → Actions:
-   - Secret `ANTHROPIC_API_KEY` = la chiave
-   - Variable `LLM_ENABLED` = `true`
+   - Secret `ANTHROPIC_API_KEY` = la chiave (tab *Secrets* → New repository secret)
+   - Nella Console Anthropic la ricerca web deve essere consentita per l'organizzazione (Settings → Privacy / Web search): se è disattivata, le ricerche falliscono e l'agente non può registrare osservazioni.
    - (facoltative) `MAX_LLM_USD_PER_DAY` (default `1`), `AGENT_MODEL` (default `claude-opus-5`; `claude-sonnet-5` costa circa il 60% in meno), `AGENT_EFFORT` (default `medium`)
-3. Il costo di ogni ciclo compare nel riepilogo del run e in `status`; viene anche scalato dal capitale virtuale dell'agente.
+3. Per spegnere Claude senza togliere la chiave: variabile `LLM_ENABLED` = `false`. Per tornare alla ricerca simulata: `AGENT_PHASE` = `1`.
+4. Primo test: Actions → agent → Run workflow → `tick`. Nel riepilogo del run trovi le ricerche web fatte, le osservazioni salvate con le fonti e il costo del ciclo.
+5. Il costo di ogni ciclo compare nel riepilogo del run e in `status`; viene anche scalato dal capitale virtuale dell'agente.
 
 In locale: copia `.env.example` in `.env` e compila le stesse variabili.
 

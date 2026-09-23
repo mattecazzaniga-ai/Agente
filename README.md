@@ -3,9 +3,10 @@
 Infrastruttura per agenti AI autonomi con capitale, obiettivo, memoria e strategia, che eseguono da soli il ciclo
 **RESEARCH → ANALYZE → PLAN → ACT → MEASURE → LEARN → REPEAT** per generare ricavi con attività digitali legittime.
 
-**Stato: Phase 1** — un agente reale (loop, strumenti, decision engine, memoria, contabilità, sicurezza, scheduler 24/7)
-che opera in un **mercato simulato con denaro virtuale** (€50 iniziali, obiettivo €100). Il cervello è Claude (se abiliti
-l'API) oppure un cervello euristico offline gratuito.
+**Stato: Phase 2**: un agente reale (loop, strumenti, decision engine, memoria, contabilità, sicurezza, scheduler 24/7)
+che fa **ricerca di mercato reale sul web** con Claude (`web_search` + `web_fetch`, fonti verificate) e opera ancora in un
+**mercato simulato con denaro virtuale** (€50 iniziali, obiettivo €100). Senza chiave API gira un cervello euristico
+offline gratuito.
 
 - Architettura, costi, rischi, schema e roadmap: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Cosa configurare a mano: [docs/SETUP.md](docs/SETUP.md)

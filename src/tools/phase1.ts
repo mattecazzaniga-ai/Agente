@@ -35,6 +35,10 @@ function channel(input: Record<string, unknown>): Channel {
   return c as Channel;
 }
 
+function webRule(ctx: ToolContext) {
+  return { requireWebObservation: ctx.brain === "llm" && ctx.cfg.phase >= 2 };
+}
+
 function chargeResearch(ctx: ToolContext, cost: number): void {
   book(ctx.agent, 0, cost);
 }
@@ -93,6 +97,7 @@ export const phase1Tools: ToolDef[] = [
     permission: "auto",
     phase: 1,
     research: true,
+    simulatedResearch: true,
     run(ctx, input) {
       const models = Array.isArray(input.business_models) && input.business_models.length ? (input.business_models as BusinessModel[]) : [...BUSINESS_MODELS];
       const count = clamp(Math.floor(Number(input.count ?? 3)), 1, 5);
@@ -101,7 +106,7 @@ export const phase1Tools: ToolDef[] = [
         const m = models[Math.floor(ctx.rand() * models.length)]!;
         const n = KNOWN_NICHES[Math.floor(ctx.rand() * KNOWN_NICHES.length)]!;
         if (ctx.agent.memory.observations[marketKey(m, n)] || out.some((o) => o.key === marketKey(m, n))) continue;
-        const o = observe(ctx.state.global.world_seed, m, n, 0.2, ctx.rand, ctx.now);
+        const o = observe(ctx.state.global.world_seed, m, n, 0.2, ctx.rand, ctx.now, ctx.state.global.market_anchors);
         ctx.agent.memory.observations[o.key] = o;
         out.push(o);
       }
@@ -116,8 +121,9 @@ export const phase1Tools: ToolDef[] = [
     permission: "auto",
     phase: 1,
     research: true,
+    simulatedResearch: true,
     run(ctx, input) {
-      const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.5, ctx.rand, ctx.now);
+      const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.5, ctx.rand, ctx.now, ctx.state.global.market_anchors);
       ctx.agent.memory.observations[o.key] = o;
       chargeResearch(ctx, RESEARCH_COST);
       return { cost_eur: RESEARCH_COST, observation: o };
@@ -130,8 +136,9 @@ export const phase1Tools: ToolDef[] = [
     permission: "auto",
     phase: 1,
     research: true,
+    simulatedResearch: true,
     run(ctx, input) {
-      const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.85, ctx.rand, ctx.now);
+      const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.85, ctx.rand, ctx.now, ctx.state.global.market_anchors);
       ctx.agent.memory.observations[o.key] = o;
       chargeResearch(ctx, DEEP_RESEARCH_COST);
       return { cost_eur: DEEP_RESEARCH_COST, observation: o };
@@ -200,7 +207,7 @@ export const phase1Tools: ToolDef[] = [
     permission: "auto",
     phase: 1,
     run(ctx, input) {
-      return evaluate(ctx.state, ctx.agent, toProposal(input), ctx.cfg, ctx.now);
+      return evaluate(ctx.state, ctx.agent, toProposal(input), ctx.cfg, ctx.now, webRule(ctx));
     },
   },
   {
@@ -212,7 +219,7 @@ export const phase1Tools: ToolDef[] = [
     phase: 1,
     run(ctx, input) {
       const p = toProposal(input);
-      const decision = evaluate(ctx.state, ctx.agent, p, ctx.cfg, ctx.now);
+      const decision = evaluate(ctx.state, ctx.agent, p, ctx.cfg, ctx.now, webRule(ctx));
       if (!decision.approved) {
         ctx.log("experiment_rejected", `${p.business_model} → ${p.niche} rejected`, { proposal: p, decision });
         return { launched: false, decision };

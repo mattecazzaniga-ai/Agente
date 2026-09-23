@@ -68,7 +68,7 @@ export function advanceExperiments(state: State, agent: Agent, cfg: Config, rand
   const report: MeasureReport = { progressed: [], completed: [] };
   for (const e of Object.values(state.experiments)) {
     if (e.agent_id !== agent.id || e.status !== "RUNNING") continue;
-    const r = simulateTick(state.global.world_seed, e, rand);
+    const r = simulateTick(state.global.world_seed, e, rand, state.global.market_anchors);
     // Budget is spread evenly over duration_ticks, so total spend = budget + operating costs.
     const spend = money(r.spent);
     e.ticks_elapsed += 1;

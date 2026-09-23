@@ -9,7 +9,7 @@
 // Phase 2+ replaces research with real web tools and Phase 4 replaces `simulateTick` with
 // real measurements (analytics, payments) — the agent loop does not change.
 
-import type { BusinessModel, Channel, Experiment, MarketObservation } from "../types.js";
+import type { BusinessModel, Channel, Experiment, MarketAnchor, MarketObservation } from "../types.js";
 import { binomial, clamp, hash, rng } from "../util.js";
 
 interface ModelProfile {
@@ -114,13 +114,27 @@ export function marketKey(model: BusinessModel, niche: string): string {
   return `${model}|${normalizeNiche(niche)}`;
 }
 
-export function hiddenMarket(worldSeed: number, model: BusinessModel, niche: string): HiddenMarket {
+export type Anchors = Record<string, MarketAnchor> | undefined;
+
+/**
+ * Hidden truth of a market. From Phase 2, when an agent has researched a market on the real web,
+ * the first web observation becomes an anchor: demand and competition are blended 60/40 with the
+ * seeded values (so the web view dominates but a single optimistic reading cannot fully dictate
+ * outcomes) and the typical real-world price becomes the reference price.
+ */
+export function hiddenMarket(worldSeed: number, model: BusinessModel, niche: string, anchors?: Anchors): HiddenMarket {
   const r = rng(hash(`${worldSeed}:${marketKey(model, niche)}`));
   const p = PROFILES[model];
+  const anchor = anchors?.[marketKey(model, niche)];
   // Skewed so that most markets are mediocre and a few are genuinely good.
-  const demand = clamp(Math.pow(r(), 1.6) * 1.05, 0.03, 1);
-  const competition = clamp(r() * 0.9 + 0.1 * demand, 0, 1);
-  const refPrice = p.priceRange[0] + r() * (p.priceRange[1] - p.priceRange[0]);
+  let demand = clamp(Math.pow(r(), 1.6) * 1.05, 0.03, 1);
+  let competition = clamp(r() * 0.9 + 0.1 * demand, 0, 1);
+  let refPrice = p.priceRange[0] + r() * (p.priceRange[1] - p.priceRange[0]);
+  if (anchor) {
+    demand = clamp(0.6 * anchor.demand_index + 0.4 * demand, 0.03, 1);
+    competition = clamp(0.6 * anchor.competition_index + 0.4 * competition, 0, 1);
+    refPrice = clamp(anchor.typical_price, p.priceRange[0] * 0.5, p.priceRange[1] * 2);
+  }
   const fulfillment = p.fulfillment[0] + r() * (p.fulfillment[1] - p.fulfillment[0]);
   // Expensive offers convert far less than cheap ones.
   const baseConversion = (0.002 + r() * 0.012) * (0.4 + demand) * (1 - 0.6 * competition) * Math.pow(30 / refPrice, 0.7);
@@ -136,8 +150,9 @@ export function observe(
   precision: number,
   rand: () => number,
   now: string,
+  anchors?: Anchors,
 ): MarketObservation {
-  const m = hiddenMarket(worldSeed, model, niche);
+  const m = hiddenMarket(worldSeed, model, niche, anchors);
   const noise = 0.25 * (1 - precision) + 0.03;
   const n = () => (rand() * 2 - 1) * noise;
   const demand = clamp(m.demand + n(), 0, 1);
@@ -177,8 +192,8 @@ const PLATFORM_FEE: Record<Channel, number> = {
 };
 
 /** Advance one running experiment by one tick in the simulated world. */
-export function simulateTick(worldSeed: number, exp: Experiment, rand: () => number): TickResult {
-  const m = hiddenMarket(worldSeed, exp.business_model, exp.niche);
+export function simulateTick(worldSeed: number, exp: Experiment, rand: () => number, anchors?: Anchors): TickResult {
+  const m = hiddenMarket(worldSeed, exp.business_model, exp.niche, anchors);
   const fit = m.channelFit[exp.channel];
   const t = exp.ticks_elapsed + 1;
 

@@ -16,6 +16,8 @@ function bool(name: string, fallback: boolean): boolean {
 }
 
 export interface Config {
+  /** Roadmap phase: 1 = simulated research, 2 = real web research (default). */
+  phase: number;
   dataDir: string;
   economy: {
     initialCapital: number;
@@ -55,6 +57,12 @@ export interface Config {
     thinkEveryHours: number;
     /** With a free experiment slot, re-think at most this often (hours). */
     thinkWhenIdleSlotHours: number;
+    /** Phase 2: server-side web searches allowed per request (Claude web_search max_uses). */
+    maxWebSearchesPerTick: number;
+    /** Phase 2: web page fetches allowed per request. */
+    maxWebFetchesPerTick: number;
+    /** Phase 2: cap on tokens of a fetched page that enter the context. */
+    webFetchMaxContentTokens: number;
   };
   llm: {
     enabled: boolean;
@@ -70,6 +78,8 @@ export interface Config {
     /** USD per 1M tokens, used for cost accounting. Update if you change the model. */
     inputPricePerM: number;
     outputPricePerM: number;
+    /** USD per web search request (billed separately from tokens). */
+    webSearchUsd: number;
   };
 }
 
@@ -77,6 +87,7 @@ export function loadConfig(): Config {
   const model = process.env.AGENT_MODEL || "claude-opus-5";
   const prices = MODEL_PRICES[model] ?? { input: num("LLM_INPUT_PRICE_PER_M", 5), output: num("LLM_OUTPUT_PRICE_PER_M", 25) };
   return {
+    phase: num("AGENT_PHASE", 2),
     dataDir: process.env.DATA_DIR || "data",
     economy: {
       initialCapital: num("INITIAL_CAPITAL", 50),
@@ -100,9 +111,12 @@ export function loadConfig(): Config {
       minMinutesBetweenTicks: num("MIN_MINUTES_BETWEEN_TICKS", 20),
       tickTimeoutMs: num("TICK_TIMEOUT_MS", 8 * 60_000),
       maxLlmUsdPerDay: num("MAX_LLM_USD_PER_DAY", 1.0),
-      maxLlmUsdPerTick: num("MAX_LLM_USD_PER_TICK", 0.25),
+      maxLlmUsdPerTick: num("MAX_LLM_USD_PER_TICK", 0.4),
       thinkEveryHours: num("THINK_EVERY_HOURS", 6),
       thinkWhenIdleSlotHours: num("THINK_WHEN_IDLE_SLOT_HOURS", 2),
+      maxWebSearchesPerTick: num("MAX_WEB_SEARCHES_PER_TICK", 5),
+      maxWebFetchesPerTick: num("MAX_WEB_FETCHES_PER_TICK", 3),
+      webFetchMaxContentTokens: num("WEB_FETCH_MAX_CONTENT_TOKENS", 6000),
     },
     llm: {
       enabled: bool("LLM_ENABLED", true) && Boolean(process.env.ANTHROPIC_API_KEY),
@@ -112,6 +126,7 @@ export function loadConfig(): Config {
       budgetFallback: process.env.LLM_BUDGET_FALLBACK === "heuristic" ? "heuristic" : "measure_only",
       inputPricePerM: prices.input,
       outputPricePerM: prices.output,
+      webSearchUsd: num("WEB_SEARCH_USD", 0.01),
     },
   };
 }

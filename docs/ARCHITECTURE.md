@@ -1,6 +1,6 @@
 # Architettura — Sistema di agenti economici autonomi
 
-Stato: **Phase 1 implementata** (agente singolo, economia simulata, cervello Claude reale o euristico offline, esecuzione 24/7 su GitHub Actions).
+Stato: **Phase 2 implementata**: l'agente fa ricerca di mercato reale sul web (Claude `web_search` + `web_fetch`) con fonti verificate; i risultati degli esperimenti sono ancora simulati e il denaro è virtuale. Phase 1 (agente singolo, economia simulata, esecuzione 24/7 su GitHub Actions) è la base.
 
 ---
 
@@ -169,13 +169,23 @@ Ogni ora (`runTick`):
 8. **Riproduzione** (Phase 5) — a capitale ≥ 2× l'iniziale: il padre cede €50 a un figlio che eredita lezioni, statistiche, osservazioni e un riassunto, con strategia mutata (stesso modello, nicchia vicina, rischio/esplorazione perturbati).
 9. **Persistenza** — stato e log salvati e committati.
 
+## Phase 2 — Ricerca web reale (come funziona)
+
+1. Con il cervello Claude, gli strumenti di ricerca simulati (`scan_opportunities`, `research_market`, `analyze_competition`) spariscono: al loro posto ci sono i server tool di Anthropic **`web_search`** (max 5 per richiesta) e **`web_fetch`** (max 3 pagine, al massimo 6.000 token ciascuna).
+2. Dopo aver cercato, l'agente salva ciò che ha trovato con **`record_market_observation`**: domanda e concorrenza (0–1), prezzo tipico, sintesi delle prove e **URL**. Gli URL vengono confrontati con quelli davvero restituiti da `web_search`/`web_fetch` nello stesso ciclo: le fonti inventate vengono scartate e un'osservazione senza almeno una fonte verificata viene rifiutata.
+3. **Nessun lancio senza ricerca:** il decision engine rifiuta un esperimento su un mercato che l'agente non ha ancora osservato sul web.
+4. **Ancoraggio del mondo simulato:** la prima osservazione web di un mercato diventa l'ancora di quel mercato nel simulatore (domanda e concorrenza 60% web / 40% valori nascosti, prezzo di riferimento = prezzo reale). Così i risultati simulati sono coerenti con il mercato reale. Limite noto: una lettura troppo ottimistica rende il mercato simulato un po' più generoso. Per questo il peso è al 60% e l'ancora si fissa solo alla prima osservazione. In Phase 4 i risultati arriveranno comunque da dati reali.
+5. **Sicurezza:** il contenuto del web è trattato come dato e mai come istruzione (regola nel system prompt). Solo pagine pubbliche, niente login né dati personali.
+6. **Costi:** ogni ricerca web costa circa $0,01 più i token delle pagine lette, e tutto viene conteggiato nel costo del ciclo e scalato dal capitale virtuale. Tetti: $0,40 per ciclo (a 3/4 del tetto l'agente viene invitato a chiudere) e $1 al giorno (`MAX_LLM_USD_PER_DAY`). Raggiunto il tetto giornaliero l'agente continua solo a misurare fino al giorno dopo.
+7. Il cervello euristico offline (senza chiave API o in caso di errore) continua a usare la ricerca simulata.
+
 ## Roadmap
 
 | Fase | Cosa cambia | Spesa reale | Serve la tua conferma |
 |---|---|---|---|
-| **1 — Agente simulato** ✅ | tutto il loop, simulatore del mercato | solo Claude API (facoltativa, con tetto) | abilitare l'API |
-| **2 — Ricerca reale** | `web_search`/`web_fetch` al posto di `scan/research/analyze`; osservazioni con fonti; mercato ancora simulato per i risultati | token + ricerche web | sì (costo API) |
-| **3 — Attività digitali controllate** | tool `generate_content`, `generate_code` (workspace), `publish_landing_page`, `list_on_marketplace`, `send_outreach_message` con approvazione | Vercel/dominio | sì: account e ogni pubblicazione |
+| **1 — Agente simulato** ✅ | tutto il loop, simulatore del mercato | solo Claude API (facoltativa, con tetto) | abilitare l'API ✅ |
+| **2 — Ricerca reale** ✅ | `web_search`/`web_fetch` al posto di `scan/research/analyze`; osservazioni con fonti verificate; mercato ancora simulato per i risultati | token + ricerche web | confermato ✅ |
+| **3 — Attività digitali controllate** | tool `generate_content`, `generate_code` (workspace), `create_visual_canva` (connettore Canva), `publish_landing_page`, `list_on_marketplace`, `send_outreach_message` con approvazione | Vercel/dominio | sì: account e ogni pubblicazione |
 | **4 — Misurazione reale** | `read_analytics`, `read_payments` (Stripe restricted key), il ledger registra `real_money`; `simulateTick` sostituito dai dati reali | capitale reale deciso da te | sì: ogni spesa |
 | **5 — Clonazione** | `REPRODUCTION_ENABLED=true`, `MAX_POPULATION>1` | come sopra | sì |
 | **6 — Evoluzione multi-agente** | selezione per ROI, budget LLM ripartito, condivisione di conoscenza tra linee, dashboard (Vercel) | come sopra | sì |

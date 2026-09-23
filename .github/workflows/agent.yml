@@ -4,8 +4,10 @@
 # operator commands: status, pause, resume, kill, killswitch, approve, deny, ...
 #
 # Nothing runs on schedule until the repository variable AGENT_ENABLED is "true".
-# Claude API calls (real cost) additionally require LLM_ENABLED = "true" and the
-# ANTHROPIC_API_KEY secret. See docs/SETUP.md.
+# Claude API calls (real cost, capped by MAX_LLM_USD_PER_DAY) run as soon as the
+# ANTHROPIC_API_KEY secret exists; set LLM_ENABLED = "false" to force the free offline brain.
+# Phase 2 (real web research) is the default; AGENT_PHASE = "1" goes back to simulated research.
+# See docs/SETUP.md.
 name: agent
 
 on:
@@ -62,10 +64,13 @@ jobs:
           CMD: ${{ github.event_name == 'schedule' && 'tick' || inputs.command }}
           ARGS: ${{ inputs.args }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          LLM_ENABLED: ${{ vars.LLM_ENABLED || 'false' }}
+          LLM_ENABLED: ${{ vars.LLM_ENABLED || 'true' }}
+          AGENT_PHASE: ${{ vars.AGENT_PHASE || '2' }}
           AGENT_MODEL: ${{ vars.AGENT_MODEL }}
           AGENT_EFFORT: ${{ vars.AGENT_EFFORT }}
           MAX_LLM_USD_PER_DAY: ${{ vars.MAX_LLM_USD_PER_DAY }}
+          MAX_LLM_USD_PER_TICK: ${{ vars.MAX_LLM_USD_PER_TICK }}
+          MAX_WEB_SEARCHES_PER_TICK: ${{ vars.MAX_WEB_SEARCHES_PER_TICK }}
           AGENT_KILL_SWITCH: ${{ vars.AGENT_KILL_SWITCH }}
         run: |
           read -ra ARGV <<< "$ARGS"

@@ -13,7 +13,7 @@ import { ClaudeBrain } from "./llm/claude.js";
 import { HeuristicBrain } from "./agent/brain.js";
 import { evaluate, committedCapital, runningExperiments } from "./decision/engine.js";
 import { countLaunch } from "./agent/experiments.js";
-import { availableTools, CURRENT_PHASE, PLANNED_TOOLS } from "./tools/registry.js";
+import { availableTools, PLANNED_TOOLS } from "./tools/registry.js";
 import { memorySnapshot } from "./agent/memory.js";
 import { llmSpentToday } from "./safety/guard.js";
 import type { Agent, State } from "./types.js";
@@ -83,7 +83,7 @@ async function main(): Promise<void> {
     case "status": {
       const s = await store.load();
       const now = new Date().toISOString();
-      console.log(`Phase ${CURRENT_PHASE} · kill switch: ${s.global.kill_switch ? `ON (${s.global.kill_reason})` : "off"} · LLM oggi $${llmSpentToday(s, now).toFixed(4)} / $${cfg.limits.maxLlmUsdPerDay} · brain: ${cfg.llm.enabled ? cfg.llm.model : "heuristic (offline)"}`);
+      console.log(`Phase ${cfg.phase} · kill switch: ${s.global.kill_switch ? `ON (${s.global.kill_reason})` : "off"} · LLM oggi $${llmSpentToday(s, now).toFixed(4)} / $${cfg.limits.maxLlmUsdPerDay} · brain: ${cfg.llm.enabled ? cfg.llm.model : "heuristic (offline)"}`);
       for (const a of Object.values(s.agents)) {
         console.log(
           `\n${a.name} [${a.id}] ${a.status}${a.status_reason ? ` (${a.status_reason})` : ""} · gen ${a.generation}${a.parent_id ? ` · padre ${a.parent_id}` : ""}\n` +
@@ -194,8 +194,11 @@ async function main(): Promise<void> {
     }
 
     case "tools": {
-      console.log(`Phase attuale: ${CURRENT_PHASE}\n\nStrumenti disponibili:`);
-      for (const t of availableTools()) console.log(`  [${t.permission}] ${t.name} (phase ${t.phase})`);
+      console.log(`Phase attuale: ${cfg.phase}\n\nStrumenti del cervello Claude:`);
+      if (cfg.phase >= 2) console.log("  [auto] web_search, web_fetch (server tools Anthropic)");
+      for (const t of availableTools(cfg.phase, "llm")) console.log(`  [${t.permission}] ${t.name} (phase ${t.phase})`);
+      console.log("\nStrumenti del cervello euristico offline:");
+      for (const t of availableTools(cfg.phase, "heuristic")) console.log(`  [${t.permission}] ${t.name} (phase ${t.phase})`);
       console.log("\nStrumenti pianificati:");
       for (const t of PLANNED_TOOLS) console.log(`  [${t.permission}] ${t.name} (phase ${t.phase}) — ${t.purpose}`);
       break;

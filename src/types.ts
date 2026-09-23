@@ -101,6 +101,20 @@ export interface MarketObservation {
   typical_price: number; // EUR
   notes: string;
   source: "simulated" | "web";
+  /** Phase 2+: URLs actually retrieved by web search/fetch that support this observation. */
+  sources?: string[];
+}
+
+/**
+ * First real-world (web) observation of a market. The simulator anchors that market's hidden
+ * parameters to it, so outcomes stay consistent with what the web says (see sim/market.ts).
+ */
+export interface MarketAnchor {
+  demand_index: number;
+  competition_index: number;
+  typical_price: number;
+  recorded_at: string;
+  agent_id: string;
 }
 
 export interface ExperimentEstimates {
@@ -176,6 +190,10 @@ export interface GlobalState {
   next_agent_seq: number;
   next_experiment_seq: number;
   world_seed: number;
+  /** key "model|niche" -> anchor from the first web observation (Phase 2+). */
+  market_anchors?: Record<string, MarketAnchor>;
+  /** UTC date -> number of web searches, across all agents. */
+  web_searches_by_day?: Record<string, number>;
 }
 
 export interface State {

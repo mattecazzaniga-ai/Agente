@@ -46,7 +46,12 @@ export function adjustedProbability(agent: Agent, p: ExperimentEstimates["p_succ
   return clamp(adj, 0.01, 0.8);
 }
 
-export function evaluate(state: State, agent: Agent, p: Proposal, cfg: Config, now: string): DecisionReport {
+export interface EvaluateOptions {
+  /** Phase 2+ with the LLM brain: the market must have been researched on the real web first. */
+  requireWebObservation?: boolean;
+}
+
+export function evaluate(state: State, agent: Agent, p: Proposal, cfg: Config, now: string, opts: EvaluateOptions = {}): DecisionReport {
   const L = cfg.limits;
   const reasons: string[] = [];
   let hardFail = false;
@@ -75,6 +80,8 @@ export function evaluate(state: State, agent: Agent, p: Proposal, cfg: Config, n
   if (running.length >= L.maxConcurrentExperiments) fail(`already ${running.length} running experiments (max ${L.maxConcurrentExperiments})`);
   if (launchesToday(state, now) >= L.maxLaunchesPerDay) fail(`daily launch limit reached (${L.maxLaunchesPerDay})`);
   const key = marketKey(p.business_model, p.niche);
+  if (opts.requireWebObservation && agent.memory.observations[key]?.source !== "web")
+    fail(`no web observation for ${key}: research it and call record_market_observation first`);
   if (running.some((e) => marketKey(e.business_model, e.niche) === key && e.channel === p.channel))
     fail("an identical experiment (model, niche, channel) is already running");
 

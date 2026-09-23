@@ -33,35 +33,84 @@ test("rate limit skips a second tick too soon after the first", async () => {
   assert.match(r!.skipped ?? "", /rate limit/);
 });
 
-test("Claude brain drives tools through the safety layer and its cost is booked", async () => {
+test("Claude brain researches the web, cites only real sources, and its cost is booked", async () => {
   const cfg = testConfig();
   cfg.llm.enabled = true;
   const store = new JsonStore(cfg.dataDir);
   const usage = { input_tokens: 1000, output_tokens: 500, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 };
+  const webUsage = { ...usage, server_tool_use: { web_search_requests: 2, web_fetch_requests: 0 } };
+  const launch = {
+    business_model: "micro_service",
+    niche: "dentisti",
+    offer: "Pacchetto di 5 recensioni false su Google",
+    channel: "direct_outreach",
+    price: 50,
+    budget: 2,
+    duration_ticks: 24,
+    hypothesis: "x",
+    p_success: 0.9,
+    expected_revenue: 100,
+    risk: "low",
+  };
   const scripted = [
-    [{ type: "tool_use", id: "t1", name: "research_market", input: { business_model: "micro_service", niche: "dentisti" } }],
-    [{ type: "tool_use", id: "t2", name: "launch_experiment", input: { business_model: "micro_service", niche: "dentisti", offer: "Email blast a 5000 dentisti", channel: "paid_ads", price: 50, budget: 5, duration_ticks: 24, hypothesis: "x", p_success: 0.9, expected_revenue: 100, risk: "low" } }],
-    [{ type: "tool_use", id: "t3", name: "end_cycle", input: { summary: "ricerca fatta, proposta rifiutata per policy", next_action: "RESEARCH" } }],
+    {
+      usage: webUsage,
+      content: [
+        { type: "server_tool_use", id: "s1", name: "web_search", input: { query: "servizi marketing dentisti prezzi" } },
+        {
+          type: "web_search_tool_result",
+          tool_use_id: "s1",
+          content: [{ type: "web_search_result", url: "https://www.example.it/dentisti-marketing?utm_source=x", title: "t", encrypted_content: "", page_age: null }],
+        },
+        {
+          type: "tool_use",
+          id: "t1",
+          name: "record_market_observation",
+          input: {
+            business_model: "micro_service",
+            niche: "dentisti",
+            demand_index: 0.6,
+            competition_index: 0.4,
+            typical_price: 90,
+            evidence: "Diverse agenzie offrono pacchetti per studi dentistici tra 60 e 120 euro al mese.",
+            sources: ["https://example.it/dentisti-marketing", "https://invented.example.com/fake"],
+          },
+        },
+      ],
+    },
+    { usage, content: [{ type: "tool_use", id: "t2", name: "launch_experiment", input: launch }] },
+    { usage, content: [{ type: "tool_use", id: "t3", name: "end_cycle", input: { summary: "ricerca fatta, proposta rifiutata per policy", next_action: "RESEARCH" } }] },
   ];
-  const requests: unknown[] = [];
+  const requests: Array<{ tools: Array<{ name: string }> }> = [];
   const fake = {
     beta: {
       messages: {
-        create: async (req: unknown) => {
+        create: async (req: { tools: Array<{ name: string }> }) => {
           requests.push(req);
-          return { content: scripted.shift(), stop_reason: "tool_use", stop_details: null, usage };
+          const next = scripted.shift()!;
+          return { content: next.content, stop_reason: "tool_use", stop_details: null, usage: next.usage };
         },
       },
     },
   } as unknown as Anthropic;
   const [r] = await runTick(store, cfg, { brain: new ClaudeBrain(cfg, fake), now: hour(0) });
   assert.equal(requests.length, 3);
+  const toolNames = requests[0]!.tools.map((t) => t.name);
+  assert.ok(toolNames.includes("web_search") && toolNames.includes("record_market_observation"));
+  assert.ok(!toolNames.includes("research_market"), "simulated research is hidden from the LLM in phase 2");
   assert.equal(r!.summary, "ricerca fatta, proposta rifiutata per policy");
+
   const s = await store.load();
-  assert.equal(Object.keys(s.experiments).length, 0, "spam proposal must be rejected");
-  const expectedUsd = 3 * (1000 * 5 + 500 * 25) / 1e6;
+  const agent = Object.values(s.agents)[0]!;
+  const obs = agent.memory.observations["micro_service|dentisti"]!;
+  assert.equal(obs.source, "web");
+  assert.deepEqual(obs.sources, ["https://example.it/dentisti-marketing"], "only the URL actually returned is kept");
+  assert.equal(s.global.market_anchors?.["micro_service|dentisti"]?.typical_price, 90);
+  assert.equal(Object.keys(s.experiments).length, 0, "fake-review proposal must be rejected");
+  assert.equal(s.global.web_searches_by_day?.["2026-09-23"], 2);
+  const expectedUsd = (3 * (1000 * 5 + 500 * 25)) / 1e6 + 2 * cfg.llm.webSearchUsd;
   assert.ok(Math.abs(r!.llm_usd - expectedUsd) < 1e-9);
-  assert.ok(Object.values(s.agents)[0]!.expenses > 0);
+  assert.ok(agent.expenses > 0);
 });
 
 test("the paid brain is only woken when there is something to decide", async () => {

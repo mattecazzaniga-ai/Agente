@@ -71,7 +71,11 @@ export function memorySnapshot(agent: Agent): string {
   const obs = Object.values(agent.memory.observations)
     .sort((a, b) => b.demand_index - b.competition_index - (a.demand_index - a.competition_index))
     .slice(0, 12)
-    .map((o) => `- ${o.key}: domanda ${o.demand_index}, concorrenza ${o.competition_index}, prezzo tipico €${o.typical_price} (${o.observed_at.slice(0, 16)})`);
+    .map(
+      (o) =>
+        `- ${o.key} [${o.source}]: domanda ${o.demand_index}, concorrenza ${o.competition_index}, prezzo tipico €${o.typical_price} (${o.observed_at.slice(0, 16)})` +
+        (o.source === "web" ? `\n  ${o.notes.slice(0, 240)}${o.sources?.length ? ` — fonti: ${o.sources.slice(0, 2).join(", ")}` : ""}` : ""),
+    );
   const lessons = agent.memory.lessons.slice(-12).map((l) => `- ${l.text}`);
   return [
     agent.memory.inherited_summary ? `## Conoscenza ereditata\n${agent.memory.inherited_summary}` : null,
