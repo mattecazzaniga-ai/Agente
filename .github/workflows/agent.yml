@@ -1,0 +1,83 @@
+# Autonomous runner. Every hour it executes one operating cycle for every ACTIVE agent and
+# commits the updated state to the `agent-state` branch (the "database" in Phase 1).
+# The same workflow can be started by hand (Actions → agent → Run workflow) to send
+# operator commands: status, pause, resume, kill, killswitch, approve, deny, ...
+#
+# Nothing runs on schedule until the repository variable AGENT_ENABLED is "true".
+# Claude API calls (real cost) additionally require LLM_ENABLED = "true" and the
+# ANTHROPIC_API_KEY secret. See docs/SETUP.md.
+name: agent
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Comando CLI"
+        type: choice
+        default: status
+        options: [status, tick, report, log, approvals, approve, deny, pause, resume, kill, killswitch, tools, init]
+      args:
+        description: "Argomenti (es. agent-001, apr-exp-0003, on motivo)"
+        required: false
+        default: ""
+
+concurrency:
+  group: agent-state
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.AGENT_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check out state branch
+        run: |
+          git config user.name "agente-bot"
+          git config user.email "agente-bot@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin agent-state >/dev/null; then
+            git fetch --depth=1 origin agent-state
+            git worktree add state FETCH_HEAD
+          else
+            git worktree add --orphan -b agent-state state
+          fi
+
+      - name: Run command
+        env:
+          DATA_DIR: state
+          CMD: ${{ github.event_name == 'schedule' && 'tick' || inputs.command }}
+          ARGS: ${{ inputs.args }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_ENABLED: ${{ vars.LLM_ENABLED || 'false' }}
+          AGENT_MODEL: ${{ vars.AGENT_MODEL }}
+          AGENT_EFFORT: ${{ vars.AGENT_EFFORT }}
+          MAX_LLM_USD_PER_DAY: ${{ vars.MAX_LLM_USD_PER_DAY }}
+          AGENT_KILL_SWITCH: ${{ vars.AGENT_KILL_SWITCH }}
+        run: |
+          read -ra ARGV <<< "$ARGS"
+          npx tsx src/cli.ts "$CMD" "${ARGV[@]}" 2>&1 | tee output.txt
+          { echo '```'; cat output.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$CMD" = "tick" ]; then npx tsx src/cli.ts status >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - name: Persist state
+        run: |
+          cd state
+          git add -A
+          if git diff --cached --quiet; then echo "no state changes"; exit 0; fi
+          git commit -q -m "state: ${{ github.event_name }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3 4; do git push origin HEAD:refs/heads/agent-state && exit 0; sleep $((2**i)); done
+          exit 1
