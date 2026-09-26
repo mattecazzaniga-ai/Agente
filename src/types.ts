@@ -83,6 +83,8 @@ export interface Agent {
   last_tick_at: string | null;
   /** Last cycle in which the brain was invoked (LLM cycles are skipped when there is nothing to decide). */
   last_think_at: string | null;
+  /** Consecutive brain wake-ups that launched nothing: the free-slot wake-up interval doubles each time. */
+  idle_thinks?: number;
   tick_count: number;
   last_action: string | null;
   next_action: string | null;

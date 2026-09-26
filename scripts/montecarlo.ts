@@ -81,34 +81,48 @@ class OracleBrain implements Brain {
   }
 }
 
-type Result = { final: number; peak: number; doubledDay: number | null; dead: boolean };
+/**
+ * Cost model of the Claude brain with the intelligence of the heuristic one: the loop's real gating
+ * applies (woken only when there is something to decide, dormant, daily cap) and each wake-up
+ * costs `usdPerThink`, charged to capital exactly like a real Claude cycle.
+ */
+class PaidHeuristicBrain implements Brain {
+  readonly name = "claude-like";
+  private inner = new HeuristicBrain();
+  thinks = 0;
+  constructor(private usdPerThink: number) {}
+  async think(ctx: ToolContext): Promise<BrainResult> {
+    this.thinks++;
+    ctx.counters.llmUsd += this.usdPerThink;
+    await this.inner.think(ctx);
+    return { usd: this.usdPerThink, turns: 1 };
+  }
+}
 
-async function runWorld(seed: number, days: number, brainKind: "heuristic" | "oracle", usdPerDay: number): Promise<Result> {
+type Scenario = { label: string; brain: "heuristic" | "paid" | "oracle"; autopilot: boolean; usdPerThink?: number };
+type Result = { final: number; doubledDay: number | null; dead: boolean; llmUsd: number; thinks: number };
+
+async function runWorld(seed: number, days: number, sc: Scenario): Promise<Result> {
   const cfg = loadConfig();
   cfg.llm.enabled = false;
-  // The oracle already knows the market: no web-research requirement (that is a Phase 2 LLM rule).
-  if (brainKind === "oracle") cfg.phase = 1;
+  cfg.autopilot = sc.autopilot;
+  // Simulated research everywhere: this study measures decision quality and cost, not web research.
+  cfg.phase = 1;
   const state = emptyState(seed);
   const store = new MemStore(state);
-  const brain: Brain = brainKind === "oracle" ? new OracleBrain(seed) : new HeuristicBrain();
+  const paid = sc.brain === "paid" ? new PaidHeuristicBrain(sc.usdPerThink ?? 0.15) : null;
+  const brain: Brain = sc.brain === "oracle" ? new OracleBrain(seed) : paid ?? new HeuristicBrain();
   const start = Date.UTC(2026, 9, 1);
-  const overheadPerTick = (usdPerDay * cfg.economy.usdToEur) / 24;
-  let peak = cfg.economy.initialCapital;
   let doubledDay: number | null = null;
   for (let i = 0; i < days * 24; i++) {
-    await runTick(store, cfg, { brain, now: new Date(start + i * 3_600_000).toISOString(), force: true });
+    // Real gating (think only when needed) for the paid brain; the free brains act every hour.
+    await runTick(store, cfg, { brain, now: new Date(start + i * 3_600_000).toISOString(), force: sc.brain !== "paid" });
     const a = Object.values(state.agents)[0]!;
     if (a.status === "DEAD") break;
-    // LLM cost is only paid while the agent is awake (a dormant agent does not call Claude).
-    if (overheadPerTick > 0 && !isDormant(state, a, cfg)) {
-      book(a, 0, overheadPerTick);
-      checkDeath(state, a, new Date(start + i * 3_600_000).toISOString());
-    }
-    peak = Math.max(peak, a.capital);
     if (doubledDay === null && a.capital >= a.initial_capital * 2) doubledDay = Math.floor(i / 24) + 1;
   }
   const a = Object.values(state.agents)[0]!;
-  return { final: a.capital, peak, doubledDay, dead: a.status === "DEAD" };
+  return { final: a.capital, doubledDay, dead: a.status === "DEAD", llmUsd: a.llm_cost_usd, thinks: paid?.thinks ?? 0 };
 }
 
 function pct(xs: number[], p: number): number {
@@ -116,33 +130,42 @@ function pct(xs: number[], p: number): number {
   return s[Math.min(s.length - 1, Math.floor(p * s.length))]!;
 }
 
+const SCENARIOS: Scenario[] = [
+  { label: "euristico, senza autopilota", brain: "heuristic", autopilot: false },
+  { label: "euristico + autopilota", brain: "heuristic", autopilot: true },
+  { label: "costo Claude, senza autopilota", brain: "paid", autopilot: false },
+  { label: "costo Claude + autopilota", brain: "paid", autopilot: true },
+  { label: "oracolo (tetto massimo)", brain: "oracle", autopilot: true },
+];
+
 async function main() {
   const worlds = Number(process.argv[2] ?? 40);
   const days = Number(process.argv[3] ?? 60);
-  const rows: string[] = [];
   const json: Record<string, unknown> = {};
-  for (const brain of ["heuristic", "oracle"] as const)
-    for (const usd of [0, 0.25, 1]) {
-      const res: Result[] = [];
-      for (let w = 1; w <= worlds; w++) res.push(await runWorld(1000 + w, days, brain, usd));
-      const finals = res.map((r) => r.final);
-      const doubled = res.filter((r) => r.doubledDay !== null);
-      const summary = {
-        brain, usdPerDay: usd,
-        median: money(pct(finals, 0.5)), p10: money(pct(finals, 0.1)), p90: money(pct(finals, 0.9)),
-        profitable: res.filter((r) => r.final > 50).length / worlds,
-        doubled: doubled.length / worlds,
-        medianDaysToDouble: doubled.length ? pct(doubled.map((r) => r.doubledDay!), 0.5) : null,
-        dead: res.filter((r) => r.dead).length / worlds,
-        finals,
-      };
-      json[`${brain}_${usd}`] = summary;
-      rows.push(
-        `${brain.padEnd(9)} $${usd.toFixed(2)}/g | mediana €${summary.median} (p10 €${summary.p10}, p90 €${summary.p90}) | in utile ${(summary.profitable * 100).toFixed(0)}% | raddoppio ${(summary.doubled * 100).toFixed(0)}%` +
-          `${summary.medianDaysToDouble ? ` (mediana giorno ${summary.medianDaysToDouble})` : ""} | morti ${(summary.dead * 100).toFixed(0)}%`,
-      );
-      console.error(rows[rows.length - 1]);
-    }
+  for (const sc of SCENARIOS) {
+    const res: Result[] = [];
+    for (let w = 1; w <= worlds; w++) res.push(await runWorld(1000 + w, days, sc));
+    const finals = res.map((r) => r.final);
+    const doubled = res.filter((r) => r.doubledDay !== null);
+    const summary = {
+      ...sc,
+      median: money(pct(finals, 0.5)),
+      mean: money(finals.reduce((x, y) => x + y, 0) / worlds),
+      profitable: res.filter((r) => r.final > 50).length / worlds,
+      doubled: doubled.length / worlds,
+      medianDaysToDouble: doubled.length ? pct(doubled.map((r) => r.doubledDay!), 0.5) : null,
+      dead: res.filter((r) => r.dead).length / worlds,
+      llmUsdPerDay: money(res.reduce((x, r) => x + r.llmUsd, 0) / worlds / days),
+      thinksPerDay: Math.round((res.reduce((x, r) => x + r.thinks, 0) / worlds / days) * 10) / 10,
+      finals,
+    };
+    json[sc.label] = summary;
+    console.error(
+      `${sc.label.padEnd(32)} | mediana €${summary.median} | media €${summary.mean} | in utile ${(summary.profitable * 100).toFixed(0)}% | raddoppio ${(summary.doubled * 100).toFixed(0)}%` +
+        `${summary.medianDaysToDouble ? ` (g.${summary.medianDaysToDouble})` : ""} | morti ${(summary.dead * 100).toFixed(0)}%` +
+        (sc.brain === "paid" ? ` | Claude $${summary.llmUsdPerDay}/g, ${summary.thinksPerDay} risvegli/g` : ""),
+    );
+  }
   console.log(JSON.stringify(json));
 }
 

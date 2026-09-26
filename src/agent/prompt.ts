@@ -4,6 +4,7 @@ import type { Config } from "../config.js";
 import type { Agent, State } from "../types.js";
 import { committedCapital, runningExperiments, EXPLORATION_BUDGET } from "../decision/engine.js";
 import { memorySnapshot } from "./memory.js";
+import { playbookText } from "../strategy/playbook.js";
 import { money } from "../util.js";
 
 // Kept byte-stable across ticks so it can be prompt-cached. Put nothing volatile in here.
@@ -27,6 +28,14 @@ RESEARCH → ANALYZE → PLAN → ACT → MEASURE → LEARN. La misurazione degl
 - Ogni ciclo costa denaro (chiamate al modello linguistico): cicli inutilmente lunghi riducono il capitale.
 - Preferisci molti test piccoli ed economici a una grande scommessa. Sfrutta ciò che funziona, abbandona ciò che non funziona, esplora con una piccola parte del capitale.
 - Canali gratuiti (content_seo, community, marketplace) sono lenti ma non bruciano budget; paid_ads scala ma costa; direct_outreach è limitato a contatti personalizzati a basso volume.
+
+## Manuale dei canali (conoscenza di partenza, verificala con i tuoi dati)
+${playbookText()}
+- Budget: un canale organico con €0,5–1 è quasi invisibile; €3–5 per un test serio. Meglio pochi test veri che molti test finti.
+- Un servizio B2B ad alto prezzo con 1–2 vendite può valere più di 20 vendite di un prodotto da €9.
+
+## Routine automatica (autopilota)
+Il sistema, senza chiamarti, rinnova da solo gli esperimenti vincenti (almeno 2 vendite nel mercato, ROI ≥ 20%, budget aumentato se ROI ≥ 100%) e ferma quelli a metà durata senza vendite. Tu concentrati su ciò che richiede giudizio: trovare nuovi mercati, capire perché un test fallisce, cambiare strategia.
 
 ## Limiti non negoziabili (applicati dal sistema: una proposta fuori limite viene rifiutata)
 - Budget massimo per esperimento: €${L.maxBudgetPerExperiment}; max ${L.maxCapitalFractionPerExperiment * 100}% del capitale per esperimento, max ${L.maxCapitalFractionCommitted * 100}% impegnato in totale.

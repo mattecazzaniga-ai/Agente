@@ -179,6 +179,24 @@ Ogni ora (`runTick`):
 6. **Costi:** ogni ricerca web costa circa $0,01 più i token delle pagine lette, e tutto viene conteggiato nel costo del ciclo e scalato dal capitale virtuale. Tetti: $0,40 per ciclo (a 3/4 del tetto l'agente viene invitato a chiudere) e $1 al giorno (`MAX_LLM_USD_PER_DAY`). Raggiunto il tetto giornaliero l'agente continua solo a misurare fino al giorno dopo.
 7. Il cervello euristico offline (senza chiave API o in caso di errore) continua a usare la ricerca simulata.
 
+## Efficienza (studio Monte Carlo)
+
+`npm run montecarlo` simula 40 mercati per 60 giorni con cinque configurazioni. I risultati sono **dentro il mondo simulato**: servono a confrontare le scelte di progetto, non a prevedere guadagni reali.
+
+| Configurazione | Capitale medio a 60 giorni | In utile | Costo Claude |
+|---|---|---|---|
+| Euristico v1 (prima) | €457 | 73% | — |
+| Euristico v2 (manuale dei canali, prezzo nel punteggio, budget organici realistici) | €1.432 | 95% | — |
+| Costo Claude, v1, revisione ogni 6h | €546 | 65% | $0,48/giorno |
+| Costo Claude, v2 + autopilota + attesa crescente + revisione ogni 24h | €1.322 | 90% | $0,20/giorno |
+| Oracolo (conosce il mercato: tetto massimo) | €2.514 | 100% | — |
+
+Cosa rende il sistema più efficiente:
+1. **Manuale dei canali** (`src/strategy/playbook.ts`): quale canale funziona per quale modello di business. Il cervello euristico lo usa per scegliere e Claude lo legge nel prompt. È la leva più grande. Attenzione: il simulatore è costruito con le stesse regole, quindi nel mondo reale il guadagno sarà minore.
+2. **Autopilota** (`src/agent/autopilot.ts`): rinnova gratis gli esperimenti vincenti (almeno 2 vendite nel mercato, ROI ≥ 20%, budget ×1,5 se ROI ≥ 100%) e ferma quelli a metà durata senza vendite. Su 100 mondi accoppiati vale +€100–140 in media. La soglia di 2 vendite evita di inseguire una singola vendita fortunata.
+3. **Meno risvegli di Claude:** revisione periodica ogni 24h invece di 6h; con uno slot libero l'attesa raddoppia a ogni risveglio che non lancia nulla (2h → 4h → 8h…). Si passa da circa 4 a circa 1,4 risvegli al giorno: −64% di costo a parità di risultati.
+4. **Letargo e riserva:** la ricerca non può scendere sotto la riserva e un agente senza esperimenti e senza capitale libero non chiama Claude. Le morti passano dal 28–48% allo 0%.
+
 ## Roadmap
 
 | Fase | Cosa cambia | Spesa reale | Serve la tua conferma |

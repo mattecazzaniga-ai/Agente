@@ -18,6 +18,8 @@ function bool(name: string, fallback: boolean): boolean {
 export interface Config {
   /** Roadmap phase: 1 = simulated research, 2 = real web research (default). */
   phase: number;
+  /** Deterministic zero-cost routine decisions (renew winners, stop losers) before the brain runs. */
+  autopilot: boolean;
   dataDir: string;
   economy: {
     initialCapital: number;
@@ -88,6 +90,7 @@ export function loadConfig(): Config {
   const prices = MODEL_PRICES[model] ?? { input: num("LLM_INPUT_PRICE_PER_M", 5), output: num("LLM_OUTPUT_PRICE_PER_M", 25) };
   return {
     phase: num("AGENT_PHASE", 2),
+    autopilot: bool("AUTOPILOT", true),
     dataDir: process.env.DATA_DIR || "data",
     economy: {
       initialCapital: num("INITIAL_CAPITAL", 50),
@@ -112,7 +115,7 @@ export function loadConfig(): Config {
       tickTimeoutMs: num("TICK_TIMEOUT_MS", 8 * 60_000),
       maxLlmUsdPerDay: num("MAX_LLM_USD_PER_DAY", 1.0),
       maxLlmUsdPerTick: num("MAX_LLM_USD_PER_TICK", 0.4),
-      thinkEveryHours: num("THINK_EVERY_HOURS", 6),
+      thinkEveryHours: num("THINK_EVERY_HOURS", 24),
       thinkWhenIdleSlotHours: num("THINK_WHEN_IDLE_SLOT_HOURS", 2),
       maxWebSearchesPerTick: num("MAX_WEB_SEARCHES_PER_TICK", 5),
       maxWebFetchesPerTick: num("MAX_WEB_FETCHES_PER_TICK", 3),

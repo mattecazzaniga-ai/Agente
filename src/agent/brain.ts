@@ -6,7 +6,8 @@ import type { ToolContext } from "../tools/types.js";
 import { executeTool } from "../tools/registry.js";
 import { runningExperiments } from "../decision/engine.js";
 import { marketKey } from "../sim/market.js";
-import { CHANNELS, type Channel, type MarketObservation } from "../types.js";
+import { CHANNELS, type BusinessModel, type Channel, type MarketObservation } from "../types.js";
+import { CHANNEL_PLAYBOOK } from "../strategy/playbook.js";
 import { clamp, money } from "../util.js";
 
 export interface BrainResult {
@@ -40,7 +41,10 @@ export class HeuristicBrain implements Brain {
     const slots = cfg.limits.maxConcurrentExperiments - runningExperiments(state, agent.id).length;
     if (slots > 0) {
       const tested = new Set(Object.keys(agent.memory.stats));
-      const score = (o: MarketObservation) => o.demand_index - 0.8 * o.competition_index + (tested.has(o.key) ? statBonus(ctx, o.key) : 0);
+      // v2: price-aware (a sale of a €200 service is worth more than one of a €9 product).
+      const priceBonus = (o: MarketObservation) => (V2 ? 0.3 * Math.log10(Math.max(5, o.typical_price) / 30) : 0);
+      const score = (o: MarketObservation) =>
+        o.demand_index - 0.8 * o.competition_index + priceBonus(o) + (tested.has(o.key) ? statBonus(ctx, o.key) : 0);
       const candidates = () =>
         Object.values(agent.memory.observations)
           .filter((o) => !runningExperiments(state, agent.id).some((e) => marketKey(e.business_model, e.niche) === o.key))
@@ -52,10 +56,12 @@ export class HeuristicBrain implements Brain {
       if (best) {
         const deep = await call("analyze_competition", { business_model: best.business_model, niche: best.niche });
         const obs = deep.ok ? agent.memory.observations[best.key]! : best;
-        const channel = pickChannel(ctx, explore);
+        const channel = V2 ? playbookChannel(ctx, obs.business_model, explore) : pickChannel(ctx, explore);
         const paid = channel === "paid_ads";
         const free = agent.capital;
-        const budget = money(paid ? clamp(free * agent.strategy.risk_appetite * 0.4, 1, 6) : clamp(free * 0.03, 0.5, 2));
+        // v2: organic channels still need real effort (content, listings, outreach tools) to be seen.
+        const organic = V2 ? clamp(free * 0.08, 1, 5) : clamp(free * 0.03, 0.5, 2);
+        const budget = money(paid ? clamp(free * agent.strategy.risk_appetite * 0.4, 1, 6) : organic);
         const price = Math.max(5, Math.round(obs.typical_price * 0.9));
         const p = clamp(0.15 + 0.5 * (obs.demand_index - obs.competition_index + 0.5), 0.05, 0.7);
         const expected = money(price * 0.6 * (1 + 4 * obs.demand_index) * (paid ? 1 : 0.7));
@@ -78,6 +84,18 @@ export class HeuristicBrain implements Brain {
     await call("end_cycle", { summary: actions.join("; ") || "nessuna azione: nessuna opportunità valida o slot pieni", next_action: "MEASURE" });
     return { usd: 0, turns: 1 };
   }
+}
+
+const V2 = process.env.HEURISTIC_V1 !== "1";
+
+/** Best-fit channel from the playbook; when exploring, try the next-best one not tested yet. */
+function playbookChannel(ctx: ToolContext, model: BusinessModel, explore: boolean): Channel {
+  const options = CHANNEL_PLAYBOOK[model].best;
+  if (explore) {
+    const untested = options.filter((c) => !ctx.agent.memory.stats[`channel:${c}`]);
+    if (untested.length) return untested[0]!;
+  }
+  return options[0]!;
 }
 
 function statBonus(ctx: ToolContext, key: string): number {

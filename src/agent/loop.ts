@@ -14,6 +14,7 @@ import { canTick, launchesToday, llmBudgetAvailable, llmSpentToday } from "../sa
 import { committedCapital, runningExperiments } from "../decision/engine.js";
 import { advanceExperiments } from "./experiments.js";
 import { experimentProfit } from "./memory.js";
+import { runAutopilot } from "./autopilot.js";
 import { briefing } from "./prompt.js";
 import { HeuristicBrain, type Brain } from "./brain.js";
 import { book, canReproduce, checkDeath, createAgent, reproduce } from "../economy/lifecycle.js";
@@ -116,6 +117,13 @@ async function tickAgent(
     return finish(agent, report, now);
   }
 
+  // AUTOPILOT: free routine decisions (renew proven winners, stop clear losers).
+  const auto = runAutopilot(state, agent, cfg, measured.completed, now);
+  for (const note of auto.notes) {
+    log("autopilot", note);
+    completedNotes.push(note);
+  }
+
   // THINK + ACT
   const wantsLlm = Boolean(opts.brain && opts.brain.name !== "heuristic");
   if (isDormant(state, agent, cfg)) {
@@ -126,7 +134,8 @@ async function tickAgent(
     return finish(agent, report, now);
   }
   if (wantsLlm && !opts.force) {
-    const why = thinkReason(state, agent, cfg, now, measured.completed.length);
+    // Winners the autopilot already renewed need no LLM decision.
+    const why = thinkReason(state, agent, cfg, now, measured.completed.length - auto.renewed.length);
     if (!why) {
       log("think_skipped", "nothing to decide this cycle: measuring only");
       report.brain = "none (nothing to decide)";
@@ -147,6 +156,7 @@ async function tickAgent(
   const brain: Brain = llmOk ? opts.brain! : new HeuristicBrain();
   report.brain = brain.name;
   agent.last_think_at = now;
+  const experimentsBefore = Object.keys(state.experiments).length;
 
   const ctx: ToolContext = {
     state,
@@ -192,6 +202,9 @@ async function tickAgent(
     byDay[d] = (byDay[d] ?? 0) + ctx.counters.webSearches;
   }
 
+  // Did this wake-up produce anything? Feeds the free-slot back-off in thinkReason().
+  agent.idle_thinks = Object.keys(state.experiments).length > experimentsBefore ? 0 : Math.min((agent.idle_thinks ?? 0) + 1, 4);
+
   const end = active.cycleEnd;
   if (end) {
     report.summary = end.summary;
@@ -225,8 +238,9 @@ export function thinkReason(state: State, agent: Agent, cfg: Config, now: string
   const hours = (Date.parse(now) - Date.parse(agent.last_think_at)) / 3_600_000;
   if (hours >= cfg.limits.thinkEveryHours) return `periodic review (${hours.toFixed(1)}h since last)`;
   const freeSlot = runningExperiments(state, agent.id).length < cfg.limits.maxConcurrentExperiments;
-  if (freeSlot && launchesToday(state, now) < cfg.limits.maxLaunchesPerDay && hours >= cfg.limits.thinkWhenIdleSlotHours)
-    return "free experiment slot";
+  // Back-off: every wake-up that launched nothing doubles the wait (2h → 4h → 8h, capped at the periodic review).
+  const wait = Math.min(cfg.limits.thinkWhenIdleSlotHours * 2 ** (agent.idle_thinks ?? 0), cfg.limits.thinkEveryHours);
+  if (freeSlot && launchesToday(state, now) < cfg.limits.maxLaunchesPerDay && hours >= wait) return "free experiment slot";
   return null;
 }
 
