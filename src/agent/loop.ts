@@ -11,7 +11,7 @@ import type { Agent, LogEvent, State } from "../types.js";
 import type { Store } from "../store/store.js";
 import type { ToolContext } from "../tools/types.js";
 import { canTick, launchesToday, llmBudgetAvailable, llmSpentToday } from "../safety/guard.js";
-import { runningExperiments } from "../decision/engine.js";
+import { committedCapital, runningExperiments } from "../decision/engine.js";
 import { advanceExperiments } from "./experiments.js";
 import { experimentProfit } from "./memory.js";
 import { briefing } from "./prompt.js";
@@ -118,6 +118,13 @@ async function tickAgent(
 
   // THINK + ACT
   const wantsLlm = Boolean(opts.brain && opts.brain.name !== "heuristic");
+  if (isDormant(state, agent, cfg)) {
+    // Nothing running and no free capital above the reserve: thinking (or researching) would only
+    // burn the last euros. Stay alive and wait: reserve money is never spent on LLM calls.
+    log("dormant", `free capital at or below the reserve (€${agent.capital}): no thinking, no spending`);
+    report.brain = "none (dormant)";
+    return finish(agent, report, now);
+  }
   if (wantsLlm && !opts.force) {
     const why = thinkReason(state, agent, cfg, now, measured.completed.length);
     if (!why) {
@@ -199,6 +206,12 @@ async function tickAgent(
     if (child) log("agent_reproduced", `${agent.name} ha generato ${child.name} con €${child.capital}: ${child.strategy.thesis.slice(0, 160)}`);
   }
   return finish(agent, report, now);
+}
+
+/** No experiment running and less than €1 of free capital above the reserve. */
+export function isDormant(state: State, agent: Agent, cfg: Config): boolean {
+  if (runningExperiments(state, agent.id).length > 0) return false;
+  return agent.capital - committedCapital(state, agent.id) < agent.initial_capital * cfg.limits.reserveFraction + 1;
 }
 
 function newCounters(): ToolContext["counters"] {

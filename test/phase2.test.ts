@@ -71,3 +71,19 @@ test("a web anchor pulls the simulated market towards what the web says", () => 
   assert.ok(anchored.competition <= base.competition);
   assert.equal(anchored.refPrice, 30);
 });
+
+test("research is refused when it would dip into the reserve", async () => {
+  const ctx = ctxFor("heuristic");
+  ctx.agent.capital = 10.01; // reserve is €10
+  const r = await executeTool(ctx, "research_market", { business_model: "digital_product", niche: "palestre" });
+  assert.equal(r.ok, false);
+  assert.equal(ctx.agent.capital, 10.01, "nothing was spent");
+});
+
+test("an agent at the reserve with nothing running goes dormant instead of burning money", async () => {
+  const { isDormant } = await import("../src/agent/loop.js");
+  const ctx = ctxFor("llm");
+  assert.equal(isDormant(ctx.state, ctx.agent, ctx.cfg), false);
+  ctx.agent.capital = 10.5;
+  assert.equal(isDormant(ctx.state, ctx.agent, ctx.cfg), true);
+});

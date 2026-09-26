@@ -4,7 +4,7 @@
 import { BUSINESS_MODELS, CHANNELS, type BusinessModel, type Channel, type MarketObservation } from "../types.js";
 import type { ToolContext, ToolDef } from "./types.js";
 import { KNOWN_NICHES, marketKey, observe } from "../sim/market.js";
-import { evaluate, type Proposal } from "../decision/engine.js";
+import { committedCapital, evaluate, type Proposal } from "../decision/engine.js";
 import { createExperiment, completeExperiment } from "../agent/experiments.js";
 import { addLesson, memorySnapshot } from "../agent/memory.js";
 import { book } from "../economy/lifecycle.js";
@@ -37,6 +37,13 @@ function channel(input: Record<string, unknown>): Channel {
 
 function webRule(ctx: ToolContext) {
   return { requireWebObservation: ctx.brain === "llm" && ctx.cfg.phase >= 2 };
+}
+
+/** Research is paid from free capital like everything else: never below the reserve. */
+function assertCanSpend(ctx: ToolContext, cost: number): void {
+  const free = ctx.agent.capital - committedCapital(ctx.state, ctx.agent.id);
+  const reserve = ctx.agent.initial_capital * ctx.cfg.limits.reserveFraction;
+  if (free - cost < reserve) throw new Error(`research refused: free capital €${money(free)} would go below the reserve €${money(reserve)}`);
 }
 
 function chargeResearch(ctx: ToolContext, cost: number): void {
@@ -101,6 +108,7 @@ export const phase1Tools: ToolDef[] = [
     run(ctx, input) {
       const models = Array.isArray(input.business_models) && input.business_models.length ? (input.business_models as BusinessModel[]) : [...BUSINESS_MODELS];
       const count = clamp(Math.floor(Number(input.count ?? 3)), 1, 5);
+      assertCanSpend(ctx, RESEARCH_COST * count);
       const out: MarketObservation[] = [];
       for (let tries = 0; out.length < count && tries < 50; tries++) {
         const m = models[Math.floor(ctx.rand() * models.length)]!;
@@ -123,6 +131,7 @@ export const phase1Tools: ToolDef[] = [
     research: true,
     simulatedResearch: true,
     run(ctx, input) {
+      assertCanSpend(ctx, RESEARCH_COST);
       const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.5, ctx.rand, ctx.now, ctx.state.global.market_anchors);
       ctx.agent.memory.observations[o.key] = o;
       chargeResearch(ctx, RESEARCH_COST);
@@ -138,6 +147,7 @@ export const phase1Tools: ToolDef[] = [
     research: true,
     simulatedResearch: true,
     run(ctx, input) {
+      assertCanSpend(ctx, DEEP_RESEARCH_COST);
       const o = observe(ctx.state.global.world_seed, model(input), str(input, "niche"), 0.85, ctx.rand, ctx.now, ctx.state.global.market_anchors);
       ctx.agent.memory.observations[o.key] = o;
       chargeResearch(ctx, DEEP_RESEARCH_COST);
