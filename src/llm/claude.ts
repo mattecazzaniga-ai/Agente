@@ -49,7 +49,7 @@ export class ClaudeBrain implements Brain {
     const cfg = this.cfg;
     // Fixed tool list for the whole cycle so the cached prefix (tools → system) stays valid.
     const tools: Anthropic.Beta.BetaToolUnion[] = [
-      ...(toAnthropicTools(availableTools(cfg.phase, "llm")) as Anthropic.Beta.BetaToolUnion[]),
+      ...(toAnthropicTools(availableTools(cfg.phase, "llm", cfg.real.enabled)) as Anthropic.Beta.BetaToolUnion[]),
       ...(NO_EFFORT_MODELS.has(cfg.llm.model) ? [] : webServerTools(cfg)),
     ];
     const system: Anthropic.Beta.BetaTextBlockParam[] = [{ type: "text", text: systemPrompt(cfg), cache_control: { type: "ephemeral" } }];

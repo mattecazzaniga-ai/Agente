@@ -82,11 +82,34 @@ export interface Config {
     outputPricePerM: number;
     /** USD per web search request (billed separately from tokens). */
     webSearchUsd: number;
+    /** Cheaper model that does the execution work (writing products and pages). */
+    workerModel: string;
+    workerInputPricePerM: number;
+    workerOutputPricePerM: number;
   };
+  /** Phase 3+: real selling. Nothing here works until the operator provides keys and identity. */
+  real: {
+    /** Master switch, OFF by default: real-money selling needs an explicit operator decision. */
+    enabled: boolean;
+    /** Public base URL of the GitHub Pages site, e.g. https://user.github.io/Agente */
+    siteBaseUrl: string | null;
+    /** Seller identity shown on every page (required by consumer law before publishing). */
+    sellerName: string | null;
+    sellerEmail: string | null;
+    sellerVat: string | null;
+    stripeKey: string | null;
+    currency: string;
+    /** Estimated Stripe fee to compute net revenue: percent + fixed EUR. */
+    stripeFeePct: number;
+    stripeFeeFixed: number;
+  };
+  /** Trust ladder: after this many consecutive approvals a gated tool runs without asking (0 = never). */
+  trustAutoAfter: number;
 }
 
 export function loadConfig(): Config {
   const model = process.env.AGENT_MODEL || "claude-opus-5";
+  const workerModel = process.env.WORKER_MODEL || "claude-sonnet-5";
   const prices = MODEL_PRICES[model] ?? { input: num("LLM_INPUT_PRICE_PER_M", 5), output: num("LLM_OUTPUT_PRICE_PER_M", 25) };
   return {
     phase: num("AGENT_PHASE", 2),
@@ -130,7 +153,22 @@ export function loadConfig(): Config {
       inputPricePerM: prices.input,
       outputPricePerM: prices.output,
       webSearchUsd: num("WEB_SEARCH_USD", 0.01),
+      workerModel,
+      workerInputPricePerM: (MODEL_PRICES[workerModel] ?? { input: 2 }).input,
+      workerOutputPricePerM: (MODEL_PRICES[workerModel] ?? { output: 10 }).output,
     },
+    real: {
+      enabled: bool("REAL_SELLING_ENABLED", false),
+      siteBaseUrl: (process.env.SITE_BASE_URL || "").replace(/\/+$/, "") || null,
+      sellerName: process.env.SELLER_NAME || null,
+      sellerEmail: process.env.SELLER_EMAIL || null,
+      sellerVat: process.env.SELLER_VAT || null,
+      stripeKey: process.env.STRIPE_SECRET_KEY || null,
+      currency: process.env.CURRENCY || "eur",
+      stripeFeePct: num("STRIPE_FEE_PCT", 0.015),
+      stripeFeeFixed: num("STRIPE_FEE_FIXED", 0.25),
+    },
+    trustAutoAfter: num("TRUST_AUTO_AFTER", 5),
   };
 }
 

@@ -42,6 +42,8 @@ export interface ToolDef {
   research?: boolean;
   /** Research backed by the simulator: from Phase 2 only the offline heuristic brain may use it. */
   simulatedResearch?: boolean;
+  /** Human-readable description of a gated call, shown in the approval request. */
+  summarize?: (ctx: ToolContext, input: Record<string, unknown>) => string;
   run(ctx: ToolContext, input: Record<string, unknown>): Promise<unknown> | unknown;
 }
 

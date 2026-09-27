@@ -172,6 +172,50 @@ export interface Approval {
   summary: string;
   status: "PENDING" | "APPROVED" | "DENIED";
   decided_at: string | null;
+  /** kind "tool": the call to execute once a human approves it. */
+  payload?: { tool: string; input: Record<string, unknown> };
+  /** Result or error of the executed call. */
+  result?: string;
+  /** Already announced to the operator (GitHub issue). */
+  notified?: boolean;
+}
+
+/** Phase 3+: a real digital product the agent created, from draft to live sale. */
+export type ProductStatus = "DRAFT" | "PAGE_READY" | "PAYMENT_READY" | "LIVE" | "RETIRED";
+
+export interface Product {
+  id: string;
+  agent_id: string;
+  slug: string;
+  title: string;
+  niche: string;
+  format: string;
+  audience: string;
+  language: string;
+  price_eur: number;
+  status: ProductStatus;
+  created_at: string;
+  /** Workspace files, relative to <dataDir>/workspace/<id>/ */
+  files: string[];
+  /** Unguessable path segment of the download page (delivered after payment). */
+  delivery_token: string;
+  landing_copy?: LandingCopy;
+  stripe?: { product_id: string; price_id: string; payment_link_id: string; payment_link_url: string };
+  page_url?: string;
+  published_at?: string;
+  sales: number;
+  revenue_eur: number;
+  last_sales_check?: number;
+}
+
+export interface LandingCopy {
+  headline: string;
+  subheadline: string;
+  bullets: string[];
+  for_who: string;
+  whats_inside: string[];
+  faq: Array<{ q: string; a: string }>;
+  cta: string;
 }
 
 export interface LogEvent {
@@ -196,6 +240,11 @@ export interface GlobalState {
   market_anchors?: Record<string, MarketAnchor>;
   /** UTC date -> number of web searches, across all agents. */
   web_searches_by_day?: Record<string, number>;
+  /** Trust ladder: consecutive human approvals per approval-gated tool. */
+  trust?: Record<string, { approved: number; denied: number; streak: number }>;
+  next_product_seq?: number;
+  /** Real money received through Stripe, in EUR, net of estimated fees. */
+  real_revenue_eur?: number;
 }
 
 export interface State {
@@ -204,4 +253,5 @@ export interface State {
   agents: Record<string, Agent>;
   experiments: Record<string, Experiment>;
   approvals: Record<string, Approval>;
+  products?: Record<string, Product>;
 }

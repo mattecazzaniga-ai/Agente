@@ -15,6 +15,7 @@ import { committedCapital, runningExperiments } from "../decision/engine.js";
 import { advanceExperiments } from "./experiments.js";
 import { experimentProfit } from "./memory.js";
 import { runAutopilot } from "./autopilot.js";
+import { measureRealSales } from "../real/measure.js";
 import { briefing } from "./prompt.js";
 import { HeuristicBrain, type Brain } from "./brain.js";
 import { book, canReproduce, checkDeath, createAgent, reproduce } from "../economy/lifecycle.js";
@@ -117,6 +118,13 @@ async function tickAgent(
     return finish(agent, report, now);
   }
 
+  // MEASURE (real): sales of live products from Stripe.
+  const real = await measureRealSales(state, agent, cfg, now);
+  for (const note of real.notes) {
+    log(note.startsWith("errore") ? "real_sales_error" : "real_sale", note);
+    completedNotes.push(note);
+  }
+
   // AUTOPILOT: free routine decisions (renew proven winners, stop clear losers).
   const auto = runAutopilot(state, agent, cfg, measured.completed, now);
   for (const note of auto.notes) {
@@ -135,7 +143,7 @@ async function tickAgent(
   }
   if (wantsLlm && !opts.force) {
     // Winners the autopilot already renewed need no LLM decision.
-    const why = thinkReason(state, agent, cfg, now, measured.completed.length - auto.renewed.length);
+    const why = real.sales > 0 ? `${real.sales} real sale(s)` : thinkReason(state, agent, cfg, now, measured.completed.length - auto.renewed.length);
     if (!why) {
       log("think_skipped", "nothing to decide this cycle: measuring only");
       report.brain = "none (nothing to decide)";
