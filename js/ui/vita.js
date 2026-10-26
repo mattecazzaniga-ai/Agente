@@ -5,8 +5,14 @@ import { avatar, barra, chips, esc, soldi } from "./componenti.js";
 
 const TEMI = { ai: "Imprevisto ✦", scuola: "Scuola", universita: "Università", studio: "Studio", lavoro: "Lavoro", soldi: "Soldi", amicizie: "Amicizie", salute: "Salute", famiglia: "Famiglia", amore: "Amore", figli: "Figli", azienda: "Azienda", adulti: "Vita adulta" };
 
+/** Etichetta della congiuntura quando non sono anni normali (FASE 6). */
+function momento(v) {
+  if (!v.mondo || v.mondo.congiuntura === "normale") return "";
+  return `<div class="momento ${esc(v.mondo.congiuntura)}">${esc(v.mondo.nome)} in Italia</div>`;
+}
+
 function testata(v) {
-  return `<header class="testata">
+  return `${momento(v)}<header class="testata">
     ${avatar(v.nome, v.sesso)}
     <div>
       <div class="nome">${esc(v.nome)}</div>
@@ -61,10 +67,11 @@ function esitiAnno(v) {
 
 function riepilogo(v, racconti) {
   const r = v.riepilogo;
-  if (!r?.righe.length && !r?.altri?.length && !v.famiglia.length) return "";
+  if (!r?.righe.length && !r?.altri?.length && !r?.notizie?.length && !v.famiglia.length) return "";
   return `<section class="scheda riepilogo">
     <h2>Il ${r?.anno ?? v.anno - 1} in breve</h2>
     ${r?.racconto ? testoRaccontato(r.racconto.chiave, "", racconti, "racconto-anno") : ""}
+    ${r?.notizie?.length ? `<div class="notizie"><span class="etichetta">Dall'Italia</span>${r.notizie.map((n) => `<p>${esc(n)}</p>`).join("")}</div>` : ""}
     ${r?.righe.length ? `<ul>${r.righe.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="tenue">Un anno tranquillo.</p>`}
     ${(r?.altri ?? []).map((a) => `<div class="altro-anno"><b>${esc(a.nome)}</b> <span class="tenue">(${esc(a.ruolo)})</span><ul>${a.righe.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}
     ${v.famiglia.length ? `<div class="famiglia">${v.famiglia.map((f) => `<p><b>${esc(f.ruolo)}:</b> ${esc(f.riga)}</p>`).join("")}</div>` : ""}

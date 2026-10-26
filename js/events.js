@@ -103,6 +103,8 @@ export function condizioniOk(state, data, p, c = {}, opzioni = {}) {
   if (c.flag_esclusi && comeLista(c.flag_esclusi).some((f) => p.flags[f])) return false;
   if (c.vive_con_genitori !== undefined && viveConGenitori(state, p) !== c.vive_con_genitori) return false;
   if (c.agiatezza && !comeLista(c.agiatezza).includes(state.famiglia.agiatezza)) return false;
+  if (c.congiuntura && !comeLista(c.congiuntura).includes(state.world.mondo?.congiuntura ?? "normale")) return false;
+  if (c.anno_min !== undefined && state.world.anno < c.anno_min) return false;
   if (c.area && !comeLista(c.area).includes(data.regione[p.regione]?.area)) return false;
   if (c.azienda_famiglia !== undefined && Boolean(aziendaDiFamiglia(state, p)) !== c.azienda_famiglia) return false;
   if (c.fratelli !== undefined && (fratelli(state, p).some((f) => f.anno_morte == null)) !== c.fratelli) return false;

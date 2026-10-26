@@ -8,7 +8,7 @@ export function disegna(v) {
     <section class="scheda">
       <div class="etichetta">Patrimonio netto · ${v.anno}</div>
       <div class="cifra ${v.patrimonio < 0 ? "negativo" : ""}">${soldi(v.patrimonio)}</div>
-      <p class="tenue piccolo">Pari a ${soldi(v.patrimonio_reale)} in euro del 2026 · prezzi ×${v.indice_prezzi}, inflazione ${v.inflazione}%</p>
+      <p class="tenue piccolo">Pari a ${soldi(v.patrimonio_reale)} in euro del 2026 · prezzi ×${v.indice_prezzi}, inflazione ${v.inflazione}%${v.mondo ? ` · ${esc(v.mondo.nome)} · pensione a ${v.mondo.eta_pensione} anni` : ""}</p>
       <div class="griglia-2" style="margin-top:12px">
         <div class="box"><span class="etichetta">Risparmi</span><b>${soldi(v.risparmi)}</b></div>
         <div class="box"><span class="etichetta">Debiti</span><b>${v.debiti ? soldi(-v.debiti, { segno: true }) : soldi(0)}</b></div>

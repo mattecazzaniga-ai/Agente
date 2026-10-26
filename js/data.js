@@ -1,11 +1,11 @@
 // Caricamento dei dati di gioco (JSON) e indici per accesso rapido.
 // In browser i file arrivano con fetch, nei test Node con fs: il motore riceve sempre lo stesso oggetto.
 
-export const FILE_DATI = ["regions", "names", "jobs", "schools", "traits", "generator", "profili_ai"];
+export const FILE_DATI = ["regions", "names", "jobs", "schools", "traits", "generator", "profili_ai", "mondo"];
 
 /** Costruisce l'oggetto dati a partire dai JSON grezzi. */
 export function preparaDati(grezzi) {
-  const { regions, names, jobs, schools, traits, generator, eventi, profili_ai } = grezzi;
+  const { regions, names, jobs, schools, traits, generator, eventi, profili_ai, mondo } = grezzi;
   const perId = (lista) => Object.fromEntries(lista.map((x) => [x.id, x]));
   return {
     regioni: regions.regioni,
@@ -24,6 +24,7 @@ export function preparaDati(grezzi) {
     generatore: generator,
     eventi,
     evento: perId(eventi),
+    mondo: mondo ? { ...mondo, congiuntura: perId(mondo.congiunture) } : null,
     profili: profili_ai?.profili ?? [],
     profilo: perId(profili_ai?.profili ?? []),
   };

@@ -138,6 +138,7 @@ export function contestoNarrativo(state, data, p) {
     stato_civile: statoCivile(state, p),
     carattere: tratti(data, p).map((t) => t.nome),
     famiglia: `${NOMI_CLASSE[state.famiglia.agiatezza]} ${state.famiglia.cognome}`,
+    momento_in_italia: data.mondo?.congiuntura?.[state.world.mondo?.congiuntura]?.nome ?? "Anni normali",
     fatti_recenti: p.diario.slice(-2).flatMap((d) => d.righe).slice(-6),
   };
 }
@@ -258,7 +259,7 @@ export function vistaVita(state, data) {
   const r = state.world.ultimo_riepilogo;
   const riepilogo =
     r && r.anno === state.world.anno - 1
-      ? { anno: r.anno, righe: r.righe, altri: (r.altri ?? []).filter((x) => x.righe.length && state.persone[x.id]).map((x) => ({ nome: x.nome, ruolo: ruolo(state, io, state.persone[x.id]), righe: x.righe })) }
+      ? { anno: r.anno, righe: r.righe, notizie: r.notizie ?? [], altri: (r.altri ?? []).filter((x) => x.righe.length && state.persone[x.id]).map((x) => ({ nome: x.nome, ruolo: ruolo(state, io, state.persone[x.id]), righe: x.righe })) }
       : null;
   if (riepilogo?.righe.length) riepilogo.racconto = { chiave: `${state.world.seed}:anno:${riepilogo.anno}:${io.id}`, contesto: { ...contestoNarrativo(state, data, io), anno: riepilogo.anno, eta: anni - 1 }, righe: riepilogo.righe };
   const controllatiIds = new Set(state.controllati ?? []);
@@ -293,6 +294,20 @@ export function vistaVita(state, data) {
     epilogo: fase !== "gioco" ? epilogo(state, data, io) : null,
     candidati: fase === "erede" ? candidatiErede(state, io).map(({ persona, motivo }) => ({ ...breve(state, data, io, persona), motivo, tratti: tratti(data, persona).map((t) => t.nome), patrimonio: patrimonio(state, persona) })) : [],
     dinastia: vistaDinastia(state),
+    mondo: vistaMondo(state, data),
+  };
+}
+
+/** L'Italia in questo momento (FASE 6): congiuntura, età della pensione, ultime notizie. */
+export function vistaMondo(state, data) {
+  const m = state.world.mondo ?? { congiuntura: "normale", eta_pensione: 67, notizie: [] };
+  const c = data.mondo?.congiuntura?.[m.congiuntura];
+  return {
+    congiuntura: m.congiuntura,
+    nome: c?.nome ?? "Anni normali",
+    anni_restanti: m.anni_restanti ?? 0,
+    eta_pensione: m.eta_pensione ?? 67,
+    notizie: (m.notizie ?? []).slice(-8).reverse(),
   };
 }
 
@@ -357,6 +372,7 @@ export function vistaSoldi(state, data) {
     indice_prezzi: Math.round(state.world.indice_prezzi * 100) / 100,
     inflazione: Math.round(state.world.inflazione * 1000) / 10,
     reddito_previsto: Math.round(nettoPersona(state, data, io)),
+    mondo: vistaMondo(state, data),
     bilancio: b
       ? {
           anno: b.anno,

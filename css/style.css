@@ -292,6 +292,15 @@ p { margin: 0; }
 .nodo .anni-nodo { font-size: 10px; fill: var(--testo-2); }
 .azioni-persona { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
 
+/* ---------- L'Italia che cambia (FASE 6) ---------- */
+.momento { align-self: flex-start; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--superficie-2); color: var(--testo-2); }
+.momento.crisi, .momento.pandemia { background: var(--rosso-tenue); color: var(--rosso); }
+.momento.boom { background: var(--verde-tenue); color: var(--verde); }
+.momento.inflazione { background: rgba(232, 168, 124, 0.2); color: #9b5a2e; }
+@media (prefers-color-scheme: dark) { .momento.inflazione { color: var(--accento); } }
+.notizie { margin: 4px 0 12px; padding: 10px 12px; border-radius: var(--raggio-piccolo); background: var(--superficie-2); font-size: 14px; }
+.notizie p { margin-top: 4px; }
+
 /* ---------- Narratore AI (FASE 5) ---------- */
 .racconto-anno, .epitaffio { font-size: 16px; line-height: 1.55; margin-bottom: 10px; }
 .racconto-anno:empty, .epitaffio:empty { display: none; }

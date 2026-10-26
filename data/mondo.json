@@ -1,0 +1,143 @@
+{
+  "_nota": "L'Italia che cambia (FASE 6). Ogni anno il motore decide, con il seed della partita, se inizia una nuova congiuntura. 'effetti' sono modificatori letti dal motore: licenziamenti e assunzioni moltiplicano le probabilità, salari/case/aziende si aggiungono alla crescita annua, inflazione si aggiunge a quella normale, mortalita_anziani moltiplica il rischio di morte dopo i 70 anni.",
+  "congiunture": [
+    {
+      "id": "normale",
+      "nome": "Anni normali",
+      "effetti": {}
+    },
+    {
+      "id": "crisi",
+      "nome": "Recessione",
+      "probabilita": 0.06,
+      "durata": [
+        2,
+        4
+      ],
+      "effetti": {
+        "licenziamenti": 1.5,
+        "assunzioni": 0.75,
+        "salari": -0.008,
+        "case": -0.03,
+        "aziende": -0.06
+      },
+      "notizie_inizio": [
+        "Crisi economica: il PIL cala per due trimestri di fila, le imprese tagliano.",
+        "Recessione: chiudono fabbriche e negozi, la cassa integrazione torna in prima pagina.",
+        "Crollo delle borse e credito più caro: l'Italia entra in recessione."
+      ],
+      "notizie_fine": [
+        "Dopo anni difficili l'economia torna a crescere.",
+        "Fine della recessione: le assunzioni ripartono piano piano."
+      ]
+    },
+    {
+      "id": "boom",
+      "nome": "Ripresa forte",
+      "probabilita": 0.05,
+      "durata": [
+        2,
+        4
+      ],
+      "effetti": {
+        "licenziamenti": 0.75,
+        "assunzioni": 1.25,
+        "salari": 0.01,
+        "case": 0.035,
+        "aziende": 0.05
+      },
+      "notizie_inizio": [
+        "Ripresa: turismo da record ed export in crescita, le aziende cercano personale.",
+        "Anni d'oro per le imprese italiane: fatturati su, disoccupazione ai minimi."
+      ],
+      "notizie_fine": [
+        "La crescita rallenta: finisce il periodo di ripresa forte."
+      ]
+    },
+    {
+      "id": "inflazione",
+      "nome": "Caro vita",
+      "probabilita": 0.03,
+      "durata": [
+        1,
+        3
+      ],
+      "effetti": {
+        "inflazione": 0.05,
+        "salari": -0.03,
+        "case": 0.01,
+        "aziende": -0.02
+      },
+      "notizie_inizio": [
+        "Caro bollette e prezzi alle stelle: l'inflazione supera il 7%.",
+        "Crisi energetica: luce, gas e carrello della spesa costano molto di più."
+      ],
+      "notizie_fine": [
+        "I prezzi si calmano: l'inflazione torna intorno al 2%."
+      ]
+    },
+    {
+      "id": "pandemia",
+      "nome": "Pandemia",
+      "probabilita": 0.012,
+      "durata": [
+        1,
+        2
+      ],
+      "effetti": {
+        "mortalita_anziani": 1.5,
+        "licenziamenti": 1.4,
+        "assunzioni": 0.6,
+        "aziende": -0.08,
+        "morale": -4
+      },
+      "notizie_inizio": [
+        "Una nuova pandemia: scuole chiuse, lavoro da casa, ospedali sotto pressione.",
+        "Emergenza sanitaria: l'Italia chiude per settimane, si esce solo per necessità."
+      ],
+      "notizie_fine": [
+        "La pandemia è alle spalle: si torna ad abbracciarsi."
+      ]
+    }
+  ],
+  "tendenze": [
+    {
+      "dal": 2030,
+      "settori": {
+        "logistica": 1.3,
+        "commercio": 1.15
+      },
+      "notizia": "Magazzini automatici e negozi online: i robot entrano nella logistica."
+    },
+    {
+      "dal": 2034,
+      "settori": {
+        "uffici": 1.35,
+        "comunicazione": 1.2
+      },
+      "notizia": "L'intelligenza artificiale cambia il lavoro d'ufficio: molte mansioni spariscono."
+    },
+    {
+      "dal": 2040,
+      "settori": {
+        "trasporti": 1.4
+      },
+      "notizia": "Arrivano i primi camion e autobus a guida autonoma."
+    },
+    {
+      "dal": 2036,
+      "settori": {
+        "sanita": 0.6,
+        "tecnologia": 0.8
+      },
+      "notizia": "Popolazione sempre più anziana: sanità e assistenza cercano personale ovunque."
+    }
+  ],
+  "pensione": {
+    "eta_iniziale": 67,
+    "eta_massima": 71,
+    "dal": 2030,
+    "probabilita_aumento": 0.06,
+    "notizia": "Riforma delle pensioni: l'età per andare in pensione sale a {eta} anni."
+  }
+}

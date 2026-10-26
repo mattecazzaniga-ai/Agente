@@ -1,7 +1,9 @@
 // Stato globale della partita: un unico oggetto serializzabile in JSON.
 // Qui vivono anche salvataggio, caricamento, esportazione e migrazioni dello schema.
 
-export const VERSIONE_SCHEMA = 2;
+import { mondoIniziale } from "./mondo.js";
+
+export const VERSIONE_SCHEMA = 3;
 export const CHIAVE_SALVATAGGIO = "dinastia.salvataggio";
 
 /** Stato vuoto: il generatore lo riempie con la prima famiglia. */
@@ -21,6 +23,7 @@ export function statoVuoto(seed, anno = 2026) {
       eventi_usati: {}, // { idPersona: { idEvento: anno } }
       eventi_anno: [], // eventi da risolvere nell'anno corrente
       fase: "gioco", // "gioco" | "erede" (scegliere chi continua) | "fine"
+      mondo: mondoIniziale(), // congiuntura, età della pensione, notizie (FASE 6)
     },
     dinastia: { generazione: 1, giocati: [] }, // giocati: [{ id, dal, al }] chi è stato il personaggio principale
     persone: {},
@@ -74,6 +77,13 @@ const MIGRAZIONI = {
       p.coppia_dal ??= null;
     }
     s.schema = 2;
+    return s;
+  },
+  // 2 → 3 (FASE 6): il mondo che cambia.
+  2: (s) => {
+    s.world ??= {};
+    s.world.mondo ??= mondoIniziale();
+    s.schema = 3;
     return s;
   },
 };

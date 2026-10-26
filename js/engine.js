@@ -9,6 +9,7 @@ import { controllate, giocatore, personeVive, vive } from "./state.js";
 import { annota, segnaposto } from "./family.js";
 import { aggiornaAziende, aggiornaIndici, avviaNaspi, bilancioNucleo, caseVuote, esdebitazione, vendiCasePerDebiti, eredita, interessi, mantenimenti, patrimonio, pulisciNuclei, rivalutaCase, rivalutaPensione, vaInPensione } from "./economy.js";
 import { candidatiErede, controllabile, MAX_CONTROLLATI, vitaPrivata } from "./dinastia.js";
+import { aggiornaMondo, modificatori, rischioSettore } from "./mondo.js";
 import { assumi, iscriviSuperiori, licenzia, lasciaStudi, aggiungiRicordo } from "./azioni.js";
 import { condizioniOk, eventoDi, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoEvento, testoScelta, titoloEvento } from "./events.js";
 
@@ -183,7 +184,10 @@ export function fineAnno(state, data) {
   pulisciNuclei(state);
 
   // 3. regole di vita: scuola, lavoro, benessere
-  aggiornaIndici(state);
+  // il mondo cambia: congiuntura, tendenze, riforme (FASE 6)
+  const notizie = aggiornaMondo(state, data);
+  const mondo = modificatori(state, data);
+  aggiornaIndici(state, mondo);
   for (const p of personeVive(state)) {
     scuola(state, data, p);
     lavoro(state, data, p);
@@ -204,8 +208,8 @@ export function fineAnno(state, data) {
     annota(state, p, "Debiti impossibili da ripagare: il tribunale concede l'esdebitazione. Si riparte quasi da zero.");
     aggiungiRicordo(state, data, p, "debiti_giovane");
   }
-  rivalutaCase(state);
-  for (const { azienda } of aggiornaAziende(state)) {
+  rivalutaCase(state, mondo);
+  for (const { azienda } of aggiornaAziende(state, mondo)) {
     for (const p of personeVive(state)) {
       if (p.id === azienda.proprietario || (p.sangue && (p.id === state.giocatore || state.persone[azienda.proprietario]?.figli.includes(p.id)))) {
         aggiungiRicordo(state, data, p, "fallimento_azienda");
@@ -217,7 +221,7 @@ export function fineAnno(state, data) {
 
   // 5. morti ed eredità
   for (const p of personeVive(state)) {
-    if (probabile(state, probabilitaMorte(state, p))) muori(state, data, p);
+    if (probabile(state, probabilitaMorte(state, p, mondo))) muori(state, data, p);
   }
   // chi è morto prima di quest'anno viene archiviato (il salvataggio resta piccolo anche dopo secoli)
   for (const p of Object.values(state.persone)) if (p.anno_morte != null && p.anno_morte < anno && !p.archiviato) archivia(state, p);
@@ -238,7 +242,7 @@ export function fineAnno(state, data) {
 
   const righeDi = (p) => [...(p.diario.find((d) => d.anno === anno)?.righe ?? [])];
   const altri = (state.controllati ?? []).filter((id) => id !== io.id).map((id) => state.persone[id]).filter(Boolean);
-  state.world.ultimo_riepilogo = { anno, righe: righeDi(io), altri: altri.map((p) => ({ id: p.id, nome: p.nome, righe: righeDi(p) })) };
+  state.world.ultimo_riepilogo = { anno, notizie, righe: righeDi(io), altri: altri.map((p) => ({ id: p.id, nome: p.nome, righe: righeDi(p) })) };
   // chi muore esce dal controllo (il principale resta finché non si sceglie l'erede)
   state.controllati = (state.controllati ?? []).filter((id) => id === io.id || vive(state.persone[id]));
 
@@ -401,7 +405,8 @@ function lavoro(state, data, p) {
     c.anzianita += 1;
     c.anni_lavorati += 1;
     if (probabile(state, 0.08 + Math.max(0, modificatore(data, p, "carriera")) * 0.3)) c.bonus = limita(c.bonus + 0.04, 0.7, 1.6);
-    const rischio = m.precarieta * (1 + regione.disoccupazione / 25) * (p.stat.reputazione < 30 ? 1.4 : 1);
+    const mondo = modificatori(state, data);
+    const rischio = m.precarieta * (1 + regione.disoccupazione / 25) * (p.stat.reputazione < 30 ? 1.4 : 1) * mondo.licenziamenti * rischioSettore(state, data, m.settore);
     if (probabile(state, rischio)) {
       avviaNaspi(state, data, p);
       annota(state, p, licenzia(state, data, p));
@@ -413,7 +418,7 @@ function lavoro(state, data, p) {
   if (p.istruzione.iscritto) return;
   const bonusTitolo = { nessuno: -0.08, licenza_elementare: -0.08, licenza_media: 0, diploma: 0.06, laurea_triennale: 0.12, laurea_magistrale: 0.15 }[p.istruzione.titolo];
   const cognome = p.sangue ? (state.famiglia.reputazione - 50) / 300 : 0; // un cognome stimato apre qualche porta
-  const probabilita = limita(0.6 - (regione.disoccupazione / 100) * 1.8 + bonusTitolo + modificatore(data, p, "carriera") * 0.5 + (p.stat.reputazione - 50) / 250 + cognome, 0.12, 0.9);
+  const probabilita = limita((0.6 - (regione.disoccupazione / 100) * 1.8 + bonusTitolo + modificatore(data, p, "carriera") * 0.5 + (p.stat.reputazione - 50) / 250 + cognome) * modificatori(state, data).assunzioni, 0.08, 0.9);
   if (probabile(state, probabilita)) annota(state, p, assumi(state, data, p, "casuale"));
 }
 
@@ -459,7 +464,7 @@ function benessere(state, data, p) {
   const ricordi = p.ricordi.reduce((t, r) => t + (data.ricordo[r.id]?.effetti_annui?.morale ?? 0), 0);
   const disoccupato = anni >= 20 && !p.carriera.lavoro && !p.carriera.pensionato && !p.carriera.imprenditore && !p.istruzione.iscritto;
   const debiti = p.economia.debiti > 3000 * state.world.indice_prezzi;
-  muovi("morale", 60 + modificatore(data, p, "morale") + ricordi * 3 - (disoccupato ? 10 : 0) - (debiti ? 8 : 0) - (s.salute < 40 ? 8 : 0), 0.3, 4);
+  muovi("morale", 60 + modificatori(state, data).morale + modificatore(data, p, "morale") + ricordi * 3 - (disoccupato ? 10 : 0) - (debiti ? 8 : 0) - (s.salute < 40 ? 8 : 0), 0.3, 4);
 
   muovi("felicita", 0.4 * s.morale + 0.25 * s.salute + 0.2 * (100 - s.stanchezza) + 0.15 * Math.min(100, p.tempo_libero * 2), 0.35, 3);
 
@@ -481,9 +486,10 @@ function benessere(state, data, p) {
 // ---------------------------------------------------------------------------
 
 /** Probabilità annua di morte: curva di Gompertz calibrata sull'Italia, corretta dalla salute. */
-export function probabilitaMorte(state, p) {
+export function probabilitaMorte(state, p, mondo = {}) {
   const anni = eta(p, state.world.anno);
   let q = 0.000022 * Math.exp(0.093 * anni) + 0.00015;
+  if (anni >= 70) q *= mondo.mortalita_anziani ?? 1; // pandemie (FASE 6)
   q *= 1 + Math.max(0, 50 - p.stat.salute) / 30;
   if (p.stat.salute > 85) q *= 0.8;
   if (p.flags.malattia_cronica) q *= 1.6;

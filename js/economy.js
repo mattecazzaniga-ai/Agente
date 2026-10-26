@@ -5,12 +5,12 @@
 import { normale } from "./rng.js";
 import { euro, eta, limita } from "./util.js";
 import { personeVive, vive } from "./state.js";
+import { etaPensione } from "./mondo.js";
 
 const COSTO_VITA_BASE = 11000; // euro/anno per un adulto, casa esclusa (cibo, bollette, trasporti, svago)
 const SPESA_SCUOLA = 400; // libri e materiale per uno studente delle scuole dell'obbligo
 const INTERESSE_RISPARMI = 0.005;
 const INTERESSE_DEBITI = 0.08;
-const ETA_PENSIONE = 67;
 const ASSEGNO_SOCIALE = 6900;
 const SPESA_NIDO = 2500; // 0-2 anni: nido (in parte coperto dal bonus nido) o baby-sitter
 const SPESA_INFANZIA = 700; // 3-5 anni: scuola dell'infanzia (mensa, materiale)
@@ -335,27 +335,31 @@ export function interessi(persona) {
   }
 }
 
-/** Inflazione dell'anno (circa 2%) e crescita dei salari (in media come i prezzi). */
-export function aggiornaIndici(state) {
+/**
+ * Inflazione dell'anno (circa 2%) e crescita dei salari (in media come i prezzi).
+ * `mondo` sono i modificatori della congiuntura (FASE 6): caro vita, crisi, ripresa.
+ */
+export function aggiornaIndici(state, mondo = {}) {
   const w = state.world;
-  w.inflazione = limita(normale(state, 0.02, 0.008), -0.005, 0.07);
+  w.inflazione = limita(normale(state, 0.02, 0.008) + (mondo.inflazione ?? 0), -0.005, 0.12);
   w.indice_prezzi *= 1 + w.inflazione;
-  w.indice_salari *= 1 + w.inflazione + normale(state, 0, 0.003); // salari reali in media stabili, come in Italia
+  // salari reali in media stabili, come in Italia; nelle crisi e col caro vita restano indietro
+  w.indice_salari *= 1 + w.inflazione + (mondo.salari ?? 0) + normale(state, 0, 0.003);
 }
 
 /** Le case si rivalutano con l'inflazione più una componente casuale del mercato. */
-export function rivalutaCase(state) {
+export function rivalutaCase(state, mondo = {}) {
   for (const c of Object.values(state.case)) {
-    c.valore = euro(c.valore * (1 + state.world.inflazione + normale(state, 0.002, 0.025)));
+    c.valore = euro(c.valore * (1 + state.world.inflazione + (mondo.case ?? 0) + normale(state, 0.002, 0.025)));
   }
 }
 
 /** Le aziende di famiglia crescono o soffrono; sotto una soglia di salute falliscono. */
-export function aggiornaAziende(state) {
+export function aggiornaAziende(state, mondo = {}) {
   const esiti = [];
   for (const a of Object.values(state.aziende)) {
     if (a.fallita || a.venduta) continue;
-    const andamento = normale(state, 0.01, 0.07);
+    const andamento = normale(state, 0.01, 0.07) + (mondo.aziende ?? 0);
     a.fatturato = euro(a.fatturato * (1 + state.world.inflazione + andamento));
     a.valore = euro(a.valore * (1 + state.world.inflazione + andamento * 0.6));
     a.salute = limita(Math.round(a.salute + andamento * 120 + normale(state, 0, 4)), 0, 100);
@@ -454,7 +458,7 @@ export function vendiCasePerDebiti(state) {
 /** Pensione: a 67 anni, il 65% dell'ultimo stipendio se ha lavorato almeno 20 anni, altrimenti l'assegno sociale. */
 export function vaInPensione(state, data, persona) {
   const c = persona.carriera;
-  if (c.pensionato || eta(persona, state.world.anno) < ETA_PENSIONE) return false;
+  if (c.pensionato || eta(persona, state.world.anno) < etaPensione(state)) return false;
   const ultimo = c.lavoro ? stipendioLordo(state, data, persona) : 0;
   c.pensione = euro((c.anni_lavorati ?? 0) >= 20 && ultimo > 0 ? ultimo * 0.65 : ASSEGNO_SOCIALE * state.world.indice_prezzi);
   c.pensionato = true;

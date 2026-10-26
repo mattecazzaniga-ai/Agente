@@ -42,7 +42,7 @@ test("un salvataggio senza versione viene migrato allo schema attuale", () => {
   assert.ok(m.nuclei && typeof m.nuclei === "object");
 });
 
-test("un salvataggio della FASE 1 (schema 1) diventa una dinastia (schema 2)", () => {
+test("un salvataggio della FASE 1 (schema 1) diventa una dinastia con il mondo (schema attuale)", () => {
   const s = JSON.parse(esporta(generaFamiglia(D, 9)));
   s.schema = 1;
   delete s.controllati;
@@ -51,9 +51,11 @@ test("un salvataggio della FASE 1 (schema 1) diventa una dinastia (schema 2)", (
     delete p.sangue;
     delete p.ex;
   }
+  delete s.world.mondo;
   const m = migra(s);
-  assert.equal(m.schema, 2);
+  assert.equal(m.schema, VERSIONE_SCHEMA);
   assert.deepEqual(m.controllati, [m.giocatore]);
+  assert.equal(m.world.mondo.congiuntura, "normale", "dallo schema 2 al 3 arriva il mondo");
   assert.equal(m.dinastia.generazione, 1);
   assert.ok(Object.values(m.persone).every((p) => p.sangue === true && Array.isArray(p.ex)));
 });
