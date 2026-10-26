@@ -124,6 +124,7 @@ test("eredità senza figli né coniuge: vanno ai genitori o ai fratelli", () => 
   const s = adulto(41, 30);
   const io = giocatore(s);
   io.economia.risparmi = 50000;
+  io.economia.debiti = 0;
   const righe = eredita(s, io);
   assert.match(righe[0], /va a/);
   assert.equal(io.economia.risparmi, 0);

@@ -1,0 +1,628 @@
+{
+  "tema": "quotidiano",
+  "eventi": [
+    {
+      "id": "quot_telefono",
+      "tema": "famiglia",
+      "titolo": "Il primo telefono",
+      "condizioni": {
+        "eta": [
+          10,
+          13
+        ]
+      },
+      "peso": 6,
+      "testi": [
+        "Tutti in classe hanno uno smartphone tranne te. A cena provi a sollevare l'argomento, con tutta la diplomazia che hai.",
+        "Il tuo migliore amico ha appena ricevuto il telefono nuovo. Tu hai ancora quello vecchio di tua madre, senza internet."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Insisti finché non cedono",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 5,
+            "voti": -0.2,
+            "relazione": {
+              "con": "genitore",
+              "delta": -3
+            },
+            "risparmi_famiglia": -300
+          },
+          "esito": "Telefono nuovo. Le notti si accorciano."
+        },
+        {
+          "id": "b",
+          "testo": "Proponi un patto: lo usi solo dopo i compiti",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "felicita": 3,
+            "relazione": {
+              "con": "genitore",
+              "delta": 4
+            },
+            "risparmi_famiglia": -250
+          },
+          "esito": "I tuoi apprezzano. Il patto regge. Quasi."
+        },
+        {
+          "id": "c",
+          "testo": "Lasci perdere",
+          "tratti_favoriti": [
+            "pigro",
+            "solitario"
+          ],
+          "effetti": {
+            "felicita": -2,
+            "voti": 0.2
+          },
+          "esito": "Più libri, meno chat."
+        }
+      ]
+    },
+    {
+      "id": "quot_patente",
+      "tema": "soldi",
+      "titolo": "La patente",
+      "condizioni": {
+        "eta": [
+          18,
+          20
+        ]
+      },
+      "peso": 7,
+      "testi": [
+        "Hai diciotto anni: tutti i tuoi amici si sono iscritti all'autoscuola. Tra teoria, guide ed esame servono più di mille euro.",
+        "L'esame di teoria è fra un mese e il quiz sui segnali ti tormenta anche di notte."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi all'autoscuola",
+          "tratti_favoriti": [
+            "indipendente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "risparmi_famiglia": -1200,
+            "felicita": 6,
+            "flag": "patente"
+          },
+          "esito": "Promoss{o} al primo colpo. Le chiavi della macchina di famiglia sono tue, il sabato."
+        },
+        {
+          "id": "b",
+          "testo": "Aspetti di potertela pagare da sol{o}",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -1
+          },
+          "esito": "Autobus e passaggi, per ora."
+        }
+      ]
+    },
+    {
+      "id": "quot_cane",
+      "tema": "famiglia",
+      "titolo": "Un cane?",
+      "condizioni": {
+        "eta": [
+          8,
+          80
+        ]
+      },
+      "peso": 3,
+      "testi": [
+        "Al canile c'è un meticcio con un orecchio dritto e uno piegato. Ti guarda come se ti conoscesse da sempre.",
+        "Un'amica deve dare via la cucciolata del suo cane. «Ne resta solo uno», ti scrive con una foto."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Lo porti a casa",
+          "tratti_favoriti": [
+            "generoso",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 8,
+            "salute": 2,
+            "risparmi": -400,
+            "stanchezza": 3,
+            "flag": "cane"
+          },
+          "esito": "Si chiama Briciola e comanda lui."
+        },
+        {
+          "id": "b",
+          "testo": "Non è il momento",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario"
+          ],
+          "effetti": {
+            "felicita": -1
+          },
+          "esito": "Ci ripensi ogni tanto."
+        }
+      ]
+    },
+    {
+      "id": "quot_vacanza",
+      "tema": "soldi",
+      "titolo": "Le vacanze d'agosto",
+      "condizioni": {
+        "eta": [
+          20,
+          85
+        ]
+      },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Ad agosto mezza Italia è in ferie. Gli amici organizzano una settimana in Puglia; i tuoi invece vanno al solito campeggio.",
+        "Le ferie si avvicinano: le offerte per la Grecia sono tentatrici, ma anche il divano di casa ha il suo fascino."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Una settimana al mare con gli amici",
+          "requisiti": {
+            "risparmi_min": 900
+          },
+          "tratti_favoriti": [
+            "socievole",
+            "impulsivo"
+          ],
+          "effetti": {
+            "risparmi": -900,
+            "felicita": 7,
+            "stanchezza": -8
+          },
+          "esito": "Sole, focaccia e notti in spiaggia."
+        },
+        {
+          "id": "b",
+          "testo": "Un viaggio all'estero",
+          "requisiti": {
+            "risparmi_min": 2000
+          },
+          "tratti_favoriti": [
+            "indipendente",
+            "creativo"
+          ],
+          "effetti": {
+            "risparmi": -2000,
+            "felicita": 9,
+            "stanchezza": -6
+          },
+          "esito": "Torni con mille foto e la voglia di ripartire."
+        },
+        {
+          "id": "c",
+          "testo": "Ferie a casa, città vuota",
+          "tratti_favoriti": [
+            "prudente",
+            "pigro"
+          ],
+          "effetti": {
+            "stanchezza": -5,
+            "felicita": 1
+          },
+          "esito": "Parcheggio sotto casa, finalmente."
+        }
+      ]
+    },
+    {
+      "id": "quot_vicini",
+      "tema": "famiglia",
+      "titolo": "I vicini",
+      "condizioni": {
+        "eta": [
+          22,
+          90
+        ],
+        "flag": "vive_da_solo"
+      },
+      "peso": 3,
+      "testi": [
+        "Il vicino del piano di sopra fa lavori in casa ogni sabato alle otto di mattina. Da tre mesi.",
+        "La signora della porta accanto lascia sempre la spazzatura sul pianerottolo. In assemblea di condominio se ne parlerà."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Bussi con una torta e ne parli",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "reputazione": 2,
+            "felicita": 2,
+            "risparmi": -20
+          },
+          "esito": "Diventate quasi amici. Il trapano tace la mattina."
+        },
+        {
+          "id": "b",
+          "testo": "Scrivi all'amministratore",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "stanchezza": 2
+          },
+          "esito": "La lettera ufficiale fa effetto, ma l'ascensore diventa imbarazzante."
+        },
+        {
+          "id": "c",
+          "testo": "Litighi sul pianerottolo",
+          "tratti_favoriti": [
+            "impulsivo"
+          ],
+          "effetti": {
+            "reputazione": -3,
+            "morale": -2
+          },
+          "esito": "Adesso nessuno saluta più nessuno."
+        }
+      ]
+    },
+    {
+      "id": "quot_corso_serale",
+      "tema": "adulti",
+      "titolo": "Un corso la sera",
+      "condizioni": {
+        "eta": [
+          25,
+          75
+        ],
+        "iscritto": false
+      },
+      "peso": 3,
+      "testi": [
+        "In biblioteca vedi il volantino di un corso serale: cucina, fotografia, lingue. Hai sempre detto che prima o poi…",
+        "Un collega fa un corso di teatro il martedì sera e dice che gli ha cambiato la vita. Ti invita a provare."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi a un corso di lingue",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -300,
+            "bonus": 0.02,
+            "morale": 3,
+            "stanchezza": 3
+          },
+          "esito": "Al lavoro scoprono che te la cavi con l'inglese."
+        },
+        {
+          "id": "b",
+          "testo": "Teatro o fotografia, per divertirti",
+          "tratti_favoriti": [
+            "creativo",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -250,
+            "felicita": 6
+          },
+          "esito": "Il martedì sera diventa il momento più bello della settimana."
+        },
+        {
+          "id": "c",
+          "testo": "La sera sei troppo stanc{o}",
+          "tratti_favoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "stanchezza": -2
+          },
+          "esito": "Divano, coperta, tisana."
+        }
+      ]
+    },
+    {
+      "id": "quot_maratona",
+      "tema": "salute",
+      "titolo": "La maratona",
+      "condizioni": {
+        "eta": [
+          20,
+          60
+        ],
+        "stat_min": {
+          "salute": 60
+        }
+      },
+      "peso": 2,
+      "testi": [
+        "Un amico ti sfida: la mezza maratona della città tra sei mesi. Tu al massimo corri dietro all'autobus.",
+        "Al parco vedi un gruppo che si allena per la maratona. Il cartello dice: «Principianti benvenuti»."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Accetti e ti alleni",
+          "tratti_favoriti": [
+            "sportivo",
+            "ambizioso"
+          ],
+          "effetti": {
+            "salute": 6,
+            "stanchezza": 4,
+            "morale": 5,
+            "tratto": "sportivo"
+          },
+          "esito": "Arrivi al traguardo. Lento, ma arrivi."
+        },
+        {
+          "id": "b",
+          "testo": "Fai il tifo dal marciapiede",
+          "tratti_favoriti": [
+            "pigro",
+            "socievole"
+          ],
+          "effetti": {
+            "felicita": 2
+          },
+          "esito": "Cartellone, fischietto e cornetto."
+        }
+      ]
+    },
+    {
+      "id": "quot_medico_famiglia",
+      "tema": "salute",
+      "titolo": "La lista d'attesa",
+      "condizioni": {
+        "eta": [
+          40,
+          95
+        ]
+      },
+      "peso": 3,
+      "testi": [
+        "Il medico ti prescrive una visita specialistica. Al CUP la prima data utile con il servizio pubblico è tra otto mesi.",
+        "Ti serve un esame. Col pubblico tra un anno, privatamente la settimana prossima."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Paghi il privato",
+          "requisiti": {
+            "risparmi_min": 250
+          },
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "risparmi": -250,
+            "salute": 2
+          },
+          "esito": "Tutto a posto, e lo sai subito."
+        },
+        {
+          "id": "b",
+          "testo": "Aspetti il pubblico",
+          "tratti_favoriti": [
+            "pigro",
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -1
+          },
+          "esito": "Otto mesi con il dubbio.",
+          "conseguenze": [
+            {
+              "evento": "salute_problema_trascurato",
+              "dopo_anni": 2,
+              "probabilita": 0.1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quot_nonno_racconta",
+      "tema": "famiglia",
+      "titolo": "Le storie della nonna",
+      "condizioni": {
+        "eta": [
+          8,
+          16
+        ],
+        "genitori_vivi": 1
+      },
+      "peso": 3,
+      "testi": [
+        "La domenica, dopo pranzo, la nonna racconta di quando era giovane e in casa c'era un solo bagno per otto persone.",
+        "Il nonno tira fuori una scatola di foto in bianco e nero. «Questo qui», dice, «è il tuo bisnonno.»"
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ascolti e fai mille domande",
+          "tratti_favoriti": [
+            "generoso",
+            "creativo"
+          ],
+          "effetti": {
+            "felicita": 3,
+            "morale": 2,
+            "reputazione_famiglia": 1
+          },
+          "esito": "Scopri che la tua famiglia ne ha passate tante."
+        },
+        {
+          "id": "b",
+          "testo": "Scappi a giocare",
+          "tratti_favoriti": [
+            "impulsivo",
+            "pigro"
+          ],
+          "effetti": {
+            "felicita": 2
+          },
+          "esito": "Le storie restano nella scatola."
+        }
+      ]
+    },
+    {
+      "id": "quot_volontariato_giovane",
+      "tema": "amicizie",
+      "titolo": "Il servizio civile",
+      "condizioni": {
+        "eta": [
+          18,
+          28
+        ],
+        "lavoro": false
+      },
+      "peso": 3,
+      "testi": [
+        "Esce il bando del servizio civile: un anno in una cooperativa sociale, con un piccolo rimborso mensile.",
+        "Una ONG cerca volontari per un anno. Non si guadagna quasi niente, ma si impara tanto."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Fai domanda e parti",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": 3000,
+            "reputazione": 5,
+            "felicita": 5,
+            "stanchezza": 6
+          },
+          "esito": "Un anno che ti cambia, e un curriculum più ricco."
+        },
+        {
+          "id": "b",
+          "testo": "Cerchi un lavoro vero",
+          "tratti_favoriti": [
+            "ambizioso",
+            "egoista"
+          ],
+          "effetti": {
+            "morale": 1
+          },
+          "esito": "Mandi curriculum a tappeto."
+        }
+      ]
+    },
+    {
+      "id": "quot_eredita_casa_nonni",
+      "tema": "famiglia",
+      "titolo": "La casa dei nonni",
+      "condizioni": {
+        "eta": [
+          30,
+          70
+        ],
+        "genitori_vivi": 1
+      },
+      "peso": 2,
+      "testi": [
+        "La casa al paese dei nonni è chiusa da anni. In famiglia c'è chi vuole venderla e chi non vuole nemmeno sentirne parlare.",
+        "Bisogna decidere cosa fare della vecchia casa dei nonni: il tetto perde e le tasse arrivano lo stesso."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Proponi di venderla e dividere",
+          "tratti_favoriti": [
+            "prudente",
+            "egoista"
+          ],
+          "effetti": {
+            "risparmi": 6000,
+            "relazione": {
+              "con": "fratello",
+              "delta": -4
+            }
+          },
+          "esito": "Qualche lacrima, poi un assegno a testa."
+        },
+        {
+          "id": "b",
+          "testo": "Tenerla: è la storia della famiglia",
+          "tratti_favoriti": [
+            "generoso",
+            "creativo"
+          ],
+          "effetti": {
+            "risparmi": -1500,
+            "felicita": 3,
+            "reputazione_famiglia": 2
+          },
+          "esito": "Ogni estate, la tavolata si fa lì."
+        }
+      ]
+    },
+    {
+      "id": "quot_pensione_anticipata",
+      "tema": "lavoro",
+      "titolo": "Andare prima in pensione?",
+      "condizioni": {
+        "eta": [
+          61,
+          66
+        ],
+        "lavoro": true
+      },
+      "peso": 5,
+      "testi": [
+        "In ufficio propongono a chi ha più di sessant'anni di lasciare prima, con un incentivo. La pensione sarebbe un po' più bassa.",
+        "Sei stanc{o}. Il patronato ti spiega che potresti uscire prima, perdendo qualcosa sull'assegno."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Esci con l'incentivo",
+          "tratti_favoriti": [
+            "pigro",
+            "generoso"
+          ],
+          "effetti": {
+            "pensione_anticipata": true,
+            "risparmi": 12000,
+            "stanchezza": -15,
+            "felicita": 6
+          },
+          "esito": "Il primo lunedì libero ti sembra un sogno."
+        },
+        {
+          "id": "b",
+          "testo": "Resti fino alla fine",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "stanchezza": 4
+          },
+          "esito": "Ancora qualche anno, per una pensione piena."
+        }
+      ]
+    }
+  ]
+}

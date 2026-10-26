@@ -1,0 +1,221 @@
+{
+  "tema": "italia",
+  "eventi": [
+    {
+      "id": "italia_cassa_integrazione",
+      "tema": "lavoro",
+      "titolo": "La cassa integrazione",
+      "condizioni": { "eta": [20, 66], "lavoro": true, "congiuntura": ["crisi", "pandemia"] },
+      "peso": 8,
+      "testi": [
+        "In fabbrica circola una lettera: per sei mesi si lavora a metà orario, il resto lo copre la cassa integrazione.",
+        "Il direttore riunisce tutti in mensa. «Non licenziamo nessuno, ma dobbiamo ridurre le ore. Per un po'.»"
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Stringi i denti e aspetti", "tratti_favoriti": ["prudente", "pigro"], "effetti": { "risparmi": -1500, "morale": -4, "stanchezza": -6 }, "esito": "Mesi lunghi, ma il posto resta." },
+        { "id": "b", "testo": "Nel tempo libero fai un corso di formazione", "tratti_favoriti": ["ambizioso"], "effetti": { "risparmi": -1700, "bonus": 0.04, "stanchezza": 3 }, "esito": "Quando si riparte, sai fare cose nuove." },
+        { "id": "c", "testo": "Cerchi subito un altro lavoro", "tratti_favoriti": ["indipendente", "impulsivo"], "effetti": { "lavoro": "casuale", "morale": 2 }, "esito": "Un salto nel buio, ma ti muovi." }
+      ]
+    },
+    {
+      "id": "italia_caro_bollette",
+      "tema": "soldi",
+      "titolo": "Il caro bollette",
+      "condizioni": { "eta": [20, 100], "flag": "vive_da_solo", "congiuntura": "inflazione" },
+      "peso": 9,
+      "testi": [
+        "Arriva la bolletta del gas: è il triplo dell'anno scorso. La guardi due volte per essere sicur{o}.",
+        "Al supermercato lo stesso carrello costa molto di più. In tv non si parla d'altro."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Termosifoni più bassi e maglione", "tratti_favoriti": ["prudente"], "effetti": { "risparmi": -600, "felicita": -3 }, "esito": "Diciotto gradi in casa. Ti abitui." },
+        { "id": "b", "testo": "Cambi fornitore e confronti le offerte", "tratti_favoriti": ["ambizioso", "prudente"], "effetti": { "risparmi": -300, "stanchezza": 3 }, "esito": "Un pomeriggio di telefonate, ma risparmi davvero." },
+        { "id": "c", "testo": "Paghi e non ci pensi", "tratti_favoriti": ["impulsivo", "pigro"], "effetti": { "risparmi": -1400, "morale": -2 }, "esito": "Il conto in banca se ne accorge." }
+      ]
+    },
+    {
+      "id": "italia_lockdown",
+      "tema": "salute",
+      "titolo": "Tutti a casa",
+      "condizioni": { "eta": [6, 100], "congiuntura": "pandemia" },
+      "peso": 10,
+      "testi": [
+        "Scuole chiuse, negozi chiusi, la città in silenzio. Dalla finestra senti qualcuno cantare sul balcone.",
+        "Si esce solo per la spesa, con la mascherina. Le giornate sono tutte uguali."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ti dai una routine: sport in casa, libri, chiamate", "tratti_favoriti": ["prudente", "ambizioso", "sportivo"], "effetti": { "salute": 2, "morale": 2 }, "esito": "Ne esci con qualche abitudine nuova." },
+        { "id": "b", "testo": "Videochiamate infinite con amici e parenti", "tratti_favoriti": ["socievole"], "effetti": { "felicita": 3, "relazione": { "con": "genitore", "delta": 4 } }, "esito": "Lontani, ma mai così vicini." },
+        { "id": "c", "testo": "Divano e serie tv", "tratti_favoriti": ["pigro", "solitario"], "effetti": { "salute": -3, "stanchezza": -6, "morale": -3 }, "esito": "Il tempo passa, ma ti senti fermo." }
+      ]
+    },
+    {
+      "id": "italia_smart_working",
+      "tema": "lavoro",
+      "titolo": "Lavorare da casa",
+      "condizioni": { "eta": [22, 66], "lavoro": true, "settore": ["uffici", "tecnologia", "comunicazione", "commercio", "pubblico"] },
+      "peso": 3,
+      "testi": [
+        "L'azienda propone tre giorni a settimana da casa. Niente traffico, ma anche niente pause caffè con i colleghi.",
+        "Il nuovo accordo aziendale permette il lavoro agile. Molti colleghi hanno già detto di sì."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Sì, da casa", "tratti_favoriti": ["solitario", "pigro", "indipendente"], "effetti": { "stanchezza": -6, "felicita": 3, "reputazione": -1 }, "esito": "Pranzi a casa e più tempo per te." },
+        { "id": "b", "testo": "Preferisci l'ufficio", "tratti_favoriti": ["socievole", "ambizioso"], "effetti": { "reputazione": 2, "bonus": 0.02 }, "esito": "Chi c'è, si fa notare." }
+      ]
+    },
+    {
+      "id": "italia_concorso_pubblico",
+      "tema": "lavoro",
+      "titolo": "Il concorso pubblico",
+      "condizioni": { "eta": [22, 45], "titolo_min": "diploma", "settore_escluso": "pubblico" },
+      "peso": 4,
+      "testi": [
+        "Esce il bando di un concorso al Comune: centinaia di posti, migliaia di candidati. Il «posto fisso» che sognano i tuoi genitori.",
+        "Tua madre ti ritaglia dal giornale il bando di un concorso pubblico. Ci ha messo anche un post-it: «Pensaci»."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Studi per mesi e ci provi", "tratti_favoriti": ["prudente", "ambizioso"], "effetti": { "stanchezza": 10, "felicita": -2 }, "esito": "Mesi sui libri. Il risultato arriverà.", "conseguenze": [{ "evento": "italia_concorso_esito", "dopo_anni": 1, "probabilita": 0.4 }] },
+        { "id": "b", "testo": "Il posto fisso non fa per te", "tratti_favoriti": ["indipendente", "creativo"], "effetti": { "morale": 1, "relazione": { "con": "genitore", "delta": -3 } }, "esito": "Tua madre sospira." }
+      ]
+    },
+    {
+      "id": "italia_concorso_esito",
+      "tema": "lavoro",
+      "titolo": "Vinto il concorso!",
+      "condizioni": { "solo_conseguenza": true },
+      "testi": [
+        "Il tuo nome è nella graduatoria dei vincitori. Il telefono non smette di squillare.",
+        "Hai vinto il concorso. Firmi il contratto a tempo indeterminato in un ufficio con le pareti verdi."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Accetti il posto", "tratti_favoriti": ["prudente"], "effetti": { "lavoro": "funzionario", "felicita": 8, "relazione": { "con": "genitore", "delta": 6 } }, "esito": "Stipendio sicuro, per sempre o quasi." },
+        { "id": "b", "testo": "Rinunci: hai già trovato la tua strada", "tratti_favoriti": ["indipendente", "ambizioso"], "effetti": { "morale": 3 }, "esito": "Qualcuno in graduatoria ringrazia." }
+      ]
+    },
+    {
+      "id": "italia_partita_iva",
+      "tema": "lavoro",
+      "titolo": "Aprire la partita IVA",
+      "condizioni": { "eta": [24, 55], "lavoro": true, "titolo_min": "diploma", "titolare": false },
+      "peso": 3,
+      "testi": [
+        "Un cliente ti propone di lavorare per lui come libero professionista. Più soldi, ma niente ferie pagate né malattia.",
+        "Un amico commercialista ti spiega il regime forfettario. «Con quello che sai fare, da solo guadagneresti di più.»"
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ti metti in proprio con la partita IVA", "tratti_favoriti": ["indipendente", "ambizioso", "impulsivo"], "tratti_sfavoriti": ["prudente", "insicuro"], "effetti": { "bonus": 0.12, "stanchezza": 8, "risparmi": -1000 }, "esito": "Fatture, scadenze, F24. Ma i clienti arrivano." },
+        { "id": "b", "testo": "Resti dipendente", "tratti_favoriti": ["prudente", "insicuro"], "effetti": { "morale": 1 }, "esito": "Tredicesima e ferie pagate hanno il loro perché." }
+      ]
+    },
+    {
+      "id": "italia_estero",
+      "tema": "lavoro",
+      "titolo": "Andare all'estero?",
+      "condizioni": { "eta": [23, 40], "titolo_min": "laurea_triennale", "coppia": false },
+      "peso": 3,
+      "testi": [
+        "Un'azienda di Monaco di Baviera ti offre il doppio dello stipendio. Metà dei tuoi compagni di università è già partita.",
+        "Ti scrivono da Londra: hanno visto il tuo profilo e vorrebbero un colloquio. Il volo è tra una settimana."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ci provi per qualche anno, poi torni", "tratti_favoriti": ["indipendente", "ambizioso"], "effetti": { "risparmi": 9000, "ricordo": "esperienza_estero", "felicita": 2, "relazione": { "con": "genitore", "delta": -5 } }, "esito": "Torni con una valigia di esperienze e qualche risparmio." },
+        { "id": "b", "testo": "Resti in Italia", "tratti_favoriti": ["prudente", "generoso"], "effetti": { "relazione": { "con": "genitore", "delta": 4 }, "morale": -1 }, "esito": "Qui ci sono le tue radici." }
+      ]
+    },
+    {
+      "id": "italia_bonus_casa",
+      "tema": "soldi",
+      "titolo": "Il bonus per la casa",
+      "condizioni": { "eta": [30, 85], "flag": "proprietario" },
+      "peso": 3,
+      "testi": [
+        "Il governo rinnova il bonus per l'efficienza energetica. Il vicino ha rifatto il cappotto e ora paga metà riscaldamento.",
+        "L'amministratore di condominio propone i lavori col bonus edilizio. Serve il voto in assemblea, e anche un po' di soldi."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Fai i lavori col bonus", "requisiti": { "risparmi_min": 6000 }, "tratti_favoriti": ["prudente", "ambizioso"], "effetti": { "risparmi": -6000, "casa_valore": 15000, "stanchezza": 4 }, "esito": "Mesi di ponteggi, poi una casa calda e più preziosa." },
+        { "id": "b", "testo": "Troppe pratiche, lasci stare", "tratti_favoriti": ["pigro", "insicuro"], "effetti": { "morale": -1 }, "esito": "La caldaia vecchia resiste. Per ora." }
+      ]
+    },
+    {
+      "id": "italia_alluvione",
+      "tema": "famiglia",
+      "titolo": "L'alluvione",
+      "condizioni": { "eta": [8, 100], "area": ["nord", "centro"] },
+      "peso": 1,
+      "testi": [
+        "Piove per tre giorni senza sosta. Il fiume esce dagli argini e l'acqua entra nelle cantine di tutto il quartiere.",
+        "Una notte di temporali come non se ne vedevano da decenni: strade come fiumi, la città in ginocchio."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Spali fango con i volontari per giorni", "tratti_favoriti": ["generoso", "socievole", "sportivo"], "effetti": { "reputazione": 6, "stanchezza": 10, "reputazione_famiglia": 2, "risparmi": -500 }, "esito": "Gli «angeli del fango»: il quartiere non lo dimenticherà." },
+        { "id": "b", "testo": "Pensi a mettere in salvo le tue cose", "tratti_favoriti": ["prudente", "egoista"], "effetti": { "risparmi": -1200, "morale": -3 }, "esito": "Salvi quasi tutto, tranne le foto della cantina." }
+      ]
+    },
+    {
+      "id": "italia_terremoto_paura",
+      "tema": "famiglia",
+      "titolo": "La terra trema",
+      "condizioni": { "eta": [8, 100], "area": ["centro", "sud"] },
+      "peso": 1,
+      "testi": [
+        "Alle tre di notte il letto si muove. Scendi in strada in pigiama con tutto il palazzo: una scossa forte, per fortuna senza danni gravi.",
+        "Una scossa di terremoto fa tremare i vetri. In paese, per giorni, si dorme in macchina."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Aiuti i vicini anziani", "tratti_favoriti": ["generoso"], "effetti": { "reputazione": 5, "stanchezza": 6, "felicita": 2 }, "esito": "La signora del terzo piano ti porta una torta ogni domenica." },
+        { "id": "b", "testo": "Ti informi e prepari un piano per la famiglia", "tratti_favoriti": ["prudente"], "effetti": { "morale": 2, "risparmi": -300 }, "esito": "Zaino di emergenza in corridoio. Speri di non usarlo mai." },
+        { "id": "c", "testo": "Per settimane non dormi", "tratti_favoriti": ["insicuro"], "effetti": { "stanchezza": 10, "morale": -5 }, "esito": "Ogni camion che passa ti fa sobbalzare." }
+      ]
+    },
+    {
+      "id": "italia_elezioni",
+      "tema": "adulti",
+      "titolo": "Le elezioni",
+      "condizioni": { "eta": [18, 100] },
+      "peso": 2,
+      "ripetibile": true,
+      "intervallo": 5,
+      "testi": [
+        "Domenica si vota. A cena la discussione con la famiglia degenera come ogni volta.",
+        "Ti propongono di fare lo scrutatore al seggio: due giorni di lavoro e un piccolo compenso."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Fai lo scrutatore", "tratti_favoriti": ["prudente", "socievole"], "effetti": { "risparmi": 150, "stanchezza": 4, "reputazione": 1 }, "esito": "Due giorni di schede e caffè tiepido." },
+        { "id": "b", "testo": "Vai a votare e basta", "tratti_favoriti": ["prudente"], "effetti": { "morale": 1 }, "esito": "Un piccolo dovere fatto." },
+        { "id": "c", "testo": "Al mare: tanto non cambia niente", "tratti_favoriti": ["pigro", "egoista"], "effetti": { "felicita": 2, "reputazione": -1 }, "esito": "Una domenica di sole." }
+      ]
+    },
+    {
+      "id": "italia_ristorante_stellato",
+      "tema": "lavoro",
+      "titolo": "La stella",
+      "condizioni": { "eta": [22, 60], "lavoro": ["cuoco", "cameriere", "barista"] },
+      "peso": 3,
+      "testi": [
+        "Uno chef famoso cerca personale per il suo ristorante stellato. Turni massacranti, ma impari dai migliori.",
+        "Il ristorante dove lavori viene recensito su una guida importante. Il proprietario ti propone più responsabilità."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ti butti nella cucina d'alta classe", "tratti_favoriti": ["ambizioso", "creativo"], "effetti": { "bonus": 0.08, "stanchezza": 12, "reputazione": 4 }, "esito": "Il tuo piatto finisce nel menù degustazione." },
+        { "id": "b", "testo": "Ti tieni i tuoi orari", "tratti_favoriti": ["pigro", "prudente"], "effetti": { "felicita": 2 }, "esito": "Il sabato sera resta tuo." }
+      ]
+    },
+    {
+      "id": "italia_paese_natale",
+      "tema": "adulti",
+      "titolo": "Il paese dei nonni",
+      "condizioni": { "eta": [35, 80], "area": "sud" },
+      "peso": 2,
+      "testi": [
+        "Il paese dei tuoi nonni si sta svuotando. Il sindaco vende case a un euro a chi si impegna a ristrutturarle.",
+        "D'estate torni al paese: le stesse piazze, ma sempre meno ragazzi. Qualcuno ti chiede se torneresti a viverci."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Compri la casa a un euro e la sistemi", "requisiti": { "risparmi_min": 15000 }, "tratti_favoriti": ["creativo", "generoso"], "effetti": { "risparmi": -15000, "felicita": 8, "reputazione_famiglia": 2 }, "esito": "Le estati, d'ora in poi, hanno un indirizzo." },
+        { "id": "b", "testo": "Ci torni solo ad agosto", "tratti_favoriti": ["prudente"], "effetti": { "felicita": 3 }, "esito": "Sagra, parenti, e il caffè della piazza." }
+      ]
+    }
+  ]
+}

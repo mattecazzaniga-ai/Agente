@@ -4,7 +4,7 @@
 import { casuale, pesato, probabile } from "./rng.js";
 import { eta, euro, limita, riempi, titoloAlmeno } from "./util.js";
 import { madre, padre, fratelli, genitoreVicino, modificaRelazione, relazione, segnaposto, partnerDi, figliVivi, figlioPiuGiovane, figlioMaggiore, nipoti } from "./family.js";
-import { membriNucleo } from "./economy.js";
+import { membriNucleo, vaInPensione } from "./economy.js";
 import { aggiungiRicordo, aggiungiTratto, assumi, compraCasa, costoCasa, iscriviSuperiori, iscriviUniversita, lasciaStudi, licenzia, trasferisci, trasloca } from "./azioni.js";
 import { aziendaDi, aziendaDiFamiglia, cediAzienda, entraInAzienda, fondaAzienda, modificaAzienda, rilevaAzienda, vendiAzienda } from "./azioni.js";
 import { accogliGenitore, convivenza, coppiaFertile, matrimonio, nasceFiglio, nuovoPartner, separazione } from "./dinastia.js";
@@ -90,6 +90,7 @@ export function condizioniOk(state, data, p, c = {}, opzioni = {}) {
   if (c.lavoro === false && p.carriera.lavoro) return false;
   if (Array.isArray(c.lavoro) && !c.lavoro.includes(p.carriera.lavoro)) return false;
   if (c.settore && !comeLista(c.settore).includes(data.mestiere[p.carriera.lavoro]?.settore)) return false;
+  if (c.settore_escluso && comeLista(c.settore_escluso).includes(data.mestiere[p.carriera.lavoro]?.settore)) return false;
   if (c.pensionato !== undefined && Boolean(p.carriera.pensionato) !== c.pensionato) return false;
   if (c.soldi_famiglia_min !== undefined && soldiFamiglia(state, p) < c.soldi_famiglia_min * state.world.indice_prezzi) return false;
   if (c.risparmi_min !== undefined && p.economia.risparmi < c.risparmi_min * state.world.indice_prezzi) return false;
@@ -238,7 +239,9 @@ export function applicaEffetti(state, data, p, effetti = {}) {
   if (typeof effetti.risparmi === "number") {
     p.economia.risparmi = euro(p.economia.risparmi + effetti.risparmi * indice);
     if (p.economia.risparmi < 0) {
-      p.economia.debiti = euro(p.economia.debiti - p.economia.risparmi);
+      // un minorenne non fa debiti: quello che manca lo mettono i genitori
+      if (eta(p, state.world.anno) < 18 && famigliaOrigine(state, p).length) muoviSoldiFamiglia(state, p, p.economia.risparmi);
+      else p.economia.debiti = euro(p.economia.debiti - p.economia.risparmi);
       p.economia.risparmi = 0;
     }
   }
@@ -288,6 +291,7 @@ export function applicaEffetti(state, data, p, effetti = {}) {
     }
   }
   if (effetti.riduci_lavoro && p.carriera.lavoro) p.carriera.part_time = true;
+  if (effetti.pensione_anticipata && vaInPensione(state, data, p, { anticipata: true })) righe.push(`Va in pensione in anticipo: ${euro(p.carriera.pensione).toLocaleString("it-IT")} € lordi l'anno.`);
   if (effetti.torna_tempo_pieno && p.carriera.lavoro) p.carriera.part_time = false;
   // azienda di famiglia
   if (effetti.entra_azienda) righe.push(entraInAzienda(state, data, p));

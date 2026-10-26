@@ -108,3 +108,16 @@ test("nessun valore impossibile dopo 60 anni di gioco", () => {
   }
   assert.ok(personeVive(s).length >= 0);
 });
+
+test("un minorenne che spende più di quanto ha non fa debiti: pagano i genitori", async () => {
+  const { applicaEffetti } = await import("../js/events.js");
+  const s = generaFamiglia(D, 12);
+  const io = giocatore(s);
+  const genitori = [s.persone[io.madre], s.persone[io.padre]];
+  const prima = genitori.reduce((t, g) => t + g.economia.risparmi - g.economia.debiti, 0);
+  applicaEffetti(s, D, io, { risparmi: -800 });
+  assert.equal(io.economia.debiti, 0);
+  assert.equal(io.economia.risparmi, 0);
+  const dopo = genitori.reduce((t, g) => t + g.economia.risparmi - g.economia.debiti, 0);
+  assert.ok(prima - dopo >= 799, `i genitori pagano: ${prima - dopo}`);
+});

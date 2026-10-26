@@ -456,11 +456,13 @@ export function vendiCasePerDebiti(state) {
 }
 
 /** Pensione: a 67 anni, il 65% dell'ultimo stipendio se ha lavorato almeno 20 anni, altrimenti l'assegno sociale. */
-export function vaInPensione(state, data, persona) {
+export function vaInPensione(state, data, persona, { anticipata = false } = {}) {
   const c = persona.carriera;
-  if (c.pensionato || eta(persona, state.world.anno) < etaPensione(state)) return false;
+  if (c.pensionato || (!anticipata && eta(persona, state.world.anno) < etaPensione(state))) return false;
   const ultimo = c.lavoro ? stipendioLordo(state, data, persona) : 0;
-  c.pensione = euro((c.anni_lavorati ?? 0) >= 20 && ultimo > 0 ? ultimo * 0.65 : ASSEGNO_SOCIALE * state.world.indice_prezzi);
+  // chi esce prima prende il 12% in meno (semplificazione delle uscite anticipate)
+  const quota = anticipata ? 0.65 * 0.88 : 0.65;
+  c.pensione = euro((c.anni_lavorati ?? 0) >= 20 && ultimo > 0 ? ultimo * quota : ASSEGNO_SOCIALE * state.world.indice_prezzi);
   c.pensionato = true;
   c.lavoro = null;
   c.anzianita = 0;

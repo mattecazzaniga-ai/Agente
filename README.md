@@ -3,13 +3,15 @@
 Simulatore di vita multi-generazionale ambientato nell'Italia di oggi. Gioco personale, gratuito, giocabile dal telefono e offline.
 Solo HTML, CSS e JavaScript (moduli ES): niente framework, niente backend, niente account.
 
-**Stato: tutte le FASI (1-5) completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
+**Stato: FASI 1-8 completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
 
 ## Come si gioca
 
 - **Vita**: ogni anno arrivano 1-3 eventi per il personaggio principale (e fino a 2 per ogni altro personaggio controllato). Si sceglie, oppure si lascia decidere al carattere. Poi *Vivi l'anno*.
 - **Soldi**: patrimonio, bilancio dell'anno (tasse, casa, figli, assegni), case, azienda, grafico negli anni.
 - **Famiglia**: albero genealogico. Tocca una persona per vederla; da lì puoi **giocare come lei** (FASE 3) o **controllarla insieme** al principale (FASE 4, massimo 4 persone dai 6 anni in su).
+- **L'Italia cambia**: crisi, riprese, caro vita, pandemie, automazione di alcuni mestieri e riforme delle pensioni arrivano nel corso dei decenni. Si leggono in *Dall'Italia* nel riassunto dell'anno e pesano su lavoro, prezzi, case e aziende.
+- **Traguardi**: in *Famiglia → Traguardi* (prima laurea, centenario, quinta generazione, nozze d'oro, primo milione, azienda storica…) e *La dinastia in numeri*, con il patrimonio di famiglia negli anni.
 - **Morte**: quando muore il personaggio principale scegli chi continua: figli, nipoti, fratelli, chi già controllavi. Se non resta nessuno della famiglia, la dinastia si estingue.
 
 ## Avviare il gioco
@@ -78,6 +80,8 @@ js/
   economy.js     stipendi, tasse, spese del nucleo, assegni, mutui, case affittate, inflazione, eredità
   dinastia.js    coppie, figli ed ereditarietà dei tratti, vita privata automatica, candidati erede
   albero.js      disposizione dell'albero genealogico (funzione pura)
+  mondo.js       l'Italia che cambia: congiunture, tendenze dei settori, età della pensione (FASE 6)
+  traguardi.js   traguardi e storia della dinastia (FASE 7)
   family.js      persone, relazioni, parentele
   azioni.js      azioni di vita (iscriversi, essere assunti, comprare casa, azienda di famiglia…)
   vista.js       dati pronti per le schermate (funzioni pure, testate)
@@ -154,6 +158,9 @@ Valori di partenza realistici per il 2026, ma il modello è semplice di proposit
 - **Sovraindebitamento**: chi ha più di 40.000 € di debiti e oltre due anni di reddito ottiene l'esdebitazione (debito ridotto a metà di un anno di reddito, perde reputazione), al massimo una volta ogni 8 anni. Prima vende le case dove non vive.
 - **Case vuote**: una casa di proprietà dove non vive nessuno viene affittata (3,5% del valore all'anno, cedolare secca 21%); l'affitto paga mutuo e spese.
 - **Separazione**: se ne va chi non è proprietario della casa, altrimenti l'uomo; i figli minorenni restano con la madre; l'altro genitore versa il mantenimento (12% del netto per figlio, massimo 30%).
+- **Congiunture**: modificatori semplici e uguali per tutta Italia (niente differenze regionali nelle crisi); l'età della pensione sale a caso dopo il 2030, fino a 71.
+- **Minorenni**: non fanno debiti; se spendono più di quanto hanno, pagano i genitori.
+- **Pensione anticipata**: dai 61 anni, con il 12% in meno sull'assegno.
 - **Salute e mortalità**: curva di Gompertz calibrata sull'Italia (età media alla morte circa 81-83 anni nelle simulazioni), corretta da salute, sesso e malattie croniche.
 
 ## Fasi
@@ -163,6 +170,9 @@ Valori di partenza realistici per il 2026, ma il modello è semplice di proposit
 3. ✅ **Albero e cambio personaggio**: albero genealogico in SVG, scheda di ogni parente, *Gioca come…*.
 4. ✅ **Più personaggi**: fino a 4 persone controllate, coda di eventi per persona, *Lascia decidere al carattere*.
 5. ✅ **AI**: Gemini inventa eventi (domande e scelte) e riscrive testi, riassunti ed epitaffi; i numeri restano del gioco tramite i tipi di scelta; chiave solo nel browser, coda, limiti, convalida, ripiego sui testi del gioco.
+6. ✅ **L'Italia che cambia** (`data/mondo.json`): congiunture decise dal seed (recessione ~13% degli anni, ripresa, caro vita, pandemia) con effetti su licenziamenti, assunzioni, salari, inflazione, case, aziende e mortalità degli anziani; tendenze di lungo periodo (automazione di logistica, uffici e trasporti, carenza di personale sanitario); età della pensione che sale fino a 71 anni; notizie anno per anno; condizioni `congiuntura`, `anno_min` e `settore_escluso` per gli eventi.
+7. ✅ **Traguardi e statistiche** (`data/traguardi.json`): 20 traguardi verificati ogni anno, la dinastia in numeri e il grafico del patrimonio di famiglia.
+8. ✅ **Più eventi**: 26 nuovi (cassa integrazione, caro bollette, lockdown, concorso pubblico, partita IVA, lavoro all'estero, bonus casa, alluvione, terremoto, elezioni, patente, primo telefono, liste d'attesa, servizio civile, pensione anticipata…). In totale 117 eventi in libreria, più quelli inventati dall'AI.
 
 ### Comportamento della dinastia nelle simulazioni (`npm run simula`)
 Vite: età media alla morte ~82 anni, circa 1,2 figli a testa, 29% senza figli, 23% dei matrimoni finisce in separazione, debiti oltre 10.000 € a 40 anni per l'8%. Dinastie (200 anni, si continua sempre col primo candidato): circa 1 su 4 si estingue, in media si arriva alla 4ª-5ª generazione. Il salvataggio resta sotto 1 MB anche dopo 200 anni (i morti vengono archiviati).
