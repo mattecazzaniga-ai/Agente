@@ -120,6 +120,27 @@ function breve(state, data, io, p) {
   return { id: p.id, nome: `${p.nome} ${p.cognome}`, primo: p.nome, sesso: p.sesso, eta: eta(p, state.world.anno), vivo: vive(p), ruolo: ruolo(state, io, p), occupazione: occupazione(state, data, p) };
 }
 
+/**
+ * Contesto per il narratore AI (FASE 5): chi è la persona, dove vive, che carattere ha,
+ * cosa le è successo di recente. Solo testo da raccontare: l'AI non decide nulla.
+ */
+export function contestoNarrativo(state, data, p) {
+  return {
+    nome: p.nome,
+    cognome: p.cognome,
+    eta: eta(p, state.world.anno),
+    sesso: p.sesso === "F" ? "donna" : "uomo",
+    anno: state.world.anno,
+    citta: p.citta,
+    regione: data.regione[p.regione]?.nome ?? p.regione,
+    occupazione: occupazione(state, data, p),
+    stato_civile: statoCivile(state, p),
+    carattere: tratti(data, p).map((t) => t.nome),
+    famiglia: `${NOMI_CLASSE[state.famiglia.agiatezza]} ${state.famiglia.cognome}`,
+    fatti_recenti: p.diario.slice(-2).flatMap((d) => d.righe).slice(-6),
+  };
+}
+
 /** Informazioni sulla dinastia: generazioni e personaggi giocati. */
 function vistaDinastia(state) {
   const d = state.dinastia ?? { generazione: 1, giocati: [] };
@@ -192,6 +213,12 @@ export function vistaVita(state, data) {
       }),
     };
   });
+  // materiale per il narratore AI: stesso evento, stessa variante → stessa chiave in archivio
+  for (const ev of eventi) {
+    const p = state.persone[ev.persona.id];
+    const voce = state.world.eventi_anno[ev.indice];
+    ev.racconto = { chiave: `${state.world.seed}:${state.world.anno}:${p.id}:${ev.id}:${voce.variante}`, contesto: contestoNarrativo(state, data, p), evento: { titolo: ev.titolo, testo: ev.testo, scelte: ev.scelte.map((s) => s.testo) } };
+  }
   const risolti = state.world.eventi_anno
     .filter((e) => e.risolto && state.persone[e.persona])
     .map((e) => {
@@ -205,6 +232,7 @@ export function vistaVita(state, data) {
     r && r.anno === state.world.anno - 1
       ? { anno: r.anno, righe: r.righe, altri: (r.altri ?? []).filter((x) => x.righe.length && state.persone[x.id]).map((x) => ({ nome: x.nome, ruolo: ruolo(state, io, state.persone[x.id]), righe: x.righe })) }
       : null;
+  if (riepilogo?.righe.length) riepilogo.racconto = { chiave: `${state.world.seed}:anno:${riepilogo.anno}:${io.id}`, contesto: { ...contestoNarrativo(state, data, io), anno: riepilogo.anno, eta: anni - 1 }, righe: riepilogo.righe };
   const controllatiIds = new Set(state.controllati ?? []);
   return {
     fase,
@@ -255,6 +283,22 @@ function epilogo(state, data, p) {
     patrimonio_massimo: massimo,
     ricordi: ricordi(data, p),
     diario: p.diario.slice(-6).reverse(),
+    racconto: {
+      chiave: `${state.world.seed}:vita:${p.id}`,
+      contesto: { nome: `${p.nome} ${p.cognome}` },
+      vita: {
+        nome: `${p.nome} ${p.cognome}`,
+        anni: `${p.anno_nascita}-${p.anno_morte}`,
+        citta: p.citta,
+        studi: NOMI_TITOLI[p.istruzione.titolo],
+        lavori,
+        figli: (p.figli ?? []).map((id) => state.persone[id]?.nome).filter(Boolean),
+        stato_civile: statoCivile(state, p),
+        carattere: tratti(data, p).map((t) => t.nome),
+        ricordi: ricordi(data, p).map((r) => r.nome),
+        ultimi_fatti: p.diario.slice(-3).flatMap((d) => d.righe).slice(-6),
+      },
+    },
   };
 }
 
@@ -416,8 +460,9 @@ export function vistaFamiglia(state, data, selezionato = null) {
 // Impostazioni
 // ---------------------------------------------------------------------------
 
-export function vistaImpostazioni(state) {
+export function vistaImpostazioni(state, ai = null) {
   return {
+    ai,
     seed: state?.world.seed ?? null,
     anno: state?.world.anno ?? null,
     schema: state?.schema ?? null,

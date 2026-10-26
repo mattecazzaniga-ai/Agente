@@ -24,7 +24,13 @@ function coda(v) {
     .join("")}</div>`;
 }
 
-function cartaEvento(ev, n, totale) {
+/** Testo raccontato dall'AI se c'è già, altrimenti quello del gioco (main.js lo sostituisce quando arriva). */
+function testoRaccontato(chiave, base, racconti, classe, tag = "p") {
+  const ai = racconti(chiave);
+  return `<${tag} class="${classe} ${ai ? "ai" : ""}" data-racconto="${esc(chiave)}">${esc(ai ?? base)}</${tag}>`;
+}
+
+function cartaEvento(ev, n, totale, racconti) {
   const chi = ev.persona.principale
     ? ""
     : `<div class="per-chi">${avatar(ev.persona.nome, ev.persona.sesso)}<div><b>${esc(ev.persona.nome)}</b><span>${esc(ev.persona.ruolo)} · ${ev.persona.eta} anni</span></div></div>`;
@@ -33,7 +39,7 @@ function cartaEvento(ev, n, totale) {
     ${chi}
     <div class="etichetta tema">${esc(TEMI[ev.tema] ?? ev.tema)}</div>
     <h2>${esc(ev.titolo)}</h2>
-    <p class="testo">${esc(ev.testo)}</p>
+    ${testoRaccontato(ev.racconto.chiave, ev.testo, racconti, "testo")}
     <div class="scelte">
       ${ev.scelte
         .map(
@@ -53,11 +59,12 @@ function esitiAnno(v) {
     .join("")}</div>`;
 }
 
-function riepilogo(v) {
+function riepilogo(v, racconti) {
   const r = v.riepilogo;
   if (!r?.righe.length && !r?.altri?.length && !v.famiglia.length) return "";
   return `<section class="scheda riepilogo">
     <h2>Il ${r?.anno ?? v.anno - 1} in breve</h2>
+    ${r?.racconto ? testoRaccontato(r.racconto.chiave, "", racconti, "racconto-anno") : ""}
     ${r?.righe.length ? `<ul>${r.righe.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="tenue">Un anno tranquillo.</p>`}
     ${(r?.altri ?? []).map((a) => `<div class="altro-anno"><b>${esc(a.nome)}</b> <span class="tenue">(${esc(a.ruolo)})</span><ul>${a.righe.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}
     ${v.famiglia.length ? `<div class="famiglia">${v.famiglia.map((f) => `<p><b>${esc(f.ruolo)}:</b> ${esc(f.riga)}</p>`).join("")}</div>` : ""}
@@ -73,12 +80,13 @@ function soldiInBreve(s) {
   </div>`;
 }
 
-function cartaMorte(v) {
+function cartaMorte(v, racconti) {
   const e = v.epilogo;
   return `<section class="scheda evento">
       <div class="etichetta tema">Fine di una vita</div>
       <h2>${esc(v.nome)} (${e.anno_morte - e.eta}–${e.anno_morte})</h2>
       <p class="testo">È mort${v.sesso === "F" ? "a" : "o"} a ${e.eta} anni${e.causa ? ` (${esc(e.causa)})` : ""}.</p>
+      ${testoRaccontato(e.racconto.chiave, "", racconti, "epitaffio")}
       <div class="voci">
         <div class="voce"><span>Studi</span><span>${esc(e.titolo)}</span></div>
         <div class="voce"><span>Lavori</span><span>${esc(e.lavori.join(", ") || "—")}</span></div>
@@ -100,9 +108,9 @@ function dinastia(d) {
   </section>`;
 }
 
-function erede(v) {
+function erede(v, racconti) {
   return `${testata(v)}
-    ${cartaMorte(v)}
+    ${cartaMorte(v, racconti)}
     <section class="scheda">
       <h2>Chi continua la storia?</h2>
       <p class="nota" style="margin-bottom:12px">Scegli la persona della famiglia da giocare adesso. Gli altri continueranno a vivere da soli.</p>
@@ -125,9 +133,9 @@ function erede(v) {
     ${dinastia(v.dinastia)}`;
 }
 
-function fine(v) {
+function fine(v, racconti) {
   return `${testata(v)}
-    ${cartaMorte(v)}
+    ${cartaMorte(v, racconti)}
     <section class="scheda">
       <h2>La dinastia si è estinta</h2>
       <p class="nota">Non resta nessuno della famiglia che possa continuare la storia.</p>
@@ -141,18 +149,18 @@ function fine(v) {
 }
 
 /** `precedenti`: valori delle barre all'ultimo disegno, per animarle dal vecchio al nuovo. */
-export function disegna(v, precedenti = {}) {
-  if (v.fase === "erede") return erede(v);
-  if (v.fase === "fine") return fine(v);
+export function disegna(v, precedenti = {}, racconti = () => null) {
+  if (v.fase === "erede") return erede(v, racconti);
+  if (v.fase === "fine") return fine(v, racconti);
   const prossimo = v.eventi[0];
   const totale = v.eventi.length + v.risolti.length;
   return `${testata(v)}
     ${coda(v)}
-    ${prossimo ? "" : riepilogo(v)}
+    ${prossimo ? "" : riepilogo(v, racconti)}
     ${esitiAnno(v)}
     ${
       prossimo
-        ? `${cartaEvento(prossimo, v.risolti.length + 1, totale)}${v.eventi.length > 1 ? `<button class="bottone secondario" data-azione="automatico">Lascia decidere gli altri ${v.eventi.length - 1} al carattere</button>` : ""}`
+        ? `${cartaEvento(prossimo, v.risolti.length + 1, totale, racconti)}${v.eventi.length > 1 ? `<button class="bottone secondario" data-azione="automatico">Lascia decidere gli altri ${v.eventi.length - 1} al carattere</button>` : ""}`
         : `<button class="bottone" data-azione="avanza">Vivi il ${v.anno} →</button>`
     }
     <section class="scheda">
@@ -161,5 +169,5 @@ export function disegna(v, precedenti = {}) {
       ${chips(v.tratti)}
     </section>
     ${soldiInBreve(v.soldi)}
-    ${prossimo ? riepilogo(v) : ""}`;
+    ${prossimo ? riepilogo(v, racconti) : ""}`;
 }

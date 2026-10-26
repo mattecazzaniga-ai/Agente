@@ -292,6 +292,18 @@ p { margin: 0; }
 .nodo .anni-nodo { font-size: 10px; fill: var(--testo-2); }
 .azioni-persona { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
 
+/* ---------- Narratore AI (FASE 5) ---------- */
+.racconto-anno, .epitaffio { font-size: 16px; line-height: 1.55; margin-bottom: 10px; }
+.racconto-anno:empty, .epitaffio:empty { display: none; }
+.epitaffio { font-style: italic; color: var(--testo-2); margin: 4px 0 12px; }
+.ai { animation: entra 0.4s ease both; }
+.ai::after { content: " ✦"; color: var(--accento); font-size: 0.8em; }
+.campo-ai { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; font-size: 14px; }
+.campo-ai input[type="text"], .campo-ai input[type="password"], .campo-ai input[type="number"] { min-height: 44px; padding: 8px 12px; border-radius: var(--raggio-piccolo); border: 1.5px solid var(--bordo); background: var(--superficie-2); }
+.interruttore { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; font-weight: 500; }
+.interruttore input { width: 22px; height: 22px; accent-color: var(--primario); }
+.griglia-2 .campo-ai { margin-bottom: 0; }
+
 /* ---------- Impostazioni ---------- */
 .impostazioni .bottone + .bottone { margin-top: 10px; }
 .nota { font-size: 13px; color: var(--testo-2); }
@@ -300,7 +312,7 @@ p { margin: 0; }
 .avviso {
   position: fixed; left: 50%; bottom: calc(var(--nav) + env(safe-area-inset-bottom) + 14px);
   transform: translateX(-50%); max-width: calc(100% - 32px);
-  padding: 10px 16px; border-radius: 999px; background: var(--testo); color: var(--sfondo);
+  padding: 10px 16px; border-radius: 16px; background: var(--testo); color: var(--sfondo); width: max-content;
   font-size: 14px; box-shadow: var(--ombra); z-index: 20; animation: entra 0.25s ease both;
 }
 .caricamento { min-height: 60dvh; display: grid; place-items: center; color: var(--testo-2); }

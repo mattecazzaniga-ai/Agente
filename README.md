@@ -3,7 +3,7 @@
 Simulatore di vita multi-generazionale ambientato nell'Italia di oggi. Gioco personale, gratuito, giocabile dal telefono e offline.
 Solo HTML, CSS e JavaScript (moduli ES): niente framework, niente backend, niente account.
 
-**Stato: FASI 1-4 completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
+**Stato: tutte le FASI (1-5) completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
 
 ## Come si gioca
 
@@ -29,6 +29,24 @@ npm run avvia          # oppure: python3 -m http.server 8080
 
 ### Sul telefono, in rete locale
 Avvia `npm run avvia` sul computer e apri `http://<IP-del-computer>:8080` dal telefono (stessa Wi-Fi). Il service worker e l'installazione richiedono HTTPS, quindi in questo modo il gioco va ma non si installa: per l'installazione usa GitHub Pages.
+
+## Narratore AI (facoltativo, FASE 5)
+
+Il gioco funziona benissimo senza AI. Se vuoi testi più vari, puoi far riscrivere a Gemini (piano gratuito) i testi degli eventi, il riassunto dell'anno e l'epitaffio:
+
+1. Vai su [Google AI Studio](https://aistudio.google.com) → *Get API key* e crea una chiave (gratis).
+2. Nel gioco: *Impostazioni → Narratore AI*, spunta *Usa il narratore AI*, incolla la chiave, *Salva*, poi *Prova*.
+3. I testi riscritti hanno un piccolo ✦ alla fine.
+
+Regole del narratore (`js/ai.js`):
+- **Racconta e basta**: riceve testi già decisi dal motore. Le scelte, i soldi, la salute e il morale non cambiano. Le risposte con numeri che non c'erano vengono scartate.
+- **La chiave resta nel tuo browser**: è salvata in `localStorage` sotto `dinastia.ai`, separata dalla partita. Non è nel codice, non entra nel salvataggio né nel file esportato, e viaggia solo verso Google nell'intestazione `x-goog-api-key`. *Cancella la chiave* la rimuove.
+- **Una richiesta alla volta**: coda unica, pausa minima tra le richieste (limite al minuto) e contatore giornaliero, entrambi modificabili (predefiniti: 6 al minuto, 100 al giorno). Dopo un errore 429 aspetta un minuto.
+- **Ripiego sui testi del gioco**: se manca la chiave, se si superano i limiti, se Gemini non risponde entro 20 secondi o se la risposta non è un JSON valido, si usa il testo della libreria.
+- I testi già raccontati restano in archivio (`dinastia.racconti`, ultimi 300): riaprendo lo stesso evento non si spende un'altra richiesta.
+- Modello predefinito: `gemini-2.5-flash`, modificabile.
+- Attenzione: su GitHub Pages tutti i tuoi siti `https://<utente>.github.io/...` condividono lo stesso `localStorage`, quindi uno script di un altro tuo sito potrebbe leggere la chiave. Usa una chiave dedicata al gioco e, se vuoi, limitala in Google Cloud Console (*Credenziali → Restrizioni per siti web*) all'indirizzo del gioco.
+- A Gemini arrivano solo il testo dell'evento e qualche dato del personaggio: nome, età, città, carattere, ultimi fatti.
 
 ## Test e simulazioni
 
@@ -57,7 +75,7 @@ js/
   family.js      persone, relazioni, parentele
   azioni.js      azioni di vita (iscriversi, essere assunti, comprare casa, azienda di famiglia…)
   vista.js       dati pronti per le schermate (funzioni pure, testate)
-  ai.js          narratore AI (FASE 5, oggi spento)
+  ai.js          narratore AI Gemini (FASE 5): coda, limiti, convalida, archivio dei testi
   ui/            una schermata per file: solo HTML, nessuna regola
 data/            tutti i numeri e i testi: regioni, nomi, mestieri, scuole, tratti, generatore, eventi
 tests/           test Node
@@ -137,7 +155,7 @@ Valori di partenza realistici per il 2026, ma il modello è semplice di proposit
 2. ✅ **Dinastia**: partner, convivenza, matrimonio, separazione, figli (tratti e cicatrici ereditati, a volte sorprendono), azienda di famiglia giocabile (entrare, rilevare, investire, cedere, vendere, fondarne una), eredità ed erede, reputazione del cognome. 91 eventi in totale.
 3. ✅ **Albero e cambio personaggio**: albero genealogico in SVG, scheda di ogni parente, *Gioca come…*.
 4. ✅ **Più personaggi**: fino a 4 persone controllate, coda di eventi per persona, *Lascia decidere al carattere*.
+5. ✅ **Narratore AI**: Gemini riscrive eventi, riassunti ed epitaffi; chiave solo nel browser, coda, limiti, convalida, ripiego sui testi del gioco.
 
 ### Comportamento della dinastia nelle simulazioni (`npm run simula`)
 Vite: età media alla morte ~82 anni, circa 1,2 figli a testa, 29% senza figli, 23% dei matrimoni finisce in separazione, debiti oltre 10.000 € a 40 anni per l'8%. Dinastie (200 anni, si continua sempre col primo candidato): circa 1 su 4 si estingue, in media si arriva alla 4ª-5ª generazione. Il salvataggio resta sotto 1 MB anche dopo 200 anni (i morti vengono archiviati).
-5. Narratore AI (Gemini, piano gratuito): chiave inserita in Impostazioni e salvata solo nel browser, coda di richieste, limite giornaliero, ritorno ai testi della libreria se qualcosa va storto.

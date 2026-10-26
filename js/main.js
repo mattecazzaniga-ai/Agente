@@ -13,6 +13,7 @@ import * as Vita from "./ui/vita.js";
 import * as Soldi from "./ui/soldi.js";
 import * as Famiglia from "./ui/famiglia.js";
 import * as Impostazioni from "./ui/impostazioni.js";
+import { creaNarratore } from "./ai.js";
 
 const schermo = document.getElementById("schermo");
 const nav = document.getElementById("nav");
@@ -25,6 +26,9 @@ const app = {
   barre: {}, // ultimi valori disegnati delle statistiche, per animarle
   selezionato: null, // persona toccata nell'albero
 };
+
+// Narratore AI (FASE 5): facoltativo, la chiave resta in questo browser. Senza, si usano i testi del gioco.
+const narratore = creaNarratore();
 
 const nuovoSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000_000;
 
@@ -45,7 +49,8 @@ function disegna({ inCima = false } = {}) {
   if (s === "generatore") schermo.innerHTML = Generatore.disegna(vistaGeneratore(app.bozza, dati));
   else if (s === "vita") {
     const v = vistaVita(partita, dati);
-    schermo.innerHTML = Vita.disegna(v, app.barre);
+    schermo.innerHTML = Vita.disegna(v, app.barre, narratore.giaRaccontato);
+    raccontaVita(v);
     animaBarre(schermo);
     app.barre = Object.fromEntries(v.stat.map((x) => [x.id, x.valore]));
   } else if (s === "soldi") schermo.innerHTML = Soldi.disegna(vistaSoldi(partita, dati));
@@ -53,8 +58,27 @@ function disegna({ inCima = false } = {}) {
     schermo.innerHTML = Famiglia.disegna(vistaFamiglia(partita, dati, app.selezionato));
     centraAlbero();
   }
-  else if (s === "impostazioni") schermo.innerHTML = Impostazioni.disegna(vistaImpostazioni(partita));
+  else if (s === "impostazioni") schermo.innerHTML = Impostazioni.disegna(vistaImpostazioni(partita, narratore.stato()));
   if (inCima) window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+/** Quando un testo dell'AI arriva, sostituisce quello del gioco (se è ancora sullo schermo). */
+function sostituisci(chiave, testo) {
+  if (!testo) return;
+  const el = schermo.querySelector(`[data-racconto="${CSS.escape(chiave)}"]`);
+  if (!el || el.classList.contains("ai")) return;
+  el.textContent = testo;
+  el.classList.add("ai");
+}
+
+/** Chiede al narratore i testi della schermata Vita: evento attuale per primo, poi gli altri, il riassunto, l'epitaffio. */
+function raccontaVita(v) {
+  if (!narratore.disponibile()) return;
+  for (const ev of v.eventi) narratore.evento(ev.racconto.chiave, ev.racconto.contesto, ev.racconto.evento).then((t) => sostituisci(ev.racconto.chiave, t));
+  const r = v.riepilogo?.racconto;
+  if (r) narratore.anno(r.chiave, r.contesto, r.righe).then((t) => sostituisci(r.chiave, t));
+  const e = v.epilogo?.racconto;
+  if (e) narratore.epitaffio(e.chiave, e.contesto, e.vita).then((t) => sostituisci(e.chiave, t));
 }
 
 /** Porta in vista, nell'albero, la persona selezionata (o quella giocata). */
@@ -163,13 +187,37 @@ const azioni = {
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   },
   importa: () => document.getElementById("file-import").click(),
+  "ai-salva": () => {
+    const campo = (id) => document.getElementById(id);
+    narratore.salvaImpostazioni({
+      attivo: campo("ai-attivo").checked,
+      chiave: campo("ai-chiave").value,
+      modello: campo("ai-modello").value.trim(),
+      limite_minuto: campo("ai-minuto").value,
+      limite_giorno: campo("ai-giorno").value,
+    });
+    avviso("Impostazioni del narratore salvate.");
+    disegna();
+  },
+  "ai-prova": async () => {
+    avviso("Provo a contattare Gemini…");
+    const esito = await narratore.prova();
+    avviso(esito.ok ? `Funziona: «${esito.messaggio}»` : esito.messaggio);
+    disegna();
+  },
+  "ai-cancella": () => {
+    if (!confirm("Cancellare la chiave Gemini da questo browser?")) return;
+    narratore.cancellaChiave();
+    disegna();
+  },
 };
 
 schermo.addEventListener("click", (e) => {
   const el = e.target.closest("[data-azione]");
   if (!el || el.disabled) return;
   try {
-    azioni[el.dataset.azione]?.(el);
+    const r = azioni[el.dataset.azione]?.(el);
+    if (r instanceof Promise) r.catch((errore) => avviso(`Errore: ${errore.message}`));
   } catch (errore) {
     console.error(errore);
     avviso(`Errore: ${errore.message}`);
