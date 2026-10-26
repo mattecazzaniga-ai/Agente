@@ -1,0 +1,835 @@
+{
+  "tema": "amore",
+  "eventi": [
+    {
+      "id": "amore_incontro",
+      "tema": "amore",
+      "titolo": "Qualcuno di speciale",
+      "condizioni": {
+        "eta": [
+          18,
+          45
+        ],
+        "coppia": false,
+        "stato_civile": "single"
+      },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 3,
+      "tratti_affini": [
+        "socievole"
+      ],
+      "testi": [
+        "Alla festa di un'amica a {citta} finisci a parlare per tre ore con una persona che non conoscevi. Ti ha chiesto il numero.",
+        "In palestra c'è una persona che saluta sempre per prima. Oggi ti ha proposto un caffè dopo l'allenamento.",
+        "Un collega di un'altra sede è in città per una settimana. Pranzate insieme ogni giorno e nessuno dei due ha fretta di tornare in ufficio."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti butti: vi rivedete sabato",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo",
+            "socievole"
+          ],
+          "tratti_sfavoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "partner": "nuovo",
+            "felicita": 10,
+            "morale": 6
+          },
+          "esito": "Il sabato diventa ogni sabato."
+        },
+        {
+          "id": "b",
+          "testo": "Prima un po' di amicizia",
+          "tratti_favoriti": [
+            "prudente",
+            "insicuro"
+          ],
+          "effetti": {
+            "felicita": 3
+          },
+          "esito": "Vi scrivete ogni tanto. Si vedrà.",
+          "conseguenze": [
+            {
+              "evento": "amore_amicizia_diventa_altro",
+              "dopo_anni": 1,
+              "probabilita": 0.6
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "testo": "Non è il momento",
+          "tratti_favoriti": [
+            "solitario",
+            "ambizioso"
+          ],
+          "effetti": {
+            "morale": -1
+          },
+          "esito": "Resti concentrat{o} sulle tue cose."
+        }
+      ]
+    },
+    {
+      "id": "amore_amicizia_diventa_altro",
+      "tema": "amore",
+      "titolo": "Più di un'amicizia",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "coppia": false
+      },
+      "testi": [
+        "Da un anno vi sentite quasi ogni giorno. Stasera, al momento di salutarvi, nessuno dei due si muove.",
+        "Gli amici lo dicevano da mesi. Stasera, sotto casa, lo capite anche voi."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Era ora",
+          "tratti_favoriti": [
+            "sicuro",
+            "socievole"
+          ],
+          "effetti": {
+            "partner": "nuovo",
+            "felicita": 12
+          },
+          "esito": "La cosa più naturale del mondo."
+        },
+        {
+          "id": "b",
+          "testo": "Hai paura di rovinare tutto",
+          "tratti_favoriti": [
+            "insicuro",
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -4
+          },
+          "esito": "Restate amici. Più o meno."
+        }
+      ]
+    },
+    {
+      "id": "amore_app",
+      "tema": "amore",
+      "titolo": "Le app di incontri",
+      "condizioni": {
+        "eta": [
+          22,
+          55
+        ],
+        "coppia": false
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Un'amica ti scarica di nascosto un'app di incontri sul telefono. «Prova, cosa ti costa?»",
+        "Il sabato sera a casa comincia a pesarti. Sul telefono c'è quell'app che usano tutti."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ci provi sul serio",
+          "tratti_favoriti": [
+            "socievole",
+            "impulsivo"
+          ],
+          "effetti": {
+            "partner": "nuovo",
+            "felicita": 7
+          },
+          "esito": "Il terzo appuntamento va molto bene."
+        },
+        {
+          "id": "b",
+          "testo": "Due chiacchiere, poi la cancelli",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario"
+          ],
+          "effetti": {
+            "morale": -2
+          },
+          "esito": "Non fa per te."
+        }
+      ]
+    },
+    {
+      "id": "amore_ricominciare",
+      "tema": "amore",
+      "titolo": "Ricominciare",
+      "condizioni": {
+        "eta": [
+          30,
+          70
+        ],
+        "coppia": false,
+        "stato_civile": [
+          "separato",
+          "vedovo"
+        ]
+      },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "A una cena di amici ti mettono accanto a una persona che ha passato quello che hai passato tu. Si ride, per la prima volta da tanto.",
+        "Ti accorgi che una persona del quartiere trova sempre una scusa per fermarsi a parlare con te."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti rimetti in gioco",
+          "tratti_favoriti": [
+            "socievole",
+            "sicuro"
+          ],
+          "effetti": {
+            "partner": "nuovo",
+            "felicita": 9,
+            "morale": 6
+          },
+          "esito": "Non pensavi che sarebbe successo di nuovo."
+        },
+        {
+          "id": "b",
+          "testo": "Stai bene così",
+          "tratti_favoriti": [
+            "indipendente",
+            "solitario"
+          ],
+          "effetti": {
+            "morale": 2
+          },
+          "esito": "La tua vita è piena anche così."
+        }
+      ]
+    },
+    {
+      "id": "coppia_convivenza",
+      "tema": "amore",
+      "titolo": "Andare a vivere insieme?",
+      "condizioni": {
+        "eta": [
+          20,
+          60
+        ],
+        "stato_civile": "fidanzato",
+        "anni_coppia_min": 1
+      },
+      "peso": 9,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "{partner} lascia sempre più cose a casa tua: lo spazzolino, un maglione, il caricabatterie. Una sera chiede: «E se cercassimo una casa nostra?»",
+        "Pagate due affitti e dormite quasi sempre insieme. Fate due conti, seduti al tavolo della cucina."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Sì, andiamo a vivere insieme",
+          "tratti_favoriti": [
+            "generoso",
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "convivenza": true,
+            "felicita": 8,
+            "relazione": {
+              "con": "partner",
+              "delta": 8
+            }
+          },
+          "esito": "Il primo litigio è su dove mettere il divano. Il resto va benissimo."
+        },
+        {
+          "id": "b",
+          "testo": "Aspettiamo ancora un po'",
+          "tratti_favoriti": [
+            "prudente",
+            "indipendente"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": -5
+            }
+          },
+          "esito": "{partner} dice che va bene. Ma ci resta male."
+        },
+        {
+          "id": "c",
+          "testo": "Capisci che non è la persona giusta",
+          "tratti_favoriti": [
+            "indipendente",
+            "egoista"
+          ],
+          "effetti": {
+            "separazione": true,
+            "morale": -6
+          },
+          "esito": "Fa male, ma è la cosa giusta."
+        }
+      ]
+    },
+    {
+      "id": "coppia_matrimonio",
+      "tema": "amore",
+      "titolo": "Il matrimonio",
+      "condizioni": {
+        "eta": [
+          22,
+          65
+        ],
+        "stato_civile": [
+          "fidanzato",
+          "convivente"
+        ],
+        "anni_coppia_min": 2
+      },
+      "peso": 7,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "A cena, tra il primo e il secondo, {partner} ti guarda: «Ma noi, quando ci sposiamo?» Le vostre madri lo chiedono da mesi.",
+        "Al matrimonio di tua cugina tutti vi chiedono «e voi?». Tornando a casa in macchina ne parlate sul serio."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Festa grande, con tutti i parenti",
+          "requisiti": {
+            "risparmi_min": 18000
+          },
+          "tratti_favoriti": [
+            "socievole",
+            "generoso"
+          ],
+          "effetti": {
+            "matrimonio": true,
+            "risparmi": -18000,
+            "felicita": 12,
+            "reputazione_famiglia": 2,
+            "relazione": {
+              "con": "genitore",
+              "delta": 5
+            }
+          },
+          "esito": "Centoventi invitati, il pranzo finisce alle otto di sera."
+        },
+        {
+          "id": "b",
+          "testo": "Festa grande, a rate",
+          "tratti_favoriti": [
+            "impulsivo"
+          ],
+          "tratti_sfavoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "matrimonio": true,
+            "debiti": 15000,
+            "felicita": 10,
+            "reputazione_famiglia": 1
+          },
+          "esito": "Una giornata perfetta. Le rate arriveranno dopo."
+        },
+        {
+          "id": "c",
+          "testo": "In comune, pochi intimi",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario",
+            "indipendente"
+          ],
+          "effetti": {
+            "matrimonio": true,
+            "risparmi": -2500,
+            "felicita": 8
+          },
+          "esito": "Dieci persone, un pranzo in trattoria. Esattamente come volevate."
+        },
+        {
+          "id": "d",
+          "testo": "Non serve un pezzo di carta",
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": -3
+            },
+            "morale": 1
+          },
+          "esito": "Va bene così, dite. Quasi tutti e due."
+        }
+      ]
+    },
+    {
+      "id": "coppia_figlio",
+      "tema": "amore",
+      "titolo": "Un figlio?",
+      "condizioni": {
+        "eta": [
+          22,
+          50
+        ],
+        "stato_civile": [
+          "convivente",
+          "sposato"
+        ],
+        "fertile": true,
+        "figli_max": 0,
+        "anni_coppia_min": 1
+      },
+      "peso": 9,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "Al parco, la domenica, {partner} guarda i bambini sull'altalena un po' troppo a lungo. Poi ti chiede cosa ne pensi.",
+        "La casa è sistemata, il lavoro c'è. Una sera, sul divano, la domanda arriva da sola: «E un bambino?»"
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Sì, ci proviamo",
+          "tratti_favoriti": [
+            "generoso",
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 6,
+            "relazione": {
+              "con": "partner",
+              "delta": 6
+            }
+          },
+          "esito": "Da adesso, ogni mese è un'attesa.",
+          "conseguenze": [
+            {
+              "evento": "coppia_nascita",
+              "dopo_anni": 1,
+              "probabilita": 0.8
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Più avanti, quando saremo più tranquilli",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": -2
+            }
+          },
+          "esito": "Il momento giusto, dite. Arriverà."
+        },
+        {
+          "id": "c",
+          "testo": "Non vogliamo figli",
+          "tratti_favoriti": [
+            "indipendente",
+            "egoista"
+          ],
+          "effetti": {
+            "flag": "no_figli",
+            "morale": 1
+          },
+          "esito": "Una scelta vostra. I parenti dovranno farsene una ragione."
+        }
+      ]
+    },
+    {
+      "id": "coppia_altro_figlio",
+      "tema": "amore",
+      "titolo": "Un altro figlio?",
+      "condizioni": {
+        "eta": [
+          24,
+          50
+        ],
+        "stato_civile": [
+          "convivente",
+          "sposato"
+        ],
+        "fertile": true,
+        "figli_min": 1,
+        "figli_max": 3,
+        "figlio_eta": [
+          1,
+          7
+        ]
+      },
+      "peso": 6,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "{figlio_nome} chiede per la terza volta questa settimana un fratellino. {partner} ride, ma poi ti guarda.",
+        "I vestiti di {figlio_nome} da piccol{o_figlio} sono ancora in cantina. «Li teniamo o li regaliamo?»"
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Allarghiamo la famiglia",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "felicita": 4
+          },
+          "esito": "Ricomincia l'attesa.",
+          "conseguenze": [
+            {
+              "evento": "coppia_nascita",
+              "dopo_anni": 1,
+              "probabilita": 0.75
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Siamo al completo",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso",
+            "egoista"
+          ],
+          "effetti": {
+            "flag": "no_figli",
+            "morale": 1
+          },
+          "esito": "Regalate i vestiti a una cugina."
+        }
+      ]
+    },
+    {
+      "id": "coppia_nascita",
+      "tema": "amore",
+      "titolo": "Una nuova vita",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "coppia": true,
+        "fertile": true
+      },
+      "testi": [
+        "Dopo una notte infinita in ospedale, eccolo: un esserino urlante che ha già un'opinione su tutto.",
+        "Arriva alle quattro del mattino, con due settimane di anticipo. Tre chili e un pianto che sveglia tutto il reparto."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Lo tieni in braccio e piangi anche tu",
+          "tratti_favoriti": [
+            "generoso",
+            "insicuro"
+          ],
+          "effetti": {
+            "figlio": true,
+            "felicita": 15,
+            "stanchezza": 12,
+            "relazione": {
+              "con": "partner",
+              "delta": 10
+            }
+          },
+          "esito": "Benvenut{o_figlio}, {ultimo_figlio}."
+        },
+        {
+          "id": "b",
+          "testo": "Fai subito cento foto per i nonni",
+          "tratti_favoriti": [
+            "socievole",
+            "sicuro"
+          ],
+          "effetti": {
+            "figlio": true,
+            "felicita": 13,
+            "stanchezza": 12,
+            "relazione": {
+              "con": "genitore",
+              "delta": 6
+            }
+          },
+          "esito": "I nonni arrivano prima del pediatra. Benvenut{o_figlio}, {ultimo_figlio}."
+        }
+      ]
+    },
+    {
+      "id": "coppia_crisi",
+      "tema": "amore",
+      "titolo": "Un periodo difficile",
+      "condizioni": {
+        "eta": [
+          28,
+          75
+        ],
+        "stato_civile": [
+          "convivente",
+          "sposato"
+        ],
+        "anni_coppia_min": 4,
+        "relazione_max": {
+          "con": "partner",
+          "valore": 65
+        }
+      },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 8,
+      "testi": [
+        "Con {partner} vi parlate solo per decidere chi fa la spesa. La sera ognuno guarda il proprio telefono.",
+        "L'ennesimo litigio per una sciocchezza. Stavolta {partner} dorme sul divano."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Proponi la terapia di coppia",
+          "tratti_favoriti": [
+            "prudente",
+            "generoso"
+          ],
+          "effetti": {
+            "risparmi": -1500,
+            "relazione": {
+              "con": "partner",
+              "delta": 15
+            },
+            "morale": 3
+          },
+          "esito": "Fatica, ma ritrovate il modo di parlarvi."
+        },
+        {
+          "id": "b",
+          "testo": "Un weekend solo voi due",
+          "tratti_favoriti": [
+            "impulsivo",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -600,
+            "relazione": {
+              "con": "partner",
+              "delta": 8
+            },
+            "felicita": 4
+          },
+          "esito": "Ridete come non succedeva da anni."
+        },
+        {
+          "id": "c",
+          "testo": "Fai finta di niente",
+          "tratti_favoriti": [
+            "insicuro",
+            "pigro"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": -8
+            },
+            "morale": -4
+          },
+          "esito": "Passerà, ti dici.",
+          "conseguenze": [
+            {
+              "evento": "coppia_rottura",
+              "dopo_anni": 2,
+              "probabilita": 0.3
+            }
+          ]
+        },
+        {
+          "id": "d",
+          "testo": "È finita, e lo sapete tutti e due",
+          "tratti_favoriti": [
+            "egoista"
+          ],
+          "effetti": {
+            "separazione": true,
+            "morale": -10,
+            "felicita": -6
+          },
+          "esito": "Lasciarsi da adulti è una questione di avvocati e di scatoloni."
+        }
+      ]
+    },
+    {
+      "id": "coppia_rottura",
+      "tema": "amore",
+      "titolo": "La resa dei conti",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "coppia": true
+      },
+      "testi": [
+        "{partner} ti aspetta in cucina con una faccia che non hai mai visto. «Dobbiamo parlare, sul serio.»",
+        "Una sera {partner} non torna a cena e ti scrive solo: «Non ce la faccio più così.»"
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Vi separate",
+          "tratti_favoriti": [
+            "indipendente",
+            "egoista"
+          ],
+          "effetti": {
+            "separazione": true,
+            "morale": -10,
+            "felicita": -8
+          },
+          "esito": "Due case, due vite, e tanti accordi da trovare."
+        },
+        {
+          "id": "b",
+          "testo": "Lotti per salvare la coppia",
+          "tratti_favoriti": [
+            "generoso",
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": 12
+            },
+            "stanchezza": 8
+          },
+          "esito": "Ripartite da capo. Più piano."
+        }
+      ]
+    },
+    {
+      "id": "coppia_lavoro_lontano",
+      "tema": "amore",
+      "titolo": "Un'offerta lontano",
+      "condizioni": {
+        "eta": [
+          26,
+          55
+        ],
+        "stato_civile": [
+          "convivente",
+          "sposato"
+        ],
+        "area": [
+          "sud",
+          "centro"
+        ]
+      },
+      "peso": 3,
+      "testi": [
+        "A {partner} offrono un posto a Milano: stipendio molto più alto, contratto stabile. Ma bisogna partire tutti.",
+        "L'azienda di {partner} chiude la sede di {citta} e propone il trasferimento in Lombardia."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Partite insieme",
+          "tratti_favoriti": [
+            "indipendente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "trasferimento": "lombardia",
+            "felicita": -2,
+            "relazione": {
+              "con": "partner",
+              "delta": 8
+            }
+          },
+          "esito": "Una nuova città, la nebbia, e un conto in banca più sereno."
+        },
+        {
+          "id": "b",
+          "testo": "Chiedi a {partner} di rinunciare",
+          "tratti_favoriti": [
+            "prudente",
+            "egoista"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "partner",
+              "delta": -12
+            }
+          },
+          "esito": "Resta. Ma te lo ricorderà a lungo."
+        }
+      ]
+    },
+    {
+      "id": "coppia_anniversario",
+      "tema": "amore",
+      "titolo": "L'anniversario",
+      "condizioni": {
+        "eta": [
+          30,
+          90
+        ],
+        "stato_civile": "sposato",
+        "anni_coppia_min": 10
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 10,
+      "testi": [
+        "Sono passati tanti anni dal giorno in cui vi siete conosciuti. {partner} ha prenotato qualcosa, ma non dice cosa.",
+        "Riordinando trovi le foto del matrimonio. Eravate così giovani."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Un viaggio, come una volta",
+          "requisiti": {
+            "risparmi_min": 3000
+          },
+          "tratti_favoriti": [
+            "impulsivo",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -3000,
+            "felicita": 8,
+            "relazione": {
+              "con": "partner",
+              "delta": 8
+            }
+          },
+          "esito": "Una settimana in Sicilia, il mare di settembre."
+        },
+        {
+          "id": "b",
+          "testo": "Cena a casa, voi due",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario"
+          ],
+          "effetti": {
+            "felicita": 5,
+            "relazione": {
+              "con": "partner",
+              "delta": 5
+            }
+          },
+          "esito": "La stessa ricetta della prima cena insieme."
+        }
+      ]
+    }
+  ]
+}

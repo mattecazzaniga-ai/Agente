@@ -79,7 +79,7 @@
       },
       "peso": 3,
       "ripetibile": true,
-      "intervallo": 4,
+      "intervallo": 9,
       "testi": [
         "Febbre a 39 da tre giorni. Il medico di base dice riposo assoluto per una settimana.",
         "Un'influenza fortissima ti mette a letto proprio nella settimana più importante.",
@@ -128,7 +128,7 @@
       },
       "peso": 3,
       "ripetibile": true,
-      "intervallo": 5,
+      "intervallo": 10,
       "testi": [
         "Il medico ti prescrive gli esami del sangue e una visita cardiologica. Il CUP ti propone una data tra otto mesi.",
         "Una campagna di prevenzione gratuita in farmacia: colesterolo, pressione, glicemia.",

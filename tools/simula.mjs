@@ -2,7 +2,8 @@
 //   node tools/simula.mjs [vite=100] [seedIniziale=1]
 import { dati } from "../tests/aiuto.mjs";
 import { generaFamiglia } from "../js/generator.js";
-import { iniziaAnno, fineAnno } from "../js/engine.js";
+import { iniziaAnno, fineAnno, continuaCon } from "../js/engine.js";
+import { candidatiErede } from "../js/dinastia.js";
 import { giocatore } from "../js/state.js";
 import { patrimonio, quotaCase } from "../js/economy.js";
 import { eta, NOMI_TITOLI } from "../js/util.js";
@@ -11,10 +12,11 @@ import { eta, NOMI_TITOLI } from "../js/util.js";
 export function simulaVita(D, seed) {
   const s = generaFamiglia(D, seed);
   const io = giocatore(s);
-  io.controllo = "automatico";
+  s.world.automatico = true; // il protagonista sceglie da solo, come tutti gli altri
+  const area = D.regione[io.regione].area;
   iniziaAnno(s, D);
   const istantanee = {};
-  for (let anni = 0; anni < 130 && s.world.fase !== "fine"; anni++) {
+  for (let anni = 0; anni < 130 && s.world.fase === "gioco"; anni++) {
     fineAnno(s, D);
     const e = eta(io, s.world.anno);
     if ([25, 40, 65].includes(e) && io.anno_morte == null) {
@@ -33,9 +35,36 @@ export function simulaVita(D, seed) {
     titolo: io.istruzione.titolo,
     mestiere: principale,
     agiatezza: s.famiglia.agiatezza,
-    area: D.regione[s.nuclei[Object.keys(s.nuclei)[0]].regione].area,
+    area,
     istantanee,
     eventi: Object.keys(s.world.eventi_usati[io.id] ?? {}).length,
+    figli: io.figli.length,
+    sposato: io.stato_civile !== "single" || io.ex.length > 0 ? (["sposato", "vedovo", "separato"].includes(io.stato_civile) ? "sposato" : "coppia") : "single",
+    separato: io.flags.separato_nel != null,
+  };
+}
+
+/** Simula una dinastia per `anni` anni: alla morte del principale continua sempre il primo candidato. */
+export function simulaDinastia(D, seed, anni = 200) {
+  const s = generaFamiglia(D, seed);
+  s.world.automatico = true;
+  iniziaAnno(s, D);
+  for (let i = 0; i < anni; i++) {
+    if (s.world.fase === "erede") continuaCon(s, D, candidatiErede(s, giocatore(s))[0].persona.id);
+    if (s.world.fase !== "gioco") break;
+    fineAnno(s, D);
+  }
+  const persone = Object.values(s.persone);
+  const donne = persone.filter((p) => p.sesso === "F" && p.sangue && p.anno_morte != null && p.anno_morte - p.anno_nascita >= 50);
+  return {
+    anni: s.world.anno - 2026,
+    estinta: s.world.fase === "fine",
+    generazione: s.dinastia.generazione,
+    principali: s.dinastia.giocati.length,
+    persone: persone.length,
+    vivi: persone.filter((p) => p.anno_morte == null).length,
+    figliPerDonna: donne.length ? media(donne.map((d) => d.figli.length)) : null,
+    reputazione: s.famiglia.reputazione,
   };
 }
 
@@ -78,6 +107,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`\nFamiglia d'origine: ${conta(vite.map((v) => v.agiatezza)).map(([k, c]) => `${k} ${percento(c, n)}`).join(" · ")}`);
   console.log(`Area: ${conta(vite.map((v) => v.area)).map(([k, c]) => `${k} ${percento(c, n)}`).join(" · ")}`);
   console.log(`Titolo di studio: ${conta(vite.map((v) => NOMI_TITOLI[v.titolo])).map(([k, c]) => `${k} ${percento(c, n)}`).join(" · ")}`);
+  console.log(`Figli per persona: ${media(vite.map((v) => v.figli)).toFixed(2)} · senza figli ${percento(vite.filter((v) => !v.figli).length, n)} · sposati almeno una volta ${percento(vite.filter((v) => v.sposato === "sposato").length, n)} · mai in coppia ${percento(vite.filter((v) => v.sposato === "single").length, n)} · sposati poi separati ${percento(vite.filter((v) => v.separato).length, Math.max(1, vite.filter((v) => v.sposato === "sposato" || v.separato).length))}`);
+
+  const nd = Math.max(5, Math.round(n / 5));
+  const t1 = Date.now();
+  const dinastie = [];
+  for (let i = 0; i < nd; i++) dinastie.push(simulaDinastia(D, da + 1000 + i, 200));
+  const durate = dinastie.map((d) => d.anni);
+  console.log(`\n${nd} dinastie per 200 anni in ${((Date.now() - t1) / 1000).toFixed(1)} s`);
+  console.log(`Estinte: ${percento(dinastie.filter((d) => d.estinta).length, nd)} · durata media ${media(durate).toFixed(0)} anni · generazione raggiunta media ${media(dinastie.map((d) => d.generazione)).toFixed(1)} · personaggi giocati ${media(dinastie.map((d) => d.principali)).toFixed(1)}`);
+  console.log(`Persone create: media ${media(dinastie.map((d) => d.persone)).toFixed(0)}, massimo ${Math.max(...dinastie.map((d) => d.persone))} · vive alla fine ${media(dinastie.map((d) => d.vivi)).toFixed(0)}`);
+  console.log(`Figli per donna di sangue (morte dopo i 50): ${media(dinastie.map((d) => d.figliPerDonna).filter((x) => x != null)).toFixed(2)} · reputazione finale media del cognome ${media(dinastie.map((d) => d.reputazione)).toFixed(0)}`);
+
   console.log(`\nMestieri principali:`);
   for (const [k, c] of conta(vite.map((v) => (v.mestiere === "nessuno" ? "nessuno" : D.mestiere[v.mestiere].nome)))) console.log(`  ${k.padEnd(28)} ${"█".repeat(c)} ${c}`);
 }

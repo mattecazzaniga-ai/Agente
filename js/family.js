@@ -23,8 +23,12 @@ export function creaPersona(state, campi) {
     istruzione: { livello: "nessuno", anno_corso: 0, indirizzo: null, facolta: null, crediti: 0, titolo: "nessuno", voti: 6.5, voto_diploma: null, voto_laurea: null, iscritto: false, fuori_sede: false, bocciature: 0 },
     carriera: { lavoro: null, anzianita: 0, bonus: 1, part_time: false, anni_lavorati: 0, pensionato: false, pensione: 0, storico: [] },
     economia: { risparmi: 0, debiti: 0, bilancio: null },
-    stato_civile: "single",
+    stato_civile: "single", // single | fidanzato | convivente | sposato | separato | vedovo
     partner: null,
+    coppia_dal: null, // anno in cui è iniziata la relazione attuale
+    ex: [], // partner precedenti
+    generazione: null, // 0 = genitori di partenza, 1 = protagonista e fratelli, 2 = i loro figli…
+    sangue: false, // discendente della famiglia di partenza (le regole della dinastia valgono per loro)
     figli: [],
     madre: null,
     padre: null,
@@ -73,6 +77,26 @@ export function modificaRelazione(state, da, a, delta) {
 // ---------------------------------------------------------------------------
 
 export const madre = (state, p) => state.persone[p.madre];
+const STATI_COPPIA = ["fidanzato", "convivente", "sposato"];
+
+/** Partner attuale vivo (fidanzato, convivente o coniuge), altrimenti undefined. */
+export function partnerDi(state, p) {
+  const q = state.persone[p.partner];
+  return q && q.anno_morte == null && STATI_COPPIA.includes(p.stato_civile) ? q : undefined;
+}
+export const inCoppia = (state, p) => Boolean(partnerDi(state, p));
+
+/** Figli vivi, dal più grande al più piccolo. */
+export function figliVivi(state, p) {
+  return (p.figli ?? []).map((id) => state.persone[id]).filter((f) => f && f.anno_morte == null).sort((a, b) => a.anno_nascita - b.anno_nascita);
+}
+export const figlioPiuGiovane = (state, p) => figliVivi(state, p).at(-1);
+export const figlioMaggiore = (state, p) => figliVivi(state, p)[0];
+
+/** Nipoti (figli dei figli) vivi. */
+export function nipoti(state, p) {
+  return (p.figli ?? []).flatMap((id) => figliVivi(state, state.persone[id] ?? { figli: [] }));
+}
 export const padre = (state, p) => state.persone[p.padre];
 
 export function fratelli(state, p) {
@@ -88,7 +112,17 @@ export function genitoreVicino(state, p) {
 /** Accordi di genere per i testi: {o} = o/a, {lui} = lui/lei, {figlio}, {un}. */
 export function genere(p) {
   const f = p?.sesso === "F";
-  return { o: f ? "a" : "o", lui: f ? "lei" : "lui", figlio: f ? "figlia" : "figlio", un: f ? "una" : "un", ragazzo: f ? "ragazza" : "ragazzo", fratello_g: f ? "sorella" : "fratello" };
+  return {
+    o: f ? "a" : "o",
+    lui: f ? "lei" : "lui",
+    figlio: f ? "figlia" : "figlio",
+    un: f ? "una" : "un",
+    ragazzo: f ? "ragazza" : "ragazzo",
+    fratello_g: f ? "sorella" : "fratello",
+    nonno_g: f ? "nonna" : "nonno",
+    genitore_g: f ? "mamma" : "papà",
+    sposo_g: f ? "sposa" : "sposo",
+  };
 }
 
 /** Valori per i segnaposto dei testi degli eventi, relativi a una persona. */
@@ -114,6 +148,12 @@ export function segnaposto(state, data, p) {
     scuola: p.istruzione.indirizzo ? data.superiore[p.istruzione.indirizzo]?.nome : "la scuola",
     facolta: p.istruzione.facolta ? data.facolta[p.istruzione.facolta]?.nome : "l'università",
     titolo: NOMI_TITOLI[p.istruzione.titolo],
+    partner: (state.persone[p.partner] ?? {}).nome ?? "la persona che ami",
+    figlio_nome: figlioPiuGiovane(state, p)?.nome ?? "tuo figlio",
+    figlio_maggiore: figlioMaggiore(state, p)?.nome ?? "tuo figlio",
+    ultimo_figlio: figlioPiuGiovane(state, p)?.nome ?? "il bambino",
+    o_figlio: genere(figlioPiuGiovane(state, p)).o,
+    o_partner: genere(state.persone[p.partner]).o,
   };
 }
 

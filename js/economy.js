@@ -12,6 +12,13 @@ const INTERESSE_RISPARMI = 0.005;
 const INTERESSE_DEBITI = 0.08;
 const ETA_PENSIONE = 67;
 const ASSEGNO_SOCIALE = 6900;
+const SPESA_NIDO = 2500; // 0-2 anni: nido (in parte coperto dal bonus nido) o baby-sitter
+const SPESA_INFANZIA = 700; // 3-5 anni: scuola dell'infanzia (mensa, materiale)
+const ASSEGNO_UNICO = 1800; // assegno unico per figlio minorenne, media annua semplificata (senza ISEE)
+const RENDITA_AFFITTO = 0.035; // affitto lordo annuo di una casa data in locazione, sul valore
+const CEDOLARE_SECCA = 0.21;
+const SOGLIA_INCLUSIONE = 9360; // assegno di inclusione: reddito minimo annuo per un adulto (scala di equivalenza)
+const MASSIMO_INCLUSIONE = 6500; // integrazione massima annua per un adulto
 
 // ---------------------------------------------------------------------------
 // Tasse
@@ -74,7 +81,7 @@ export function stipendioLordo(state, data, persona) {
 
 /** Utile annuo che un'azienda di famiglia versa al suo proprietario. */
 export function utileAzienda(azienda) {
-  if (!azienda || azienda.fallita) return 0;
+  if (!azienda || azienda.fallita || azienda.venduta) return 0;
   return Math.max(0, azienda.fatturato * azienda.margine);
 }
 
@@ -139,7 +146,10 @@ function scalaEquivalenza(state, membri) {
 /** Spesa annua per lo studio di una persona (scuola, tasse universitarie, fuori sede). */
 function spesaStudio(state, data, p) {
   const i = p.istruzione;
-  if (!i?.iscritto) return 0;
+  if (!i?.iscritto) {
+    const anni = eta(p, state.world.anno);
+    return (anni < 3 ? SPESA_NIDO : anni < 6 ? SPESA_INFANZIA : 0) * state.world.indice_prezzi;
+  }
   if (i.livello === "universita") {
     const f = data.facolta[i.facolta];
     let spesa = (f?.tasse ?? 1600) * state.world.indice_prezzi;
@@ -186,6 +196,14 @@ export function bilancioNucleo(state, data, idNucleo, trasferimenti = {}) {
   // Assegni di mantenimento ricevuti (+) o versati (−) verso altri nuclei
   const mantenimento = trasferimenti[idNucleo] ?? 0;
   nettoTotale += mantenimento;
+  // Assegno unico per i figli minorenni
+  const assegno = membri.filter((p) => eta(p, state.world.anno) < 18).length * ASSEGNO_UNICO * state.world.indice_prezzi;
+  nettoTotale += assegno;
+  // Assegno di inclusione: chi resta sotto la soglia di povertà riceve un'integrazione (semplificata, senza ISEE)
+  const scala = scalaEquivalenza(state, membri);
+  const soglia = SOGLIA_INCLUSIONE * scala * state.world.indice_prezzi;
+  const inclusione = nettoTotale < soglia ? Math.min(soglia - nettoTotale, MASSIMO_INCLUSIONE * scala * state.world.indice_prezzi) : 0;
+  nettoTotale += inclusione;
 
   // Spese
   let casa = 0;
@@ -257,7 +275,7 @@ export function bilancioNucleo(state, data, idNucleo, trasferimenti = {}) {
       spese_vita: euro(vita * quota),
       spese_studio: euro(studio * quota),
       saldo: euro(v.netto - speseTotali * quota),
-      nucleo: { membri: membri.length, entrate: euro(nettoTotale), spese: euro(speseTotali), affitto: !abitazione, mantenimento: euro(mantenimento) },
+      nucleo: { membri: membri.length, entrate: euro(nettoTotale), spese: euro(speseTotali), affitto: !abitazione, mantenimento: euro(mantenimento), assegno: euro(assegno), inclusione: euro(inclusione) },
     };
   }
   return { nettoTotale, speseTotali, saldo };
@@ -336,7 +354,7 @@ export function rivalutaCase(state) {
 export function aggiornaAziende(state) {
   const esiti = [];
   for (const a of Object.values(state.aziende)) {
-    if (a.fallita) continue;
+    if (a.fallita || a.venduta) continue;
     const andamento = normale(state, 0.01, 0.07);
     a.fatturato = euro(a.fatturato * (1 + state.world.inflazione + andamento));
     a.valore = euro(a.valore * (1 + state.world.inflazione + andamento * 0.6));
@@ -349,6 +367,88 @@ export function aggiornaAziende(state) {
     }
   }
   return esiti;
+}
+
+/** Elimina i nuclei rimasti senza nessuno in vita (la loro casa, se c'è, resta ai proprietari). */
+export function pulisciNuclei(state) {
+  const abitati = new Set(personeVive(state).map((p) => p.nucleo));
+  for (const id of Object.keys(state.nuclei)) if (!abitati.has(id)) delete state.nuclei[id];
+}
+
+/**
+ * Case di proprietà dove non vive nessuno: vengono affittate (cedolare secca 21%) e l'affitto
+ * paga mutuo e manutenzione; il resto va ai proprietari. Le case senza proprietari vivi spariscono.
+ */
+export function caseVuote(state) {
+  const occupate = new Set(Object.values(state.nuclei).map((n) => n.casa).filter(Boolean));
+  for (const c of Object.values(state.case)) {
+    if (occupate.has(c.id)) continue;
+    const vivi = c.proprietari.map((id) => state.persone[id]).filter(vive);
+    if (!vivi.length) {
+      delete state.case[c.id];
+      continue;
+    }
+    let netto = c.valore * (RENDITA_AFFITTO * (1 - CEDOLARE_SECCA) - 0.006);
+    if (c.mutuo_residuo > 0) {
+      const rata = Math.min(c.rata, c.mutuo_residuo * (1 + c.tasso));
+      c.mutuo_residuo = Math.max(0, euro(c.mutuo_residuo * (1 + c.tasso) - rata));
+      netto -= rata;
+    }
+    for (const p of vivi) {
+      p.economia.risparmi = euro(p.economia.risparmi + netto / vivi.length);
+      if (p.economia.risparmi < 0) {
+        p.economia.debiti = euro(p.economia.debiti - p.economia.risparmi);
+        p.economia.risparmi = 0;
+      }
+    }
+  }
+}
+
+/**
+ * Esdebitazione (procedura di sovraindebitamento, Codice della crisi d'impresa): quando i debiti superano
+ * 40.000 euro del 2026 e due anni di reddito netto, il giudice li riduce a metà di un anno di reddito.
+ * Si può fare al massimo una volta ogni 8 anni; costa reputazione e morale. Restituisce le persone coinvolte.
+ */
+export function esdebitazione(state, data) {
+  const coinvolti = [];
+  for (const p of personeVive(state)) {
+    const e = p.economia;
+    const netto = nettoPersona(state, data, p);
+    if (e.debiti < 40000 * state.world.indice_prezzi || e.debiti < 2 * netto) continue;
+    if (p.flags.esdebitato && state.world.anno - p.flags.esdebitato < 8) continue;
+    e.debiti = euro(Math.max(0, netto * 0.5 - e.risparmi));
+    e.risparmi = 0;
+    p.flags.esdebitato = state.world.anno;
+    p.stat.reputazione = limita(p.stat.reputazione - 10, 0, 100);
+    p.stat.morale = limita(p.stat.morale - 8, 0, 100);
+    coinvolti.push(p);
+  }
+  return coinvolti;
+}
+
+/**
+ * Chi ha debiti pesanti (oltre 20.000 euro del 2026) vende una casa dove non vive:
+ * il ricavato netto, diviso tra i proprietari, ripaga prima i debiti. Restituisce le frasi per il diario.
+ */
+export function vendiCasePerDebiti(state) {
+  const righe = [];
+  const occupate = new Set(Object.values(state.nuclei).map((n) => n.casa).filter(Boolean));
+  for (const p of personeVive(state)) {
+    if (p.economia.debiti < 20000 * state.world.indice_prezzi) continue;
+    const casa = Object.values(state.case).find((c) => c.proprietari.includes(p.id) && !occupate.has(c.id));
+    if (!casa) continue;
+    const ricavo = Math.max(0, casa.valore - casa.mutuo_residuo) / casa.proprietari.length;
+    for (const id of casa.proprietari) {
+      const x = state.persone[id];
+      if (!vive(x)) continue;
+      const rimborso = Math.min(x.economia.debiti, ricavo);
+      x.economia.debiti = euro(x.economia.debiti - rimborso);
+      x.economia.risparmi = euro(x.economia.risparmi + ricavo - rimborso);
+    }
+    delete state.case[casa.id];
+    righe.push({ persona: p, testo: `Vende ${casa.nome.toLowerCase()} per ripagare i debiti.` });
+  }
+  return righe;
 }
 
 /** Pensione: a 67 anni, il 65% dell'ultimo stipendio se ha lavorato almeno 20 anni, altrimenti l'assegno sociale. */
@@ -404,26 +504,43 @@ export function eredita(state, defunto) {
   else if (coniuge && figli.length === 1) eredi.push([coniuge, 0.5], [figli[0], 0.5]);
   else if (coniuge) eredi.push([coniuge, 1 / 3], ...figli.map((f) => [f, 2 / 3 / figli.length]));
   else eredi.push(...figli.map((f) => [f, 1 / figli.length]));
+  // senza coniuge né figli: genitori, poi fratelli (semplificazione degli art. 568-571 c.c.)
+  if (!eredi.length) {
+    const genitori = [state.persone[defunto.madre], state.persone[defunto.padre]].filter(vive);
+    const fratelli = personeVive(state).filter((x) => x.id !== defunto.id && ((defunto.madre && x.madre === defunto.madre) || (defunto.padre && x.padre === defunto.padre)));
+    const lista = genitori.length ? genitori : fratelli;
+    eredi.push(...lista.map((x) => [x, 1 / lista.length]));
+  }
 
   const netto = patrimonio(state, defunto);
   const righe = [];
   if (!eredi.length) {
-    righe.push(`Nessun erede diretto: il patrimonio di ${defunto.nome} va ad altri parenti.`);
+    righe.push(`Nessun erede: il patrimonio di ${defunto.nome} va allo Stato.`);
   } else if (netto < 0) {
     righe.push(`Gli eredi di ${defunto.nome} rinunciano all'eredità: i debiti (${euro(-netto)} €) non passano a nessuno.`);
   } else {
+    // contanti meno debiti: se il saldo è negativo i debiti passano agli eredi insieme alle case
     const liquidi = defunto.economia.risparmi - defunto.economia.debiti;
-    for (const [erede, quota] of eredi) erede.economia.risparmi = euro(erede.economia.risparmi + liquidi * quota);
+    for (const [erede, quota] of eredi) {
+      if (liquidi >= 0) erede.economia.risparmi = euro(erede.economia.risparmi + liquidi * quota);
+      else erede.economia.debiti = euro(erede.economia.debiti - liquidi * quota);
+    }
     for (const c of Object.values(state.case)) {
       if (!c.proprietari.includes(defunto.id)) continue;
       c.proprietari = [...c.proprietari.filter((id) => id !== defunto.id), ...eredi.map(([e]) => e.id).filter((id) => !c.proprietari.includes(id))];
     }
-    const azienda = Object.values(state.aziende).find((a) => a.proprietario === defunto.id && !a.fallita);
+    const azienda = Object.values(state.aziende).find((a) => a.proprietario === defunto.id && !a.fallita && !a.venduta);
     if (azienda) {
-      const maggiore = [...figli].sort((a, b) => a.anno_nascita - b.anno_nascita)[0] ?? coniuge;
-      if (maggiore) {
-        azienda.proprietario = maggiore.id;
-        righe.push(`${azienda.nome} passa a ${maggiore.nome}.`);
+      // prima chi ci lavora già, poi il figlio maggiore, poi il coniuge, poi gli altri eredi
+      const ordinati = [...figli].sort((a, b) => a.anno_nascita - b.anno_nascita);
+      const successore = ordinati.find((f) => f.carriera.azienda === azienda.id) ?? ordinati[0] ?? coniuge ?? eredi[0]?.[0];
+      if (successore) {
+        azienda.proprietario = successore.id;
+        if (successore.carriera.azienda === azienda.id) {
+          successore.carriera.lavoro = null;
+          successore.carriera.imprenditore = true;
+        }
+        righe.push(`${azienda.nome} passa a ${successore.nome}.`);
       }
     }
     righe.unshift(`L'eredità di ${defunto.nome} (${euro(netto).toLocaleString("it-IT")} €) va a ${eredi.map(([e]) => e.nome).join(", ")}.`);

@@ -1,0 +1,130 @@
+{
+  "tema": "adulti",
+  "eventi": [
+    {
+      "id": "lavoro_cambio_carriera",
+      "tema": "lavoro",
+      "titolo": "Cambiare tutto?",
+      "condizioni": { "eta": [30, 52], "lavoro": true, "in_azienda": false },
+      "peso": 4,
+      "testi": [
+        "Sono dieci anni che fai lo stesso lavoro e la domenica sera ti viene il mal di stomaco. Un corso serale promette una nuova carriera.",
+        "Un ex compagno di scuola ha cambiato mestiere a quarant'anni ed è felice. Ti chiedi se potresti farlo anche tu."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ricominci da capo", "tratti_favoriti": ["creativo", "indipendente", "impulsivo"], "tratti_sfavoriti": ["prudente"], "effetti": { "lavoro": "casuale", "risparmi": -2000, "felicita": 6, "stanchezza": 6 }, "esito": "Stipendio da principiante, ma ti alzi volentieri." },
+        { "id": "b", "testo": "Resti dove sei", "tratti_favoriti": ["prudente", "pigro"], "effetti": { "morale": -3 }, "esito": "Lo stipendio arriva. Il resto si vedrà." }
+      ]
+    },
+    {
+      "id": "soldi_eredita_zia",
+      "tema": "soldi",
+      "titolo": "L'eredità della zia",
+      "condizioni": { "eta": [30, 75] },
+      "peso": 2,
+      "testi": [
+        "Una prozia che hai visto tre volte in vita tua ti ha lasciato 15.000 euro. Il notaio ti legge una lettera scritta a mano.",
+        "Muore la zia Pina, quella delle caramelle alla menta. Nel testamento c'è anche il tuo nome."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Li metti da parte", "tratti_favoriti": ["prudente"], "effetti": { "risparmi": 15000, "morale": 3 }, "esito": "Un cuscinetto per i tempi brutti." },
+        { "id": "b", "testo": "Chiudi i debiti", "tratti_favoriti": ["prudente", "ambizioso"], "effetti": { "debiti": -15000, "risparmi": 3000, "morale": 6 }, "esito": "Per la prima volta da anni, nessuna rata." },
+        { "id": "c", "testo": "Un viaggio che sognavi da sempre", "tratti_favoriti": ["impulsivo", "creativo"], "effetti": { "risparmi": 9000, "felicita": 10 }, "esito": "Giappone, tre settimane. La zia ne sarebbe contenta." }
+      ]
+    },
+    {
+      "id": "soldi_ristrutturazione",
+      "tema": "soldi",
+      "titolo": "Rifare casa",
+      "condizioni": { "eta": [35, 75], "flag": "proprietario" },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 15,
+      "testi": [
+        "La caldaia ha trent'anni, i serramenti fanno passare il vento. Il geometra parla di bonus e cappotto termico.",
+        "Il bagno perde, la cucina è quella del 1990. Un'impresa ti fa un preventivo."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ristrutturazione completa", "requisiti": { "risparmi_min": 30000 }, "tratti_favoriti": ["ambizioso", "prudente"], "effetti": { "risparmi": -30000, "casa_valore": 40000, "felicita": 6, "stanchezza": 8 }, "esito": "Sei mesi di polvere. Poi una casa nuova." },
+        { "id": "b", "testo": "Solo l'indispensabile", "requisiti": { "risparmi_min": 8000 }, "tratti_favoriti": ["prudente"], "effetti": { "risparmi": -8000, "casa_valore": 8000 }, "esito": "Caldaia nuova, il resto può aspettare." },
+        { "id": "c", "testo": "Rimandi", "tratti_favoriti": ["pigro"], "effetti": { "casa_valore": -6000, "morale": -1 }, "esito": "Metti un secchio sotto il tubo." }
+      ]
+    },
+    {
+      "id": "soldi_truffa",
+      "tema": "soldi",
+      "titolo": "Una telefonata strana",
+      "condizioni": { "eta": [60, 95] },
+      "peso": 3,
+      "testi": [
+        "Ti chiama un «funzionario della banca»: il tuo conto è stato violato, devi dargli subito il codice che ti arriva per SMS.",
+        "Un SMS dice che tuo nipote ha avuto un incidente e servono soldi subito, con un bonifico."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Riattacchi e chiami la banca", "tratti_favoriti": ["prudente", "sicuro"], "effetti": { "morale": 2 }, "esito": "Era una truffa. In banca ti fanno i complimenti." },
+        { "id": "b", "testo": "Fai quello che ti dicono, sei nel panico", "tratti_favoriti": ["impulsivo", "insicuro", "generoso"], "effetti": { "risparmi": -4000, "morale": -10, "felicita": -5 }, "esito": "Quattromila euro spariti. La vergogna brucia più dei soldi." }
+      ]
+    },
+    {
+      "id": "salute_screening",
+      "tema": "salute",
+      "titolo": "Lo screening",
+      "condizioni": { "eta": [50, 72] },
+      "peso": 4,
+      "testi": [
+        "Ti arriva la lettera dell'ASL per lo screening gratuito. Il medico di base insiste: «Ormai è l'età giusta.»",
+        "Un amico della tua età ha scoperto un problema per caso, in tempo. Ti racconta tutto al bar."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Prenoti subito", "tratti_favoriti": ["prudente"], "effetti": { "salute": 3, "morale": 1 }, "esito": "Tutto a posto. Un pensiero in meno." },
+        { "id": "b", "testo": "Ci andrai, prima o poi", "tratti_favoriti": ["pigro", "impulsivo"], "effetti": { "morale": 1 }, "esito": "La lettera finisce sotto la calamita del frigo.", "conseguenze": [{ "evento": "salute_problema_trascurato", "dopo_anni": 3, "probabilita": 0.25 }] }
+      ]
+    },
+    {
+      "id": "pensione_attiva",
+      "tema": "adulti",
+      "titolo": "E adesso?",
+      "condizioni": { "eta": [66, 80], "pensionato": true },
+      "peso": 6,
+      "testi": [
+        "Il primo lunedì da pensionat{o} ti svegli alle sei, come sempre. E non sai cosa fare.",
+        "Dopo quarant'anni di sveglia, le giornate sono lunghissime. Al circolo cercano volontari."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Fai volontariato", "tratti_favoriti": ["generoso", "socievole"], "effetti": { "morale": 8, "reputazione": 6, "salute": 2, "reputazione_famiglia": 1 }, "esito": "Due mattine a settimana alla mensa della parrocchia. Ti conoscono tutti." },
+        { "id": "b", "testo": "Orto, bocce e cantieri da guardare", "tratti_favoriti": ["pigro", "solitario"], "effetti": { "felicita": 6, "stanchezza": -10 }, "esito": "Il ritmo giusto, finalmente." },
+        { "id": "c", "testo": "Viaggi, finché si può", "requisiti": { "risparmi_min": 6000 }, "tratti_favoriti": ["impulsivo", "socievole"], "effetti": { "risparmi": -6000, "felicita": 10 }, "esito": "Lisbona, Vienna, i fiordi. Le foto non finiscono più." }
+      ]
+    },
+    {
+      "id": "salute_cadere",
+      "tema": "salute",
+      "titolo": "Una brutta caduta",
+      "condizioni": { "eta": [72, 100] },
+      "peso": 4,
+      "testi": [
+        "Scivoli sul tappeto del corridoio. Il femore regge, ma per un mese cammini con il deambulatore.",
+        "Una caduta dalle scale del condominio. Niente di rotto, ma lo spavento è grande."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Fai la fisioterapia con impegno", "tratti_favoriti": ["ambizioso", "sportivo", "prudente"], "effetti": { "salute": -3, "stanchezza": 5 }, "esito": "Dopo tre mesi torni a fare la spesa da sol{o}." },
+        { "id": "b", "testo": "Ti lasci andare un po'", "tratti_favoriti": ["pigro", "insicuro"], "effetti": { "salute": -8, "morale": -6 }, "esito": "Esci sempre meno di casa." }
+      ]
+    },
+    {
+      "id": "famiglia_testamento",
+      "tema": "adulti",
+      "titolo": "Il testamento",
+      "condizioni": { "eta": [65, 95], "figli_min": 2 },
+      "peso": 3,
+      "testi": [
+        "Il notaio ti consiglia di mettere nero su bianco cosa lasciare a chi. I tuoi figli fanno finta di non pensarci.",
+        "A un funerale vedi due fratelli litigare per una casa. Tornando a casa pensi ai tuoi figli."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ne parli apertamente con tutti", "tratti_favoriti": ["sicuro", "generoso"], "effetti": { "morale": 3, "relazione": { "con": "figlio_maggiore", "delta": 4 } }, "esito": "Una cena difficile, poi un grande sollievo." },
+        { "id": "b", "testo": "Lasci decidere alla legge", "tratti_favoriti": ["pigro", "prudente"], "effetti": { "morale": 1 }, "esito": "Ci penserà il codice civile." }
+      ]
+    }
+  ]
+}

@@ -42,6 +42,22 @@ test("un salvataggio senza versione viene migrato allo schema attuale", () => {
   assert.ok(m.nuclei && typeof m.nuclei === "object");
 });
 
+test("un salvataggio della FASE 1 (schema 1) diventa una dinastia (schema 2)", () => {
+  const s = JSON.parse(esporta(generaFamiglia(D, 9)));
+  s.schema = 1;
+  delete s.controllati;
+  delete s.dinastia;
+  for (const p of Object.values(s.persone)) {
+    delete p.sangue;
+    delete p.ex;
+  }
+  const m = migra(s);
+  assert.equal(m.schema, 2);
+  assert.deepEqual(m.controllati, [m.giocatore]);
+  assert.equal(m.dinastia.generazione, 1);
+  assert.ok(Object.values(m.persone).every((p) => p.sangue === true && Array.isArray(p.ex)));
+});
+
 test("un salvataggio di una versione futura viene rifiutato", () => {
   assert.throws(() => migra({ schema: VERSIONE_SCHEMA + 1 }), /più recente/);
 });

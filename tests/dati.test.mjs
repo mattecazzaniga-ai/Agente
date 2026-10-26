@@ -4,11 +4,19 @@ import assert from "node:assert/strict";
 import { dati } from "./aiuto.mjs";
 
 const D = await dati();
-const SEGNAPOSTO = new Set(["nome", "cognome", "citta", "regione", "eta", "anno", "madre", "padre", "fratello", "fratello_o_sorella", "genitore", "lavoro", "scuola", "facolta", "titolo", "o", "lui", "figlio", "un", "ragazzo", "fratello_g"]);
-const EFFETTI = new Set(["salute", "morale", "felicita", "stanchezza", "reputazione", "risparmi", "debiti", "risparmi_famiglia", "voti", "reputazione_famiglia", "indirizzo", "superiori", "universita", "fuori_sede", "lascia_studi", "licenziato", "lavoro", "part_time", "bonus", "trasloco", "trasferimento", "compra_casa", "tratto", "tratto_rimuovi", "ricordo", "flag", "flag_rimuovi", "relazione"]);
+const SEGNAPOSTO = new Set(["nome", "cognome", "citta", "regione", "eta", "anno", "madre", "padre", "fratello", "fratello_o_sorella", "genitore", "lavoro", "scuola", "facolta", "titolo", "o", "lui", "figlio", "un", "ragazzo", "fratello_g", "nonno_g", "genitore_g", "sposo_g", "partner", "figlio_nome", "figlio_maggiore", "ultimo_figlio", "o_figlio", "o_partner"]);
+const EFFETTI = new Set(["salute", "morale", "felicita", "stanchezza", "reputazione", "risparmi", "debiti", "risparmi_famiglia", "voti", "reputazione_famiglia", "indirizzo", "superiori", "universita", "fuori_sede", "lascia_studi", "licenziato", "lavoro", "part_time", "bonus", "trasloco", "trasferimento", "compra_casa", "tratto", "tratto_rimuovi", "ricordo", "flag", "flag_rimuovi", "relazione",
+  "partner", "convivenza", "matrimonio", "separazione", "figlio", "accogli_genitore", "al_figlio", "riduci_lavoro", "torna_tempo_pieno",
+  "entra_azienda", "rileva_azienda", "cedi_azienda", "vendi_azienda", "fonda_azienda", "azienda", "casa_valore"]);
+const CONDIZIONI = new Set(["eta", "sesso", "titolo", "titolo_min", "livello", "iscritto", "indirizzo", "voti_min", "voti_max", "genitori_insieme", "facolta", "lavoro", "settore", "pensionato",
+  "soldi_famiglia_min", "risparmi_min", "risparmi_max", "debiti_min", "tratti_richiesti", "tratti_esclusi", "ricordi_richiesti", "ricordi_esclusi", "flag", "flag_esclusi", "vive_con_genitori",
+  "agiatezza", "area", "azienda_famiglia", "fratelli", "genitori_vivi", "casa_raggiungibile", "stat_min", "stat_max", "relazione_min", "relazione_max", "solo_conseguenza",
+  "stato_civile", "coppia", "anni_coppia_min", "fertile", "figli_min", "figli_max", "figlio_eta", "figli_adulti", "nipoti", "genitore_eta_min",
+  "titolare", "in_azienda", "genitore_titolare", "azienda_salute_min", "azienda_salute_max"]);
+const RELAZIONI = new Set(["madre", "padre", "genitore", "fratello", "partner", "figlio", "figlio_maggiore"]);
 
-test("almeno 40 eventi con id unici", () => {
-  assert.ok(D.eventi.length >= 40, `solo ${D.eventi.length} eventi`);
+test("almeno 80 eventi con id unici", () => {
+  assert.ok(D.eventi.length >= 80, `solo ${D.eventi.length} eventi`);
   assert.equal(new Set(D.eventi.map((e) => e.id)).size, D.eventi.length);
 });
 
@@ -20,7 +28,9 @@ test("ogni evento ha testi, scelte e riferimenti validi", () => {
     assert.equal(new Set(ev.scelte.map((s) => s.id)).size, ev.scelte.length, `${dove}: id di scelta duplicati`);
     const testi = [ev.titolo ?? "", ...ev.testi, ...ev.scelte.flatMap((s) => [s.testo, s.esito ?? ""])];
     for (const t of testi) for (const [, k] of t.matchAll(/\{(\w+)\}/g)) assert.ok(SEGNAPOSTO.has(k), `${dove}: segnaposto sconosciuto {${k}}`);
+    for (const k of Object.keys(ev.condizioni ?? {})) assert.ok(CONDIZIONI.has(k), `${dove}: condizione sconosciuta ${k}`);
     for (const s of ev.scelte) {
+      for (const r of [s.effetti?.relazione ?? []].flat()) assert.ok(RELAZIONI.has(r.con), `${dove}/${s.id}: relazione con ${r.con}`);
       for (const k of Object.keys(s.effetti ?? {})) assert.ok(EFFETTI.has(k), `${dove}/${s.id}: effetto sconosciuto ${k}`);
       const e = s.effetti ?? {};
       if (e.indirizzo) assert.ok(D.superiore[e.indirizzo], `${dove}: indirizzo ${e.indirizzo}`);

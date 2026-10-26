@@ -1,0 +1,180 @@
+{
+  "tema": "figli",
+  "eventi": [
+    {
+      "id": "figli_nido",
+      "tema": "figli",
+      "titolo": "Chi tiene {figlio_nome}?",
+      "condizioni": { "eta": [20, 55], "figlio_eta": [0, 1], "lavoro": true },
+      "peso": 8,
+      "testi": [
+        "Finisce il congedo e bisogna tornare al lavoro. Il nido comunale ha la lista d'attesa, quello privato costa quanto un affitto.",
+        "{figlio_nome} ha pochi mesi e la domanda è sempre la stessa: chi lo tiene quando siete al lavoro?"
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Nido privato", "requisiti": { "risparmi_min": 5000 }, "tratti_favoriti": ["ambizioso", "indipendente"], "effetti": { "risparmi": -5000, "stanchezza": -4 }, "esito": "Costa tanto, ma torni a lavorare tranquill{o}." },
+        { "id": "b", "testo": "I nonni", "tratti_favoriti": ["prudente", "generoso"], "effetti": { "relazione": { "con": "genitore", "delta": 8 }, "risparmi": 500 }, "esito": "Come in mezza Italia: i nonni sono il vero welfare." },
+        { "id": "c", "testo": "Chiedi il part-time", "tratti_favoriti": ["generoso", "pigro"], "tratti_sfavoriti": ["ambizioso"], "effetti": { "riduci_lavoro": true, "felicita": 5, "stanchezza": -8, "al_figlio": { "morale": 4 } }, "esito": "Meno soldi, più pomeriggi al parco.", "conseguenze": [{ "evento": "figli_torna_tempo_pieno", "dopo_anni": 4, "probabilita": 1 }] }
+      ]
+    },
+    {
+      "id": "figli_torna_tempo_pieno",
+      "tema": "figli",
+      "titolo": "Di nuovo a tempo pieno?",
+      "condizioni": { "solo_conseguenza": true, "lavoro": true },
+      "testi": [
+        "{figlio_nome} ormai va a scuola. In ufficio ti chiedono se vuoi tornare a tempo pieno.",
+        "Il part-time ti ha regalato anni preziosi. Ora c'è la possibilità di tornare a orario pieno."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Torni a tempo pieno", "tratti_favoriti": ["ambizioso", "prudente"], "effetti": { "torna_tempo_pieno": true, "stanchezza": 6 }, "esito": "Lo stipendio torna intero." },
+        { "id": "b", "testo": "Resti part-time", "tratti_favoriti": ["pigro", "generoso"], "effetti": { "felicita": 3 }, "esito": "Il tempo vale più dei soldi, almeno per ora." }
+      ]
+    },
+    {
+      "id": "figli_primo_giorno",
+      "tema": "figli",
+      "titolo": "Il primo giorno di scuola",
+      "condizioni": { "eta": [24, 60], "figlio_eta": [6, 6] },
+      "peso": 6,
+      "testi": [
+        "Zaino enorme, grembiule stirato. {figlio_nome} davanti al cancello della scuola ti stringe la mano più forte del solito.",
+        "Primo giorno di elementari per {figlio_nome}. Tu hai fatto foto a tutto, perfino al cancello."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Resti fino all'ultimo, poi lo saluti", "tratti_favoriti": ["generoso", "insicuro"], "effetti": { "felicita": 4, "al_figlio": { "morale": 5 }, "relazione": { "con": "figlio", "delta": 6 } }, "esito": "Entra senza voltarsi. Sei tu ad aver bisogno di un minuto." },
+        { "id": "b", "testo": "Un bacio veloce e via al lavoro", "tratti_favoriti": ["ambizioso", "indipendente"], "effetti": { "al_figlio": { "morale": 1 } }, "esito": "Ce la fa benissimo da sol{o_figlio}." }
+      ]
+    },
+    {
+      "id": "figli_pagella",
+      "tema": "figli",
+      "titolo": "La pagella di {figlio_nome}",
+      "condizioni": { "eta": [28, 70], "figlio_eta": [11, 18] },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "La pagella di {figlio_nome} ha due insufficienze. Ti guarda aspettando la sfuriata.",
+        "I professori ti convocano: {figlio_nome} è intelligente ma non studia. «Ha bisogno di una mano.»"
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ripetizioni private", "requisiti": { "risparmi_min": 1200 }, "tratti_favoriti": ["ambizioso", "prudente"], "effetti": { "risparmi": -1200, "al_figlio": { "voti": 0.8, "morale": -2 } }, "esito": "A fine anno i voti salgono." },
+        { "id": "b", "testo": "Studiate insieme la sera", "tratti_favoriti": ["generoso", "prudente"], "effetti": { "stanchezza": 6, "al_figlio": { "voti": 0.5 }, "relazione": { "con": "figlio", "delta": 6 } }, "esito": "Litigate sulle equazioni, ma vi avvicinate." },
+        { "id": "c", "testo": "Niente uscite finché non recupera", "tratti_favoriti": ["egoista", "impulsivo"], "effetti": { "al_figlio": { "voti": 0.3, "morale": -6 }, "relazione": { "con": "figlio", "delta": -8 } }, "esito": "Recupera un po'. E ti parla molto meno." },
+        { "id": "d", "testo": "Lasci che impari da sol{o_figlio}", "tratti_favoriti": ["pigro", "indipendente"], "effetti": { "al_figlio": { "morale": 2 } }, "esito": "Si vedrà a giugno." }
+      ]
+    },
+    {
+      "id": "figli_adolescenza",
+      "tema": "figli",
+      "titolo": "Porte sbattute",
+      "condizioni": { "eta": [30, 70], "figlio_eta": [14, 17] },
+      "peso": 6,
+      "testi": [
+        "{figlio_nome} torna alle due di notte, il telefono spento. Tu sei svegli{o} da ore.",
+        "«Tu non capisci niente!» La porta della camera di {figlio_nome} sbatte così forte che cade un quadro."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Regole chiare e punizione", "tratti_favoriti": ["prudente", "sicuro"], "effetti": { "al_figlio": { "morale": -4, "voti": 0.2 }, "relazione": { "con": "figlio", "delta": -6 } }, "esito": "Rispetta le regole. Di malavoglia." },
+        { "id": "b", "testo": "Aspetti che si calmi e parlate", "tratti_favoriti": ["generoso", "socievole"], "effetti": { "al_figlio": { "morale": 4 }, "relazione": { "con": "figlio", "delta": 8 } }, "esito": "Alle tre di notte, in cucina, ti racconta tutto." },
+        { "id": "c", "testo": "Lasci correre: alla sua età eri peggio", "tratti_favoriti": ["pigro", "impulsivo"], "effetti": { "al_figlio": { "morale": 2, "voti": -0.3 } }, "esito": "Pace in casa. Per ora." }
+      ]
+    },
+    {
+      "id": "figli_universita",
+      "tema": "figli",
+      "titolo": "L'università di {figlio_nome}",
+      "condizioni": { "eta": [38, 75], "figlio_eta": [18, 20] },
+      "peso": 6,
+      "testi": [
+        "{figlio_nome} vuole studiare in un'altra città. Affitto, tasse, libri: fate i conti in cucina.",
+        "Dopo la maturità {figlio_nome} ti chiede se potete permettervi l'università fuori sede."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Paghi tu, che non pensi ad altro", "requisiti": { "risparmi_min": 9000 }, "tratti_favoriti": ["generoso", "ambizioso"], "effetti": { "risparmi": -9000, "al_figlio": { "risparmi": 9000, "morale": 6 }, "relazione": { "con": "figlio", "delta": 8 } }, "esito": "Un sacrificio che rifaresti mille volte." },
+        { "id": "b", "testo": "Metà tu, metà con un lavoretto", "tratti_favoriti": ["prudente"], "effetti": { "risparmi": -4000, "al_figlio": { "risparmi": 4000, "morale": 2 } }, "esito": "Imparerà anche il valore dei soldi." },
+        { "id": "c", "testo": "Si arrangia: tu hai fatto così", "tratti_favoriti": ["egoista", "indipendente"], "effetti": { "al_figlio": { "morale": -4 }, "relazione": { "con": "figlio", "delta": -8 } }, "esito": "Ce la farà. Ma non lo dimenticherà." }
+      ]
+    },
+    {
+      "id": "figli_casa",
+      "tema": "figli",
+      "titolo": "{figlio_nome} cerca casa",
+      "condizioni": { "eta": [48, 85], "figli_adulti": true, "figlio_eta": [25, 40] },
+      "peso": 4,
+      "testi": [
+        "{figlio_nome} ha trovato la casa giusta ma la banca vuole un anticipo che da sol{o_figlio} non ha.",
+        "Durante il pranzo della domenica {figlio_nome} ti chiede, imbarazzat{o_figlio}, se puoi dare una mano con l'anticipo del mutuo."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Dai 20.000 euro", "requisiti": { "risparmi_min": 20000 }, "tratti_favoriti": ["generoso", "prudente"], "effetti": { "risparmi": -20000, "al_figlio": { "risparmi": 20000, "morale": 8 }, "relazione": { "con": "figlio", "delta": 12 }, "felicita": 4 }, "esito": "Un aiuto che in Italia è quasi una tradizione." },
+        { "id": "b", "testo": "Un prestito, da restituire", "requisiti": { "risparmi_min": 10000 }, "tratti_favoriti": ["prudente", "egoista"], "effetti": { "risparmi": -10000, "al_figlio": { "risparmi": 10000 }, "relazione": { "con": "figlio", "delta": 3 } }, "esito": "Firmate un foglio a mano, per scrupolo." },
+        { "id": "c", "testo": "Non puoi, e glielo dici", "effetti": { "morale": -3, "relazione": { "con": "figlio", "delta": -3 } }, "esito": "Capisce. Aspetterà ancora qualche anno." }
+      ]
+    },
+    {
+      "id": "figli_nipote",
+      "tema": "figli",
+      "titolo": "Diventi {nonno_g}",
+      "condizioni": { "eta": [45, 95], "nipoti": true },
+      "peso": 8,
+      "testi": [
+        "Il telefono squilla all'alba: è nato tuo nipote. Ti tremano le mani mentre ti vesti.",
+        "Ti mettono in braccio un fagottino che dorme. Qualcuno dice che ha il tuo naso."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Ti offri di tenerlo tutti i pomeriggi", "tratti_favoriti": ["generoso", "socievole"], "effetti": { "felicita": 10, "stanchezza": 6, "relazione": { "con": "figlio_maggiore", "delta": 8 } }, "esito": "Diventi la persona preferita di un bambino di due anni." },
+        { "id": "b", "testo": "Il nonno della domenica", "tratti_favoriti": ["indipendente", "solitario"], "effetti": { "felicita": 6 }, "esito": "Pranzo, regali, e poi a casa a riposare." }
+      ]
+    },
+    {
+      "id": "figli_pranzo_natale",
+      "tema": "figli",
+      "titolo": "Il pranzo di Natale",
+      "condizioni": { "eta": [50, 95], "figli_adulti": true },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 5,
+      "testi": [
+        "Quest'anno il pranzo di Natale tocca a te. Tutti i figli, i loro partner, i bambini: diciotto persone e una sola cucina.",
+        "Natale: la casa è piena di voci. Ci sono tutti, anche chi non si parlava da mesi."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Cucini per due giorni, come tua madre", "tratti_favoriti": ["generoso", "socievole"], "effetti": { "felicita": 8, "stanchezza": 8, "risparmi": -500, "relazione": { "con": "figlio_maggiore", "delta": 5 } }, "esito": "Lasagne, arrosto e una discussione politica. Perfetto." },
+        { "id": "b", "testo": "Proponi il ristorante", "tratti_favoriti": ["pigro", "prudente"], "effetti": { "felicita": 4, "risparmi": -900 }, "esito": "Niente piatti da lavare. Qualcuno storce il naso." }
+      ]
+    },
+    {
+      "id": "figli_sorpresa",
+      "tema": "figli",
+      "titolo": "{figlio_nome} ti sorprende",
+      "condizioni": { "eta": [30, 80], "figlio_eta": [12, 22] },
+      "peso": 3,
+      "testi": [
+        "{figlio_nome} ti annuncia che vuole fare una cosa che nessuno in famiglia ha mai fatto. E ha già un piano.",
+        "Scopri per caso che {figlio_nome} ha vinto un concorso di cui non ti aveva detto niente."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Sostieni {figlio_nome} senza riserve", "tratti_favoriti": ["generoso", "creativo"], "effetti": { "al_figlio": { "morale": 8, "tratto": "sicuro" }, "relazione": { "con": "figlio", "delta": 10 } }, "esito": "Ti guarda come quando aveva cinque anni." },
+        { "id": "b", "testo": "Chiedi di pensarci bene", "tratti_favoriti": ["prudente"], "effetti": { "al_figlio": { "morale": -2 } }, "esito": "Ci pensa. E poi fa di testa sua." }
+      ]
+    },
+    {
+      "id": "famiglia_genitore_anziano",
+      "tema": "figli",
+      "titolo": "I tuoi genitori invecchiano",
+      "condizioni": { "eta": [40, 75], "genitore_eta_min": 82, "flag": "vive_da_solo" },
+      "peso": 5,
+      "testi": [
+        "Tua madre ha lasciato il gas acceso per la seconda volta. Non può più vivere da sola, e lo sapete tutti.",
+        "Il medico è stato chiaro: tuo padre ha bisogno di qualcuno vicino, giorno e notte."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Viene a vivere da te", "tratti_favoriti": ["generoso"], "effetti": { "accogli_genitore": true, "stanchezza": 12, "felicita": -2, "relazione": { "con": "genitore", "delta": 12 } }, "esito": "La casa diventa più piccola. Il cuore più grande." },
+        { "id": "b", "testo": "Una badante", "requisiti": { "risparmi_min": 8000 }, "tratti_favoriti": ["prudente", "ambizioso"], "effetti": { "risparmi": -8000, "stanchezza": 3 }, "esito": "Si chiama Oksana e in un mese diventa di famiglia." },
+        { "id": "c", "testo": "Una RSA", "tratti_favoriti": ["egoista", "indipendente"], "effetti": { "risparmi": -4000, "morale": -6, "relazione": { "con": "genitore", "delta": -10 } }, "esito": "Le visite della domenica non bastano mai." }
+      ]
+    }
+  ]
+}

@@ -3,12 +3,14 @@
 // Nessuna modifica allo stato: sono funzioni pure, testabili in Node.
 
 import { eta, formatoEuro, nomeMestiere, NOMI_TITOLI } from "./util.js";
-import { giocatore, vive } from "./state.js";
-import { genere, madre, padre, fratelli, relazione } from "./family.js";
-import { patrimonio, quotaCase, valoreAziende, membriNucleo, nettoPersona, rataMutuo } from "./economy.js";
-import { costoCasa } from "./azioni.js";
+import { controllate, giocatore, vive } from "./state.js";
+import { madre, padre, fratelli, relazione, figliVivi } from "./family.js";
+import { patrimonio, quotaCase, valoreAziende, membriNucleo, nettoPersona, rataMutuo, utileAzienda } from "./economy.js";
+import { aziendaDi, costoCasa } from "./azioni.js";
 import { requisitiScelta, testoEvento, testoScelta, titoloEvento } from "./events.js";
 import { rigaAnno } from "./engine.js";
+import { candidatiErede, controllabile, MAX_CONTROLLATI } from "./dinastia.js";
+import { layoutAlbero } from "./albero.js";
 
 /** Volge al femminile un aggettivo del maschile singolare ("Ambizioso" → "Ambiziosa"). */
 export function alGenere(parola, sesso) {
@@ -36,7 +38,7 @@ export function occupazione(state, data, p) {
   if (!vive(p)) return `Mort${f ? "a" : "o"} nel ${p.anno_morte} a ${anni} anni`;
   if (p.carriera.pensionato) return "In pensione";
   if (p.carriera.imprenditore) {
-    const a = Object.values(state.aziende).find((x) => x.proprietario === p.id && !x.fallita);
+    const a = aziendaDi(state, p);
     return a ? `Titolare di ${a.nome}` : f ? "Imprenditrice" : "Imprenditore";
   }
   if (p.carriera.lavoro) return `${nomeMestiere(data.mestiere[p.carriera.lavoro], p.sesso) ?? "Lavoro"}${p.carriera.part_time ? " (part-time)" : ""}`;
@@ -47,21 +49,62 @@ export function occupazione(state, data, p) {
     if (i.livello === "medie") return `Scuola media · ${i.anno_corso}ª`;
     if (i.livello === "elementari") return `Scuola elementare · ${i.anno_corso}ª`;
   }
-  if (anni < 6) return "Ancora piccol" + (f ? "a" : "o");
+  if (anni < 3) return "Neonat" + (f ? "a" : "o");
+  if (anni < 6) return "Scuola dell'infanzia";
   if (p.carriera.naspi?.anni > 0) return "Disoccupat" + (f ? "a" : "o") + " (NASpI)";
   return anni < 25 ? "Cerca la sua strada" : "Senza lavoro";
 }
 
-/** Nome leggibile della relazione di q rispetto a p. */
+const genitoriDi = (x) => [x?.madre, x?.padre].filter(Boolean);
+const condividonoGenitore = (a, b) => a.id !== b.id && genitoriDi(a).some((g) => genitoriDi(b).includes(g));
+
+/** Nome leggibile della parentela di q vista da p (Madre, Cognato, Nipote…). */
 export function ruolo(state, p, q) {
   const f = q.sesso === "F";
+  const g = (m, fem) => (f ? fem : m);
+  const P = (id) => state.persone[id];
   if (q.id === p.id) return "Tu";
   if (q.id === p.madre) return "Madre";
   if (q.id === p.padre) return "Padre";
-  if (q.id === p.partner) return f ? "Moglie" : "Marito";
-  if (p.figli.includes(q.id)) return f ? "Figlia" : "Figlio";
-  if (q.madre && (q.madre === p.madre || q.padre === p.padre)) return f ? "Sorella" : "Fratello";
-  return "Parente";
+  if (q.id === p.partner) {
+    if (p.stato_civile === "sposato" || p.stato_civile === "vedovo") return g("Marito", "Moglie");
+    if (p.stato_civile === "convivente") return g("Compagno", "Compagna");
+    return g("Fidanzato", "Fidanzata");
+  }
+  if (p.ex?.includes(q.id)) return g("Ex compagno", "Ex compagna");
+  if (p.figli.includes(q.id)) return g("Figlio", "Figlia");
+  if (genitoriDi(q).some((id) => p.figli.includes(id))) return "Nipote";
+  if (genitoriDi(p).some((id) => genitoriDi(P(id)).includes(q.id))) return g("Nonno", "Nonna");
+  if (condividonoGenitore(p, q)) return g("Fratello", "Sorella");
+  if (genitoriDi(p).some((id) => P(id) && condividonoGenitore(P(id), q))) return g("Zio", "Zia");
+  if (genitoriDi(q).some((id) => P(id) && condividonoGenitore(P(id), p))) return "Nipote";
+  if (genitoriDi(q).some((id) => genitoriDi(p).some((gp) => P(gp) && P(id) && condividonoGenitore(P(gp), P(id))))) return g("Cugino", "Cugina");
+  if (p.figli.some((id) => P(id)?.partner === q.id || P(id)?.ex?.includes(q.id))) return g("Genero", "Nuora");
+  if (Object.values(state.persone).some((x) => condividonoGenitore(p, x) && x.partner === q.id)) return g("Cognato", "Cognata");
+  if (genitoriDi(p).some((id) => P(id)?.partner === q.id)) return g("Patrigno", "Matrigna");
+  if (genitoriDi(p).some((id) => genitoriDi(P(id)).some((n) => genitoriDi(P(n)).includes(q.id)))) return g("Bisnonno", "Bisnonna");
+  return q.sangue ? "Parente" : g("Parente acquisito", "Parente acquisita");
+}
+
+/** "Sposata con Marco", "Single", "Vedovo"… */
+function statoCivile(state, p) {
+  const f = p.sesso === "F";
+  const q = state.persone[p.partner];
+  const o = f ? "a" : "o";
+  switch (p.stato_civile) {
+    case "sposato":
+      return `Sposat${o} con ${q?.nome}`;
+    case "convivente":
+      return `Convive con ${q?.nome}`;
+    case "fidanzato":
+      return `Fidanzat${o} con ${q?.nome}`;
+    case "separato":
+      return `Separat${o}`;
+    case "vedovo":
+      return f ? "Vedova" : "Vedovo";
+    default:
+      return "Single";
+  }
 }
 
 /** Tratti e ricordi leggibili. */
@@ -70,6 +113,26 @@ function tratti(data, p) {
 }
 function ricordi(data, p) {
   return p.ricordi.map((r) => ({ nome: data.ricordo[r.id]?.nome ?? r.id, anno: r.anno, descrizione: data.ricordo[r.id]?.descrizione ?? "" }));
+}
+
+/** Persona in forma breve, per avatar ed elenchi. */
+function breve(state, data, io, p) {
+  return { id: p.id, nome: `${p.nome} ${p.cognome}`, primo: p.nome, sesso: p.sesso, eta: eta(p, state.world.anno), vivo: vive(p), ruolo: ruolo(state, io, p), occupazione: occupazione(state, data, p) };
+}
+
+/** Informazioni sulla dinastia: generazioni e personaggi giocati. */
+function vistaDinastia(state) {
+  const d = state.dinastia ?? { generazione: 1, giocati: [] };
+  return {
+    cognome: state.famiglia.cognome,
+    reputazione: state.famiglia.reputazione,
+    generazione: d.generazione,
+    anni: state.world.anno - (d.giocati[0]?.dal ?? state.world.anno),
+    giocati: d.giocati.map((g) => {
+      const p = state.persone[g.id];
+      return { id: g.id, nome: p ? `${p.nome} ${p.cognome}` : "?", sesso: p?.sesso, dal: g.dal, al: g.al, nascita: p?.anno_nascita, morte: p?.anno_morte };
+    }),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -111,36 +174,49 @@ export function vistaVita(state, data) {
   const io = giocatore(state);
   const anni = eta(io, state.world.anno);
   const b = io.economia.bilancio;
-  const eventi = state.world.eventi_anno
-    .map((e, indice) => ({ e, indice }))
-    .filter(({ e }) => !e.risolto && e.persona === io.id)
-    .map(({ e, indice }) => {
-      const ev = data.evento[e.evento];
-      return {
-        indice,
-        id: ev.id,
-        tema: ev.tema,
-        titolo: titoloEvento(state, data, io, ev),
-        testo: testoEvento(state, data, io, ev, e.variante),
-        scelte: ev.scelte.map((s) => {
-          const r = requisitiScelta(state, data, io, s);
-          return { id: s.id, testo: testoScelta(state, data, io, s), ok: r.ok, motivo: r.motivo ?? null };
-        }),
-      };
-    });
-  const risolti = state.world.eventi_anno.filter((e) => e.risolto && e.persona === io.id).map((e) => {
+  const fase = state.world.fase;
+  const aperti = state.world.eventi_anno.map((e, indice) => ({ e, indice })).filter(({ e }) => !e.risolto && state.persone[e.persona]);
+  const eventi = aperti.map(({ e, indice }) => {
+    const p = state.persone[e.persona];
     const ev = data.evento[e.evento];
-    const s = ev.scelte.find((x) => x.id === e.scelta);
-    return { titolo: titoloEvento(state, data, io, ev), scelta: s ? testoScelta(state, data, io, s) : "", esito: e.esito };
+    return {
+      indice,
+      id: ev.id,
+      tema: ev.tema,
+      persona: { ...breve(state, data, io, p), principale: p.id === io.id },
+      titolo: titoloEvento(state, data, p, ev),
+      testo: testoEvento(state, data, p, ev, e.variante),
+      scelte: ev.scelte.map((s) => {
+        const r = requisitiScelta(state, data, p, s);
+        return { id: s.id, testo: testoScelta(state, data, p, s), ok: r.ok, motivo: r.motivo ?? null };
+      }),
+    };
   });
+  const risolti = state.world.eventi_anno
+    .filter((e) => e.risolto && state.persone[e.persona])
+    .map((e) => {
+      const p = state.persone[e.persona];
+      const ev = data.evento[e.evento];
+      const s = ev.scelte.find((x) => x.id === e.scelta);
+      return { titolo: titoloEvento(state, data, p, ev), scelta: s ? testoScelta(state, data, p, s) : "", esito: e.esito, persona: p.id === io.id ? null : p.nome };
+    });
+  const r = state.world.ultimo_riepilogo;
+  const riepilogo =
+    r && r.anno === state.world.anno - 1
+      ? { anno: r.anno, righe: r.righe, altri: (r.altri ?? []).filter((x) => x.righe.length && state.persone[x.id]).map((x) => ({ nome: x.nome, ruolo: ruolo(state, io, state.persone[x.id]), righe: x.righe })) }
+      : null;
+  const controllatiIds = new Set(state.controllati ?? []);
   return {
-    fine: state.world.fase === "fine",
+    fase,
+    fine: fase === "fine",
     anno: state.world.anno,
     nome: `${io.nome} ${io.cognome}`,
     sesso: io.sesso,
+    nascita: io.anno_nascita,
     eta: anni,
     luogo: `${io.citta}, ${data.regione[io.regione].nome}`,
     occupazione: occupazione(state, data, io),
+    stato_civile: statoCivile(state, io),
     titolo: NOMI_TITOLI[io.istruzione.titolo],
     stat: STAT.map((s) => ({ ...s, valore: Math.round(io.stat[s.id]) })),
     tratti: tratti(data, io),
@@ -155,9 +231,12 @@ export function vistaVita(state, data) {
     },
     eventi,
     risolti,
-    riepilogo: state.world.ultimo_riepilogo && state.world.ultimo_riepilogo.anno === state.world.anno - 1 ? state.world.ultimo_riepilogo : null,
-    famiglia: righeFamiglia(state, data, state.world.anno - 1).filter((r) => r.id !== io.id && r.vivo).slice(0, 4),
-    epilogo: state.world.fase === "fine" ? epilogo(state, data, io) : null,
+    coda: controllate(state).map((p) => ({ ...breve(state, data, io, p), da_fare: eventi.filter((e) => e.persona.id === p.id).length, principale: p.id === io.id })),
+    riepilogo,
+    famiglia: righeFamiglia(state, data, state.world.anno - 1).filter((x) => x.id !== io.id && x.vivo && !controllatiIds.has(x.id) && x.riga).slice(0, 5),
+    epilogo: fase !== "gioco" ? epilogo(state, data, io) : null,
+    candidati: fase === "erede" ? candidatiErede(state, io).map(({ persona, motivo }) => ({ ...breve(state, data, io, persona), motivo, tratti: tratti(data, persona).map((t) => t.nome), patrimonio: patrimonio(state, persona) })) : [],
+    dinastia: vistaDinastia(state),
   };
 }
 
@@ -171,6 +250,7 @@ function epilogo(state, data, p) {
     causa: p.causa_morte,
     titolo: NOMI_TITOLI[p.istruzione.titolo],
     lavori,
+    figli: (p.figli ?? []).map((id) => state.persone[id]?.nome).filter(Boolean),
     patrimonio_finale: p.storico_patrimonio.at(-1)?.valore ?? 0,
     patrimonio_massimo: massimo,
     ricordi: ricordi(data, p),
@@ -192,6 +272,8 @@ export function vistaSoldi(state, data) {
   const conGenitori = membri.some((m) => m.id === io.madre || m.id === io.padre);
   const prezzo = costoCasa(state, data, io);
   const storico = io.storico_patrimonio.map((x) => ({ anno: x.anno, valore: x.valore }));
+  const azienda = aziendaDi(state, io) ?? (io.carriera.lavoro === "azienda_famiglia" ? state.aziende[io.carriera.azienda] : null);
+  const altreCase = mia.filter((c) => c.id !== casa?.id);
   return {
     anno: state.world.anno,
     patrimonio: patrimonio(state, io),
@@ -213,14 +295,15 @@ export function vistaSoldi(state, data) {
             { nome: "Netto", valore: b.netto, forte: true },
             { nome: casa ? "Casa (rata, spese)" : "Affitto", valore: -b.spese_casa },
             { nome: "Vita quotidiana", valore: -b.spese_vita },
-            ...(b.spese_studio ? [{ nome: "Studio", valore: -b.spese_studio }] : []),
+            ...(b.spese_studio ? [{ nome: "Studio e figli piccoli", valore: -b.spese_studio }] : []),
             { nome: "Saldo dell'anno", valore: b.saldo, forte: true },
           ],
           nucleo: b.nucleo,
         }
       : null,
+    nucleo: membri.filter((m) => m.id !== io.id).map((m) => ({ nome: m.nome, ruolo: ruolo(state, io, m), netto: m.economia.bilancio?.netto ?? 0 })),
     abitazione: {
-      descrizione: casa ? `${casa.nome}${mia.length ? "" : conGenitori ? " (dei tuoi genitori)" : ""}` : conGenitori ? "In affitto con la famiglia" : "In affitto",
+      descrizione: casa ? `${casa.nome}${mia.some((c) => c.id === casa.id) ? "" : conGenitori ? " (dei tuoi genitori)" : ""}` : conGenitori ? "In affitto con la famiglia" : "In affitto",
       con_genitori: conGenitori,
       membri: membri.length,
       valore: casa?.valore ?? null,
@@ -228,16 +311,20 @@ export function vistaSoldi(state, data) {
       rata: casa?.mutuo_residuo > 0 ? casa.rata : 0,
       mia: mia.length > 0,
     },
+    altre_case: altreCase.map((c) => ({ nome: c.nome, valore: c.valore, quota: c.proprietari.length > 1 ? `1/${c.proprietari.length}` : null, mutuo: c.mutuo_residuo })),
+    azienda: azienda
+      ? { nome: azienda.nome, ruolo: azienda.proprietario === io.id ? "Titolare" : "Lavori qui", valore: azienda.valore, fatturato: azienda.fatturato, utile: Math.round(utileAzienda(azienda)), salute: azienda.salute, fondata: azienda.fondata }
+      : null,
     casa_ideale: { prezzo: prezzo.prezzo, anticipo: prezzo.anticipo, rata: Math.round(rataMutuo(prezzo.prezzo - prezzo.anticipo, 0.035, 25)), citta: io.citta },
     storico,
   };
 }
 
 // ---------------------------------------------------------------------------
-// Schermata Famiglia (FASE 1: elenco; l'albero SVG arriva nella FASE 3)
+// Schermata Famiglia: albero (FASE 3), scheda della persona scelta, controllo (FASE 4)
 // ---------------------------------------------------------------------------
 
-/** Una riga per ogni parente noto, con il riassunto del suo anno. */
+/** Una riga per ogni parente stretto, con il riassunto del suo anno. */
 export function righeFamiglia(state, data, anno = state.world.anno - 1) {
   const io = giocatore(state);
   const vicini = [io, madre(state, io), padre(state, io), ...fratelli(state, io), state.persone[io.partner], ...io.figli.map((id) => state.persone[id])].filter(Boolean);
@@ -257,15 +344,71 @@ export function righeFamiglia(state, data, anno = state.world.anno - 1) {
   }));
 }
 
-export function vistaFamiglia(state, data) {
+/** Scheda di una persona dell'albero, con le azioni possibili. */
+function scheda(state, data, p) {
   const io = giocatore(state);
+  const inGioco = state.world.fase === "gioco";
+  const controllata = (state.controllati ?? []).includes(p.id);
+  const possibile = inGioco && controllabile(state, p);
+  const pieni = (state.controllati ?? []).length >= MAX_CONTROLLATI;
+  let motivo = null;
+  if (!vive(p)) motivo = null;
+  else if (!inGioco) motivo = "Prima scegli chi continua la storia.";
+  else if (eta(p, state.world.anno) < 6) motivo = "Si può controllare dai 6 anni.";
+  else if (!possibile) motivo = "Si possono controllare solo le persone della famiglia e i loro partner.";
+  return {
+    ...breve(state, data, io, p),
+    anni: `${p.anno_nascita}–${p.anno_morte ?? ""}`,
+    stato_civile: statoCivile(state, p),
+    tratti: tratti(data, p),
+    ricordi: ricordi(data, p),
+    figli: figliVivi(state, p).map((f) => f.nome),
+    patrimonio: patrimonio(state, p),
+    legame: p.id === io.id ? null : relazione(state, io.id, p.id)?.intensita ?? null,
+    riga: vive(p) ? rigaAnno(state, data, p, state.world.anno - 1) : null,
+    causa_morte: p.causa_morte,
+    principale: p.id === io.id,
+    controllata,
+    puo_giocare: possibile && p.id !== io.id,
+    puo_controllare: possibile && !controllata && !pieni,
+    puo_rilasciare: inGioco && controllata && p.id !== io.id,
+    pieni: possibile && !controllata && pieni,
+    motivo,
+  };
+}
+
+export function vistaFamiglia(state, data, selezionato = null) {
+  const io = giocatore(state);
+  const albero = layoutAlbero(state);
+  const controllati = new Set(state.controllati ?? []);
+  const scelto = state.persone[selezionato] ?? io;
   return {
     cognome: state.famiglia.cognome,
     reputazione: state.famiglia.reputazione,
     classe: NOMI_CLASSE[state.famiglia.agiatezza],
-    pronome: genere(io),
-    membri: righeFamiglia(state, data),
-    diario: io.diario.slice().reverse(),
+    dinastia: vistaDinastia(state),
+    controllati: { quanti: controllati.size, massimo: MAX_CONTROLLATI },
+    albero: {
+      larghezza: albero.larghezza,
+      altezza: albero.altezza,
+      linee: albero.linee,
+      nodi: albero.nodi.map(({ persona: p, x, y }) => ({
+        id: p.id,
+        x,
+        y,
+        primo: p.nome,
+        iniziali: `${p.nome[0]}${p.cognome[0]}`,
+        sesso: p.sesso,
+        anni: `${p.anno_nascita}${p.anno_morte ? `–${p.anno_morte}` : ""}`,
+        vivo: vive(p),
+        sangue: p.sangue,
+        principale: p.id === io.id,
+        controllato: controllati.has(p.id),
+        selezionato: p.id === scelto.id,
+      })),
+    },
+    scheda: scheda(state, data, scelto),
+    diario: io.diario.slice(-12).reverse(), // gli ultimi 12 anni
   };
 }
 
@@ -279,5 +422,9 @@ export function vistaImpostazioni(state) {
     anno: state?.world.anno ?? null,
     schema: state?.schema ?? null,
     nome: state ? `${giocatore(state).nome} ${giocatore(state).cognome}` : null,
+    dinastia: state ? vistaDinastia(state) : null,
+    controllati: state ? (state.controllati ?? []).length : 0,
+    massimo: MAX_CONTROLLATI,
   };
 }
+

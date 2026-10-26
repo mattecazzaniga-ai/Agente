@@ -1,7 +1,7 @@
 // Stato globale della partita: un unico oggetto serializzabile in JSON.
 // Qui vivono anche salvataggio, caricamento, esportazione e migrazioni dello schema.
 
-export const VERSIONE_SCHEMA = 1;
+export const VERSIONE_SCHEMA = 2;
 export const CHIAVE_SALVATAGGIO = "dinastia.salvataggio";
 
 /** Stato vuoto: il generatore lo riempie con la prima famiglia. */
@@ -18,15 +18,17 @@ export function statoVuoto(seed, anno = 2026) {
       memoria: [], // conseguenze a distanza: { evento, persona, anno }
       eventi_usati: {}, // { idPersona: { idEvento: anno } }
       eventi_anno: [], // eventi da risolvere nell'anno corrente
-      fase: "gioco", // "gioco" | "fine"
+      fase: "gioco", // "gioco" | "erede" (scegliere chi continua) | "fine"
     },
+    dinastia: { generazione: 1, giocati: [] }, // giocati: [{ id, dal, al }] chi è stato il personaggio principale
     persone: {},
     relazioni: [],
     nuclei: {}, // famiglie che vivono sotto lo stesso tetto: { id, regione, citta, casa }
     case: {},
     aziende: {},
     famiglia: { cognome: "", reputazione: 50, agiatezza: "media" },
-    giocatore: null,
+    giocatore: null, // personaggio principale
+    controllati: [], // tutte le persone guidate dal giocatore (FASE 4), principale compreso
     prossimo_id: 1,
   };
 }
@@ -40,6 +42,8 @@ export const persona = (state, id) => (id ? state.persone[id] : undefined);
 export const vive = (p) => p && p.anno_morte == null;
 export const personeVive = (state) => Object.values(state.persone).filter(vive);
 export const giocatore = (state) => state.persone[state.giocatore];
+/** Persone guidate dal giocatore ancora in vita, principale per primo. */
+export const controllate = (state) => [state.giocatore, ...(state.controllati ?? []).filter((id) => id !== state.giocatore)].map((id) => state.persone[id]).filter(vive);
 
 // ---------------------------------------------------------------------------
 // Migrazioni: ogni voce trasforma un salvataggio dalla versione N alla N+1.
@@ -55,6 +59,19 @@ const MIGRAZIONI = {
     s.world.eventi_anno ??= [];
     s.nuclei ??= {};
     s.schema = 1;
+    return s;
+  },
+  // 1 → 2 (FASE 2-4): dinastia, più personaggi controllati, persone "di sangue".
+  1: (s) => {
+    s.controllati ??= s.giocatore ? [s.giocatore] : [];
+    s.dinastia ??= { generazione: 1, giocati: s.persone?.[s.giocatore] ? [{ id: s.giocatore, dal: s.persone[s.giocatore].anno_nascita + 6, al: null }] : [] };
+    // nei salvataggi della FASE 1 esiste solo la famiglia di partenza: sono tutti di sangue
+    for (const p of Object.values(s.persone ?? {})) {
+      p.sangue ??= true;
+      p.ex ??= [];
+      p.coppia_dal ??= null;
+    }
+    s.schema = 2;
     return s;
   },
 };

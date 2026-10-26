@@ -15,6 +15,7 @@ export function disegna(v) {
     <section class="scheda impostazioni">
       <h2>Partita</h2>
       ${v.nome ? `<p class="piccolo">${esc(v.nome)} · anno ${v.anno}</p>` : ""}
+      ${v.dinastia ? `<p class="nota">Dinastia ${esc(v.dinastia.cognome)} · generazione ${v.dinastia.generazione} · ${v.dinastia.giocati.length} personaggi giocati · ${v.controllati}/${v.massimo} controllati</p>` : ""}
       <p class="nota" style="margin:4px 0 12px">Seed ${esc(v.seed)} · schema ${esc(v.schema)}</p>
       <button class="bottone pericolo" data-azione="nuova">Nuova partita</button>
     </section>

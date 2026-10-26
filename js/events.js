@@ -3,9 +3,11 @@
 
 import { casuale, pesato, probabile } from "./rng.js";
 import { eta, euro, limita, riempi, titoloAlmeno } from "./util.js";
-import { madre, padre, fratelli, genitoreVicino, modificaRelazione, relazione, segnaposto } from "./family.js";
+import { madre, padre, fratelli, genitoreVicino, modificaRelazione, relazione, segnaposto, partnerDi, figliVivi, figlioPiuGiovane, figlioMaggiore, nipoti } from "./family.js";
 import { membriNucleo } from "./economy.js";
 import { aggiungiRicordo, aggiungiTratto, assumi, compraCasa, costoCasa, iscriviSuperiori, iscriviUniversita, lasciaStudi, licenzia, trasferisci, trasloca } from "./azioni.js";
+import { aziendaDi, aziendaDiFamiglia, cediAzienda, entraInAzienda, fondaAzienda, modificaAzienda, rilevaAzienda, vendiAzienda } from "./azioni.js";
+import { accogliGenitore, convivenza, coppiaFertile, matrimonio, nasceFiglio, nuovoPartner, separazione } from "./dinastia.js";
 
 const STAT = ["salute", "morale", "felicita", "stanchezza", "reputazione"];
 
@@ -54,6 +56,9 @@ function personaRelazione(state, p, chi) {
   if (chi === "padre") return padre(state, p);
   if (chi === "genitore") return genitoreVicino(state, p);
   if (chi === "fratello") return fratelli(state, p).find((f) => f.anno_morte == null);
+  if (chi === "partner") return partnerDi(state, p);
+  if (chi === "figlio") return figlioPiuGiovane(state, p);
+  if (chi === "figlio_maggiore") return figlioMaggiore(state, p);
   return null;
 }
 
@@ -94,10 +99,34 @@ export function condizioniOk(state, data, p, c = {}, opzioni = {}) {
   if (c.vive_con_genitori !== undefined && viveConGenitori(state, p) !== c.vive_con_genitori) return false;
   if (c.agiatezza && !comeLista(c.agiatezza).includes(state.famiglia.agiatezza)) return false;
   if (c.area && !comeLista(c.area).includes(data.regione[p.regione]?.area)) return false;
-  if (c.azienda_famiglia !== undefined && Object.values(state.aziende).some((a) => !a.fallita) !== c.azienda_famiglia) return false;
+  if (c.azienda_famiglia !== undefined && Boolean(aziendaDiFamiglia(state, p)) !== c.azienda_famiglia) return false;
   if (c.fratelli !== undefined && (fratelli(state, p).some((f) => f.anno_morte == null)) !== c.fratelli) return false;
   if (c.genitori_vivi !== undefined && famigliaOrigine(state, p).length < c.genitori_vivi) return false;
   if (c.casa_raggiungibile && p.economia.risparmi + aiutoPossibile(state, p) < costoCasa(state, data, p).anticipo) return false;
+  // vita di coppia e figli (FASE 2)
+  if (c.stato_civile && !comeLista(c.stato_civile).includes(p.stato_civile)) return false;
+  if (c.coppia !== undefined && Boolean(partnerDi(state, p)) !== c.coppia) return false;
+  if (c.anni_coppia_min !== undefined && (!partnerDi(state, p) || state.world.anno - (p.coppia_dal ?? state.world.anno) < c.anni_coppia_min)) return false;
+  if (c.fertile !== undefined && coppiaFertile(state, p) !== c.fertile) return false;
+  const figli = figliVivi(state, p);
+  if (c.figli_min !== undefined && figli.length < c.figli_min) return false;
+  if (c.figli_max !== undefined && figli.length > c.figli_max) return false;
+  if (c.figlio_eta) {
+    const f = figli.at(-1);
+    if (!f || eta(f, state.world.anno) < c.figlio_eta[0] || eta(f, state.world.anno) > c.figlio_eta[1]) return false;
+  }
+  if (c.figli_adulti !== undefined && figli.some((f) => eta(f, state.world.anno) >= 20) !== c.figli_adulti) return false;
+  if (c.nipoti !== undefined && nipoti(state, p).length > 0 !== c.nipoti) return false;
+  if (c.genitore_eta_min !== undefined && !famigliaOrigine(state, p).some((g) => eta(g, state.world.anno) >= c.genitore_eta_min)) return false;
+  // azienda di famiglia
+  if (c.titolare !== undefined && Boolean(aziendaDi(state, p)) !== c.titolare) return false;
+  if (c.in_azienda !== undefined && (p.carriera.lavoro === "azienda_famiglia") !== c.in_azienda) return false;
+  if (c.genitore_titolare !== undefined) {
+    const a = aziendaDiFamiglia(state, p);
+    if (Boolean(a && (a.proprietario === p.madre || a.proprietario === p.padre)) !== c.genitore_titolare) return false;
+  }
+  if (c.azienda_salute_min !== undefined && !((aziendaDi(state, p)?.salute ?? -1) >= c.azienda_salute_min)) return false;
+  if (c.azienda_salute_max !== undefined && !(aziendaDi(state, p) && aziendaDi(state, p).salute <= c.azienda_salute_max)) return false;
   if (c.stat_min) for (const [k, v] of Object.entries(c.stat_min)) if (p.stat[k] < v) return false;
   if (c.stat_max) for (const [k, v] of Object.entries(c.stat_max)) if (p.stat[k] > v) return false;
   if (c.relazione_min || c.relazione_max) {
@@ -119,9 +148,10 @@ function disponibile(state, p, ev) {
   return state.world.anno - usato >= (ev.intervallo ?? 5);
 }
 
-/** Rilevanza di un evento per la persona: il peso cresce con i tratti affini e i ricordi collegati. */
-function rilevanza(p, ev) {
+/** Rilevanza di un evento per la persona: il peso cresce con i tratti affini e i ricordi collegati; un evento già vissuto pesa meno. */
+function rilevanza(state, p, ev) {
   let peso = ev.peso ?? 1;
+  if (state.world.eventi_usati[p.id]?.[ev.id] !== undefined) peso *= 0.4;
   if (ev.tratti_affini?.some((t) => p.tratti.includes(t))) peso *= 2;
   if (ev.condizioni?.ricordi_richiesti) peso *= 1.5;
   return peso;
@@ -131,7 +161,7 @@ function rilevanza(p, ev) {
  * Sceglie gli eventi dell'anno per una persona: prima le conseguenze arrivate a scadenza,
  * poi 1-3 eventi pesati tra quelli validi. Restituisce [{ evento, variante }].
  */
-export function scegliEventiAnno(state, data, p) {
+export function scegliEventiAnno(state, data, p, massimo = 3) {
   const scelti = [];
   const dovuti = state.world.memoria.filter((m) => m.persona === p.id && m.anno <= state.world.anno);
   state.world.memoria = state.world.memoria.filter((m) => !dovuti.includes(m));
@@ -140,11 +170,11 @@ export function scegliEventiAnno(state, data, p) {
     if (ev && condizioniOk(state, data, p, ev.condizioni, { ignoraEta: true }) && !scelti.some((s) => s.evento === ev.id)) scelti.push({ evento: ev.id });
   }
   const r = casuale(state);
-  const quanti = Math.max(scelti.length, r < 0.35 ? 1 : r < 0.85 ? 2 : 3);
+  const quanti = Math.max(scelti.length, Math.min(massimo, r < 0.35 ? 1 : r < 0.85 ? 2 : 3));
   const validi = data.eventi.filter((ev) => !ev.condizioni?.solo_conseguenza && disponibile(state, p, ev) && condizioniOk(state, data, p, ev.condizioni));
   while (scelti.length < quanti) {
     const liberi = validi.filter((ev) => !scelti.some((s) => s.evento === ev.id));
-    const ev = pesato(state, liberi, (x) => rilevanza(p, x));
+    const ev = pesato(state, liberi, (x) => rilevanza(state, p, x));
     if (!ev) break;
     scelti.push({ evento: ev.id });
   }
@@ -234,6 +264,35 @@ export function applicaEffetti(state, data, p, effetti = {}) {
   if (effetti.tratto) righe.push(aggiungiTratto(state, data, p, effetti.tratto));
   if (effetti.tratto_rimuovi) p.tratti = p.tratti.filter((t) => t !== effetti.tratto_rimuovi);
   if (effetti.ricordo) aggiungiRicordo(state, data, p, effetti.ricordo);
+  // vita di coppia e figli
+  if (effetti.partner === "nuovo") righe.push(nuovoPartner(state, data, p));
+  if (effetti.convivenza) righe.push(convivenza(state, data, p));
+  if (effetti.matrimonio) righe.push(matrimonio(state, data, p));
+  if (effetti.separazione) righe.push(separazione(state, data, p));
+  if (effetti.figlio) righe.push(nasceFiglio(state, data, p));
+  if (effetti.accogli_genitore) righe.push(accogliGenitore(state, data, p));
+  if (effetti.al_figlio) {
+    const f = figlioPiuGiovane(state, p);
+    if (f) {
+      for (const k of STAT) if (typeof effetti.al_figlio[k] === "number") f.stat[k] = limita(Math.round(f.stat[k] + effetti.al_figlio[k]), 0, 100);
+      if (typeof effetti.al_figlio.voti === "number") f.istruzione.voti = f.istruzione.livello === "universita" ? limita(f.istruzione.voti + effetti.al_figlio.voti * 2, 18, 30) : limita(f.istruzione.voti + effetti.al_figlio.voti, 3, 10);
+      if (typeof effetti.al_figlio.risparmi === "number") f.economia.risparmi = euro(f.economia.risparmi + effetti.al_figlio.risparmi * indice);
+      if (effetti.al_figlio.tratto) righe.push(aggiungiTratto(state, data, f, effetti.al_figlio.tratto)?.replace("Diventa", `${f.nome} diventa`));
+    }
+  }
+  if (effetti.riduci_lavoro && p.carriera.lavoro) p.carriera.part_time = true;
+  if (effetti.torna_tempo_pieno && p.carriera.lavoro) p.carriera.part_time = false;
+  // azienda di famiglia
+  if (effetti.entra_azienda) righe.push(entraInAzienda(state, data, p));
+  if (effetti.rileva_azienda) righe.push(rilevaAzienda(state, data, p));
+  if (effetti.cedi_azienda) righe.push(cediAzienda(state, data, p));
+  if (effetti.vendi_azienda) righe.push(vendiAzienda(state, data, p));
+  if (typeof effetti.fonda_azienda === "number") righe.push(fondaAzienda(state, data, p, effetti.fonda_azienda));
+  if (effetti.azienda) modificaAzienda(state, p, effetti.azienda);
+  if (typeof effetti.casa_valore === "number") {
+    const casa = state.case[state.nuclei[p.nucleo]?.casa];
+    if (casa?.proprietari.includes(p.id)) casa.valore = euro(casa.valore + effetti.casa_valore * indice);
+  }
   for (const f of comeLista(effetti.flag ?? [])) p.flags[f] = state.world.anno;
   for (const f of comeLista(effetti.flag_rimuovi ?? [])) delete p.flags[f];
   for (const r of comeLista(effetti.relazione ?? [])) {

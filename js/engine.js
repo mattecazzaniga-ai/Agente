@@ -5,9 +5,10 @@
 
 import { casuale, normale, probabile, scegli } from "./rng.js";
 import { eta, euro, limita, titoloAlmeno } from "./util.js";
-import { giocatore, personeVive, vive } from "./state.js";
+import { controllate, giocatore, personeVive, vive } from "./state.js";
 import { annota, segnaposto } from "./family.js";
-import { aggiornaAziende, aggiornaIndici, avviaNaspi, bilancioNucleo, eredita, interessi, mantenimenti, patrimonio, rivalutaCase, rivalutaPensione, vaInPensione } from "./economy.js";
+import { aggiornaAziende, aggiornaIndici, avviaNaspi, bilancioNucleo, caseVuote, esdebitazione, vendiCasePerDebiti, eredita, interessi, mantenimenti, patrimonio, pulisciNuclei, rivalutaCase, rivalutaPensione, vaInPensione } from "./economy.js";
+import { candidatiErede, controllabile, MAX_CONTROLLATI, vitaPrivata } from "./dinastia.js";
 import { assumi, iscriviSuperiori, licenzia, lasciaStudi, aggiungiRicordo } from "./azioni.js";
 import { condizioniOk, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoEvento, testoScelta, titoloEvento } from "./events.js";
 
@@ -15,19 +16,42 @@ import { condizioniOk, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoE
 // Inizio anno: eventi per le persone controllate dal giocatore
 // ---------------------------------------------------------------------------
 
-/** Prepara gli eventi dell'anno per il personaggio giocato (FASE 1: una persona alla volta). */
+/**
+ * Prepara la coda degli eventi dell'anno: per il personaggio principale fino a 3 eventi,
+ * per ogni altro personaggio controllato (FASE 4) fino a 2, più gli eventi di passaggio.
+ */
 export function iniziaAnno(state, data) {
-  const p = giocatore(state);
   state.world.eventi_anno = [];
-  if (!vive(p)) return state.world.eventi_anno;
-  const scelti = [...obbligatori(state, data, p), ...scegliEventiAnno(state, data, p)];
+  sincronizzaControllo(state);
+  for (const p of controllate(state)) eventiPersona(state, data, p);
+  return state.world.eventi_anno;
+}
+
+/** Aggiunge alla coda gli eventi dell'anno di una persona controllata. */
+function eventiPersona(state, data, p) {
+  const massimo = p.id === state.giocatore ? 3 : 2;
+  const scelti = [...obbligatori(state, data, p), ...scegliEventiAnno(state, data, p, massimo)];
   const visti = new Set();
   for (const s of scelti) {
     if (visti.has(s.evento)) continue;
     visti.add(s.evento);
     state.world.eventi_anno.push({ persona: p.id, evento: s.evento, variante: s.variante ?? 0, risolto: false, scelta: null, esito: null });
   }
-  return state.world.eventi_anno;
+}
+
+/** Il campo `controllo` di ogni persona rispecchia la lista dei controllati. */
+function sincronizzaControllo(state) {
+  state.controllati = [state.giocatore, ...(state.controllati ?? []).filter((id) => id !== state.giocatore)].filter((id) => vive(state.persone[id]) || id === state.giocatore);
+  const attivi = new Set(state.controllati);
+  for (const p of Object.values(state.persone)) p.controllo = attivi.has(p.id) ? "giocatore" : "automatico";
+}
+
+/** Risolve in automatico gli eventi ancora aperti di una persona (quando esce dal controllo). */
+function chiudiEventi(state, data, idPersona) {
+  for (let i = 0; i < state.world.eventi_anno.length; i++) {
+    const e = state.world.eventi_anno[i];
+    if (!e.risolto && e.persona === idPersona) risolviEvento(state, data, i, sceltaAutomatica(state, data, state.persone[e.persona], e.evento));
+  }
 }
 
 /** Eventi di passaggio (scelta delle superiori, dopo il diploma…) che non possono mancare. */
@@ -64,6 +88,68 @@ export function risolviEvento(state, data, indice, idScelta) {
 /** "Titolo:" oppure "Titolo?" se il titolo finisce già con una punteggiatura. */
 const conDuePunti = (titolo) => (/[?!.]$/.test(titolo) ? titolo : `${titolo}:`);
 
+// ---------------------------------------------------------------------------
+// Erede e controllo dei personaggi (FASE 2-4)
+// ---------------------------------------------------------------------------
+
+/** Dopo la morte del principale, la storia continua con la persona scelta. */
+export function continuaCon(state, data, id) {
+  const p = state.persone[id];
+  if (state.world.fase !== "erede" || !vive(p)) throw new Error("Non si può continuare con questa persona.");
+  state.giocatore = id;
+  state.controllati = [id, ...(state.controllati ?? []).filter((x) => x !== id && vive(state.persone[x]))];
+  state.dinastia.giocati.push({ id, dal: state.world.anno, al: null });
+  state.dinastia.generazione = Math.max(state.dinastia.generazione, p.generazione ?? state.dinastia.generazione);
+  state.world.fase = "gioco";
+  annota(state, p, `La storia della famiglia continua con ${p.nome}.`);
+  iniziaAnno(state, data);
+  return p;
+}
+
+/** FASE 3: gioca come un'altra persona della famiglia (il precedente torna automatico). */
+export function cambiaPrincipale(state, data, id) {
+  const p = state.persone[id];
+  if (state.world.fase !== "gioco" || !controllabile(state, p) || id === state.giocatore) throw new Error("Non puoi giocare come questa persona.");
+  const prima = state.giocatore;
+  chiudiEventi(state, data, prima);
+  const ultimo = state.dinastia.giocati.at(-1);
+  if (ultimo && ultimo.id === prima) ultimo.al = state.world.anno;
+  state.dinastia.giocati.push({ id, dal: state.world.anno, al: null });
+  const giaControllata = state.controllati.includes(id);
+  state.giocatore = id;
+  state.controllati = [id, ...state.controllati.filter((x) => x !== id && x !== prima)];
+  sincronizzaControllo(state);
+  if (!giaControllata) eventiPersona(state, data, p);
+  return p;
+}
+
+/** FASE 4: aggiunge o toglie una persona dai personaggi controllati (al massimo 4). */
+export function impostaControllo(state, data, id, attivo) {
+  const p = state.persone[id];
+  if (state.world.fase !== "gioco") throw new Error("La partita non è in corso.");
+  if (attivo) {
+    if (state.controllati.includes(id)) return;
+    if (!controllabile(state, p)) throw new Error("Questa persona non si può controllare.");
+    if (state.controllati.length >= MAX_CONTROLLATI) throw new Error(`Puoi controllare al massimo ${MAX_CONTROLLATI} persone.`);
+    state.controllati.push(id);
+    sincronizzaControllo(state);
+    if (!state.world.eventi_anno.some((e) => e.persona === id)) eventiPersona(state, data, p);
+  } else {
+    if (id === state.giocatore) throw new Error("Il personaggio principale resta sempre controllato.");
+    chiudiEventi(state, data, id);
+    state.controllati = state.controllati.filter((x) => x !== id);
+    sincronizzaControllo(state);
+  }
+}
+
+/** Risolve in automatico, secondo i tratti, tutti gli eventi ancora aperti dell'anno. */
+export function risolviTuttoInAutomatico(state, data) {
+  for (let i = 0; i < state.world.eventi_anno.length && i < 30; i++) {
+    const e = state.world.eventi_anno[i];
+    if (!e.risolto) risolviEvento(state, data, i, sceltaAutomatica(state, data, state.persone[e.persona], e.evento));
+  }
+}
+
 export const eventiDaRisolvere = (state) => state.world.eventi_anno.filter((e) => !e.risolto);
 
 // ---------------------------------------------------------------------------
@@ -84,8 +170,12 @@ export function fineAnno(state, data) {
     if (!e.risolto) risolviEvento(state, data, i, sceltaAutomatica(state, data, state.persone[e.persona], e.evento));
   }
 
-  // 2. le altre persone vivono il loro anno da sole
-  for (const p of personeVive(state)) if (p.controllo !== "giocatore") eventiAutomatici(state, data, p);
+  // 2. le altre persone vivono il loro anno da sole: eventi e vita privata (coppie, figli, uscita di casa)
+  for (const p of personeVive(state)) {
+    if (p.controllo !== "giocatore") eventiAutomatici(state, data, p);
+    for (const riga of vitaPrivata(state, data, p)) annota(state, p, riga);
+  }
+  pulisciNuclei(state);
 
   // 3. regole di vita: scuola, lavoro, benessere
   aggiornaIndici(state);
@@ -103,10 +193,16 @@ export function fineAnno(state, data) {
     interessi(p);
     rivalutaPensione(state, p);
   }
+  caseVuote(state);
+  for (const { persona, testo } of vendiCasePerDebiti(state)) annota(state, persona, testo);
+  for (const p of esdebitazione(state, data)) {
+    annota(state, p, "Debiti impossibili da ripagare: il tribunale concede l'esdebitazione. Si riparte quasi da zero.");
+    aggiungiRicordo(state, data, p, "debiti_giovane");
+  }
   rivalutaCase(state);
   for (const { azienda } of aggiornaAziende(state)) {
     for (const p of personeVive(state)) {
-      if (p.cognome === state.famiglia.cognome || p.id === azienda.proprietario) {
+      if (p.id === azienda.proprietario || (p.sangue && (p.id === state.giocatore || state.persone[azienda.proprietario]?.figli.includes(p.id)))) {
         aggiungiRicordo(state, data, p, "fallimento_azienda");
         annota(state, p, `${azienda.nome} chiude: troppi anni in perdita.`);
       }
@@ -118,26 +214,36 @@ export function fineAnno(state, data) {
   for (const p of personeVive(state)) {
     if (probabile(state, probabilitaMorte(state, p))) muori(state, data, p);
   }
+  // chi è morto prima di quest'anno viene archiviato (il salvataggio resta piccolo anche dopo secoli)
+  for (const p of Object.values(state.persone)) if (p.anno_morte != null && p.anno_morte < anno && !p.archiviato) archivia(state, p);
 
   // 6. storico e reputazione del cognome
   for (const p of personeVive(state)) {
+    // chi non è mai stato giocato tiene gli ultimi 40 anni di diario
+    if (p.diario.length > 40 && !(state.dinastia?.giocati ?? []).some((g) => g.id === p.id)) p.diario.splice(0, p.diario.length - 40);
+    if (!p.sangue && !state.controllati.includes(p.id)) continue; // lo storico serve solo per la famiglia di sangue
     p.storico_patrimonio.push({ anno, valore: patrimonio(state, p) });
     if (p.storico_patrimonio.length > 130) p.storico_patrimonio.shift();
   }
-  const adulti = personeVive(state).filter((p) => eta(p, anno) >= 18 && p.cognome === state.famiglia.cognome);
+  const adulti = personeVive(state).filter((p) => eta(p, anno) >= 18 && p.sangue);
   if (adulti.length) {
     const media = adulti.reduce((s, p) => s + p.stat.reputazione, 0) / adulti.length;
     state.famiglia.reputazione = limita(Math.round(state.famiglia.reputazione + (media - state.famiglia.reputazione) * 0.05), 0, 100);
   }
 
-  const riepilogo = io.diario.find((d) => d.anno === anno)?.righe ?? [];
-  state.world.ultimo_riepilogo = { anno, righe: [...riepilogo] };
+  const righeDi = (p) => [...(p.diario.find((d) => d.anno === anno)?.righe ?? [])];
+  const altri = (state.controllati ?? []).filter((id) => id !== io.id).map((id) => state.persone[id]).filter(Boolean);
+  state.world.ultimo_riepilogo = { anno, righe: righeDi(io), altri: altri.map((p) => ({ id: p.id, nome: p.nome, righe: righeDi(p) })) };
+  // chi muore esce dal controllo (il principale resta finché non si sceglie l'erede)
+  state.controllati = (state.controllati ?? []).filter((id) => id === io.id || vive(state.persone[id]));
 
   // 7. anno nuovo
   state.world.anno = anno + 1;
   if (!vive(io)) {
-    state.world.fase = "fine";
+    const ultimo = state.dinastia.giocati.at(-1);
+    if (ultimo && ultimo.id === io.id) ultimo.al = io.anno_morte;
     state.world.eventi_anno = [];
+    state.world.fase = candidatiErede(state, io).length ? "erede" : "fine";
   } else iniziaAnno(state, data);
   return state.world.ultimo_riepilogo;
 }
@@ -182,7 +288,7 @@ function scuola(state, data, p) {
 
   const difficolta = i.livello === "superiori" ? (data.superiore[i.indirizzo]?.difficolta ?? 2) : 1;
   const obiettivo =
-    6.4 + modificatore(data, p, "studio") + (p.stat.morale - 55) / 40 + (45 - p.stat.stanchezza) / 60 - (p.stat.salute < 40 ? 0.6 : 0) - (difficolta - 2) * 0.35 + normale(state, 0, 0.45);
+    6.4 + modificatore(data, p, "studio") + (p.flags.talento ? 0.7 : 0) + (p.stat.morale - 55) / 40 + (45 - p.stat.stanchezza) / 60 - (p.stat.salute < 40 ? 0.6 : 0) - (difficolta - 2) * 0.35 + normale(state, 0, 0.45);
   i.voti = limita(Math.round((i.voti + (obiettivo - i.voti) * 0.45) * 10) / 10, 3, 10);
 
   const soglia = i.livello === "elementari" ? 4.2 : i.livello === "medie" ? 5.2 : 5.5;
@@ -301,7 +407,8 @@ function lavoro(state, data, p) {
   // senza lavoro: lo cerca se non studia
   if (p.istruzione.iscritto) return;
   const bonusTitolo = { nessuno: -0.08, licenza_elementare: -0.08, licenza_media: 0, diploma: 0.06, laurea_triennale: 0.12, laurea_magistrale: 0.15 }[p.istruzione.titolo];
-  const probabilita = limita(0.6 - (regione.disoccupazione / 100) * 1.8 + bonusTitolo + modificatore(data, p, "carriera") * 0.5 + (p.stat.reputazione - 50) / 250, 0.12, 0.9);
+  const cognome = p.sangue ? (state.famiglia.reputazione - 50) / 300 : 0; // un cognome stimato apre qualche porta
+  const probabilita = limita(0.6 - (regione.disoccupazione / 100) * 1.8 + bonusTitolo + modificatore(data, p, "carriera") * 0.5 + (p.stat.reputazione - 50) / 250 + cognome, 0.12, 0.9);
   if (probabile(state, probabilita)) annota(state, p, assumi(state, data, p, "casuale"));
 }
 
@@ -400,6 +507,20 @@ export function muori(state, data, p, causa = null) {
     c.stat.morale = limita(c.stat.morale - 20, 0, 100);
     annota(state, c, `Muore ${p.nome}: ${c.nome} resta ${c.sesso === "F" ? "vedova" : "vedovo"}.`);
   }
+}
+
+/**
+ * Alleggerisce una persona morta: niente più relazioni né eventi usati; chi non è mai stato
+ * personaggio principale conserva solo gli ultimi anni di diario e uno storico ridotto.
+ */
+export function archivia(state, p) {
+  p.archiviato = true;
+  delete state.world.eventi_usati[p.id];
+  state.relazioni = state.relazioni.filter((r) => r.da !== p.id && r.a !== p.id);
+  const giocato = (state.dinastia?.giocati ?? []).some((g) => g.id === p.id);
+  if (giocato) return;
+  p.diario = p.diario.slice(-5);
+  p.storico_patrimonio = p.storico_patrimonio.filter((x, i, a) => i % 10 === 0 || i === a.length - 1);
 }
 
 /** Riassunto di una riga per l'anno di una persona non giocata. */

@@ -23,7 +23,7 @@ export function scegliTratti(state, data, preferiti = [], quanti = null) {
   return scelti;
 }
 
-function scegliNome(state, data, sesso) {
+export function scegliNome(state, data, sesso) {
   return scegli(state, sesso === "F" ? data.nomi.femminili : data.nomi.maschili);
 }
 
@@ -215,6 +215,14 @@ export function generaFamiglia(data, seed) {
     proprietario.carriera.lavoro = null; // lavora nella propria azienda: il reddito è l'utile
     proprietario.carriera.imprenditore = true;
   }
+
+  // tutta la famiglia di partenza è "di sangue": genitori = generazione 0, figli = generazione 1
+  for (const p of Object.values(state.persone)) {
+    p.sangue = true;
+    p.generazione = p.id === madre.id || p.id === padre.id ? 0 : 1;
+  }
+  state.controllati = [io.id];
+  state.dinastia = { generazione: 1, giocati: [{ id: io.id, dal: ANNO_INIZIO, al: null }] };
 
   annota(state, io, riempi(scegli(state, G.infanzia), { nome: io.nome, citta, ...genere(io) }));
   annota(state, io, `Primo giorno di scuola alle elementari di ${citta}.`);

@@ -1,0 +1,136 @@
+{
+  "tema": "azienda",
+  "eventi": [
+    {
+      "id": "azienda_entrare",
+      "tema": "azienda",
+      "titolo": "Un posto in azienda",
+      "condizioni": { "eta": [19, 40], "genitore_titolare": true, "in_azienda": false, "iscritto": false },
+      "peso": 8,
+      "testi": [
+        "A cena {genitore} lo dice senza giri di parole: «L'azienda ha bisogno di te. Prima o poi toccherà a te mandarla avanti.»",
+        "In azienda il socio storico va in pensione. Tutti, in famiglia, guardano te."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Entri in azienda", "tratti_favoriti": ["prudente", "generoso", "ambizioso"], "tratti_sfavoriti": ["indipendente"], "effetti": { "entra_azienda": true, "relazione": { "con": "genitore", "delta": 10 }, "reputazione_famiglia": 1 }, "esito": "La prima settimana capisci quante cose non sapevi." },
+        { "id": "b", "testo": "Vuoi costruire qualcosa di tuo", "tratti_favoriti": ["indipendente", "creativo"], "effetti": { "relazione": { "con": "genitore", "delta": -8 }, "morale": 2 }, "esito": "Non la prendono bene. Ma ti rispettano." }
+      ]
+    },
+    {
+      "id": "azienda_rilevare",
+      "tema": "azienda",
+      "titolo": "Il passaggio di testimone",
+      "condizioni": { "eta": [28, 60], "in_azienda": true, "genitore_titolare": true, "genitore_eta_min": 62 },
+      "peso": 8,
+      "testi": [
+        "{genitore} ti chiama in ufficio e chiude la porta. «Ho dato abbastanza. Da gennaio la firma la metti tu.»",
+        "Il commercialista vi convoca entrambi: è il momento di decidere chi guiderà l'azienda nei prossimi vent'anni."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Prendi in mano l'azienda", "tratti_favoriti": ["ambizioso", "sicuro"], "effetti": { "rileva_azienda": true, "stanchezza": 8, "morale": 6, "reputazione": 4 }, "esito": "La prima busta paga che firmi è quella degli altri." },
+        { "id": "b", "testo": "Non ancora: hai bisogno di tempo", "tratti_favoriti": ["insicuro", "prudente"], "effetti": { "relazione": { "con": "genitore", "delta": -3 } }, "esito": "{genitore} resta al comando ancora un po'." }
+      ]
+    },
+    {
+      "id": "azienda_crisi",
+      "tema": "azienda",
+      "titolo": "L'azienda è in crisi",
+      "condizioni": { "eta": [25, 80], "titolare": true, "azienda_salute_max": 45 },
+      "peso": 9,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Il fatturato è calato per il terzo trimestre di fila. Il commercialista ha la faccia scura: «Bisogna fare qualcosa, e subito.»",
+        "Un cliente importante non paga da sei mesi e la banca chiede di rientrare dal fido."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Metti i tuoi risparmi nell'azienda", "requisiti": { "risparmi_min": 20000 }, "tratti_favoriti": ["generoso", "ambizioso"], "effetti": { "risparmi": -20000, "azienda": { "salute": 25, "valore": 10000 }, "stanchezza": 6 }, "esito": "Notti insonni, ma l'azienda respira." },
+        { "id": "b", "testo": "Chiedi un prestito alla banca", "tratti_favoriti": ["impulsivo", "sicuro"], "effetti": { "debiti": 30000, "azienda": { "salute": 22, "valore": 12000 } }, "esito": "Soldi freschi. E una rata in più ogni mese." },
+        { "id": "c", "testo": "Tagli i costi e riduci il personale", "tratti_favoriti": ["egoista", "prudente"], "effetti": { "azienda": { "salute": 15, "crescita": -0.1 }, "reputazione": -6, "reputazione_famiglia": -2, "morale": -6 }, "esito": "I conti tornano. Le facce in paese un po' meno." },
+        { "id": "d", "testo": "Tieni duro e speri che passi", "tratti_favoriti": ["pigro", "insicuro"], "effetti": { "azienda": { "salute": -6 }, "morale": -3 }, "esito": "Non passa." }
+      ]
+    },
+    {
+      "id": "azienda_espansione",
+      "tema": "azienda",
+      "titolo": "Crescere?",
+      "condizioni": { "eta": [28, 70], "titolare": true, "azienda_salute_min": 60 },
+      "peso": 6,
+      "ripetibile": true,
+      "intervallo": 6,
+      "testi": [
+        "Gli affari vanno bene. Si libera un capannone vicino: con una seconda sede potreste raddoppiare.",
+        "Un distributore del Nord vi propone di portare i vostri prodotti in cento negozi. Serve investire."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Investi e cresci", "tratti_favoriti": ["ambizioso", "impulsivo", "sicuro"], "effetti": { "debiti": 60000, "azienda": { "crescita": 0.35, "salute": -8, "valore": 60000 }, "stanchezza": 10, "reputazione_famiglia": 3 }, "esito": "Il nome di famiglia arriva dove non era mai arrivato." },
+        { "id": "b", "testo": "Crescete piano, senza debiti", "tratti_favoriti": ["prudente"], "effetti": { "azienda": { "crescita": 0.08, "salute": 4 } }, "esito": "Un passo alla volta, come hai sempre fatto." },
+        { "id": "c", "testo": "Va bene così", "tratti_favoriti": ["pigro", "solitario"], "effetti": { "felicita": 2 }, "esito": "Non tutto deve diventare più grande." }
+      ]
+    },
+    {
+      "id": "azienda_offerta",
+      "tema": "azienda",
+      "titolo": "Un'offerta per l'azienda",
+      "condizioni": { "eta": [40, 85], "titolare": true },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 8,
+      "testi": [
+        "Un gruppo straniero vuole comprare l'azienda. L'offerta è seria e i soldi sono veri.",
+        "Un concorrente più grande ti invita a pranzo e mette sul tavolo un numero con molti zeri."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Vendi", "tratti_favoriti": ["egoista", "prudente", "indipendente"], "effetti": { "vendi_azienda": true, "reputazione_famiglia": -4, "felicita": 4 }, "esito": "Firmi. Per la prima volta in vita tua, il lunedì è libero." },
+        { "id": "b", "testo": "L'azienda di famiglia non si vende", "tratti_favoriti": ["generoso", "ambizioso"], "effetti": { "reputazione_famiglia": 3, "morale": 3 }, "esito": "In paese si viene a sapere. E ti stimano di più." }
+      ]
+    },
+    {
+      "id": "azienda_successione",
+      "tema": "azienda",
+      "titolo": "A chi lasciare l'azienda?",
+      "condizioni": { "eta": [62, 90], "titolare": true, "figli_adulti": true },
+      "peso": 7,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Non hai più l'energia di una volta. {figlio_maggiore} potrebbe prendere il tuo posto, se glielo chiedi.",
+        "Il commercialista insiste: «Il passaggio generazionale va preparato, non improvvisato.»"
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Passi l'azienda ai figli", "tratti_favoriti": ["generoso", "prudente"], "effetti": { "cedi_azienda": true, "stanchezza": -12, "felicita": 4, "relazione": { "con": "figlio_maggiore", "delta": 8 } }, "esito": "Il primo giorno passi in azienda «solo per vedere». Ci resti fino a sera." },
+        { "id": "b", "testo": "Continui tu, finché ce la fai", "tratti_favoriti": ["ambizioso", "egoista"], "effetti": { "stanchezza": 5 }, "esito": "Nessuno la conosce come te." }
+      ]
+    },
+    {
+      "id": "impresa_fondare",
+      "tema": "azienda",
+      "titolo": "Mettersi in proprio",
+      "condizioni": { "eta": [26, 55], "titolare": false, "risparmi_min": 25000, "iscritto": false },
+      "peso": 4,
+      "testi": [
+        "Da anni pensi che potresti fare il tuo lavoro meglio da sol{o}. Il locale sotto casa è in affitto.",
+        "Un amico ti propone di aprire un'attività insieme. Servono i tuoi risparmi, quasi tutti."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Apri un'attività tutta tua", "tratti_favoriti": ["ambizioso", "indipendente", "impulsivo"], "tratti_sfavoriti": ["prudente", "insicuro"], "effetti": { "fonda_azienda": 25000, "stanchezza": 12, "morale": 6 }, "esito": "Il giorno dell'inaugurazione vengono tutti, anche la zia che non vedevi da anni." },
+        { "id": "b", "testo": "Troppo rischio", "tratti_favoriti": ["prudente", "insicuro"], "effetti": { "morale": -2 }, "esito": "Lo stipendio fisso ha il suo fascino." }
+      ]
+    },
+    {
+      "id": "azienda_digitale",
+      "tema": "azienda",
+      "titolo": "Vendere online",
+      "condizioni": { "eta": [25, 75], "titolare": true },
+      "peso": 3,
+      "testi": [
+        "{figlio_maggiore} ti spiega per l'ennesima volta che senza un sito e i social l'azienda resterà indietro.",
+        "Un concorrente ha aperto il negozio online e ti sta portando via i clienti giovani."
+      ],
+      "scelte": [
+        { "id": "a", "testo": "Investi nel digitale", "requisiti": { "risparmi_min": 8000 }, "tratti_favoriti": ["creativo", "ambizioso"], "effetti": { "risparmi": -8000, "azienda": { "crescita": 0.12, "salute": 8, "valore": 6000 } }, "esito": "I primi ordini arrivano da città che non hai mai visto." },
+        { "id": "b", "testo": "I clienti veri vengono in negozio", "tratti_favoriti": ["prudente", "pigro"], "effetti": { "azienda": { "salute": -4 } }, "esito": "Per ora. Ma per quanto?" }
+      ]
+    }
+  ]
+}

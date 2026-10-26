@@ -11,7 +11,7 @@ export function esc(x) {
 export function soldi(x, { segno = false } = {}) {
   const classe = segno ? (x > 0 ? "positivo" : x < 0 ? "negativo" : "") : "";
   const testo = segno && x > 0 ? `+${formatoEuro(x)}` : formatoEuro(x);
-  return `<span class="${classe}">${esc(testo)}</span>`;
+  return `<span class="importo ${classe}">${esc(testo)}</span>`;
 }
 
 /** Iniziali per l'avatar. */

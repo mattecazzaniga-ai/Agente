@@ -194,7 +194,8 @@ p { margin: 0; }
 .voci { display: flex; flex-direction: column; }
 .voce { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--bordo); font-size: 15px; }
 .voce:last-child { border-bottom: 0; }
-.voce span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.voce > span:last-child { text-align: right; }
+.importo { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .voce.forte { font-weight: 700; }
 .griglia-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .box { background: var(--superficie-2); border-radius: var(--raggio-piccolo); padding: 10px 12px; }
@@ -239,6 +240,57 @@ p { margin: 0; }
 .famiglia-nome { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
 .campo { display: flex; gap: 8px; align-items: center; }
 .campo input { flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px; border-radius: var(--raggio-piccolo); border: 1.5px solid var(--bordo); background: var(--superficie-2); }
+
+/* ---------- Più personaggi (FASE 4) ---------- */
+.coda { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.coda::-webkit-scrollbar { display: none; }
+.coda-voce { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--superficie); box-shadow: var(--ombra); font-size: 13px; color: var(--testo-2); white-space: nowrap; }
+.coda-voce .avatar { width: 26px; height: 26px; font-size: 11px; }
+.coda-voce.attiva { color: var(--testo); font-weight: 600; outline: 2px solid var(--primario-tenue); }
+.per-chi { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 8px 10px; border-radius: var(--raggio-piccolo); background: var(--primario-tenue); }
+.per-chi .avatar { width: 34px; height: 34px; font-size: 13px; }
+.per-chi b { display: block; font-size: 15px; }
+.per-chi span { font-size: 13px; color: var(--testo-2); }
+.evento.altro { border-top: 4px solid var(--primario); }
+.altro-anno { margin-top: 10px; font-size: 14px; }
+.altro-anno ul { margin: 2px 0 0; padding-left: 18px; }
+
+/* ---------- Erede ---------- */
+.candidato { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; padding: 12px; border: 1.5px solid var(--bordo); border-radius: var(--raggio-piccolo); background: var(--superficie-2); cursor: pointer; transition: border-color 0.15s ease, transform 0.12s ease; }
+.candidato:hover { border-color: var(--primario); }
+.candidato:active { transform: scale(0.99); }
+.candidato .avatar { width: 40px; height: 40px; font-size: 15px; }
+.candidato .info { flex: 1; min-width: 0; }
+.candidato .titolo { font-weight: 600; }
+.candidato .ruolo { font-size: 12px; font-weight: 600; color: var(--primario); text-transform: uppercase; letter-spacing: 0.04em; }
+.candidato .riga { font-size: 14px; color: var(--testo-2); }
+
+/* ---------- Albero genealogico (FASE 3) ---------- */
+.albero-scheda { padding-left: 0; padding-right: 0; }
+.albero-scheda h2, .albero-scheda .nota { padding: 0 18px; }
+.albero { overflow: auto; max-height: 62dvh; margin-top: 10px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.albero svg { display: block; }
+.l-coppia { stroke: var(--accento); stroke-width: 2.5; }
+.l-coppia.ex { stroke-dasharray: 4 4; opacity: 0.6; }
+.l-figlio { fill: none; stroke: var(--testo-2); stroke-width: 1.4; opacity: 0.55; }
+.nodo { cursor: pointer; outline: none; }
+.nodo .fondo { fill: var(--superficie); }
+.nodo .disco { fill: var(--primario-tenue); stroke: var(--superficie); stroke-width: 2; }
+.nodo.f .disco { fill: rgba(232, 168, 124, 0.25); }
+.nodo .anello { fill: none; stroke: transparent; stroke-width: 3; }
+.nodo.controllato .anello { stroke: var(--primario); }
+.nodo.principale .anello { stroke: var(--accento); stroke-width: 4; }
+.nodo.selezionato .disco { stroke: var(--testo); stroke-width: 2.5; }
+.nodo:focus-visible .disco { stroke: var(--primario); stroke-width: 3; }
+.nodo.acquisito .disco { stroke-dasharray: 3 3; stroke: var(--testo-2); }
+.nodo.morto { opacity: 0.5; }
+.nodo text { text-anchor: middle; fill: var(--testo); font-family: var(--carattere); }
+.nodo .iniziali { font-size: 13px; font-weight: 700; fill: var(--primario); }
+.nodo.f .iniziali { fill: #b8703f; }
+@media (prefers-color-scheme: dark) { .nodo.f .iniziali { fill: var(--accento); } }
+.nodo .nome-nodo { font-size: 12px; font-weight: 600; }
+.nodo .anni-nodo { font-size: 10px; fill: var(--testo-2); }
+.azioni-persona { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
 
 /* ---------- Impostazioni ---------- */
 .impostazioni .bottone + .bottone { margin-top: 10px; }

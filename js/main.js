@@ -3,7 +3,7 @@
 
 import { caricaDati } from "./data.js";
 import { generaFamiglia } from "./generator.js";
-import { iniziaAnno, fineAnno, risolviEvento } from "./engine.js";
+import { iniziaAnno, fineAnno, risolviEvento, continuaCon, cambiaPrincipale, impostaControllo, risolviTuttoInAutomatico } from "./engine.js";
 import { carica, cancella, esporta, importa, salva } from "./state.js";
 import { seedDa } from "./rng.js";
 import { vistaFamiglia, vistaGeneratore, vistaImpostazioni, vistaSoldi, vistaVita } from "./vista.js";
@@ -23,6 +23,7 @@ const app = {
   bozza: null, // famiglia proposta dal generatore, non ancora iniziata
   schermata: "generatore",
   barre: {}, // ultimi valori disegnati delle statistiche, per animarle
+  selezionato: null, // persona toccata nell'albero
 };
 
 const nuovoSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000_000;
@@ -48,9 +49,23 @@ function disegna({ inCima = false } = {}) {
     animaBarre(schermo);
     app.barre = Object.fromEntries(v.stat.map((x) => [x.id, x.valore]));
   } else if (s === "soldi") schermo.innerHTML = Soldi.disegna(vistaSoldi(partita, dati));
-  else if (s === "famiglia") schermo.innerHTML = Famiglia.disegna(vistaFamiglia(partita, dati));
+  else if (s === "famiglia") {
+    schermo.innerHTML = Famiglia.disegna(vistaFamiglia(partita, dati, app.selezionato));
+    centraAlbero();
+  }
   else if (s === "impostazioni") schermo.innerHTML = Impostazioni.disegna(vistaImpostazioni(partita));
   if (inCima) window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+/** Porta in vista, nell'albero, la persona selezionata (o quella giocata). */
+function centraAlbero() {
+  const contenitore = document.getElementById("albero");
+  const nodo = contenitore?.querySelector(".nodo.selezionato") ?? contenitore?.querySelector(".nodo.principale");
+  if (!nodo) return;
+  const box = nodo.getBoundingClientRect();
+  const c = contenitore.getBoundingClientRect();
+  contenitore.scrollLeft += box.left + box.width / 2 - (c.left + c.width / 2);
+  contenitore.scrollTop += box.top + box.height / 2 - (c.top + c.height / 2);
 }
 
 function vai(schermata) {
@@ -96,6 +111,42 @@ const azioni = {
     salvaOra();
     disegna({ inCima: true });
   },
+  automatico: () => {
+    risolviTuttoInAutomatico(app.partita, app.dati);
+    salvaOra();
+    disegna();
+  },
+  continua: (el) => {
+    continuaCon(app.partita, app.dati, el.dataset.id);
+    app.barre = {};
+    app.selezionato = null;
+    salvaOra();
+    disegna({ inCima: true });
+  },
+  seleziona: (el) => {
+    app.selezionato = el.dataset.id;
+    disegna();
+    document.getElementById("scheda-persona")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  },
+  "gioca-come": (el) => {
+    cambiaPrincipale(app.partita, app.dati, el.dataset.id);
+    app.barre = {};
+    app.selezionato = null;
+    salvaOra();
+    avviso("Adesso giochi con questa persona.");
+    vai("vita");
+  },
+  controlla: (el) => {
+    impostaControllo(app.partita, app.dati, el.dataset.id, true);
+    salvaOra();
+    avviso("Da ora controlli anche questa persona: i suoi eventi arrivano in Vita.");
+    disegna();
+  },
+  rilascia: (el) => {
+    impostaControllo(app.partita, app.dati, el.dataset.id, false);
+    salvaOra();
+    disegna();
+  },
   nuova: () => {
     if (app.partita && app.partita.world.fase !== "fine" && !confirm("Iniziare una nuova partita? Quella attuale verrà cancellata (esportala prima se vuoi tenerla).")) return;
     cancella();
@@ -125,12 +176,20 @@ schermo.addEventListener("click", (e) => {
   }
 });
 
+// i nodi dell'albero si attivano anche da tastiera
+schermo.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".nodo[data-azione]")) {
+    e.preventDefault();
+    e.target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
+});
+
 schermo.addEventListener("change", async (e) => {
   if (e.target.id !== "file-import" || !e.target.files[0]) return;
   try {
     app.partita = importa(await e.target.files[0].text());
     app.barre = {};
-    if (app.partita.world.fase !== "fine" && !app.partita.world.eventi_anno.length) iniziaAnno(app.partita, app.dati);
+    if (app.partita.world.fase === "gioco" && !app.partita.world.eventi_anno.length) iniziaAnno(app.partita, app.dati);
     salvaOra();
     avviso("Partita importata.");
     vai("vita");
