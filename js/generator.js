@@ -28,7 +28,7 @@ export function scegliNome(state, data, sesso) {
 }
 
 /** Lavoro e anzianità di un genitore in base alla classe sociale. */
-function lavoroGenitore(state, data, classe, eta) {
+export function lavoroGenitore(state, data, classe, eta) {
   if (probabile(state, classe.disoccupato)) return { lavoro: null, anzianita: 0, anni_lavorati: Math.max(0, eta - 22 - intero(state, 2, 8)) };
   const possibili = classe.mestieri.map((id) => data.mestiere[id]).filter((m) => m && m.eta_min <= eta);
   const m = scegli(state, possibili);
@@ -36,7 +36,7 @@ function lavoroGenitore(state, data, classe, eta) {
   return { lavoro: m.id, anzianita: Math.min(anni, intero(state, 2, Math.max(2, anni))), anni_lavorati: anni };
 }
 
-function titoloPerLavoro(data, idLavoro, state) {
+export function titoloPerLavoro(data, idLavoro, state) {
   if (!idLavoro) return scegli(state, ["licenza_media", "diploma"]);
   const min = data.mestiere[idLavoro].titolo_min;
   return min === "nessuno" ? scegli(state, ["licenza_media", "licenza_media", "diploma"]) : min;

@@ -155,21 +155,39 @@ function fine(v, racconti) {
     <button class="bottone" data-azione="nuova">Nuova partita</button>`;
 }
 
+/** Riassunto degli anni saltati (FASE 9). */
+function anniSaltati(s) {
+  if (!s) return "";
+  const pieni = s.anni.filter((a) => a.righe.length);
+  return `<section class="scheda riepilogo salto">
+    <h2>Dal ${s.da} al ${s.a - 1}</h2>
+    ${pieni.length ? `<div class="diario">${pieni.map((a) => `<div><div class="anno">${a.anno}</div><ul>${a.righe.map((r) => `<li><b>${esc(r.chi)}:</b> ${esc(r.testo)}</li>`).join("")}</ul></div>`).join("")}</div>` : `<p class="tenue">Anni tranquilli.</p>`}
+    <button class="bottone secondario" style="margin-top:12px" data-azione="chiudi-salto">Ok</button>
+  </section>`;
+}
+
+/** Pulsanti per andare avanti di più anni lasciando decidere al carattere. */
+function salta() {
+  return `<div class="salta"><span class="etichetta">Salta avanti</span>${[5, 10, 20].map((n) => `<button class="mini" data-azione="salta" data-anni="${n}">${n} anni</button>`).join("")}</div>`;
+}
+
 /** `precedenti`: valori delle barre all'ultimo disegno, per animarle dal vecchio al nuovo. */
-export function disegna(v, precedenti = {}, racconti = () => null) {
-  if (v.fase === "erede") return erede(v, racconti);
-  if (v.fase === "fine") return fine(v, racconti);
+export function disegna(v, precedenti = {}, racconti = () => null, salto = null) {
+  if (v.fase === "erede") return `${anniSaltati(salto)}${erede(v, racconti)}`;
+  if (v.fase === "fine") return `${anniSaltati(salto)}${fine(v, racconti)}`;
   const prossimo = v.eventi[0];
   const totale = v.eventi.length + v.risolti.length;
   return `${testata(v)}
     ${coda(v)}
-    ${prossimo ? "" : riepilogo(v, racconti)}
+    ${anniSaltati(salto)}
+    ${prossimo || salto ? "" : riepilogo(v, racconti)}
     ${esitiAnno(v)}
     ${
       prossimo
         ? `${cartaEvento(prossimo, v.risolti.length + 1, totale, racconti)}${v.eventi.length > 1 ? `<button class="bottone secondario" data-azione="automatico">Lascia decidere gli altri ${v.eventi.length - 1} al carattere</button>` : ""}`
         : `<button class="bottone" data-azione="avanza">Vivi il ${v.anno} →</button>`
     }
+    ${salta()}
     <section class="scheda">
       <div class="barre">${v.stat.map((s) => barra(s, precedenti[s.id])).join("")}</div>
       <p class="tenue piccolo" style="margin-top:10px">${esc(v.stato_civile)} · ${esc(v.titolo)}</p>

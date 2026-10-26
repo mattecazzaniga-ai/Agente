@@ -149,6 +149,30 @@ export function impostaControllo(state, data, id, attivo) {
   }
 }
 
+/**
+ * Salta avanti di `anni` anni (FASE 9): ogni scelta la decide il carattere di ciascuno.
+ * Si ferma prima se muore il personaggio principale. Restituisce il riassunto degli anni passati.
+ */
+export function avanzaAnni(state, data, anni) {
+  const da = state.world.anno;
+  const anniFatti = [];
+  for (let i = 0; i < anni && state.world.fase === "gioco"; i++) {
+    risolviTuttoInAutomatico(state, data);
+    const anno = state.world.anno;
+    const chi = (state.controllati ?? []).map((id) => state.persone[id]).filter(Boolean);
+    const r = fineAnno(state, data);
+    const righe = [...(r.notizie ?? []).map((t) => ({ chi: "Italia", testo: t }))];
+    for (const p of chi) {
+      const voce = p.diario.find((d) => d.anno === anno);
+      // del diario si tengono i fatti (righe senza ":" sono i cambiamenti decisi dal motore)
+      const fatti = (voce?.righe ?? []).filter((t) => !t.includes(": ") || t.startsWith("Traguardo"));
+      for (const t of fatti.slice(0, p.id === state.giocatore ? 4 : 2)) righe.push({ chi: p.nome, testo: t });
+    }
+    anniFatti.push({ anno, righe });
+  }
+  return { da, a: state.world.anno, anni: anniFatti, fase: state.world.fase };
+}
+
 /** Risolve in automatico, secondo i tratti, tutti gli eventi ancora aperti dell'anno. */
 export function risolviTuttoInAutomatico(state, data) {
   for (let i = 0; i < state.world.eventi_anno.length && i < 30; i++) {

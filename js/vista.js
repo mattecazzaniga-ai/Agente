@@ -139,6 +139,7 @@ export function contestoNarrativo(state, data, p) {
     stato_civile: statoCivile(state, p),
     carattere: tratti(data, p).map((t) => t.nome),
     famiglia: `${NOMI_CLASSE[state.famiglia.agiatezza]} ${state.famiglia.cognome}`,
+    ...(state.famiglia.storia ? { storia_della_famiglia: state.famiglia.storia.slice(0, 500) } : {}),
     momento_in_italia: data.mondo?.congiuntura?.[state.world.mondo?.congiuntura]?.nome ?? "Anni normali",
     fatti_recenti: p.diario.slice(-2).flatMap((d) => d.righe).slice(-6),
   };
@@ -190,18 +191,35 @@ export function vistaGeneratore(state, data) {
   const io = giocatore(state);
   const nucleo = state.nuclei[io.nucleo];
   const casa = nucleo.casa ? state.case[nucleo.casa] : null;
-  const membri = [io, madre(state, io), padre(state, io), ...fratelli(state, io)].filter(Boolean);
+  const membri = [...new Set([io, state.persone[io.partner], ...io.figli.map((id) => state.persone[id]), madre(state, io), padre(state, io), ...fratelli(state, io)].filter(Boolean))];
   const azienda = Object.values(state.aziende)[0] ?? null;
-  const risparmi = membri.reduce((s, p) => s + p.economia.risparmi, 0);
-  const debiti = membri.reduce((s, p) => s + p.economia.debiti, 0);
-  const separati = madre(state, io)?.stato_civile === "separato";
+  const conviventi = membri.filter((p) => p.nucleo === io.nucleo && vive(p));
+  const risparmi = conviventi.reduce((s, p) => s + p.economia.risparmi, 0);
+  const debiti = conviventi.reduce((s, p) => s + p.economia.debiti, 0);
+  const separati = madre(state, io)?.stato_civile === "separato" && madre(state, io)?.nucleo === io.nucleo;
+  const controllati = new Set(state.controllati ?? []);
   return {
     cognome: state.famiglia.cognome,
     luogo: `${io.citta}, ${data.regione[io.regione].nome}`,
     classe: NOMI_CLASSE[state.famiglia.agiatezza],
     seed: state.world.seed,
     protagonista: { nome: io.nome, eta: eta(io, state.world.anno), sesso: io.sesso, tratti: tratti(data, io), infanzia: io.diario[0]?.righe[0] ?? "" },
-    membri: membri.map((p) => ({ id: p.id, sesso: p.sesso, nome: `${p.nome} ${p.cognome}`, ruolo: ruolo(state, io, p), eta: eta(p, state.world.anno), occupazione: occupazione(state, data, p), storia: p.storia ?? null, tratti: tratti(data, p).map((t) => t.nome) })),
+    raccontata: Boolean(state.famiglia.storia),
+    storia: state.famiglia.storia ?? "",
+    controllati: { quanti: controllati.size, massimo: MAX_CONTROLLATI },
+    membri: membri.map((p) => ({
+      id: p.id,
+      sesso: p.sesso,
+      nome: `${p.nome} ${p.cognome}`,
+      ruolo: ruolo(state, io, p),
+      eta: eta(p, state.world.anno),
+      vivo: vive(p),
+      occupazione: occupazione(state, data, p),
+      storia: p.storia ?? null,
+      tratti: tratti(data, p).map((t) => t.nome),
+      controllato: controllati.has(p.id),
+      controllabile: p.id !== io.id && vive(p) && eta(p, state.world.anno) >= 6,
+    })),
     note: [
       separati ? "I genitori sono separati: vivi con tua madre." : null,
       casa ? `${casa.nome} di proprietà${casa.mutuo_residuo > 0 ? `, mutuo residuo ${formatoEuro(casa.mutuo_residuo)}` : ""}` : "Casa in affitto",
@@ -210,6 +228,17 @@ export function vistaGeneratore(state, data) {
     casa: casa ? { nome: casa.nome, valore: casa.valore, mutuo: casa.mutuo_residuo } : null,
     risparmi,
     debiti,
+  };
+}
+
+/** Dati per il modulo "Racconta la tua famiglia" (FASE 9). */
+export function vistaRacconto(data, valori = {}, aiDisponibile = false) {
+  return {
+    valori,
+    ai: aiDisponibile,
+    regioni: data.regioni.map((r) => ({ id: r.id, nome: r.nome, citta: r.citta.map((c) => c.nome) })).sort((a, b) => a.nome.localeCompare(b.nome, "it")),
+    mestieri: data.mestieri.filter((m) => !m.solo_famiglia).map((m) => ({ id: m.id, nome: m.nome })).sort((a, b) => a.nome.localeCompare(b.nome, "it")),
+    tratti: data.tratti.map((t) => ({ id: t.id, nome: t.nome })),
   };
 }
 

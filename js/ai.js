@@ -195,7 +195,7 @@ export function creaNarratore({ fetch = globalThis.fetch?.bind(globalThis), stor
           return null;
         }
         ultimoErrore = null;
-        const valore = v.eventi ?? v.testo;
+        const valore = v.valore ?? v.eventi ?? v.testo;
         if (!chiave.startsWith("prova:")) memorizza(chiave, valore);
         return valore;
       } catch (e) {
@@ -243,6 +243,62 @@ Tipi di scelta disponibili: ${JSON.stringify(profili.map((p) => ({ tipo: p.id, s
       };
       const fonte = JSON.stringify(contesto);
       return richiedi(chiave, prompt, "eventi", fonte, {}, { schema, maxToken: 2000, convalida: (r) => convalidaEventi(r, fonte, ids) });
+    },
+
+    /**
+     * Legge il racconto di una famiglia scritto dal giocatore e compila una scheda strutturata
+     * (FASE 9). Solo valori presi dagli elenchi; il gioco poi la ripulisce con normalizzaDescrizione.
+     * `liste`: { regioni: [{id, nome, citta}], mestieri: [{id, nome}], tratti: [{id, nome}] }.
+     */
+    estraiFamiglia(chiave, racconto, liste) {
+      const vuoto = (xs) => ["", ...xs];
+      const persona = {
+        type: "OBJECT",
+        properties: {
+          ruolo: { type: "STRING", enum: ["protagonista", "madre", "padre", "fratello", "partner", "figlio"] },
+          nome: { type: "STRING" },
+          sesso: { type: "STRING", enum: ["", "M", "F"] },
+          eta: { type: "INTEGER" },
+          vivo: { type: "BOOLEAN" },
+          lavoro: { type: "STRING", enum: vuoto(liste.mestieri.map((m) => m.id)) },
+          titolo: { type: "STRING", enum: ["", "licenza_media", "diploma", "laurea_triennale", "laurea_magistrale"] },
+          tratti: { type: "ARRAY", items: { type: "STRING", enum: liste.tratti.map((t) => t.id) } },
+          titolare: { type: "BOOLEAN" },
+        },
+        required: ["ruolo", "nome"],
+      };
+      const schema = {
+        type: "OBJECT",
+        properties: {
+          cognome: { type: "STRING" },
+          regione: { type: "STRING", enum: vuoto(liste.regioni.map((r) => r.id)) },
+          citta: { type: "STRING" },
+          agiatezza: { type: "STRING", enum: ["", "precaria", "media", "agiata", "ricca"] },
+          casa: { type: "STRING", enum: ["", "proprieta", "affitto"] },
+          genitori_separati: { type: "BOOLEAN" },
+          azienda: { type: "STRING" },
+          persone: { type: "ARRAY", items: persona },
+        },
+        required: ["persone"],
+      };
+      const prompt = `Leggi il racconto di una famiglia italiana scritto da chi gioca e compila la scheda per iniziare la partita.
+Regole: il "protagonista" è chi racconta o il personaggio principale; madre e padre sono i suoi genitori; "fratello" vale anche per le sorelle; "partner" è il coniuge o compagno; "figlio" vale anche per le figlie.
+Usa solo i valori degli elenchi. Se un'informazione non c'è, lascia stringa vuota, oppure ometti età e campi booleani. Le età sono quelle di oggi. Il carattere (tratti) scegli solo se il racconto lo suggerisce chiaramente.
+Città: scegli tra le città della regione indicata, se il racconto ne nomina una vicina usa la più vicina dell'elenco.
+Lavoro: scegli il mestiere più simile tra quelli dell'elenco.
+Racconto: ${JSON.stringify(racconto.slice(0, 3000))}
+Regioni e città: ${JSON.stringify(liste.regioni)}
+Mestieri: ${JSON.stringify(liste.mestieri)}
+Tratti di carattere: ${JSON.stringify(liste.tratti)}`;
+      const convalida = (r) => {
+        try {
+          const o = JSON.parse(String(r).trim().replace(/^```(?:json)?\s*|\s*```$/g, ""));
+          return Array.isArray(o?.persone) && o.persone.length ? { ok: true, valore: o } : { ok: false, motivo: "scheda vuota" };
+        } catch {
+          return { ok: false, motivo: "risposta non in JSON" };
+        }
+      };
+      return richiedi(chiave, prompt, "persone", "", {}, { schema, maxToken: 2500, convalida });
     },
 
     /** Breve racconto dell'anno appena passato, dalle righe del diario. */

@@ -3,16 +3,18 @@
 
 import { caricaDati } from "./data.js";
 import { generaFamiglia } from "./generator.js";
-import { iniziaAnno, fineAnno, risolviEvento, continuaCon, cambiaPrincipale, impostaControllo, risolviTuttoInAutomatico } from "./engine.js";
+import { iniziaAnno, fineAnno, risolviEvento, continuaCon, cambiaPrincipale, impostaControllo, risolviTuttoInAutomatico, avanzaAnni } from "./engine.js";
+import { alternaControlloIniziale, descrizioneDaModulo, generaDaDescrizione } from "./racconto.js";
 import { carica, cancella, esporta, importa, salva } from "./state.js";
 import { seedDa } from "./rng.js";
-import { richiesteEventiAI, vistaFamiglia, vistaGeneratore, vistaImpostazioni, vistaSoldi, vistaVita } from "./vista.js";
+import { richiesteEventiAI, vistaFamiglia, vistaGeneratore, vistaImpostazioni, vistaRacconto, vistaSoldi, vistaVita } from "./vista.js";
 import { animaBarre, avviso } from "./ui/componenti.js";
 import * as Generatore from "./ui/generatore.js";
 import * as Vita from "./ui/vita.js";
 import * as Soldi from "./ui/soldi.js";
 import * as Famiglia from "./ui/famiglia.js";
 import * as Impostazioni from "./ui/impostazioni.js";
+import * as Racconto from "./ui/racconto.js";
 import { creaNarratore } from "./ai.js";
 import { preparaEventiAI } from "./eventi_ai.js";
 
@@ -26,6 +28,9 @@ const app = {
   schermata: "generatore",
   barre: {}, // ultimi valori disegnati delle statistiche, per animarle
   selezionato: null, // persona toccata nell'albero
+  descrizione: null, // famiglia raccontata dal giocatore (FASE 9), per rigenerare i dettagli
+  valoriRacconto: {}, // ultimi valori del modulo "La tua famiglia"
+  salto: null, // riassunto dell'ultimo "salta avanti"
 };
 
 // Narratore AI (FASE 5): facoltativo, la chiave resta in questo browser. Senza, si usano i testi del gioco.
@@ -40,17 +45,19 @@ const nuovoSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_00
 function disegna({ inCima = false } = {}) {
   const { dati, partita } = app;
   const s = app.schermata;
-  document.body.classList.toggle("senza-nav", s === "generatore");
-  nav.hidden = s === "generatore";
+  const senzaNav = s === "generatore" || s === "racconto";
+  document.body.classList.toggle("senza-nav", senzaNav);
+  nav.hidden = senzaNav;
   for (const b of nav.querySelectorAll("button")) {
     if (b.dataset.vai === s) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   }
 
   if (s === "generatore") schermo.innerHTML = Generatore.disegna(vistaGeneratore(app.bozza, dati));
+  else if (s === "racconto") schermo.innerHTML = Racconto.disegna(vistaRacconto(dati, app.valoriRacconto, narratore.disponibile()));
   else if (s === "vita") {
     const v = vistaVita(partita, dati);
-    schermo.innerHTML = Vita.disegna(v, app.barre, narratore.giaRaccontato);
+    schermo.innerHTML = Vita.disegna(v, app.barre, narratore.giaRaccontato, app.salto);
     raccontaVita(v);
     animaBarre(schermo);
     app.barre = Object.fromEntries(v.stat.map((x) => [x.id, x.valore]));
@@ -130,8 +137,19 @@ function salvaOra() {
 // ---------------------------------------------------------------------------
 
 function nuovaBozza(seed = nuovoSeed()) {
-  app.bozza = generaFamiglia(app.dati, seed);
+  app.bozza = app.descrizione ? generaDaDescrizione(app.dati, seed, app.descrizione) : generaFamiglia(app.dati, seed);
   vai("generatore");
+}
+
+/** Legge i campi del modulo "La tua famiglia". */
+function leggiModulo() {
+  const v = {};
+  for (const el of schermo.querySelectorAll("[id^='r-']")) {
+    if (el.tagName === "DATALIST") continue;
+    v[el.id] = el.type === "checkbox" ? el.checked : el.value.trim();
+  }
+  v["r-tratti"] = [...schermo.querySelectorAll("input[name='r-tratti']:checked")].map((x) => x.value).slice(0, 3);
+  return v;
 }
 
 const azioni = {
@@ -140,6 +158,40 @@ const azioni = {
     const testo = document.getElementById("seed").value.trim();
     if (!testo) return;
     nuovaBozza(/^\d+$/.test(testo) ? Number(testo) : seedDa(testo));
+  },
+  racconto: () => vai("racconto"),
+  "racconto-annulla": () => {
+    app.descrizione = null;
+    nuovaBozza();
+  },
+  "racconto-crea": () => {
+    app.valoriRacconto = leggiModulo();
+    app.descrizione = descrizioneDaModulo(app.valoriRacconto);
+    nuovaBozza();
+  },
+  "racconto-ai": async () => {
+    app.valoriRacconto = leggiModulo();
+    const testo = app.valoriRacconto["r-storia"] ?? "";
+    if (testo.length < 30) return avviso("Scrivi qualche riga in più sulla tua famiglia.");
+    avviso("Leggo il racconto… ✦");
+    const scheda = await narratore.estraiFamiglia(`famiglia:${seedDa(testo)}`, testo, vistaRacconto(app.dati));
+    if (!scheda) return avviso(narratore.stato().ultimo_errore ?? "Non sono riuscito a leggere il racconto: compila i dettagli qui sotto.");
+    app.descrizione = { ...scheda, storia: testo };
+    nuovaBozza();
+  },
+  "controlla-iniziale": (el) => {
+    if (!alternaControlloIniziale(app.bozza, el.dataset.id)) avviso("Si possono controllare al massimo 4 persone, dai 6 anni in su.");
+    disegna();
+  },
+  salta: (el) => {
+    app.salto = avanzaAnni(app.partita, app.dati, Number(el.dataset.anni));
+    app.barre = {};
+    salvaOra();
+    disegna({ inCima: true });
+  },
+  "chiudi-salto": () => {
+    app.salto = null;
+    disegna({ inCima: true });
   },
   inizia: () => {
     app.partita = app.bozza;
@@ -155,6 +207,7 @@ const azioni = {
     disegna();
   },
   avanza: () => {
+    app.salto = null;
     fineAnno(app.partita, app.dati);
     salvaOra();
     disegna({ inCima: true });
@@ -199,6 +252,8 @@ const azioni = {
     if (app.partita && app.partita.world.fase !== "fine" && !confirm("Iniziare una nuova partita? Quella attuale verrà cancellata (esportala prima se vuoi tenerla).")) return;
     cancella();
     app.partita = null;
+    app.descrizione = null;
+    app.salto = null;
     nuovaBozza();
   },
   esporta: () => {

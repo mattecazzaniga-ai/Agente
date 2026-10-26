@@ -97,7 +97,7 @@ export function statisticheDinastia(state, data) {
     storico: (state.dinastia?.storico ?? []).map((x) => ({ anno: x.anno, valore: x.patrimonio })),
     traguardi: (data.traguardi ?? []).map((t) => {
       const o = ottenuti.get(t.id);
-      return { id: t.id, nome: t.nome, descrizione: t.descrizione, ottenuto: Boolean(o), anno: o?.anno ?? null, persona: o?.persona ? state.persone[o.persona]?.nome : null };
+      return { id: t.id, nome: t.nome, descrizione: t.descrizione, ottenuto: Boolean(o), anno: o?.iniziale ? "già all'inizio" : o?.anno ?? null, persona: o?.persona ? state.persone[o.persona]?.nome : null };
     }),
   };
 }

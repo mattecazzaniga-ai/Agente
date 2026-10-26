@@ -3,9 +3,12 @@
 Simulatore di vita multi-generazionale ambientato nell'Italia di oggi. Gioco personale, gratuito, giocabile dal telefono e offline.
 Solo HTML, CSS e JavaScript (moduli ES): niente framework, niente backend, niente account.
 
-**Stato: FASI 1-8 completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
+**Stato: FASI 1-9 completate.** Una dinastia intera: si parte da un bambino di 6 anni, si studia, si lavora, ci si innamora, si fanno figli, si manda avanti (o si fonda) l'azienda di famiglia; alla morte si sceglie un erede e la storia continua, generazione dopo generazione. L'albero genealogico è in SVG e si possono guidare fino a 4 persone della famiglia insieme.
 
 ## Come si gioca
+
+- **Inizio**: una famiglia a caso (*Rigenera* finché ti piace) oppure **Racconta tu la tua famiglia**. Scrivi chi siete, dove vivete, cosa fate. Con il narratore AI attivo il gioco legge il racconto e compila la famiglia da solo; altrimenti c'è un modulo con cognome, regione, città, tu (anche adulto, fino a 90 anni), lavoro, carattere, genitori (anche se non ci sono più), partner, figli e fratelli (es. «Giulia 5, Marco 2»), casa e azienda. Quello che lasci vuoto lo decide il gioco. Prima di iniziare puoi scegliere fino a 4 persone da controllare insieme (*Controlla anche*).
+- **Salta avanti**: in Vita, 5, 10 o 20 anni in un colpo. Ogni scelta la decide il carattere di ciascuno; alla fine c'è un riassunto anno per anno di quello che è successo a te, alle persone che controlli e all'Italia. Il salto si ferma se muore il personaggio principale.
 
 - **Vita**: ogni anno arrivano 1-3 eventi per il personaggio principale (e fino a 2 per ogni altro personaggio controllato). Si sceglie, oppure si lascia decidere al carattere. Poi *Vivi l'anno*.
 - **Soldi**: patrimonio, bilancio dell'anno (tasse, casa, figli, assegni), case, azienda, grafico negli anni.
@@ -54,7 +57,7 @@ Regole del narratore (`js/ai.js`):
 - I testi già raccontati restano in archivio (`dinastia.racconti`, ultimi 300): riaprendo lo stesso evento non si spende un'altra richiesta.
 - Modello predefinito: `gemini-2.5-flash`, modificabile.
 - Attenzione: su GitHub Pages tutti i tuoi siti `https://<utente>.github.io/...` condividono lo stesso `localStorage`, quindi uno script di un altro tuo sito potrebbe leggere la chiave. Usa una chiave dedicata al gioco e, se vuoi, limitala in Google Cloud Console (*Credenziali → Restrizioni per siti web*) all'indirizzo del gioco.
-- A Gemini arrivano solo il testo dell'evento e qualche dato del personaggio: nome, età, città, carattere, ultimi fatti.
+- A Gemini arrivano il testo dell'evento e qualche dato del personaggio: nome, età, città, carattere, ultimi fatti, l'inizio della storia raccontata. Se usi *Crea la famiglia dal racconto*, arriva anche il tuo racconto intero.
 
 ## Test e simulazioni
 
@@ -82,6 +85,7 @@ js/
   albero.js      disposizione dell'albero genealogico (funzione pura)
   mondo.js       l'Italia che cambia: congiunture, tendenze dei settori, età della pensione (FASE 6)
   traguardi.js   traguardi e storia della dinastia (FASE 7)
+  racconto.js    la famiglia raccontata dal giocatore: pulizia della descrizione e costruzione della partita (FASE 9)
   family.js      persone, relazioni, parentele
   azioni.js      azioni di vita (iscriversi, essere assunti, comprare casa, azienda di famiglia…)
   vista.js       dati pronti per le schermate (funzioni pure, testate)
@@ -159,6 +163,7 @@ Valori di partenza realistici per il 2026, ma il modello è semplice di proposit
 - **Case vuote**: una casa di proprietà dove non vive nessuno viene affittata (3,5% del valore all'anno, cedolare secca 21%); l'affitto paga mutuo e spese.
 - **Separazione**: se ne va chi non è proprietario della casa, altrimenti l'uomo; i figli minorenni restano con la madre; l'altro genitore versa il mantenimento (12% del netto per figlio, massimo 30%).
 - **Congiunture**: modificatori semplici e uguali per tutta Italia (niente differenze regionali nelle crisi); l'età della pensione sale a caso dopo il 2030, fino a 71.
+- **Famiglia raccontata**: la partita parte sempre nel 2026 (l'economia è tarata su quell'anno). Le età sono quelle del 2026; soldi, case e stipendi li decide il gioco in base alla situazione economica indicata. Se racconti un solo genitore vivo, l'altro risulta separato e vive altrove. I figli prendono il cognome del padre.
 - **Minorenni**: non fanno debiti; se spendono più di quanto hanno, pagano i genitori.
 - **Pensione anticipata**: dai 61 anni, con il 12% in meno sull'assegno.
 - **Salute e mortalità**: curva di Gompertz calibrata sull'Italia (età media alla morte circa 81-83 anni nelle simulazioni), corretta da salute, sesso e malattie croniche.
@@ -173,6 +178,7 @@ Valori di partenza realistici per il 2026, ma il modello è semplice di proposit
 6. ✅ **L'Italia che cambia** (`data/mondo.json`): congiunture decise dal seed (recessione ~13% degli anni, ripresa, caro vita, pandemia) con effetti su licenziamenti, assunzioni, salari, inflazione, case, aziende e mortalità degli anziani; tendenze di lungo periodo (automazione di logistica, uffici e trasporti, carenza di personale sanitario); età della pensione che sale fino a 71 anni; notizie anno per anno; condizioni `congiuntura`, `anno_min` e `settore_escluso` per gli eventi.
 7. ✅ **Traguardi e statistiche** (`data/traguardi.json`): 20 traguardi verificati ogni anno, la dinastia in numeri e il grafico del patrimonio di famiglia.
 8. ✅ **Più eventi**: 26 nuovi (cassa integrazione, caro bollette, lockdown, concorso pubblico, partita IVA, lavoro all'estero, bonus casa, alluvione, terremoto, elezioni, patente, primo telefono, liste d'attesa, servizio civile, pensione anticipata…). In totale 117 eventi in libreria, più quelli inventati dall'AI.
+9. ✅ **La tua famiglia**: racconto libero (letto dall'AI) o modulo; protagonista bambino o adulto con coniuge e figli; genitori vivi, morti o separati; scelta di chi controllare prima di iniziare; *Salta avanti* di 5/10/20 anni con riassunto. La storia raccontata resta nel diario e il narratore AI ne tiene conto.
 
 ### Comportamento della dinastia nelle simulazioni (`npm run simula`)
 Vite: età media alla morte ~82 anni, circa 1,2 figli a testa, 29% senza figli, 23% dei matrimoni finisce in separazione, debiti oltre 10.000 € a 40 anni per l'8%. Dinastie (200 anni, si continua sempre col primo candidato): circa 1 su 4 si estingue, in media si arriva alla 4ª-5ª generazione. Il salvataggio resta sotto 1 MB anche dopo 200 anni (i morti vengono archiviati).

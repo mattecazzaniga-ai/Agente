@@ -177,3 +177,20 @@ test("inventaEventi: schema con l'elenco dei tipi, proposte valide restituite e 
   n.salvaImpostazioni({ eventi_ai: false });
   assert.equal(await n.inventaEventi("inv2", contesto, profili), null);
 });
+
+test("estraiFamiglia: lo schema usa gli elenchi del gioco e la scheda torna intera", async () => {
+  const scheda = { cognome: "Rossi", regione: "toscana", persone: [{ ruolo: "protagonista", nome: "Elena", eta: 30, lavoro: "insegnante" }] };
+  let corpo = null;
+  const fetch = async (url, o) => {
+    corpo = JSON.parse(o.body);
+    return { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(scheda) }] } }] }) };
+  };
+  const { n } = narratoreDiProva({ fetch });
+  const liste = { regioni: [{ id: "toscana", nome: "Toscana", citta: ["Firenze"] }], mestieri: [{ id: "insegnante", nome: "Insegnante" }], tratti: [{ id: "prudente", nome: "Prudente" }] };
+  const r = await n.estraiFamiglia("fam1", "Mi chiamo Elena, ho 30 anni e insegno a Firenze.", liste);
+  assert.deepEqual(r, scheda);
+  const s = corpo.generationConfig.responseSchema;
+  assert.deepEqual(s.properties.regione.enum, ["", "toscana"]);
+  assert.ok(s.properties.persone.items.properties.lavoro.enum.includes("insegnante"));
+  assert.match(corpo.contents[0].parts[0].text, /Elena/);
+});

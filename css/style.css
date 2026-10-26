@@ -309,6 +309,18 @@ p { margin: 0; }
 .traguardo.ottenuto b { color: #9b5a2e; }
 @media (prefers-color-scheme: dark) { .traguardo.ottenuto b { color: var(--accento); } }
 
+/* ---------- La tua famiglia e salti nel tempo (FASE 9) ---------- */
+.mini { margin-top: 8px; padding: 6px 12px; min-height: 34px; border-radius: 999px; border: 1.5px solid var(--bordo); background: var(--superficie-2); font-size: 13px; font-weight: 600; cursor: pointer; }
+.mini.attivo { background: var(--primario); color: var(--primario-testo); border-color: var(--primario); }
+.salta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.salta .mini { margin-top: 0; }
+.salto { border-top: 4px solid var(--accento); }
+textarea { width: 100%; font: inherit; padding: 12px; border-radius: var(--raggio-piccolo); border: 1.5px solid var(--bordo); background: var(--superficie-2); color: var(--testo); resize: vertical; }
+.racconto select, .racconto input { min-height: 44px; padding: 8px 12px; border-radius: var(--raggio-piccolo); border: 1.5px solid var(--bordo); background: var(--superficie-2); color: var(--testo); width: 100%; }
+.racconto .griglia-2 { margin-bottom: 10px; }
+.scegli-tratti .chip { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.scegli-tratti input { width: auto; min-height: 0; }
+
 /* ---------- Narratore AI (FASE 5) ---------- */
 .racconto-anno, .epitaffio { font-size: 16px; line-height: 1.55; margin-bottom: 10px; }
 .racconto-anno:empty, .epitaffio:empty { display: none; }
