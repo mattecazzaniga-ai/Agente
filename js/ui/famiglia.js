@@ -2,7 +2,7 @@
 // pulsanti per giocare come lei (FASE 3) o controllarla insieme al principale (FASE 4).
 
 import { LARGHEZZA } from "../albero.js";
-import { avatar, chips, esc, soldi } from "./componenti.js";
+import { avatar, chips, esc, grafico, soldi } from "./componenti.js";
 
 function legame(x) {
   if (x == null) return "";
@@ -65,6 +65,39 @@ function schedaPersona(s, controllati) {
   </section>`;
 }
 
+/** La dinastia in numeri e i traguardi (FASE 7). */
+function statistiche(st) {
+  const fatti = st.traguardi.filter((t) => t.ottenuto);
+  const box = (etichetta, valore) => `<div class="box"><span class="etichetta">${etichetta}</span><b>${valore}</b></div>`;
+  return `<section class="scheda">
+      <h2>La dinastia in numeri</h2>
+      <div class="griglia-2">
+        ${box("Persone nate", st.nati)}
+        ${box("Ancora in vita", st.vivi)}
+        ${box("Generazioni", st.generazioni)}
+        ${box("Laureati", `${st.laureati} (${st.quota_laureati}%)`)}
+        ${box("Età media alla morte", st.eta_media_morte ?? "—")}
+        ${box("Figli in media", st.figli_medi)}
+      </div>
+      ${st.longevo ? `<p class="nota" style="margin-top:10px">${st.longevo.vivo ? "La persona più anziana" : "La vita più lunga"}: ${esc(st.longevo.nome)}, ${st.longevo.eta} anni.</p>` : ""}
+      <h3 style="margin-top:14px">Patrimonio di famiglia (euro di oggi): ${soldi(st.patrimonio)}</h3>
+      ${grafico(st.storico)}
+    </section>
+    <section class="scheda">
+      <h2>Traguardi · ${fatti.length}/${st.traguardi.length}</h2>
+      <div class="traguardi">
+        ${st.traguardi
+          .map(
+            (t) => `<div class="traguardo ${t.ottenuto ? "ottenuto" : ""}">
+              <b>${t.ottenuto ? "★" : "☆"} ${esc(t.nome)}</b>
+              <span>${t.ottenuto ? `${t.anno}${t.persona ? ` · ${esc(t.persona)}` : ""}` : esc(t.descrizione)}</span>
+            </div>`,
+          )
+          .join("")}
+      </div>
+    </section>`;
+}
+
 export function disegna(v) {
   return `
     <section class="scheda">
@@ -80,6 +113,8 @@ export function disegna(v) {
     </section>
 
     ${schedaPersona(v.scheda, v.controllati)}
+
+    ${statistiche(v.statistiche)}
 
     <section class="scheda">
       <h2>Diario degli ultimi anni</h2>

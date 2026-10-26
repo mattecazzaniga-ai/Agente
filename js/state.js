@@ -25,7 +25,7 @@ export function statoVuoto(seed, anno = 2026) {
       fase: "gioco", // "gioco" | "erede" (scegliere chi continua) | "fine"
       mondo: mondoIniziale(), // congiuntura, età della pensione, notizie (FASE 6)
     },
-    dinastia: { generazione: 1, giocati: [] }, // giocati: [{ id, dal, al }] chi è stato il personaggio principale
+    dinastia: { generazione: 1, giocati: [], traguardi: [], storico: [] }, // giocati: [{ id, dal, al }]; traguardi e storico (FASE 7)
     persone: {},
     relazioni: [],
     nuclei: {}, // famiglie che vivono sotto lo stesso tetto: { id, regione, citta, casa }
@@ -83,6 +83,9 @@ const MIGRAZIONI = {
   2: (s) => {
     s.world ??= {};
     s.world.mondo ??= mondoIniziale();
+    s.dinastia ??= { generazione: 1, giocati: [] };
+    s.dinastia.traguardi ??= []; // FASE 7
+    s.dinastia.storico ??= [];
     s.schema = 3;
     return s;
   },

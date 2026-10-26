@@ -1,0 +1,179 @@
+{
+  "_nota": "Traguardi della dinastia (FASE 7). 'regola' è una delle verifiche scritte in js/traguardi.js, 'parametri' i suoi valori. Valgono per le persone di sangue della famiglia.",
+  "traguardi": [
+    {
+      "id": "prima_laurea",
+      "nome": "Prima laurea in famiglia",
+      "descrizione": "Qualcuno della famiglia si laurea.",
+      "regola": "titolo",
+      "parametri": {
+        "titolo": "laurea_triennale"
+      }
+    },
+    {
+      "id": "magistrale",
+      "nome": "Dottore magistrale",
+      "descrizione": "Una laurea magistrale o a ciclo unico.",
+      "regola": "titolo",
+      "parametri": {
+        "titolo": "laurea_magistrale"
+      }
+    },
+    {
+      "id": "lode",
+      "nome": "Con lode",
+      "descrizione": "Una laurea con 110 e lode.",
+      "regola": "ricordo",
+      "parametri": {
+        "ricordo": "laurea_con_lode"
+      }
+    },
+    {
+      "id": "casa_nostra",
+      "nome": "Una casa tutta nostra",
+      "descrizione": "Un figlio o una figlia della famiglia compra casa.",
+      "regola": "casa_propria",
+      "parametri": {}
+    },
+    {
+      "id": "novanta",
+      "nome": "Novant'anni",
+      "descrizione": "Qualcuno arriva a 90 anni.",
+      "regola": "eta",
+      "parametri": {
+        "eta": 90
+      }
+    },
+    {
+      "id": "centenario",
+      "nome": "Centenario",
+      "descrizione": "Qualcuno arriva a 100 anni.",
+      "regola": "eta",
+      "parametri": {
+        "eta": 100
+      }
+    },
+    {
+      "id": "terza_generazione",
+      "nome": "Terza generazione",
+      "descrizione": "Nasce un nipote del capostipite.",
+      "regola": "generazione",
+      "parametri": {
+        "n": 3
+      }
+    },
+    {
+      "id": "quinta_generazione",
+      "nome": "Quinta generazione",
+      "descrizione": "La dinastia arriva alla quinta generazione.",
+      "regola": "generazione",
+      "parametri": {
+        "n": 5
+      }
+    },
+    {
+      "id": "famiglia_numerosa",
+      "nome": "Famiglia numerosa",
+      "descrizione": "Qualcuno ha almeno quattro figli.",
+      "regola": "figli",
+      "parametri": {
+        "n": 4
+      }
+    },
+    {
+      "id": "nonni",
+      "nome": "Nonni",
+      "descrizione": "Arriva il primo nipote.",
+      "regola": "nipoti",
+      "parametri": {}
+    },
+    {
+      "id": "nozze_oro",
+      "nome": "Nozze d'oro",
+      "descrizione": "Cinquant'anni di matrimonio.",
+      "regola": "matrimonio",
+      "parametri": {
+        "anni": 50
+      }
+    },
+    {
+      "id": "milione",
+      "nome": "Il primo milione",
+      "descrizione": "Il patrimonio della famiglia supera un milione di euro (di oggi).",
+      "regola": "patrimonio",
+      "parametri": {
+        "euro": 1000000
+      }
+    },
+    {
+      "id": "nuova_impresa",
+      "nome": "Un'impresa nuova",
+      "descrizione": "Qualcuno della famiglia apre un'attività.",
+      "regola": "impresa_fondata",
+      "parametri": {}
+    },
+    {
+      "id": "azienda_storica",
+      "nome": "Azienda storica",
+      "descrizione": "Un'azienda di famiglia compie 50 anni.",
+      "regola": "azienda_anni",
+      "parametri": {
+        "anni": 50
+      }
+    },
+    {
+      "id": "azienda_secolare",
+      "nome": "Un secolo d'impresa",
+      "descrizione": "Un'azienda di famiglia compie 100 anni.",
+      "regola": "azienda_anni",
+      "parametri": {
+        "anni": 100
+      }
+    },
+    {
+      "id": "cognome_rispettato",
+      "nome": "Una persona stimata",
+      "descrizione": "Qualcuno della famiglia arriva a 80 di reputazione.",
+      "regola": "persona_stimata",
+      "parametri": {
+        "min": 80
+      }
+    },
+    {
+      "id": "mezzo_secolo",
+      "nome": "Mezzo secolo di storia",
+      "descrizione": "La dinastia dura 50 anni.",
+      "regola": "anni_dinastia",
+      "parametri": {
+        "anni": 50
+      }
+    },
+    {
+      "id": "secolo",
+      "nome": "Un secolo di storia",
+      "descrizione": "La dinastia dura 100 anni.",
+      "regola": "anni_dinastia",
+      "parametri": {
+        "anni": 100
+      }
+    },
+    {
+      "id": "due_secoli",
+      "nome": "Due secoli di storia",
+      "descrizione": "La dinastia dura 200 anni.",
+      "regola": "anni_dinastia",
+      "parametri": {
+        "anni": 200
+      }
+    },
+    {
+      "id": "grande_famiglia",
+      "nome": "Una grande famiglia",
+      "descrizione": "Venti persone di sangue vive nello stesso momento.",
+      "regola": "vivi",
+      "parametri": {
+        "n": 20
+      }
+    }
+  ]
+}

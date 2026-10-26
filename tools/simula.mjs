@@ -65,6 +65,7 @@ export function simulaDinastia(D, seed, anni = 200) {
     vivi: persone.filter((p) => p.anno_morte == null).length,
     figliPerDonna: donne.length ? media(donne.map((d) => d.figli.length)) : null,
     reputazione: s.famiglia.reputazione,
+    traguardi: (s.dinastia.traguardi ?? []).map((t) => t.id),
   };
 }
 
@@ -118,6 +119,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`Estinte: ${percento(dinastie.filter((d) => d.estinta).length, nd)} · durata media ${media(durate).toFixed(0)} anni · generazione raggiunta media ${media(dinastie.map((d) => d.generazione)).toFixed(1)} · personaggi giocati ${media(dinastie.map((d) => d.principali)).toFixed(1)}`);
   console.log(`Persone create: media ${media(dinastie.map((d) => d.persone)).toFixed(0)}, massimo ${Math.max(...dinastie.map((d) => d.persone))} · vive alla fine ${media(dinastie.map((d) => d.vivi)).toFixed(0)}`);
   console.log(`Figli per donna di sangue (morte dopo i 50): ${media(dinastie.map((d) => d.figliPerDonna).filter((x) => x != null)).toFixed(2)} · reputazione finale media del cognome ${media(dinastie.map((d) => d.reputazione)).toFixed(0)}`);
+
+  console.log(`Traguardi ottenuti (su ${nd} dinastie): ${D.traguardi.map((t) => `${t.nome} ${dinastie.filter((d) => d.traguardi.includes(t.id)).length}`).join(" · ")}`);
 
   console.log(`\nMestieri principali:`);
   for (const [k, c] of conta(vite.map((v) => (v.mestiere === "nessuno" ? "nessuno" : D.mestiere[v.mestiere].nome)))) console.log(`  ${k.padEnd(28)} ${"█".repeat(c)} ${c}`);

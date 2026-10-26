@@ -301,6 +301,14 @@ p { margin: 0; }
 .notizie { margin: 4px 0 12px; padding: 10px 12px; border-radius: var(--raggio-piccolo); background: var(--superficie-2); font-size: 14px; }
 .notizie p { margin-top: 4px; }
 
+/* ---------- Traguardi (FASE 7) ---------- */
+.traguardi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.traguardo { padding: 10px 12px; border-radius: var(--raggio-piccolo); background: var(--superficie-2); font-size: 13px; color: var(--testo-2); opacity: 0.7; }
+.traguardo b { display: block; font-size: 14px; color: var(--testo); margin-bottom: 2px; }
+.traguardo.ottenuto { opacity: 1; background: rgba(232, 168, 124, 0.16); }
+.traguardo.ottenuto b { color: #9b5a2e; }
+@media (prefers-color-scheme: dark) { .traguardo.ottenuto b { color: var(--accento); } }
+
 /* ---------- Narratore AI (FASE 5) ---------- */
 .racconto-anno, .epitaffio { font-size: 16px; line-height: 1.55; margin-bottom: 10px; }
 .racconto-anno:empty, .epitaffio:empty { display: none; }

@@ -10,6 +10,7 @@ import { annota, segnaposto } from "./family.js";
 import { aggiornaAziende, aggiornaIndici, avviaNaspi, bilancioNucleo, caseVuote, esdebitazione, vendiCasePerDebiti, eredita, interessi, mantenimenti, patrimonio, pulisciNuclei, rivalutaCase, rivalutaPensione, vaInPensione } from "./economy.js";
 import { candidatiErede, controllabile, MAX_CONTROLLATI, vitaPrivata } from "./dinastia.js";
 import { aggiornaMondo, modificatori, rischioSettore } from "./mondo.js";
+import { registraStoria, verificaTraguardi } from "./traguardi.js";
 import { assumi, iscriviSuperiori, licenzia, lasciaStudi, aggiungiRicordo } from "./azioni.js";
 import { condizioniOk, eventoDi, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoEvento, testoScelta, titoloEvento } from "./events.js";
 
@@ -240,6 +241,10 @@ export function fineAnno(state, data) {
     state.famiglia.reputazione = limita(Math.round(state.famiglia.reputazione + (media - state.famiglia.reputazione) * 0.05), 0, 100);
   }
 
+  // storia della dinastia e traguardi (FASE 7)
+  registraStoria(state);
+  for (const riga of verificaTraguardi(state, data)) annota(state, io, riga);
+
   const righeDi = (p) => [...(p.diario.find((d) => d.anno === anno)?.righe ?? [])];
   const altri = (state.controllati ?? []).filter((id) => id !== io.id).map((id) => state.persone[id]).filter(Boolean);
   state.world.ultimo_riepilogo = { anno, notizie, righe: righeDi(io), altri: altri.map((p) => ({ id: p.id, nome: p.nome, righe: righeDi(p) })) };
@@ -373,7 +378,8 @@ function universita(state, data, p) {
   if (i.crediti >= totale) {
     i.titolo = f.solo_triennale ? "laurea_triennale" : "laurea_magistrale";
     i.voto_laurea = votoLaurea(state, i);
-    const lode = i.voto_laurea === 110 && i.voti >= 28.8;
+    const lode = i.voto_laurea >= 106 && i.voti >= 27.5;
+    if (lode) i.voto_laurea = 110;
     if (lode) aggiungiRicordo(state, data, p, "laurea_con_lode");
     annota(state, p, `Laurea in ${f.nome} con ${i.voto_laurea}/110${lode ? " e lode" : ""}.`);
     Object.assign(i, { iscritto: false, livello: "nessuno", fuori_sede: false });

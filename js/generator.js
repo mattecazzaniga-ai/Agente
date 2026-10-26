@@ -222,7 +222,7 @@ export function generaFamiglia(data, seed) {
     p.generazione = p.id === madre.id || p.id === padre.id ? 0 : 1;
   }
   state.controllati = [io.id];
-  state.dinastia = { generazione: 1, giocati: [{ id: io.id, dal: ANNO_INIZIO, al: null }] };
+  state.dinastia = { generazione: 1, giocati: [{ id: io.id, dal: ANNO_INIZIO, al: null }], traguardi: [], storico: [] };
 
   annota(state, io, riempi(scegli(state, G.infanzia), { nome: io.nome, citta, ...genere(io) }));
   annota(state, io, `Primo giorno di scuola alle elementari di ${citta}.`);

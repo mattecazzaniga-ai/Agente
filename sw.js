@@ -1,6 +1,6 @@
 // Service worker: mette in cache tutti i file del gioco, così funziona offline.
 // Quando cambi un file, aumenta VERSIONE: al prossimo avvio la cache viene rinnovata.
-const VERSIONE = "dinastia-v5";
+const VERSIONE = "dinastia-v6";
 
 const FILE = [
   "./",
@@ -27,6 +27,7 @@ const FILE = [
   "js/generator.js",
   "js/rng.js",
   "js/state.js",
+  "js/traguardi.js",
   "js/util.js",
   "js/vista.js",
   "js/ui/componenti.js",
@@ -43,6 +44,7 @@ const FILE = [
   "data/regions.json",
   "data/schools.json",
   "data/traits.json",
+  "data/traguardi.json",
   "data/events/index.json",
   "data/events/amicizie.json",
   "data/events/famiglia.json",

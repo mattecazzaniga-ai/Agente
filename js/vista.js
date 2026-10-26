@@ -12,6 +12,7 @@ import { rigaAnno } from "./engine.js";
 import { candidatiErede, controllabile, MAX_CONTROLLATI } from "./dinastia.js";
 import { layoutAlbero } from "./albero.js";
 import { haEventiAI, profiliDisponibili } from "./eventi_ai.js";
+import { statisticheDinastia } from "./traguardi.js";
 
 /** Volge al femminile un aggettivo del maschile singolare ("Ambizioso" → "Ambiziosa"). */
 export function alGenere(parola, sesso) {
@@ -496,6 +497,7 @@ export function vistaFamiglia(state, data, selezionato = null) {
       })),
     },
     scheda: scheda(state, data, scelto),
+    statistiche: statisticheDinastia(state, data),
     diario: io.diario.slice(-12).reverse(), // gli ultimi 12 anni
   };
 }
