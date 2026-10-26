@@ -1,0 +1,541 @@
+{
+  "tema": "lavoro",
+  "eventi": [
+    {
+      "id": "lavoro_estivo",
+      "tema": "lavoro",
+      "titolo": "Il lavoretto d'estate",
+      "condizioni": {
+        "eta": [
+          15,
+          19
+        ],
+        "livello": "superiori"
+      },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "Il bar in piazza cerca qualcuno per luglio e agosto: sei sere a settimana, pagato in contanti.",
+        "Lo stabilimento balneare vicino a {citta} cerca un aiuto per gli ombrelloni.",
+        "Un vicino ha una pizzeria e ti chiede se vuoi lavorare il weekend d'estate."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Accetti e lavori tutta l'estate",
+          "tratti_favoriti": [
+            "ambizioso",
+            "indipendente",
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": 1300,
+            "stanchezza": 6,
+            "reputazione": 2,
+            "felicita": -1
+          },
+          "esito": "I primi soldi guadagnati davvero."
+        },
+        {
+          "id": "b",
+          "testo": "Fai volontariato in un centro estivo",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "morale": 5,
+            "reputazione": 3
+          },
+          "esito": "Bambini urlanti e un sorriso costante."
+        },
+        {
+          "id": "c",
+          "testo": "L'estate serve a riposare",
+          "tratti_favoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "felicita": 5,
+            "stanchezza": -6
+          },
+          "esito": "Mare, amici e niente sveglia."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_primo_colloquio",
+      "tema": "lavoro",
+      "titolo": "Il primo colloquio",
+      "condizioni": {
+        "eta": [
+          18,
+          32
+        ],
+        "lavoro": false,
+        "iscritto": false
+      },
+      "peso": 5,
+      "testi": [
+        "Ti chiamano per un colloquio domani mattina. La camicia è stropicciata e il curriculum ha un errore di battitura.",
+        "Dopo trenta candidature, una risposta: «Saremmo felici di conoscerla». Il colloquio è online.",
+        "Un'agenzia per il lavoro ti propone un colloquio in un'azienda della zona."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti prepari per giorni",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso",
+            "insicuro"
+          ],
+          "effetti": {
+            "lavoro": "casuale",
+            "stanchezza": 3,
+            "morale": 3
+          },
+          "esito": "Ti prendono. Inizi lunedì."
+        },
+        {
+          "id": "b",
+          "testo": "Ci vai tranquill{o} e improvvisi",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "morale": 2
+          },
+          "esito": "Simpatia sì, preparazione meno. «Le faremo sapere».",
+          "conseguenze": [
+            {
+              "evento": "lavoro_richiamato",
+              "dopo_anni": 1,
+              "probabilita": 0.5
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "testo": "All'ultimo momento non ti presenti",
+          "tratti_favoriti": [
+            "insicuro",
+            "pigro"
+          ],
+          "effetti": {
+            "morale": -5,
+            "reputazione": -2
+          },
+          "esito": "Il telefono non squilla più."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_richiamato",
+      "tema": "lavoro",
+      "titolo": "Ti richiamano",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "lavoro": false
+      },
+      "peso": 5,
+      "testi": [
+        "Ti richiama l'azienda del colloquio dell'anno scorso: il candidato che avevano scelto se n'è andato.",
+        "Un numero sconosciuto: è la responsabile che ti aveva fatto il colloquio. Hanno un posto per te.",
+        "Quando non ci speravi più, arriva una mail: «Se è ancora disponibile, la aspettiamo»."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Accetti",
+          "effetti": {
+            "lavoro": "casuale",
+            "morale": 5
+          },
+          "esito": "A volte basta aspettare."
+        },
+        {
+          "id": "b",
+          "testo": "Rifiuti: cerchi di meglio",
+          "tratti_favoriti": [
+            "ambizioso",
+            "sicuro"
+          ],
+          "effetti": {
+            "morale": 1
+          },
+          "esito": "Una scommessa su te stess{o}."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_stage_gratuito",
+      "tema": "lavoro",
+      "titolo": "Lo stage non pagato",
+      "condizioni": {
+        "eta": [
+          21,
+          30
+        ],
+        "titolo_min": "diploma",
+        "lavoro": false,
+        "iscritto": false
+      },
+      "peso": 4,
+      "testi": [
+        "Un'azienda importante di Milano ti offre sei mesi di stage. Rimborso spese: zero.",
+        "«È un'ottima opportunità per farsi le ossa», dice la responsabile. Lo stipendio però non c'è.",
+        "Uno studio molto conosciuto ti prenderebbe in stage. Gratis, otto ore al giorno."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Accetti: è un investimento",
+          "tratti_favoriti": [
+            "ambizioso"
+          ],
+          "effetti": {
+            "risparmi": -1500,
+            "reputazione": 5,
+            "stanchezza": 8
+          },
+          "esito": "Lavori tanto e impari ancora di più.",
+          "conseguenze": [
+            {
+              "evento": "lavoro_assunzione_dopo_stage",
+              "dopo_anni": 1,
+              "probabilita": 0.55
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Chiedi almeno un rimborso spese",
+          "tratti_favoriti": [
+            "sicuro",
+            "indipendente"
+          ],
+          "effetti": {
+            "reputazione": 2,
+            "risparmi": -500
+          },
+          "esito": "Ottieni 500 euro al mese. Non è molto, ma è qualcosa.",
+          "conseguenze": [
+            {
+              "evento": "lavoro_assunzione_dopo_stage",
+              "dopo_anni": 1,
+              "probabilita": 0.4
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "testo": "Rifiuti: il lavoro si paga",
+          "tratti_favoriti": [
+            "prudente",
+            "egoista"
+          ],
+          "effetti": {
+            "morale": 2
+          },
+          "esito": "Continui a cercare, a testa alta."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_assunzione_dopo_stage",
+      "tema": "lavoro",
+      "titolo": "Il contratto",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "lavoro": false
+      },
+      "peso": 5,
+      "testi": [
+        "Ultimo giorno di stage. La responsabile ti chiama in ufficio con un foglio in mano.",
+        "«Ci siamo trovati bene con te». Ti propongono un contratto a tempo determinato.",
+        "Lo stage è finito e il capo ti offre di restare, con un contratto vero."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Firmi subito",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "lavoro": "casuale",
+            "morale": 6
+          },
+          "esito": "Il primo contratto non si scorda mai."
+        },
+        {
+          "id": "b",
+          "testo": "Chiedi uno stipendio più alto",
+          "tratti_favoriti": [
+            "sicuro",
+            "ambizioso"
+          ],
+          "tratti_sfavoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "lavoro": "casuale",
+            "bonus": 0.06,
+            "morale": 4,
+            "reputazione": 2
+          },
+          "esito": "Ti danno il 6% in più. Chi non chiede non ottiene."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_promozione",
+      "tema": "lavoro",
+      "titolo": "Una promozione",
+      "condizioni": {
+        "eta": [
+          27,
+          62
+        ],
+        "lavoro": true,
+        "stat_min": {
+          "reputazione": 45
+        }
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 6,
+      "testi": [
+        "Il tuo responsabile va in pensione e ti propone di prendere il suo posto.",
+        "Ti offrono di coordinare un piccolo gruppo: più soldi, più ore, più problemi.",
+        "Riunione a porte chiuse con la direzione: vogliono darti più responsabilità."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Accetti",
+          "tratti_favoriti": [
+            "ambizioso",
+            "sicuro"
+          ],
+          "effetti": {
+            "bonus": 0.12,
+            "stanchezza": 10,
+            "reputazione": 5,
+            "morale": 3
+          },
+          "esito": "Stipendio più alto, telefono che squilla anche la sera."
+        },
+        {
+          "id": "b",
+          "testo": "Ringrazi e rifiuti",
+          "tratti_favoriti": [
+            "pigro",
+            "prudente",
+            "solitario"
+          ],
+          "effetti": {
+            "morale": 2,
+            "stanchezza": -2
+          },
+          "esito": "Il tempo libero vale più di un aumento."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_capo_difficile",
+      "tema": "lavoro",
+      "titolo": "Il capo",
+      "condizioni": {
+        "eta": [
+          20,
+          62
+        ],
+        "lavoro": true
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 7,
+      "testi": [
+        "Il nuovo capo ti scarica addosso il lavoro di due persone e si prende i meriti.",
+        "Da quando è cambiata la direzione, le riunioni sono diventate processi.",
+        "Il tuo responsabile ti rimprovera davanti a tutti per un errore non tuo."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Sopporti in silenzio",
+          "tratti_favoriti": [
+            "prudente",
+            "insicuro"
+          ],
+          "effetti": {
+            "stanchezza": 8,
+            "morale": -5
+          },
+          "esito": "Lo stipendio arriva. La serenità un po' meno."
+        },
+        {
+          "id": "b",
+          "testo": "Gli parli chiaramente",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "morale": 3,
+            "reputazione": 2
+          },
+          "esito": "Ci sono rimasti male, ma qualcosa cambia."
+        },
+        {
+          "id": "c",
+          "testo": "Ti licenzi",
+          "requisiti": {
+            "risparmi_min": 4000
+          },
+          "tratti_favoriti": [
+            "impulsivo",
+            "indipendente",
+            "sicuro"
+          ],
+          "effetti": {
+            "licenziato": true,
+            "morale": 6,
+            "stanchezza": -10
+          },
+          "esito": "La lettera di dimissioni pesa poco. Il futuro un po' di più."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_trasferimento_nord",
+      "tema": "lavoro",
+      "titolo": "Un lavoro al Nord",
+      "condizioni": {
+        "eta": [
+          21,
+          38
+        ],
+        "area": [
+          "sud",
+          "centro"
+        ],
+        "titolo_min": "diploma"
+      },
+      "peso": 3,
+      "testi": [
+        "Un'azienda di Milano ti offre un posto fisso. Lo stipendio è più alto, l'affitto anche.",
+        "Ti propongono un contratto a Bologna. {madre} dice che ti verrà a trovare. {padre} non dice niente.",
+        "Metà dei tuoi amici è già partita per il Nord. Ora è arrivata un'offerta anche per te."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Fai le valigie per Milano",
+          "tratti_favoriti": [
+            "ambizioso",
+            "indipendente"
+          ],
+          "effetti": {
+            "trasferimento": "lombardia",
+            "lavoro": "casuale",
+            "felicita": -3,
+            "relazione": {
+              "con": "genitore",
+              "delta": -5
+            }
+          },
+          "esito": "Treno dell'alba, e una città nuova da imparare."
+        },
+        {
+          "id": "b",
+          "testo": "Scegli Bologna",
+          "tratti_favoriti": [
+            "socievole",
+            "creativo"
+          ],
+          "effetti": {
+            "trasferimento": "emilia",
+            "lavoro": "casuale",
+            "felicita": -1,
+            "relazione": {
+              "con": "genitore",
+              "delta": -4
+            }
+          },
+          "esito": "Portici, mortadella e un contratto vero."
+        },
+        {
+          "id": "c",
+          "testo": "Resti a {citta}",
+          "tratti_favoriti": [
+            "prudente",
+            "pigro"
+          ],
+          "effetti": {
+            "morale": -1,
+            "relazione": {
+              "con": "genitore",
+              "delta": 3
+            }
+          },
+          "esito": "Casa è casa. Si troverà qualcosa."
+        }
+      ]
+    },
+    {
+      "id": "lavoro_crisi_aziendale",
+      "tema": "lavoro",
+      "titolo": "Crisi in azienda",
+      "condizioni": {
+        "eta": [
+          25,
+          63
+        ],
+        "lavoro": true
+      },
+      "peso": 2,
+      "ripetibile": true,
+      "intervallo": 10,
+      "testi": [
+        "L'azienda annuncia tagli: offrono un incentivo a chi se ne va volontariamente.",
+        "Cassa integrazione per tre mesi. Poi chissà.",
+        "Il nuovo proprietario vuole «riorganizzare». Tutti sanno cosa vuol dire."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Prendi l'incentivo e te ne vai",
+          "tratti_favoriti": [
+            "impulsivo",
+            "indipendente"
+          ],
+          "effetti": {
+            "licenziato": true,
+            "risparmi": 9000,
+            "morale": -2
+          },
+          "esito": "Un assegno e un foglio bianco davanti."
+        },
+        {
+          "id": "b",
+          "testo": "Resisti e speri",
+          "tratti_favoriti": [
+            "prudente",
+            "insicuro"
+          ],
+          "effetti": {
+            "stanchezza": 6,
+            "morale": -5,
+            "bonus": -0.05
+          },
+          "esito": "Resti, con lo stipendio un po' più leggero."
+        }
+      ]
+    }
+  ]
+}

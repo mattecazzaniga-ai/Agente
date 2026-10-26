@@ -1,0 +1,30 @@
+{
+  "_nota": "modificatori: studio (voti), carriera (scatti e probabilita di trovare lavoro), risparmio (quota di spese evitate), salute (deriva annua), morale (punto di equilibrio), socialita. opposti: tratti che non possono coesistere.",
+  "tratti": [
+    { "id": "ambizioso", "nome": "Ambizioso", "descrizione": "Punta in alto, regge la fatica, soffre se resta fermo.", "opposti": ["pigro"], "modificatori": { "studio": 0.6, "carriera": 0.25, "morale": -3, "stanchezza": 5 } },
+    { "id": "pigro", "nome": "Pigro", "descrizione": "Evita lo sforzo inutile; vive sereno, ma rimanda.", "opposti": ["ambizioso"], "modificatori": { "studio": -0.8, "carriera": -0.2, "morale": 4, "stanchezza": -6 } },
+    { "id": "creativo", "nome": "Creativo", "descrizione": "Vede soluzioni diverse; si annoia nella routine.", "opposti": [], "modificatori": { "studio": 0.2, "carriera": 0.05, "morale": 2 } },
+    { "id": "prudente", "nome": "Prudente", "descrizione": "Pensa prima di agire, mette da parte i soldi.", "opposti": ["impulsivo"], "modificatori": { "studio": 0.3, "risparmio": 0.10, "salute": 0.4 } },
+    { "id": "impulsivo", "nome": "Impulsivo", "descrizione": "Decide di pancia: a volte geniale, a volte un disastro.", "opposti": ["prudente"], "modificatori": { "studio": -0.2, "risparmio": -0.10, "salute": -0.3, "morale": 2 } },
+    { "id": "generoso", "nome": "Generoso", "descrizione": "Aiuta chi ha intorno, anche quando non conviene.", "opposti": ["egoista"], "modificatori": { "risparmio": -0.04, "socialita": 0.3, "reputazione": 0.6 } },
+    { "id": "egoista", "nome": "Egoista", "descrizione": "Pensa prima a se stesso; raramente si fa fregare.", "opposti": ["generoso"], "modificatori": { "risparmio": 0.05, "socialita": -0.3, "reputazione": -0.6 } },
+    { "id": "insicuro", "nome": "Insicuro", "descrizione": "Dubita di se stesso e ha bisogno di conferme.", "opposti": ["sicuro"], "modificatori": { "studio": -0.1, "carriera": -0.1, "morale": -5 } },
+    { "id": "sicuro", "nome": "Sicuro di sé", "descrizione": "Sa cosa vuole e lo chiede senza paura.", "opposti": ["insicuro"], "modificatori": { "carriera": 0.1, "morale": 4 } },
+    { "id": "socievole", "nome": "Socievole", "descrizione": "Fa amicizia ovunque e si ricarica stando con gli altri.", "opposti": ["solitario"], "modificatori": { "socialita": 0.5, "morale": 2, "reputazione": 0.3 } },
+    { "id": "solitario", "nome": "Solitario", "descrizione": "Pochi amici, ma veri; ha bisogno dei suoi spazi.", "opposti": ["socievole"], "modificatori": { "socialita": -0.4, "studio": 0.2 } },
+    { "id": "indipendente", "nome": "Indipendente", "descrizione": "Vuole fare da sé, anche a costo di sbagliare.", "opposti": [], "modificatori": { "carriera": 0.05, "morale": 1 } },
+    { "id": "sportivo", "nome": "Sportivo", "descrizione": "Il movimento gli tiene in ordine corpo e testa.", "opposti": [], "modificatori": { "salute": 0.8, "stanchezza": -3, "morale": 2 } }
+  ],
+  "ricordi": [
+    { "id": "genitore_assente", "nome": "Genitore assente", "descrizione": "Un genitore che c'era poco.", "effetti_annui": { "morale": -1 }, "eredita_tratto": { "tratto": "insicuro", "probabilita": 0.4 } },
+    { "id": "lutto_giovane", "nome": "Lutto da giovane", "descrizione": "Una perdita arrivata troppo presto.", "effetti_annui": { "morale": -1 }, "eredita_tratto": { "tratto": "prudente", "probabilita": 0.2 } },
+    { "id": "fallimento_azienda", "nome": "Fallimento dell'azienda", "descrizione": "Ha visto crollare quello che la famiglia aveva costruito.", "effetti_annui": {}, "eredita_tratto": { "tratto": "prudente", "probabilita": 0.35 } },
+    { "id": "bocciatura", "nome": "Bocciatura", "descrizione": "Un anno ripetuto a scuola.", "effetti_annui": {}, "eredita_tratto": null },
+    { "id": "bullismo", "nome": "Bullismo subito", "descrizione": "Anni difficili tra i banchi.", "effetti_annui": { "morale": -1 }, "eredita_tratto": { "tratto": "insicuro", "probabilita": 0.25 } },
+    { "id": "debiti_giovane", "nome": "Debiti da giovane", "descrizione": "Ha conosciuto la paura di non arrivare a fine mese.", "effetti_annui": {}, "eredita_tratto": { "tratto": "prudente", "probabilita": 0.3 } },
+    { "id": "grande_amicizia", "nome": "Un'amicizia per la vita", "descrizione": "Qualcuno su cui contare sempre.", "effetti_annui": { "morale": 1 }, "eredita_tratto": { "tratto": "socievole", "probabilita": 0.2 } },
+    { "id": "esperienza_estero", "nome": "Esperienza all'estero", "descrizione": "Ha visto come si vive altrove.", "effetti_annui": {}, "eredita_tratto": { "tratto": "indipendente", "probabilita": 0.25 } },
+    { "id": "malattia_superata", "nome": "Malattia superata", "descrizione": "Ha imparato quanto conta la salute.", "effetti_annui": {}, "eredita_tratto": null },
+    { "id": "laurea_con_lode", "nome": "Laurea con lode", "descrizione": "Un traguardo di cui andare fieri.", "effetti_annui": {}, "eredita_tratto": { "tratto": "ambizioso", "probabilita": 0.2 } }
+  ]
+}

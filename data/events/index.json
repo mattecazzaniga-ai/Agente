@@ -1,0 +1,12 @@
+{
+  "_nota": "Elenco dei file di eventi caricati dal gioco. Per aggiungere un tema: crea il file qui e aggiungilo alla lista.",
+  "file": [
+    "scuola.json",
+    "universita.json",
+    "lavoro.json",
+    "soldi.json",
+    "amicizie.json",
+    "salute.json",
+    "famiglia.json"
+  ]
+}

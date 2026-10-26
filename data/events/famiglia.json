@@ -1,0 +1,357 @@
+{
+  "tema": "famiglia",
+  "eventi": [
+    {
+      "id": "famiglia_litigi",
+      "tema": "famiglia",
+      "titolo": "Litigi in casa",
+      "condizioni": {
+        "eta": [
+          8,
+          17
+        ],
+        "genitori_insieme": true
+      },
+      "peso": 3,
+      "testi": [
+        "I tuoi genitori litigano sempre più spesso, anche davanti a te. Ieri sera è volato un piatto.",
+        "{madre} e {padre} non si parlano da tre giorni. A cena si sente solo il televisore.",
+        "Senti le voci alte attraverso la porta della camera. Si parla di soldi, come sempre."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti chiudi in camera con le cuffie",
+          "tratti_favoriti": [
+            "solitario",
+            "insicuro"
+          ],
+          "effetti": {
+            "morale": -5,
+            "felicita": -3
+          },
+          "esito": "La musica copre tutto. Quasi."
+        },
+        {
+          "id": "b",
+          "testo": "Provi a farli ragionare",
+          "tratti_favoriti": [
+            "generoso",
+            "sicuro"
+          ],
+          "effetti": {
+            "stanchezza": 4,
+            "relazione": [
+              {
+                "con": "madre",
+                "delta": 5
+              },
+              {
+                "con": "padre",
+                "delta": 5
+              }
+            ]
+          },
+          "esito": "Ti guardano sorpresi. Smettono, almeno per stasera."
+        },
+        {
+          "id": "c",
+          "testo": "Esci e torni tardi",
+          "tratti_favoriti": [
+            "indipendente",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 2,
+            "relazione": {
+              "con": "genitore",
+              "delta": -4
+            }
+          },
+          "esito": "Fuori si respira meglio."
+        }
+      ]
+    },
+    {
+      "id": "famiglia_nonno_mestiere",
+      "tema": "famiglia",
+      "titolo": "Il nonno",
+      "condizioni": {
+        "eta": [
+          6,
+          13
+        ]
+      },
+      "peso": 3,
+      "testi": [
+        "Il nonno ti porta nell'orto e ti insegna a capire quando i pomodori sono pronti.",
+        "Nella bottega del nonno odora di legno e colla. Ti mette in mano una pialla.",
+        "La nonna ti insegna a fare la pasta a mano, la domenica mattina, come faceva sua madre."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Impari tutto quello che puoi",
+          "tratti_favoriti": [
+            "creativo",
+            "prudente",
+            "generoso"
+          ],
+          "effetti": {
+            "felicita": 5,
+            "morale": 3,
+            "flag": "ricordi_nonni"
+          },
+          "esito": "Cose che non si imparano a scuola."
+        },
+        {
+          "id": "b",
+          "testo": "Ti annoi e chiedi il tablet",
+          "tratti_favoriti": [
+            "pigro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 1
+          },
+          "esito": "Il nonno sorride e lascia correre."
+        }
+      ]
+    },
+    {
+      "id": "famiglia_aiuto_fratello",
+      "tema": "famiglia",
+      "titolo": "{fratello} ha bisogno",
+      "condizioni": {
+        "eta": [
+          12,
+          40
+        ],
+        "fratelli": true
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 6,
+      "testi": [
+        "{fratello} ti chiede di aiutarlo a traslocare sabato: terzo piano senza ascensore.",
+        "{fratello} è in un periodo difficile e ti chiede di passare più tempo insieme.",
+        "{fratello} ha un esame importante e ti chiede una mano a ripassare."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ci sei, come sempre",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "fratello",
+              "delta": 12
+            },
+            "stanchezza": 4,
+            "morale": 2
+          },
+          "esito": "«Grazie, davvero». Basta così."
+        },
+        {
+          "id": "b",
+          "testo": "Gli dici che non puoi",
+          "tratti_favoriti": [
+            "egoista",
+            "solitario"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "fratello",
+              "delta": -10
+            }
+          },
+          "esito": "Non dice niente. Ma se lo ricorderà."
+        }
+      ]
+    },
+    {
+      "id": "famiglia_weekend_padre",
+      "tema": "famiglia",
+      "titolo": "Il weekend con {padre}",
+      "condizioni": {
+        "eta": [
+          7,
+          16
+        ],
+        "genitori_insieme": false,
+        "genitori_vivi": 2
+      },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "Questo weekend tocca a {padre}. Ti ha scritto: «Andiamo allo stadio?».",
+        "{padre} passa a prenderti il sabato mattina. Ha un'auto nuova e una compagna che non conosci bene.",
+        "Il calendario dei weekend dice {padre}. Tu avresti una festa da un amico."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Vai volentieri",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "padre",
+              "delta": 10
+            },
+            "felicita": 3
+          },
+          "esito": "Due giorni insieme, finalmente."
+        },
+        {
+          "id": "b",
+          "testo": "Gli chiedi di fare un'altra volta",
+          "tratti_favoriti": [
+            "indipendente",
+            "egoista"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "padre",
+              "delta": -8
+            },
+            "felicita": 2
+          },
+          "esito": "Dice che va bene. La voce dice altro."
+        }
+      ]
+    },
+    {
+      "id": "famiglia_genitore_malato",
+      "tema": "famiglia",
+      "titolo": "{genitore} non sta bene",
+      "condizioni": {
+        "eta": [
+          25,
+          70
+        ],
+        "genitori_vivi": 1
+      },
+      "peso": 4,
+      "testi": [
+        "{genitore} ha avuto un piccolo ictus. Si riprenderà, ma per un po' avrà bisogno di aiuto ogni giorno.",
+        "I medici dicono che {genitore} non può più vivere da sol{o} senza aiuto.",
+        "Una caduta in casa: {genitore} si è rotto il femore. La riabilitazione sarà lunga."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Te ne occupi tu",
+          "tratti_favoriti": [
+            "generoso"
+          ],
+          "effetti": {
+            "stanchezza": 12,
+            "relazione": {
+              "con": "genitore",
+              "delta": 15
+            },
+            "reputazione": 3,
+            "morale": -2
+          },
+          "esito": "Stanchezza tanta. Rimpianti nessuno."
+        },
+        {
+          "id": "b",
+          "testo": "Paghi una badante",
+          "requisiti": {
+            "risparmi_min": 8000
+          },
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "risparmi": -7500,
+            "relazione": {
+              "con": "genitore",
+              "delta": 5
+            }
+          },
+          "esito": "Costa, ma {genitore} è in buone mani."
+        },
+        {
+          "id": "c",
+          "testo": "Chiedi a {fratello} di pensarci",
+          "tratti_favoriti": [
+            "egoista"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "fratello",
+              "delta": -12
+            },
+            "morale": -3
+          },
+          "esito": "Lo fa. Ma tra voi qualcosa si incrina."
+        }
+      ]
+    },
+    {
+      "id": "famiglia_azienda_estate",
+      "tema": "famiglia",
+      "titolo": "L'azienda di famiglia",
+      "condizioni": {
+        "eta": [
+          14,
+          20
+        ],
+        "azienda_famiglia": true
+      },
+      "peso": 4,
+      "testi": [
+        "In famiglia c'è bisogno di una mano in azienda durante l'estate. Tutti si aspettano che tu dica di sì.",
+        "Nel negozio di famiglia manca un commesso per agosto. «Così impari», dice {padre}.",
+        "Ti propongono di passare l'estate in azienda a vedere come funziona davvero."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ci vai e ti impegni",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente",
+            "generoso"
+          ],
+          "effetti": {
+            "risparmi": 900,
+            "relazione": {
+              "con": "genitore",
+              "delta": 6
+            },
+            "stanchezza": 5,
+            "flag": "esperienza_azienda"
+          },
+          "esito": "Capisci quanta fatica c'è dietro il nome di famiglia."
+        },
+        {
+          "id": "b",
+          "testo": "Dici di no: quella è la loro vita",
+          "tratti_favoriti": [
+            "indipendente",
+            "creativo"
+          ],
+          "effetti": {
+            "felicita": 3,
+            "relazione": {
+              "con": "genitore",
+              "delta": -5
+            }
+          },
+          "esito": "Non la prendono bene. Ma rispettano."
+        }
+      ]
+    }
+  ]
+}

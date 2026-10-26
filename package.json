@@ -1,0 +1,12 @@
+{
+  "name": "dinastia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dinastia: simulatore di vita multi-generazionale ambientato in Italia (gioco personale, vanilla JS).",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "simula": "node tools/simula.mjs 100",
+    "avvia": "python3 -m http.server 8080"
+  }
+}

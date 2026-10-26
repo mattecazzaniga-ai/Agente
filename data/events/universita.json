@@ -1,0 +1,514 @@
+{
+  "tema": "universita",
+  "eventi": [
+    {
+      "id": "dopo_diploma",
+      "tema": "studio",
+      "titolo": "E adesso?",
+      "obbligatorio": true,
+      "condizioni": {
+        "eta": [
+          18,
+          21
+        ],
+        "titolo": "diploma",
+        "iscritto": false,
+        "lavoro": false
+      },
+      "peso": 10,
+      "testi": [
+        "Hai il diploma in mano. A cena {padre} chiede, senza girarci intorno: «E adesso cosa vuoi fare?»",
+        "Estate dopo la maturità: gli amici partono per l'università, per il lavoro o per l'estero. Tocca a te scegliere.",
+        "Il diploma è appeso in camera. La domanda che ti fanno tutti è sempre la stessa."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi all'università",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "flag": "vuole_universita",
+            "morale": 3
+          },
+          "esito": "Adesso c'è da scegliere la facoltà."
+        },
+        {
+          "id": "b",
+          "testo": "Cerchi subito lavoro",
+          "tratti_favoriti": [
+            "indipendente",
+            "pigro"
+          ],
+          "effetti": {
+            "lavoro": "casuale",
+            "morale": 2
+          },
+          "esito": "Basta libri: è ora di guadagnare."
+        },
+        {
+          "id": "c",
+          "testo": "Un anno all'estero a lavorare e imparare l'inglese",
+          "requisiti": {
+            "risparmi_min": 1500
+          },
+          "tratti_favoriti": [
+            "indipendente",
+            "impulsivo",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -1500,
+            "felicita": 8,
+            "ricordo": "esperienza_estero",
+            "tratto": "indipendente"
+          },
+          "esito": "Valigia, biglietto di sola andata per Dublino.",
+          "conseguenze": [
+            {
+              "evento": "dopo_sabbatico",
+              "dopo_anni": 1,
+              "probabilita": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dopo_sabbatico",
+      "tema": "studio",
+      "titolo": "Ritorno a casa",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "titolo": "diploma",
+        "iscritto": false
+      },
+      "peso": 10,
+      "testi": [
+        "Un anno fuori ti ha cambiat{o}. Torni a {citta} e la tua camera sembra più piccola.",
+        "Dublino è stata dura e bellissima. Adesso però bisogna decidere davvero.",
+        "Rientri in Italia con un inglese decente e tante idee in più."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Adesso l'università",
+          "effetti": {
+            "flag": "vuole_universita"
+          },
+          "esito": "Con un anno in più e la testa più chiara."
+        },
+        {
+          "id": "b",
+          "testo": "Cerchi lavoro",
+          "effetti": {
+            "lavoro": "casuale",
+            "reputazione": 2
+          },
+          "esito": "L'esperienza all'estero sul curriculum aiuta."
+        }
+      ]
+    },
+    {
+      "id": "universita_scelta_facolta",
+      "tema": "studio",
+      "titolo": "Quale facoltà?",
+      "obbligatorio": true,
+      "condizioni": {
+        "flag": "vuole_universita",
+        "iscritto": false,
+        "titolo": "diploma"
+      },
+      "peso": 10,
+      "testi": [
+        "Il sito dell'università è aperto su dieci schede diverse. Le iscrizioni chiudono a settembre.",
+        "Agli open day di {citta} ti hanno dato una borsa piena di opuscoli. Ne devi scegliere uno.",
+        "{madre} ti dice di seguire quello che ti piace. {padre} ti dice di seguire quello che paga. Hai ragione tu."
+      ],
+      "scelte": [
+        {
+          "id": "ingegneria",
+          "testo": "Ingegneria",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "universita": "ingegneria",
+            "flag_rimuovi": "vuole_universita"
+          },
+          "esito": "Analisi 1 ti aspetta."
+        },
+        {
+          "id": "medicina",
+          "testo": "Medicina (test d'ingresso)",
+          "requisiti": {
+            "voti_min": 7
+          },
+          "tratti_favoriti": [
+            "ambizioso",
+            "generoso"
+          ],
+          "effetti": {
+            "universita": "medicina",
+            "flag_rimuovi": "vuole_universita",
+            "stanchezza": 8
+          },
+          "esito": "Passi il test. Sei anni, e poi la specializzazione."
+        },
+        {
+          "id": "economia",
+          "testo": "Economia",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "universita": "economia",
+            "flag_rimuovi": "vuole_universita"
+          },
+          "esito": "Microeconomia e statistica dal primo semestre."
+        },
+        {
+          "id": "giurisprudenza",
+          "testo": "Giurisprudenza",
+          "tratti_favoriti": [
+            "ambizioso",
+            "sicuro"
+          ],
+          "effetti": {
+            "universita": "giurisprudenza",
+            "flag_rimuovi": "vuole_universita"
+          },
+          "esito": "Codici pesanti e cinque anni di esami orali."
+        },
+        {
+          "id": "umanistica",
+          "testo": "Lettere o Psicologia",
+          "tratti_favoriti": [
+            "creativo",
+            "generoso"
+          ],
+          "effetti": {
+            "universita": "lettere",
+            "flag_rimuovi": "vuole_universita"
+          },
+          "esito": "Libri, biblioteche e lunghe discussioni."
+        },
+        {
+          "id": "infermieristica",
+          "testo": "Infermieristica",
+          "tratti_favoriti": [
+            "generoso",
+            "prudente"
+          ],
+          "effetti": {
+            "universita": "infermieristica",
+            "flag_rimuovi": "vuole_universita"
+          },
+          "esito": "Tre anni, tirocinio in ospedale e lavoro quasi certo."
+        }
+      ]
+    },
+    {
+      "id": "universita_fuori_sede",
+      "tema": "studio",
+      "titolo": "Fuori sede?",
+      "obbligatorio": true,
+      "condizioni": {
+        "livello": "universita",
+        "eta": [
+          18,
+          22
+        ],
+        "flag_esclusi": "deciso_sede",
+        "vive_con_genitori": true
+      },
+      "peso": 10,
+      "testi": [
+        "L'università migliore per il tuo corso è a Bologna. Quella vicina a casa è comoda, ma meno conosciuta.",
+        "Puoi fare avanti e indietro ogni giorno o prendere una stanza in affitto vicino all'ateneo.",
+        "Una stanza in un appartamento con altri tre studenti costa circa quattrocento euro al mese. Casa tua è gratis."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Resti a casa e fai avanti e indietro",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "flag": "deciso_sede",
+            "stanchezza": 4
+          },
+          "esito": "Treno alle sette, ma la cena è pronta."
+        },
+        {
+          "id": "b",
+          "testo": "Parti come fuori sede",
+          "requisiti": {
+            "soldi_famiglia_min": 6000
+          },
+          "tratti_favoriti": [
+            "indipendente",
+            "socievole",
+            "impulsivo"
+          ],
+          "effetti": {
+            "flag": "deciso_sede",
+            "fuori_sede": true,
+            "felicita": 7,
+            "relazione": {
+              "con": "genitore",
+              "delta": -3
+            }
+          },
+          "esito": "Coinquilini, spesa da fare e la prima lavatrice da sol{o}."
+        }
+      ]
+    },
+    {
+      "id": "universita_esame_scoglio",
+      "tema": "studio",
+      "titolo": "L'esame scoglio",
+      "condizioni": {
+        "livello": "universita",
+        "eta": [
+          19,
+          28
+        ]
+      },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "Terzo tentativo con lo stesso esame. Il professore ormai ti riconosce.",
+        "L'esame più difficile del corso è tra un mese. Metà dei tuoi compagni l'ha già rimandato.",
+        "Bocciat{o} all'orale per due domande. Il prossimo appello è tra sei settimane."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti chiudi in biblioteca fino all'appello",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "voti": 0.5,
+            "stanchezza": 8,
+            "felicita": -2
+          },
+          "esito": "Lo passi. Non sarà il voto più alto, ma è fatto."
+        },
+        {
+          "id": "b",
+          "testo": "Studi con un gruppo di compagni",
+          "tratti_favoriti": [
+            "socievole"
+          ],
+          "effetti": {
+            "voti": 0.4,
+            "stanchezza": 4,
+            "felicita": 2
+          },
+          "esito": "Spiegarlo agli altri ti fa capire tutto."
+        },
+        {
+          "id": "c",
+          "testo": "Lo rimandi alla prossima sessione",
+          "tratti_favoriti": [
+            "pigro",
+            "insicuro"
+          ],
+          "effetti": {
+            "voti": -0.2,
+            "morale": 2
+          },
+          "esito": "Respiri. Ma il libro resta lì.",
+          "conseguenze": [
+            {
+              "evento": "universita_fuori_corso",
+              "dopo_anni": 2,
+              "probabilita": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "universita_erasmus",
+      "tema": "studio",
+      "titolo": "Erasmus",
+      "condizioni": {
+        "livello": "universita",
+        "eta": [
+          19,
+          26
+        ]
+      },
+      "peso": 4,
+      "testi": [
+        "Escono le graduatorie Erasmus: c'è un posto per te a Valencia per un semestre.",
+        "Il bando Erasmus scade venerdì. Lisbona, Lione o Cracovia: la borsa copre circa metà delle spese.",
+        "Un'amica ti convince a fare domanda per l'Erasmus. Ti hanno pres{o} a Berlino."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Parti",
+          "requisiti": {
+            "soldi_famiglia_min": 3000
+          },
+          "tratti_favoriti": [
+            "socievole",
+            "indipendente",
+            "impulsivo"
+          ],
+          "effetti": {
+            "risparmi_famiglia": -2000,
+            "felicita": 9,
+            "ricordo": "esperienza_estero",
+            "tratto": "indipendente"
+          },
+          "esito": "Sei mesi che ti cambiano più di tre anni di lezioni."
+        },
+        {
+          "id": "b",
+          "testo": "Parti pagando con i tuoi risparmi",
+          "requisiti": {
+            "risparmi_min": 2000
+          },
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "risparmi": -2000,
+            "felicita": 9,
+            "ricordo": "esperienza_estero"
+          },
+          "esito": "Ogni euro speso lì vale doppio."
+        },
+        {
+          "id": "c",
+          "testo": "Rinunci",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario",
+            "insicuro"
+          ],
+          "effetti": {
+            "morale": -2,
+            "voti": 0.2
+          },
+          "esito": "Resti, e ti porti avanti con gli esami."
+        }
+      ]
+    },
+    {
+      "id": "dopo_triennale",
+      "tema": "studio",
+      "titolo": "Dopo la triennale",
+      "obbligatorio": true,
+      "condizioni": {
+        "flag": "decide_magistrale",
+        "livello": "universita"
+      },
+      "peso": 10,
+      "testi": [
+        "Hai la laurea triennale. Molti compagni si iscrivono alla magistrale, altri hanno già un colloquio.",
+        "Corona d'alloro, foto con i parenti, pranzo al ristorante. E poi la domanda: continuare o lavorare?",
+        "La triennale è fatta. Altri due anni di esami o il primo contratto?"
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi alla magistrale",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "flag_rimuovi": "decide_magistrale",
+            "morale": 2
+          },
+          "esito": "Altri due anni, per arrivare più in alto."
+        },
+        {
+          "id": "b",
+          "testo": "Basta studiare: cerchi lavoro",
+          "tratti_favoriti": [
+            "indipendente",
+            "pigro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "flag_rimuovi": "decide_magistrale",
+            "lascia_studi": true,
+            "lavoro": "casuale"
+          },
+          "esito": "Il primo stipendio è più vicino."
+        }
+      ]
+    },
+    {
+      "id": "universita_fuori_corso",
+      "tema": "studio",
+      "titolo": "Fuori corso",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "livello": "universita"
+      },
+      "peso": 5,
+      "testi": [
+        "Gli altri del tuo anno si sono laureati. Tu hai ancora sei esami e la retta da pagare.",
+        "Sul libretto mancano troppi esami. {padre} non chiede più come va: è peggio.",
+        "Fuori corso da un anno. La segreteria ti manda il promemoria delle tasse."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ultimo sforzo: un esame al mese",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "voti": 0.4,
+            "stanchezza": 10,
+            "morale": 3
+          },
+          "esito": "Uno alla volta, il libretto si riempie."
+        },
+        {
+          "id": "b",
+          "testo": "Lavori part-time e studi la sera",
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "lavoro": "cameriere",
+            "part_time": true,
+            "stanchezza": 8
+          },
+          "esito": "Almeno le tasse le paghi tu."
+        },
+        {
+          "id": "c",
+          "testo": "Lasci l'università",
+          "tratti_favoriti": [
+            "pigro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "lascia_studi": true,
+            "morale": -4
+          },
+          "esito": "Una porta si chiude. Ce ne sono altre."
+        }
+      ]
+    }
+  ]
+}

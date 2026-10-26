@@ -1,0 +1,683 @@
+{
+  "tema": "scuola",
+  "eventi": [
+    {
+      "id": "scuola_compagno_di_banco",
+      "tema": "scuola",
+      "titolo": "Il compagno di banco",
+      "condizioni": {
+        "eta": [
+          6,
+          7
+        ],
+        "livello": "elementari"
+      },
+      "peso": 6,
+      "testi": [
+        "Primo giorno a scuola a {citta}. La maestra ti mette accanto a un bambino che si chiama Tommaso: ha un astuccio enorme e non dice una parola.",
+        "Nella nuova classe c'è una bambina che ha già perso due dentini e li mostra a tutti. Si siede vicino a te e ti fissa.",
+        "All'intervallo resti con la merenda in mano. Il tuo compagno di banco ti guarda come se aspettasse un segnale."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Offri metà della tua merenda",
+          "tratti_favoriti": [
+            "socievole",
+            "generoso"
+          ],
+          "effetti": {
+            "felicita": 5,
+            "morale": 4,
+            "flag": "amico_infanzia"
+          },
+          "esito": "Da quel giorno vi sedete sempre vicini.",
+          "conseguenze": [
+            {
+              "evento": "amicizia_infanzia_ritorno",
+              "dopo_anni": 12,
+              "probabilita": 0.5
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Gli fai vedere il tuo disegno più bello",
+          "tratti_favoriti": [
+            "creativo",
+            "sicuro"
+          ],
+          "effetti": {
+            "felicita": 3,
+            "reputazione": 2
+          },
+          "esito": "Ride, e ne fa uno anche lui."
+        },
+        {
+          "id": "c",
+          "testo": "Resti per conto tuo",
+          "tratti_favoriti": [
+            "solitario",
+            "insicuro"
+          ],
+          "effetti": {
+            "morale": -2
+          },
+          "esito": "Va bene così, ma l'intervallo dura tanto."
+        }
+      ]
+    },
+    {
+      "id": "scuola_recita",
+      "tema": "scuola",
+      "titolo": "La recita di fine anno",
+      "condizioni": {
+        "eta": [
+          7,
+          10
+        ],
+        "livello": "elementari"
+      },
+      "peso": 4,
+      "testi": [
+        "La maestra prepara la recita di fine anno e cerca qualcuno per la parte principale. Tutti guardano te.",
+        "Recita di Natale: serve chi reciti la poesia davanti ai genitori. {madre} ti ha già detto che verrà a vederti.",
+        "C'è da scegliere i ruoli per lo spettacolo della scuola. Qualcuno deve fare il narratore."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti offri per la parte principale",
+          "tratti_favoriti": [
+            "sicuro",
+            "socievole"
+          ],
+          "tratti_sfavoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "morale": 6,
+            "reputazione": 3,
+            "stanchezza": 3
+          },
+          "esito": "Un applauso che non dimenticherai."
+        },
+        {
+          "id": "b",
+          "testo": "Disegni le scenografie",
+          "tratti_favoriti": [
+            "creativo",
+            "solitario"
+          ],
+          "effetti": {
+            "felicita": 4
+          },
+          "esito": "Il cielo di cartone è tuo, e si vede."
+        },
+        {
+          "id": "c",
+          "testo": "Dici che quel giorno hai mal di pancia",
+          "tratti_favoriti": [
+            "insicuro",
+            "pigro"
+          ],
+          "effetti": {
+            "morale": -3
+          },
+          "esito": "Lo spettacolo va avanti senza di te."
+        }
+      ]
+    },
+    {
+      "id": "scuola_compiti_estate",
+      "tema": "scuola",
+      "titolo": "I compiti delle vacanze",
+      "condizioni": {
+        "eta": [
+          7,
+          13
+        ],
+        "livello": [
+          "elementari",
+          "medie"
+        ]
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "Il libro delle vacanze pesa nello zaino. È giugno e il mare chiama.",
+        "Luglio, caldo, cicale. Sul tavolo ti aspettano trenta pagine di esercizi.",
+        "Mancano dieci giorni all'inizio della scuola e il quaderno dei compiti è ancora intonso."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Un po' ogni giorno, la mattina presto",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "voti": 0.3,
+            "stanchezza": 2
+          },
+          "esito": "A settembre ti senti avanti."
+        },
+        {
+          "id": "b",
+          "testo": "Tutto all'ultimo, in una maratona",
+          "tratti_favoriti": [
+            "pigro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "voti": -0.1,
+            "felicita": 4,
+            "stanchezza": 4
+          },
+          "esito": "Ce la fai per un pelo."
+        },
+        {
+          "id": "c",
+          "testo": "Li copi da {fratello}",
+          "tratti_favoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "voti": -0.3,
+            "felicita": 3
+          },
+          "esito": "La maestra se ne accorge, ma fa finta di niente."
+        }
+      ]
+    },
+    {
+      "id": "scuola_bullismo",
+      "tema": "scuola",
+      "titolo": "Quelli dell'ultimo banco",
+      "condizioni": {
+        "eta": [
+          11,
+          14
+        ],
+        "livello": [
+          "medie",
+          "superiori"
+        ]
+      },
+      "peso": 3,
+      "testi": [
+        "Da qualche settimana un gruppo della tua classe ti prende di mira: soprannomi, risatine, lo zaino nascosto.",
+        "Nella chat di classe gira una tua foto modificata. Tutti ridono, nessuno ti scrive in privato.",
+        "All'uscita da scuola gli stessi tre ragazzi ti aspettano ogni giorno per prenderti in giro."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ne parli con {genitore}",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -2,
+            "relazione": {
+              "con": "genitore",
+              "delta": 10
+            }
+          },
+          "esito": "Il giorno dopo i professori intervengono. Non è magia, ma qualcosa cambia."
+        },
+        {
+          "id": "b",
+          "testo": "Rispondi a tono, davanti a tutti",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo"
+          ],
+          "tratti_sfavoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "reputazione": 4,
+            "morale": 3,
+            "stanchezza": 3
+          },
+          "esito": "Ti lasciano stare. Ti guardano in modo diverso."
+        },
+        {
+          "id": "c",
+          "testo": "Stringi i denti e non dici niente",
+          "tratti_favoriti": [
+            "insicuro",
+            "solitario"
+          ],
+          "effetti": {
+            "morale": -8,
+            "felicita": -5,
+            "ricordo": "bullismo"
+          },
+          "esito": "Finisce, prima o poi. Ma qualcosa resta."
+        }
+      ]
+    },
+    {
+      "id": "scelta_superiori",
+      "tema": "scuola",
+      "titolo": "Che scuola fare?",
+      "obbligatorio": true,
+      "condizioni": {
+        "eta": [
+          13,
+          14
+        ],
+        "livello": "medie"
+      },
+      "peso": 10,
+      "testi": [
+        "È l'anno della terza media e arrivano gli open day. {madre} ha raccolto i volantini di tutte le scuole di {citta}.",
+        "Il professore di italiano ti chiede in quale scuola ti vedi. {padre} dice che deve essere una scelta tua, ma ha già un'opinione.",
+        "Le iscrizioni alle superiori chiudono tra un mese. Gli amici hanno già deciso, tu non ancora."
+      ],
+      "scelte": [
+        {
+          "id": "scientifico",
+          "testo": "Liceo scientifico",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "indirizzo": "scientifico",
+            "morale": 2
+          },
+          "esito": "Matematica e fisica, cinque anni intensi."
+        },
+        {
+          "id": "classico",
+          "testo": "Liceo classico",
+          "tratti_favoriti": [
+            "ambizioso",
+            "creativo"
+          ],
+          "effetti": {
+            "indirizzo": "classico",
+            "morale": 2
+          },
+          "esito": "Latino, greco e tante versioni."
+        },
+        {
+          "id": "linguistico",
+          "testo": "Liceo linguistico o artistico",
+          "tratti_favoriti": [
+            "socievole",
+            "creativo"
+          ],
+          "effetti": {
+            "indirizzo": "linguistico",
+            "felicita": 2
+          },
+          "esito": "Lingue, viaggi, scambi con l'estero."
+        },
+        {
+          "id": "tecnico",
+          "testo": "Istituto tecnico",
+          "tratti_favoriti": [
+            "prudente",
+            "indipendente"
+          ],
+          "effetti": {
+            "indirizzo": "tecnico_economico"
+          },
+          "esito": "Una scuola concreta, che apre sia al lavoro sia all'università."
+        },
+        {
+          "id": "industriale",
+          "testo": "Istituto tecnico industriale",
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "indirizzo": "tecnico_industriale"
+          },
+          "esito": "Laboratori, officine e tanta pratica."
+        },
+        {
+          "id": "professionale",
+          "testo": "Istituto professionale",
+          "tratti_favoriti": [
+            "pigro",
+            "indipendente",
+            "socievole"
+          ],
+          "effetti": {
+            "indirizzo": "professionale",
+            "felicita": 2
+          },
+          "esito": "Si impara un mestiere già dai banchi."
+        }
+      ]
+    },
+    {
+      "id": "scuola_gita",
+      "tema": "scuola",
+      "titolo": "La gita di classe",
+      "condizioni": {
+        "eta": [
+          15,
+          18
+        ],
+        "livello": "superiori"
+      },
+      "peso": 4,
+      "testi": [
+        "La classe organizza la gita a Praga: cinque giorni, 480 euro. Tutti ne parlano da settimane.",
+        "Viaggio d'istruzione a Barcellona, quota 520 euro. La circolare è arrivata stamattina.",
+        "Si parte per Roma con la scuola: tre notti in ostello e una lista di musei. La quota è 420 euro."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Parti con la classe",
+          "requisiti": {
+            "soldi_famiglia_min": 600
+          },
+          "tratti_favoriti": [
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi_famiglia": -480,
+            "felicita": 7,
+            "morale": 3
+          },
+          "esito": "Una settimana di cui riderete per anni."
+        },
+        {
+          "id": "b",
+          "testo": "Paghi la gita con i tuoi risparmi",
+          "requisiti": {
+            "risparmi_min": 480
+          },
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "risparmi": -480,
+            "felicita": 7,
+            "morale": 4
+          },
+          "esito": "Te la sei pagata da sol{o}, ed è ancora più bella."
+        },
+        {
+          "id": "c",
+          "testo": "Resti a casa",
+          "tratti_favoriti": [
+            "solitario",
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -3
+          },
+          "esito": "Le foto arrivano comunque, tutte nella chat di classe."
+        }
+      ]
+    },
+    {
+      "id": "scuola_pagella_rossa",
+      "tema": "scuola",
+      "titolo": "La pagella del primo quadrimestre",
+      "condizioni": {
+        "eta": [
+          14,
+          18
+        ],
+        "livello": "superiori",
+        "voti_max": 6.2
+      },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 2,
+      "testi": [
+        "Tre insufficienze in pagella: matematica, latino, inglese. {padre} la legge in silenzio.",
+        "Il coordinatore di classe convoca i tuoi genitori: se continui così rischi di ripetere l'anno.",
+        "Pagella del primo quadrimestre: più rossi che neri. Mancano quattro mesi per rimediare."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ripetizioni private due volte a settimana",
+          "requisiti": {
+            "soldi_famiglia_min": 1000
+          },
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "risparmi_famiglia": -700,
+            "voti": 0.8,
+            "stanchezza": 5
+          },
+          "esito": "Costa, ma i voti risalgono."
+        },
+        {
+          "id": "b",
+          "testo": "Gruppo di studio con i compagni",
+          "tratti_favoriti": [
+            "socievole"
+          ],
+          "effetti": {
+            "voti": 0.5,
+            "stanchezza": 4,
+            "felicita": 1
+          },
+          "esito": "Insieme è meno pesante."
+        },
+        {
+          "id": "c",
+          "testo": "Ti chiudi in camera e recuperi da sol{o}",
+          "tratti_favoriti": [
+            "solitario",
+            "indipendente"
+          ],
+          "effetti": {
+            "voti": 0.5,
+            "stanchezza": 7,
+            "felicita": -2
+          },
+          "esito": "Fatica tanta, ma funziona."
+        },
+        {
+          "id": "d",
+          "testo": "Pazienza, si vedrà a giugno",
+          "tratti_favoriti": [
+            "pigro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "voti": -0.3,
+            "felicita": 3
+          },
+          "esito": "Rimandare dà sollievo. Per ora."
+        }
+      ]
+    },
+    {
+      "id": "scuola_notte_prima_esami",
+      "tema": "scuola",
+      "titolo": "La notte prima degli esami",
+      "condizioni": {
+        "eta": [
+          18,
+          20
+        ],
+        "livello": "superiori"
+      },
+      "peso": 6,
+      "testi": [
+        "Domani c'è la prima prova della maturità. Il telefono vibra: gli amici sono al bar sotto casa.",
+        "Mancano dodici ore alla maturità. Sul letto, gli appunti di cinque anni.",
+        "La notte prima degli esami {citta} è silenziosa. Tu no."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ripassi fino all'alba",
+          "tratti_favoriti": [
+            "ambizioso",
+            "insicuro"
+          ],
+          "effetti": {
+            "voti": 0.3,
+            "stanchezza": 10,
+            "salute": -1
+          },
+          "esito": "Arrivi con le occhiaie e la testa piena."
+        },
+        {
+          "id": "b",
+          "testo": "Cena leggera e a letto presto",
+          "tratti_favoriti": [
+            "prudente",
+            "sportivo"
+          ],
+          "effetti": {
+            "voti": 0.2,
+            "salute": 1,
+            "stanchezza": -4
+          },
+          "esito": "Ti svegli lucid{o}."
+        },
+        {
+          "id": "c",
+          "testo": "Scendi al bar con gli amici",
+          "tratti_favoriti": [
+            "socievole",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 7,
+            "voti": -0.2,
+            "stanchezza": 3
+          },
+          "esito": "Una notte da ricordare, l'esame un po' meno."
+        }
+      ]
+    },
+    {
+      "id": "scuola_mollare",
+      "tema": "scuola",
+      "titolo": "Mollare la scuola?",
+      "condizioni": {
+        "eta": [
+          16,
+          18
+        ],
+        "livello": "superiori",
+        "voti_max": 5.8
+      },
+      "peso": 4,
+      "testi": [
+        "Ormai i professori non ti chiamano neanche più. Un amico lavora in un'officina e dice che cercano qualcuno.",
+        "Hai sedici anni, l'obbligo scolastico è finito e la scuola ti sembra una perdita di tempo.",
+        "Ennesima nota sul registro. Ti chiedi che senso abbia continuare."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Tieni duro fino al diploma",
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "stanchezza": 5,
+            "morale": -2
+          },
+          "esito": "Ogni giorno è una salita, ma è la tua."
+        },
+        {
+          "id": "b",
+          "testo": "Lasci e cerchi lavoro",
+          "tratti_favoriti": [
+            "impulsivo",
+            "indipendente",
+            "pigro"
+          ],
+          "effetti": {
+            "lascia_studi": true,
+            "lavoro": "casuale",
+            "morale": 3
+          },
+          "esito": "Ti senti grande, e un po' spaventat{o}.",
+          "conseguenze": [
+            {
+              "evento": "scuola_serale",
+              "dopo_anni": 4,
+              "probabilita": 0.6
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "testo": "Cambi scuola: un professionale",
+          "tratti_favoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "indirizzo": "professionale",
+            "voti": 0.6,
+            "morale": 2
+          },
+          "esito": "Più pratica, meno teoria. Respiri."
+        }
+      ]
+    },
+    {
+      "id": "scuola_serale",
+      "tema": "scuola",
+      "titolo": "La scuola serale",
+      "condizioni": {
+        "solo_conseguenza": true,
+        "titolo": [
+          "licenza_media",
+          "licenza_elementare"
+        ],
+        "iscritto": false
+      },
+      "peso": 5,
+      "testi": [
+        "Una sera, tornando dal lavoro, passi davanti a una scuola con le luci accese. «Corsi serali per il diploma», dice il cartello.",
+        "Un collega ha preso il diploma alle serali a trentacinque anni. Ne parla con orgoglio.",
+        "Hai visto un annuncio: diploma in tre anni, lezioni dalle sei alle dieci di sera."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi alle serali",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "superiori": "tecnico_economico",
+            "stanchezza": 10,
+            "morale": 5
+          },
+          "esito": "Lavoro di giorno, libri di sera. Ne vale la pena."
+        },
+        {
+          "id": "b",
+          "testo": "Non è più il momento",
+          "tratti_favoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "morale": -1
+          },
+          "esito": "Forse un giorno."
+        }
+      ]
+    }
+  ]
+}

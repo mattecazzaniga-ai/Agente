@@ -1,0 +1,501 @@
+{
+  "tema": "soldi",
+  "eventi": [
+    {
+      "id": "soldi_primo_stipendio",
+      "tema": "soldi",
+      "titolo": "Il primo stipendio",
+      "condizioni": {
+        "eta": [
+          16,
+          35
+        ],
+        "lavoro": true,
+        "flag_esclusi": "primo_stipendio"
+      },
+      "peso": 8,
+      "testi": [
+        "Ti arriva il primo stipendio sul conto. Lo guardi tre volte per essere sicur{o}.",
+        "Busta paga del primo mese: non è tanto, ma è tuo.",
+        "Il primo bonifico dal datore di lavoro. Ci sono già dieci idee su come spenderlo."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Porti fuori a cena i tuoi genitori",
+          "tratti_favoriti": [
+            "generoso"
+          ],
+          "effetti": {
+            "risparmi": -150,
+            "relazione": [
+              {
+                "con": "madre",
+                "delta": 8
+              },
+              {
+                "con": "padre",
+                "delta": 8
+              }
+            ],
+            "felicita": 4,
+            "flag": "primo_stipendio"
+          },
+          "esito": "{padre} si commuove e fa finta di niente."
+        },
+        {
+          "id": "b",
+          "testo": "Smartphone nuovo",
+          "tratti_favoriti": [
+            "impulsivo"
+          ],
+          "effetti": {
+            "risparmi": -1000,
+            "felicita": 5,
+            "flag": "primo_stipendio"
+          },
+          "esito": "Bellissimo. Per tre mesi."
+        },
+        {
+          "id": "c",
+          "testo": "Apri un conto di risparmio",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "morale": 3,
+            "flag": "primo_stipendio",
+            "tratto": "prudente"
+          },
+          "esito": "Il primo mattone di qualcosa."
+        }
+      ]
+    },
+    {
+      "id": "soldi_prestito_amico",
+      "tema": "soldi",
+      "titolo": "Un prestito",
+      "condizioni": {
+        "eta": [
+          18,
+          60
+        ],
+        "risparmi_min": 2500
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 8,
+      "testi": [
+        "Un vecchio amico ti chiede 1.500 euro: «Te li ridò entro l'anno, giuro».",
+        "{fratello} ha un problema con l'affitto e ti chiede una mano: 1.500 euro.",
+        "Il tuo migliore amico deve riparare l'auto per andare al lavoro. Ti chiede un prestito."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Glieli presti",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -1500,
+            "reputazione": 2,
+            "morale": 2
+          },
+          "esito": "Ti ringrazia come se gli avessi salvato la vita.",
+          "conseguenze": [
+            {
+              "evento": "soldi_prestito_restituito",
+              "dopo_anni": 1,
+              "probabilita": 0.65
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Gliene presti metà",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -750
+          },
+          "esito": "Un compromesso. Lui annuisce.",
+          "conseguenze": [
+            {
+              "evento": "soldi_prestito_restituito_meta",
+              "dopo_anni": 1,
+              "probabilita": 0.75
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "testo": "Dici di no",
+          "tratti_favoriti": [
+            "egoista",
+            "prudente"
+          ],
+          "effetti": {
+            "morale": -2,
+            "reputazione": -2
+          },
+          "esito": "Ci resta male. Tu un po' meno."
+        }
+      ]
+    },
+    {
+      "id": "soldi_prestito_restituito",
+      "tema": "soldi",
+      "titolo": "Debito saldato",
+      "condizioni": {
+        "solo_conseguenza": true
+      },
+      "peso": 5,
+      "testi": [
+        "Ti arriva un bonifico con la causale «grazie davvero». Sono i 1.500 euro dell'anno scorso.",
+        "Te li ridà tutti, in contanti, in una busta con un biglietto.",
+        "Puntuale come aveva promesso: il prestito torna indietro."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Che bello fidarsi",
+          "effetti": {
+            "risparmi": 1500,
+            "morale": 4,
+            "ricordo": "grande_amicizia"
+          },
+          "esito": "Ci sono persone su cui si può contare."
+        }
+      ]
+    },
+    {
+      "id": "soldi_prestito_restituito_meta",
+      "tema": "soldi",
+      "titolo": "Debito saldato",
+      "condizioni": {
+        "solo_conseguenza": true
+      },
+      "peso": 5,
+      "testi": [
+        "Ti restituisce i 750 euro con un caffè offerto e mille scuse per il ritardo.",
+        "Il prestito torna indietro, un po' alla volta, ma torna.",
+        "Bonifico ricevuto: 750 euro. Causale: «Promesso è promesso»."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Bene così",
+          "effetti": {
+            "risparmi": 750,
+            "morale": 2
+          },
+          "esito": "Amicizia salva, conti in ordine."
+        }
+      ]
+    },
+    {
+      "id": "soldi_automobile",
+      "tema": "soldi",
+      "titolo": "L'auto",
+      "condizioni": {
+        "eta": [
+          19,
+          45
+        ],
+        "lavoro": true,
+        "flag_esclusi": "ha_auto"
+      },
+      "peso": 4,
+      "testi": [
+        "Andare al lavoro con i mezzi ti costa un'ora e mezza al giorno. Forse è il momento di un'auto.",
+        "Il concessionario sotto casa ha un'offerta: «Zero anticipo, 48 rate».",
+        "Un collega vende la sua utilitaria usata, tenuta bene, a 6.000 euro."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Compri un'usata in contanti",
+          "requisiti": {
+            "risparmi_min": 6000
+          },
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -6000,
+            "felicita": 4,
+            "stanchezza": -4,
+            "flag": "ha_auto"
+          },
+          "esito": "Non è nuova, ma è tua e non devi niente a nessuno."
+        },
+        {
+          "id": "b",
+          "testo": "Nuova, a rate",
+          "tratti_favoriti": [
+            "impulsivo",
+            "ambizioso"
+          ],
+          "effetti": {
+            "debiti": 19000,
+            "felicita": 7,
+            "stanchezza": -4,
+            "reputazione": 2,
+            "flag": "ha_auto"
+          },
+          "esito": "Profumo di nuovo. E 48 rate."
+        },
+        {
+          "id": "c",
+          "testo": "Continui con bici e mezzi pubblici",
+          "tratti_favoriti": [
+            "sportivo",
+            "prudente"
+          ],
+          "effetti": {
+            "salute": 2,
+            "morale": 1
+          },
+          "esito": "Più lento, ma i soldi restano dove sono."
+        }
+      ]
+    },
+    {
+      "id": "soldi_andare_via_di_casa",
+      "tema": "soldi",
+      "titolo": "Casa tua",
+      "condizioni": {
+        "eta": [
+          22,
+          36
+        ],
+        "lavoro": true,
+        "vive_con_genitori": true,
+        "flag_esclusi": "vive_da_solo"
+      },
+      "peso": 6,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "Hai {eta} anni e dormi ancora nella cameretta con i poster di quando eri piccol{o}.",
+        "Un amico lascia il suo bilocale in affitto e te lo propone: è a dieci minuti dal lavoro.",
+        "{madre} ti lava ancora i vestiti. Comodo, certo. Ma forse è ora."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Vai a vivere da sol{o} in affitto",
+          "tratti_favoriti": [
+            "indipendente",
+            "sicuro"
+          ],
+          "effetti": {
+            "trasloco": true,
+            "felicita": 6,
+            "morale": 4
+          },
+          "esito": "Le chiavi di casa tua. Un rumore bellissimo."
+        },
+        {
+          "id": "b",
+          "testo": "Resti e metti da parte per comprare",
+          "tratti_favoriti": [
+            "prudente",
+            "pigro"
+          ],
+          "effetti": {
+            "morale": -2,
+            "risparmi": 2500
+          },
+          "esito": "Ogni mese di affitto risparmiato è un passo verso un mutuo."
+        },
+        {
+          "id": "c",
+          "testo": "Compri casa subito con un mutuo",
+          "requisiti": {
+            "casa": "propri"
+          },
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "effetti": {
+            "compra_casa": true,
+            "felicita": 8,
+            "flag": "proprietario"
+          },
+          "esito": "Venticinque anni di rate, ma le pareti sono tue."
+        },
+        {
+          "id": "d",
+          "testo": "Compri casa con l'aiuto dei tuoi",
+          "requisiti": {
+            "casa": "con_famiglia"
+          },
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "tratti_sfavoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "compra_casa": "con_famiglia",
+            "felicita": 7,
+            "flag": "proprietario",
+            "relazione": {
+              "con": "genitore",
+              "delta": 6
+            }
+          },
+          "esito": "{padre} firma l'assegno senza dire niente. {madre} piange."
+        }
+      ]
+    },
+    {
+      "id": "soldi_comprare_casa",
+      "tema": "soldi",
+      "titolo": "Comprare casa?",
+      "condizioni": {
+        "eta": [
+          27,
+          55
+        ],
+        "flag": "vive_da_solo",
+        "flag_esclusi": "proprietario",
+        "casa_raggiungibile": true
+      },
+      "peso": 5,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Paghi l'affitto da anni e il padrone di casa ha appena annunciato un aumento.",
+        "In banca ti dicono che con i tuoi risparmi potresti ottenere un mutuo.",
+        "Passi davanti a un cartello «Vendesi» in una via che ti piace molto."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Compri con un mutuo a 25 anni",
+          "requisiti": {
+            "casa": "propri"
+          },
+          "tratti_favoriti": [
+            "prudente",
+            "ambizioso"
+          ],
+          "effetti": {
+            "compra_casa": true,
+            "felicita": 7,
+            "flag": "proprietario"
+          },
+          "esito": "Firma dal notaio: la mano trema un po'."
+        },
+        {
+          "id": "b",
+          "testo": "Compri con l'aiuto della famiglia",
+          "requisiti": {
+            "casa": "con_famiglia"
+          },
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "tratti_sfavoriti": [
+            "indipendente"
+          ],
+          "effetti": {
+            "compra_casa": "con_famiglia",
+            "felicita": 6,
+            "flag": "proprietario",
+            "relazione": {
+              "con": "genitore",
+              "delta": 5
+            }
+          },
+          "esito": "Un aiuto che in Italia è quasi una tradizione."
+        },
+        {
+          "id": "c",
+          "testo": "Resti in affitto",
+          "tratti_favoriti": [
+            "indipendente",
+            "impulsivo"
+          ],
+          "effetti": {
+            "morale": 1
+          },
+          "esito": "Libertà di cambiare città quando vuoi."
+        }
+      ]
+    },
+    {
+      "id": "soldi_investimento_sicuro",
+      "tema": "soldi",
+      "titolo": "L'affare sicuro",
+      "condizioni": {
+        "eta": [
+          22,
+          70
+        ],
+        "risparmi_min": 9000
+      },
+      "peso": 2,
+      "ripetibile": true,
+      "intervallo": 12,
+      "testi": [
+        "Un conoscente ti parla di un investimento in criptovalute «garantito»: il 10% al mese.",
+        "Su un social ti contatta un «consulente» che promette di raddoppiare i tuoi risparmi in un anno.",
+        "Un amico di un amico ha un affare immobiliare «che non può andare male». Servono 8.000 euro subito."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ci metti 8.000 euro",
+          "tratti_favoriti": [
+            "impulsivo",
+            "ambizioso"
+          ],
+          "tratti_sfavoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -8000,
+            "morale": -10,
+            "felicita": -6
+          },
+          "esito": "Dopo tre mesi il sito non esiste più. Il numero nemmeno."
+        },
+        {
+          "id": "b",
+          "testo": "Ne parli prima con {genitore}",
+          "tratti_favoriti": [
+            "insicuro",
+            "prudente"
+          ],
+          "effetti": {
+            "relazione": {
+              "con": "genitore",
+              "delta": 4
+            },
+            "morale": 1
+          },
+          "esito": "«Se sembra troppo bello per essere vero…». Lasci perdere."
+        },
+        {
+          "id": "c",
+          "testo": "Rifiuti senza pensarci",
+          "tratti_favoriti": [
+            "prudente",
+            "sicuro"
+          ],
+          "effetti": {
+            "morale": 2
+          },
+          "esito": "Qualche mese dopo leggi della truffa sul giornale."
+        }
+      ]
+    }
+  ]
+}

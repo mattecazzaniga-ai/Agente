@@ -1,0 +1,9 @@
+{
+  "maschili": ["Leonardo", "Francesco", "Alessandro", "Lorenzo", "Mattia", "Tommaso", "Gabriele", "Andrea", "Riccardo", "Edoardo", "Matteo", "Giuseppe", "Antonio", "Marco", "Luca", "Davide", "Giovanni", "Federico", "Pietro", "Simone", "Stefano", "Paolo", "Roberto", "Salvatore", "Vincenzo", "Michele", "Emanuele", "Filippo", "Nicola", "Daniele", "Giacomo", "Samuele", "Christian", "Massimo", "Fabio", "Claudio", "Enrico", "Carlo", "Domenico", "Alberto"],
+  "femminili": ["Sofia", "Aurora", "Giulia", "Ginevra", "Vittoria", "Beatrice", "Alice", "Ludovica", "Emma", "Matilde", "Francesca", "Chiara", "Sara", "Martina", "Giorgia", "Anna", "Elena", "Valentina", "Federica", "Silvia", "Laura", "Paola", "Maria", "Alessia", "Elisa", "Ilaria", "Camilla", "Noemi", "Rebecca", "Greta", "Marta", "Irene", "Serena", "Roberta", "Daniela", "Cristina", "Barbara", "Antonella", "Teresa", "Rosa"],
+  "cognomi": {
+    "nord": ["Colombo", "Brambilla", "Ferrari", "Bianchi", "Villa", "Fontana", "Galli", "Conti", "Rossi", "Mariani", "Bassi", "Sala", "Moretti", "Zanetti", "Barbieri", "Pellegrini", "Rinaldi", "Bertolini", "Cattaneo", "Gatti", "Longo", "Bonetti", "Zanardi", "Pozzi"],
+    "centro": ["Rossi", "Ricci", "Marini", "Bianchi", "Mancini", "Lombardi", "Conti", "Fabbri", "Santini", "Bartolini", "Cecchi", "Innocenti", "Fanelli", "Paoletti", "Mariotti", "Rocchi", "Neri", "Benedetti", "Grassi", "Galli"],
+    "sud": ["Esposito", "Russo", "Romano", "De Luca", "Greco", "Bruno", "Costa", "Ferraro", "Caruso", "Rizzo", "Lombardo", "Marino", "Gallo", "Leone", "Longo", "Messina", "Amato", "Sorrentino", "Coppola", "De Rosa", "Santoro", "Vitale", "La Rosa", "Pagano"]
+  }
+}

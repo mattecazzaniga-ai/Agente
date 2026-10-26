@@ -1,0 +1,287 @@
+{
+  "tema": "amicizie",
+  "eventi": [
+    {
+      "id": "amici_compagnia",
+      "tema": "amicizie",
+      "titolo": "La compagnia",
+      "condizioni": {
+        "eta": [
+          13,
+          17
+        ]
+      },
+      "peso": 4,
+      "testi": [
+        "Il gruppo del muretto in piazza ti fa posto. Si sta lì fino a tardi a non fare niente, tutti insieme.",
+        "Alcuni compagni ti invitano nel loro gruppo: calcetto, pizza, interminabili chat notturne.",
+        "Un gruppo di ragazzi più grandi ti propone di uscire con loro il sabato sera."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Entri nel gruppo",
+          "tratti_favoriti": [
+            "socievole",
+            "impulsivo"
+          ],
+          "effetti": {
+            "felicita": 7,
+            "morale": 4,
+            "voti": -0.2,
+            "flag": "compagnia"
+          },
+          "esito": "Sabati che sembrano non finire mai."
+        },
+        {
+          "id": "b",
+          "testo": "Esci con loro ogni tanto",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "felicita": 3
+          },
+          "esito": "Un piede dentro e uno fuori."
+        },
+        {
+          "id": "c",
+          "testo": "Preferisci i tuoi due amici di sempre",
+          "tratti_favoriti": [
+            "solitario",
+            "insicuro"
+          ],
+          "effetti": {
+            "voti": 0.2,
+            "morale": 1
+          },
+          "esito": "Pochi, ma buoni."
+        }
+      ]
+    },
+    {
+      "id": "amici_prima_cotta",
+      "tema": "amicizie",
+      "titolo": "La prima cotta",
+      "condizioni": {
+        "eta": [
+          14,
+          18
+        ]
+      },
+      "peso": 5,
+      "testi": [
+        "C'è una persona della tua classe a cui pensi un po' troppo spesso. Ti ha appena sorriso in corridoio.",
+        "Alla festa di compleanno di un amico, qualcuno ti chiede di ballare. Il cuore va a mille.",
+        "Da settimane vi scrivete ogni sera fino a tardi. Gli amici dicono che è ovvio."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti dichiari",
+          "tratti_favoriti": [
+            "sicuro",
+            "impulsivo"
+          ],
+          "tratti_sfavoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "felicita": 9,
+            "morale": 5
+          },
+          "esito": "«Anche tu mi piaci». Il mondo diventa più leggero.",
+          "conseguenze": [
+            {
+              "evento": "amici_cuore_spezzato",
+              "dopo_anni": 1,
+              "probabilita": 0.55
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "testo": "Aspetti che faccia la prima mossa",
+          "tratti_favoriti": [
+            "prudente",
+            "insicuro"
+          ],
+          "effetti": {
+            "morale": -1
+          },
+          "esito": "Aspetti. E aspetti ancora."
+        },
+        {
+          "id": "c",
+          "testo": "Ti butti nello sport e non ci pensi",
+          "tratti_favoriti": [
+            "sportivo",
+            "solitario"
+          ],
+          "effetti": {
+            "salute": 2,
+            "felicita": -1
+          },
+          "esito": "Corri finché non ci pensi più. Quasi."
+        }
+      ]
+    },
+    {
+      "id": "amici_cuore_spezzato",
+      "tema": "amicizie",
+      "titolo": "Finisce",
+      "condizioni": {
+        "solo_conseguenza": true
+      },
+      "peso": 5,
+      "testi": [
+        "Un messaggio di poche righe: «Forse è meglio restare amici».",
+        "La storia finisce in un pomeriggio di pioggia, alla fermata dell'autobus.",
+        "Scopri dai social che ti ha lasciat{o} per un'altra persona."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti sfoghi con gli amici",
+          "tratti_favoriti": [
+            "socievole"
+          ],
+          "effetti": {
+            "felicita": -3,
+            "morale": 2
+          },
+          "esito": "Una pizza, tante risate amare, e passa."
+        },
+        {
+          "id": "b",
+          "testo": "Ti butti nello studio",
+          "tratti_favoriti": [
+            "ambizioso",
+            "solitario"
+          ],
+          "effetti": {
+            "voti": 0.4,
+            "morale": -4
+          },
+          "esito": "I voti salgono. Il resto ci mette più tempo."
+        },
+        {
+          "id": "c",
+          "testo": "Ne parli con {fratello_o_sorella}",
+          "tratti_favoriti": [
+            "insicuro"
+          ],
+          "effetti": {
+            "felicita": -2,
+            "relazione": {
+              "con": "fratello",
+              "delta": 10
+            }
+          },
+          "esito": "Ti ascolta senza giudicare. Non succedeva da anni."
+        }
+      ]
+    },
+    {
+      "id": "amicizia_infanzia_ritorno",
+      "tema": "amicizie",
+      "titolo": "Un vecchio amico",
+      "condizioni": {
+        "solo_conseguenza": true
+      },
+      "peso": 5,
+      "testi": [
+        "Al supermercato incontri il tuo compagno di banco delle elementari. Vi riconoscete subito.",
+        "Ti arriva un messaggio: «Ti ricordi di me? Eravamo in banco insieme in prima elementare».",
+        "Ritrovi su un social l'amico con cui dividevi la merenda. Vive ancora a {citta}."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Vi rivedete per un caffè",
+          "tratti_favoriti": [
+            "socievole",
+            "generoso"
+          ],
+          "effetti": {
+            "felicita": 6,
+            "morale": 4,
+            "ricordo": "grande_amicizia"
+          },
+          "esito": "Tre ore di caffè. Come se non fosse passato un giorno."
+        },
+        {
+          "id": "b",
+          "testo": "Un messaggio gentile e niente di più",
+          "tratti_favoriti": [
+            "solitario"
+          ],
+          "effetti": {
+            "morale": 1
+          },
+          "esito": "Un bel ricordo resta un bel ricordo."
+        }
+      ]
+    },
+    {
+      "id": "amici_matrimonio",
+      "tema": "amicizie",
+      "titolo": "Il matrimonio di un amico",
+      "condizioni": {
+        "eta": [
+          25,
+          42
+        ]
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Il tuo migliore amico si sposa e ti chiede di fargli da testimone.",
+        "Arriva una partecipazione elegante: si sposa un'amica dell'università, in Puglia.",
+        "Matrimonio di un collega a cui tieni: pranzo di sette portate e lista nozze."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ci vai e fai le cose in grande",
+          "tratti_favoriti": [
+            "generoso",
+            "socievole"
+          ],
+          "effetti": {
+            "risparmi": -700,
+            "felicita": 5,
+            "reputazione": 3
+          },
+          "esito": "Discorso commovente, balli fino alle tre."
+        },
+        {
+          "id": "b",
+          "testo": "Ci vai con un regalo sobrio",
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -250,
+            "felicita": 3
+          },
+          "esito": "Una bella giornata, senza esagerare."
+        },
+        {
+          "id": "c",
+          "testo": "Trovi una scusa e non vai",
+          "tratti_favoriti": [
+            "solitario",
+            "egoista"
+          ],
+          "effetti": {
+            "morale": -2,
+            "reputazione": -2
+          },
+          "esito": "Le foto le vedi il giorno dopo."
+        }
+      ]
+    }
+  ]
+}

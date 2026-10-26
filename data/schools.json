@@ -1,0 +1,30 @@
+{
+  "_nota": "Percorso italiano: elementari 6-10 anni, medie 11-13, superiori 14-18 (5 anni), poi universita. difficolta: 1 facile - 3 molto difficile.",
+  "superiori": [
+    { "id": "classico", "nome": "Liceo classico", "tipo": "liceo", "difficolta": 3, "tratti_affini": ["ambizioso", "creativo"] },
+    { "id": "scientifico", "nome": "Liceo scientifico", "tipo": "liceo", "difficolta": 3, "tratti_affini": ["ambizioso", "prudente"] },
+    { "id": "linguistico", "nome": "Liceo linguistico", "tipo": "liceo", "difficolta": 2, "tratti_affini": ["socievole"] },
+    { "id": "artistico", "nome": "Liceo artistico", "tipo": "liceo", "difficolta": 2, "tratti_affini": ["creativo"] },
+    { "id": "tecnico_economico", "nome": "Istituto tecnico economico", "tipo": "tecnico", "difficolta": 2, "tratti_affini": ["prudente"] },
+    { "id": "tecnico_industriale", "nome": "Istituto tecnico industriale", "tipo": "tecnico", "difficolta": 2, "tratti_affini": ["prudente", "indipendente"] },
+    { "id": "tecnico_cat", "nome": "Istituto tecnico costruzioni (geometri)", "tipo": "tecnico", "difficolta": 2, "tratti_affini": ["prudente"] },
+    { "id": "tecnico_agrario", "nome": "Istituto tecnico agrario", "tipo": "tecnico", "difficolta": 1, "tratti_affini": ["indipendente"] },
+    { "id": "professionale", "nome": "Istituto professionale", "tipo": "professionale", "difficolta": 1, "tratti_affini": ["indipendente", "socievole"] }
+  ],
+  "facolta": [
+    { "id": "ingegneria", "nome": "Ingegneria", "crediti": 300, "difficolta": 3, "tasse": 2000, "tratti_affini": ["ambizioso", "prudente"], "consigliata_da": ["scientifico", "tecnico_industriale"] },
+    { "id": "medicina", "nome": "Medicina e chirurgia", "crediti": 360, "ciclo_unico": true, "difficolta": 3, "tasse": 2500, "tratti_affini": ["ambizioso", "generoso"], "consigliata_da": ["scientifico", "classico"] },
+    { "id": "economia", "nome": "Economia", "crediti": 300, "difficolta": 2, "tasse": 1800, "tratti_affini": ["ambizioso", "prudente"], "consigliata_da": ["tecnico_economico", "scientifico"] },
+    { "id": "giurisprudenza", "nome": "Giurisprudenza", "crediti": 300, "ciclo_unico": true, "difficolta": 2, "tasse": 1700, "tratti_affini": ["ambizioso"], "consigliata_da": ["classico", "linguistico"] },
+    { "id": "lettere", "nome": "Lettere", "crediti": 300, "difficolta": 1, "tasse": 1400, "tratti_affini": ["creativo"], "consigliata_da": ["classico", "linguistico"] },
+    { "id": "informatica", "nome": "Informatica", "crediti": 300, "difficolta": 2, "tasse": 1800, "tratti_affini": ["creativo", "ambizioso"], "consigliata_da": ["scientifico", "tecnico_industriale"] },
+    { "id": "psicologia", "nome": "Psicologia", "crediti": 300, "difficolta": 2, "tasse": 1600, "tratti_affini": ["generoso"], "consigliata_da": ["linguistico", "classico"] },
+    { "id": "architettura", "nome": "Architettura", "crediti": 300, "ciclo_unico": true, "difficolta": 2, "tasse": 2000, "tratti_affini": ["creativo"], "consigliata_da": ["artistico", "tecnico_cat", "scientifico"] },
+    { "id": "scienze", "nome": "Scienze biologiche", "crediti": 300, "difficolta": 2, "tasse": 1700, "tratti_affini": ["prudente"], "consigliata_da": ["scientifico"] },
+    { "id": "farmacia", "nome": "Farmacia", "crediti": 300, "ciclo_unico": true, "difficolta": 3, "tasse": 1900, "tratti_affini": ["prudente"], "consigliata_da": ["scientifico"] },
+    { "id": "infermieristica", "nome": "Infermieristica", "crediti": 180, "solo_triennale": true, "difficolta": 2, "tasse": 1500, "tratti_affini": ["generoso"], "consigliata_da": ["scientifico", "professionale", "linguistico"] },
+    { "id": "scienze_comunicazione", "nome": "Scienze della comunicazione", "crediti": 300, "difficolta": 1, "tasse": 1500, "tratti_affini": ["socievole", "creativo"], "consigliata_da": ["linguistico", "artistico"] },
+    { "id": "scienze_politiche", "nome": "Scienze politiche", "crediti": 300, "difficolta": 1, "tasse": 1500, "tratti_affini": ["socievole"], "consigliata_da": ["classico", "linguistico", "tecnico_economico"] },
+    { "id": "design", "nome": "Design", "crediti": 300, "difficolta": 2, "tasse": 2200, "tratti_affini": ["creativo"], "consigliata_da": ["artistico"] }
+  ]
+}

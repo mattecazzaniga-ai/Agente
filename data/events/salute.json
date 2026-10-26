@@ -1,0 +1,314 @@
+{
+  "tema": "salute",
+  "eventi": [
+    {
+      "id": "salute_sport",
+      "tema": "salute",
+      "titolo": "Muoversi",
+      "condizioni": {
+        "eta": [
+          10,
+          65
+        ],
+        "tratti_esclusi": [
+          "sportivo"
+        ]
+      },
+      "peso": 4,
+      "ripetibile": true,
+      "intervallo": 6,
+      "testi": [
+        "Il medico ti dice che dovresti muoverti di più. Sotto casa hanno aperto una palestra.",
+        "Gli amici cercano un giocatore per il calcetto del giovedì.",
+        "Le scale per arrivare in ufficio ti lasciano senza fiato. Qualcosa non va."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti iscrivi e ci vai davvero",
+          "tratti_favoriti": [
+            "ambizioso",
+            "prudente"
+          ],
+          "tratti_sfavoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "risparmi": -400,
+            "salute": 5,
+            "stanchezza": -3,
+            "tratto": "sportivo"
+          },
+          "esito": "Dopo tre mesi non ne puoi più fare a meno."
+        },
+        {
+          "id": "b",
+          "testo": "Cammini mezz'ora al giorno",
+          "tratti_favoriti": [
+            "prudente",
+            "solitario"
+          ],
+          "effetti": {
+            "salute": 3,
+            "morale": 2
+          },
+          "esito": "Poco, ma tutti i giorni."
+        },
+        {
+          "id": "c",
+          "testo": "Ci penserai da lunedì",
+          "tratti_favoriti": [
+            "pigro"
+          ],
+          "effetti": {
+            "salute": -1
+          },
+          "esito": "Lunedì è sempre la settimana prossima."
+        }
+      ]
+    },
+    {
+      "id": "salute_influenza",
+      "tema": "salute",
+      "titolo": "Febbre alta",
+      "condizioni": {
+        "eta": [
+          6,
+          85
+        ]
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 4,
+      "testi": [
+        "Febbre a 39 da tre giorni. Il medico di base dice riposo assoluto per una settimana.",
+        "Un'influenza fortissima ti mette a letto proprio nella settimana più importante.",
+        "Ti svegli con le ossa rotte e la gola in fiamme."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti fermi e ti curi",
+          "tratti_favoriti": [
+            "prudente",
+            "pigro"
+          ],
+          "effetti": {
+            "salute": 2,
+            "stanchezza": -5,
+            "voti": -0.1
+          },
+          "esito": "Una settimana persa, la salute no."
+        },
+        {
+          "id": "b",
+          "testo": "Tiri avanti con la tachipirina",
+          "tratti_favoriti": [
+            "ambizioso",
+            "sicuro"
+          ],
+          "effetti": {
+            "salute": -6,
+            "stanchezza": 6,
+            "reputazione": 1
+          },
+          "esito": "Ce la fai, ma ci metti un mese a riprenderti."
+        }
+      ]
+    },
+    {
+      "id": "salute_controllo",
+      "tema": "salute",
+      "titolo": "Il check-up",
+      "condizioni": {
+        "eta": [
+          40,
+          85
+        ]
+      },
+      "peso": 3,
+      "ripetibile": true,
+      "intervallo": 5,
+      "testi": [
+        "Il medico ti prescrive gli esami del sangue e una visita cardiologica. Il CUP ti propone una data tra otto mesi.",
+        "Una campagna di prevenzione gratuita in farmacia: colesterolo, pressione, glicemia.",
+        "{madre} insiste: «Alla tua età i controlli vanno fatti»."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Paghi una visita privata subito",
+          "requisiti": {
+            "risparmi_min": 300
+          },
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -250,
+            "salute": 4,
+            "morale": 2
+          },
+          "esito": "Tutto bene, con qualche consiglio da seguire."
+        },
+        {
+          "id": "b",
+          "testo": "Aspetti la data del pubblico",
+          "tratti_favoriti": [
+            "prudente",
+            "egoista"
+          ],
+          "effetti": {
+            "salute": 2
+          },
+          "esito": "Otto mesi dopo, gli esami vanno bene."
+        },
+        {
+          "id": "c",
+          "testo": "Rimandi, ti senti bene",
+          "tratti_favoriti": [
+            "pigro",
+            "sicuro",
+            "impulsivo"
+          ],
+          "effetti": {
+            "morale": 1
+          },
+          "esito": "Che sarà mai.",
+          "conseguenze": [
+            {
+              "evento": "salute_problema_trascurato",
+              "dopo_anni": 3,
+              "probabilita": 0.3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "salute_problema_trascurato",
+      "tema": "salute",
+      "titolo": "Una diagnosi",
+      "condizioni": {
+        "solo_conseguenza": true
+      },
+      "peso": 5,
+      "testi": [
+        "Un dolore che non passa. Gli esami confermano: è un problema da curare seriamente.",
+        "Il medico ti guarda negli occhi prima di parlare. Non è un buon segno.",
+        "Un malore improvviso e una notte al pronto soccorso. Poi la diagnosi."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Ti curi subito in una clinica privata",
+          "requisiti": {
+            "risparmi_min": 7000
+          },
+          "tratti_favoriti": [
+            "prudente"
+          ],
+          "effetti": {
+            "risparmi": -6500,
+            "salute": 6,
+            "morale": -3,
+            "ricordo": "malattia_superata"
+          },
+          "esito": "Cure rapide e buone. Ne esci."
+        },
+        {
+          "id": "b",
+          "testo": "Ti affidi al servizio sanitario",
+          "tratti_favoriti": [
+            "generoso",
+            "prudente",
+            "pigro"
+          ],
+          "effetti": {
+            "salute": -6,
+            "morale": -6,
+            "flag": "malattia_cronica"
+          },
+          "esito": "Le cure arrivano, ma con tempi lunghi. Da ora dovrai conviverci."
+        }
+      ]
+    },
+    {
+      "id": "salute_esaurimento",
+      "tema": "salute",
+      "titolo": "Esaust{o}",
+      "condizioni": {
+        "eta": [
+          18,
+          65
+        ],
+        "stat_min": {
+          "stanchezza": 70
+        }
+      },
+      "peso": 6,
+      "ripetibile": true,
+      "intervallo": 3,
+      "testi": [
+        "Ti addormenti sul divano alle nove di sera e ti svegli già stanc{o}.",
+        "Da settimane hai mal di testa, dormi male e ti arrabbi per niente.",
+        "Il tuo corpo ti sta mandando un messaggio molto chiaro: così non si regge."
+      ],
+      "scelte": [
+        {
+          "id": "a",
+          "testo": "Inizi un percorso con uno psicologo",
+          "requisiti": {
+            "risparmi_min": 1200
+          },
+          "tratti_favoriti": [
+            "prudente",
+            "insicuro"
+          ],
+          "effetti": {
+            "risparmi": -1200,
+            "stanchezza": -20,
+            "morale": 8,
+            "felicita": 4
+          },
+          "esito": "Parlarne cambia le cose più di quanto pensassi."
+        },
+        {
+          "id": "b",
+          "testo": "Due settimane di ferie senza telefono",
+          "tratti_favoriti": [
+            "indipendente",
+            "pigro"
+          ],
+          "effetti": {
+            "stanchezza": -12,
+            "felicita": 5,
+            "risparmi": -600
+          },
+          "esito": "Torni con un altro sguardo."
+        },
+        {
+          "id": "c",
+          "testo": "Tiri avanti, passerà",
+          "tratti_favoriti": [
+            "ambizioso",
+            "sicuro"
+          ],
+          "effetti": {
+            "stanchezza": 5,
+            "salute": -5,
+            "morale": -4
+          },
+          "esito": "Non passa.",
+          "conseguenze": [
+            {
+              "evento": "salute_problema_trascurato",
+              "dopo_anni": 2,
+              "probabilita": 0.25
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

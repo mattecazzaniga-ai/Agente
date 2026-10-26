@@ -1,0 +1,273 @@
+{
+  "_nota": "Tabelle del generatore della prima famiglia. Le probabilita di agiatezza variano per area (nord, centro, sud) e rispecchiano in modo semplificato la distribuzione italiana dei redditi familiari.",
+  "agiatezza": {
+    "nord": {
+      "precaria": 15,
+      "media": 55,
+      "agiata": 24,
+      "ricca": 6
+    },
+    "centro": {
+      "precaria": 18,
+      "media": 55,
+      "agiata": 22,
+      "ricca": 5
+    },
+    "sud": {
+      "precaria": 30,
+      "media": 52,
+      "agiata": 15,
+      "ricca": 3
+    }
+  },
+  "classi": {
+    "precaria": {
+      "nome": "Famiglia precaria",
+      "risparmi": [
+        0,
+        3000
+      ],
+      "debiti": [
+        0,
+        6000
+      ],
+      "casa_proprieta": 0.25,
+      "azienda": 0.02,
+      "disoccupato": 0.35,
+      "mestieri": [
+        "rider",
+        "cameriere",
+        "barista",
+        "magazziniere",
+        "muratore",
+        "commesso",
+        "agricoltore"
+      ]
+    },
+    "media": {
+      "nome": "Famiglia nella media",
+      "risparmi": [
+        8000,
+        40000
+      ],
+      "debiti": [
+        0,
+        2000
+      ],
+      "casa_proprieta": 0.72,
+      "azienda": 0.12,
+      "disoccupato": 0.08,
+      "mestieri": [
+        "operaio",
+        "impiegato",
+        "commesso",
+        "autista",
+        "insegnante",
+        "infermiere",
+        "elettricista",
+        "idraulico",
+        "poliziotto",
+        "segretario",
+        "tecnico",
+        "cuoco",
+        "parrucchiere"
+      ]
+    },
+    "agiata": {
+      "nome": "Famiglia agiata",
+      "risparmi": [
+        60000,
+        220000
+      ],
+      "debiti": [
+        0,
+        0
+      ],
+      "casa_proprieta": 0.95,
+      "azienda": 0.3,
+      "disoccupato": 0.02,
+      "mestieri": [
+        "ingegnere",
+        "commercialista",
+        "medico",
+        "farmacista",
+        "architetto",
+        "funzionario",
+        "programmatore",
+        "geometra",
+        "insegnante",
+        "agente_immobiliare"
+      ]
+    },
+    "ricca": {
+      "nome": "Famiglia ricca",
+      "risparmi": [
+        300000,
+        1500000
+      ],
+      "debiti": [
+        0,
+        0
+      ],
+      "casa_proprieta": 1.0,
+      "azienda": 0.65,
+      "disoccupato": 0.0,
+      "mestieri": [
+        "medico",
+        "avvocato",
+        "commercialista",
+        "ingegnere",
+        "architetto",
+        "farmacista"
+      ]
+    }
+  },
+  "fratelli": [
+    {
+      "n": 0,
+      "peso": 30
+    },
+    {
+      "n": 1,
+      "peso": 45
+    },
+    {
+      "n": 2,
+      "peso": 18
+    },
+    {
+      "n": 3,
+      "peso": 7
+    }
+  ],
+  "eta_madre_al_parto": [
+    25,
+    39
+  ],
+  "differenza_eta_padre": [
+    -2,
+    7
+  ],
+  "genitori_separati": 0.18,
+  "aziende": [
+    {
+      "settore": "panificio",
+      "nome": "Panificio {cognome}",
+      "valore": [
+        60000,
+        180000
+      ],
+      "margine": 0.12
+    },
+    {
+      "settore": "officina",
+      "nome": "Officina {cognome}",
+      "valore": [
+        80000,
+        250000
+      ],
+      "margine": 0.14
+    },
+    {
+      "settore": "ferramenta",
+      "nome": "Ferramenta {cognome}",
+      "valore": [
+        70000,
+        200000
+      ],
+      "margine": 0.1
+    },
+    {
+      "settore": "ristorante",
+      "nome": "Trattoria da {nome}",
+      "valore": [
+        90000,
+        300000
+      ],
+      "margine": 0.11
+    },
+    {
+      "settore": "edilizia",
+      "nome": "Impresa edile {cognome}",
+      "valore": [
+        150000,
+        900000
+      ],
+      "margine": 0.12
+    },
+    {
+      "settore": "agricoltura",
+      "nome": "Azienda agricola {cognome}",
+      "valore": [
+        120000,
+        700000
+      ],
+      "margine": 0.1
+    },
+    {
+      "settore": "abbigliamento",
+      "nome": "{cognome} Moda",
+      "valore": [
+        80000,
+        400000
+      ],
+      "margine": 0.1
+    },
+    {
+      "settore": "studio_tecnico",
+      "nome": "Studio tecnico {cognome}",
+      "valore": [
+        60000,
+        250000
+      ],
+      "margine": 0.2
+    },
+    {
+      "settore": "hotel",
+      "nome": "Hotel {cognome}",
+      "valore": [
+        400000,
+        2500000
+      ],
+      "margine": 0.12
+    },
+    {
+      "settore": "industria",
+      "nome": "{cognome} Meccanica S.r.l.",
+      "valore": [
+        800000,
+        6000000
+      ],
+      "margine": 0.09
+    }
+  ],
+  "storie": {
+    "precaria": [
+      "{nome} ha cambiato molti lavori e non si è mai fermat{o}: per {lui} la stabilità è un traguardo, non un punto di partenza.",
+      "{nome} ha lasciato la scuola presto per aiutare in casa e non ha mai smesso di farlo.",
+      "{nome} conosce a memoria le scadenze delle bollette e trova sempre il modo di far quadrare i conti."
+    ],
+    "media": [
+      "{nome} lavora da anni nello stesso posto e alle sei di sera è sempre a casa.",
+      "{nome} ha comprato casa con un mutuo trentennale e lo racconta come la sua piccola impresa.",
+      "{nome} ama le domeniche lente, il pranzo lungo e le partite alla radio.",
+      "{nome} ha studiato la sera per prendere il diploma e ne va fier{o}."
+    ],
+    "agiata": [
+      "{nome} ha costruito la carriera un passo alla volta e pretende molto, prima di tutto da se stess{o}.",
+      "{nome} viene da una famiglia di professionisti e sente il peso del nome.",
+      "{nome} viaggia appena può e porta sempre a casa qualcosa da raccontare."
+    ],
+    "ricca": [
+      "{nome} è nat{o} in una famiglia benestante e ha imparato presto che i soldi aprono molte porte, ma non tutte.",
+      "{nome} gestisce il patrimonio di famiglia con un'attenzione quasi ossessiva.",
+      "{nome} frequenta le persone che contano in città, ma a casa vuole silenzio."
+    ]
+  },
+  "infanzia": [
+    "{nome} è cresciut{o} tra le strade di {citta}, con una cartella più grande di {lui}.",
+    "I primi anni di {nome} a {citta} sono stati pieni di cortili, nonni e domeniche in famiglia.",
+    "A {citta} tutti conoscono già {nome}: curios{o}, rumoros{o}, sempre con una domanda in tasca."
+  ],
+  "_testi": "Segnaposto nei testi: {nome} {cognome} {citta} {regione}, {o} = o/a, {lui} = lui/lei, {figlio} = figlio/figlia, {un} = un/una."
+}

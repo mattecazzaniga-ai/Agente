@@ -1,0 +1,55 @@
+// Convalida dei file JSON: ogni evento deve essere coerente con mestieri, scuole, tratti e ricordi.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { dati } from "./aiuto.mjs";
+
+const D = await dati();
+const SEGNAPOSTO = new Set(["nome", "cognome", "citta", "regione", "eta", "anno", "madre", "padre", "fratello", "fratello_o_sorella", "genitore", "lavoro", "scuola", "facolta", "titolo", "o", "lui", "figlio", "un", "ragazzo", "fratello_g"]);
+const EFFETTI = new Set(["salute", "morale", "felicita", "stanchezza", "reputazione", "risparmi", "debiti", "risparmi_famiglia", "voti", "reputazione_famiglia", "indirizzo", "superiori", "universita", "fuori_sede", "lascia_studi", "licenziato", "lavoro", "part_time", "bonus", "trasloco", "trasferimento", "compra_casa", "tratto", "tratto_rimuovi", "ricordo", "flag", "flag_rimuovi", "relazione"]);
+
+test("almeno 40 eventi con id unici", () => {
+  assert.ok(D.eventi.length >= 40, `solo ${D.eventi.length} eventi`);
+  assert.equal(new Set(D.eventi.map((e) => e.id)).size, D.eventi.length);
+});
+
+test("ogni evento ha testi, scelte e riferimenti validi", () => {
+  for (const ev of D.eventi) {
+    const dove = `evento ${ev.id}`;
+    assert.ok(ev.testi?.length >= 2, `${dove}: servono almeno 2 varianti di testo`);
+    assert.ok(ev.scelte?.length >= 1, `${dove}: nessuna scelta`);
+    assert.equal(new Set(ev.scelte.map((s) => s.id)).size, ev.scelte.length, `${dove}: id di scelta duplicati`);
+    const testi = [ev.titolo ?? "", ...ev.testi, ...ev.scelte.flatMap((s) => [s.testo, s.esito ?? ""])];
+    for (const t of testi) for (const [, k] of t.matchAll(/\{(\w+)\}/g)) assert.ok(SEGNAPOSTO.has(k), `${dove}: segnaposto sconosciuto {${k}}`);
+    for (const s of ev.scelte) {
+      for (const k of Object.keys(s.effetti ?? {})) assert.ok(EFFETTI.has(k), `${dove}/${s.id}: effetto sconosciuto ${k}`);
+      const e = s.effetti ?? {};
+      if (e.indirizzo) assert.ok(D.superiore[e.indirizzo], `${dove}: indirizzo ${e.indirizzo}`);
+      if (e.superiori) assert.ok(D.superiore[e.superiori], `${dove}: superiori ${e.superiori}`);
+      if (e.universita) assert.ok(D.facolta[e.universita], `${dove}: facoltà ${e.universita}`);
+      if (e.lavoro && e.lavoro !== "casuale") assert.ok(D.mestiere[e.lavoro], `${dove}: mestiere ${e.lavoro}`);
+      if (e.tratto) assert.ok(D.tratto[e.tratto], `${dove}: tratto ${e.tratto}`);
+      if (e.ricordo) assert.ok(D.ricordo[e.ricordo], `${dove}: ricordo ${e.ricordo}`);
+      if (e.trasferimento) assert.ok(D.regione[e.trasferimento], `${dove}: regione ${e.trasferimento}`);
+      for (const t of [...(s.tratti_favoriti ?? []), ...(s.tratti_sfavoriti ?? [])]) assert.ok(D.tratto[t], `${dove}: tratto ${t}`);
+      for (const c of s.conseguenze ?? []) assert.ok(D.evento[c.evento], `${dove}: conseguenza verso evento inesistente ${c.evento}`);
+    }
+  }
+});
+
+test("gli eventi solo_conseguenza sono raggiungibili", () => {
+  const raggiunti = new Set(D.eventi.flatMap((e) => e.scelte.flatMap((s) => (s.conseguenze ?? []).map((c) => c.evento))));
+  for (const ev of D.eventi.filter((e) => e.condizioni?.solo_conseguenza)) assert.ok(raggiunti.has(ev.id), `${ev.id} non è mai programmato`);
+});
+
+test("mestieri, scuole e regioni sono coerenti", () => {
+  const titoli = ["nessuno", "licenza_media", "diploma", "laurea_triennale", "laurea_magistrale"];
+  for (const m of D.mestieri) {
+    assert.ok(titoli.includes(m.titolo_min), `${m.id}: titolo_min ${m.titolo_min}`);
+    assert.ok(m.stipendio_massimo >= m.stipendio_iniziale, `${m.id}: stipendi invertiti`);
+    for (const t of m.tratti_affini) assert.ok(D.tratto[t], `${m.id}: tratto ${t}`);
+    for (const a of m.affinita) assert.ok(D.superiore[a] || D.facolta[a], `${m.id}: affinità ${a}`);
+  }
+  assert.equal(D.regioni.length, 20);
+  for (const r of D.regioni) assert.ok(r.citta.length >= 2 && r.affitto > 0 && r.prezzo_mq > 0, r.id);
+  for (const classe of Object.values(D.generatore.classi)) for (const id of classe.mestieri) assert.ok(D.mestiere[id], id);
+});
