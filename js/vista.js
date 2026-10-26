@@ -7,10 +7,11 @@ import { controllate, giocatore, vive } from "./state.js";
 import { madre, padre, fratelli, relazione, figliVivi } from "./family.js";
 import { patrimonio, quotaCase, valoreAziende, membriNucleo, nettoPersona, rataMutuo, utileAzienda } from "./economy.js";
 import { aziendaDi, costoCasa } from "./azioni.js";
-import { requisitiScelta, testoEvento, testoScelta, titoloEvento } from "./events.js";
+import { eventoDi, requisitiScelta, testoEvento, testoScelta, titoloEvento } from "./events.js";
 import { rigaAnno } from "./engine.js";
 import { candidatiErede, controllabile, MAX_CONTROLLATI } from "./dinastia.js";
 import { layoutAlbero } from "./albero.js";
+import { haEventiAI, profiliDisponibili } from "./eventi_ai.js";
 
 /** Volge al femminile un aggettivo del maschile singolare ("Ambizioso" → "Ambiziosa"). */
 export function alGenere(parola, sesso) {
@@ -141,6 +142,29 @@ export function contestoNarrativo(state, data, p) {
   };
 }
 
+/**
+ * Cosa chiedere all'AI che inventa gli eventi (FASE 5): per il personaggio principale, l'anno in corso
+ * (se non ha ancora eventi inventati) e il prossimo, preparato in anticipo mentre si gioca.
+ */
+export function richiesteEventiAI(state, data) {
+  const io = giocatore(state);
+  if (state.world.fase !== "gioco" || !vive(io) || eta(io, state.world.anno) < 6) return [];
+  const recenti = io.diario.slice(-4).flatMap((d) => d.righe).slice(-8);
+  const out = [];
+  for (const anno of [state.world.anno, state.world.anno + 1]) {
+    if (haEventiAI(state, io.id, anno)) continue;
+    const avanti = anno - state.world.anno;
+    out.push({
+      persona: io.id,
+      anno,
+      chiave: `${state.world.seed}:inventa:${anno}:${io.id}`,
+      contesto: { ...contestoNarrativo(state, data, io), eta: eta(io, state.world.anno) + avanti, anno, fatti_recenti: recenti },
+      profili: profiliDisponibili(state, data, io).map((p) => ({ id: p.id, descrizione: p.descrizione })),
+    });
+  }
+  return out;
+}
+
 /** Informazioni sulla dinastia: generazioni e personaggi giocati. */
 function vistaDinastia(state) {
   const d = state.dinastia ?? { generazione: 1, giocati: [] };
@@ -199,7 +223,7 @@ export function vistaVita(state, data) {
   const aperti = state.world.eventi_anno.map((e, indice) => ({ e, indice })).filter(({ e }) => !e.risolto && state.persone[e.persona]);
   const eventi = aperti.map(({ e, indice }) => {
     const p = state.persone[e.persona];
-    const ev = data.evento[e.evento];
+    const ev = eventoDi(state, data, e.evento);
     return {
       indice,
       id: ev.id,
@@ -217,13 +241,17 @@ export function vistaVita(state, data) {
   for (const ev of eventi) {
     const p = state.persone[ev.persona.id];
     const voce = state.world.eventi_anno[ev.indice];
+    if (eventoDi(state, data, ev.id)?.ai) {
+      ev.racconto = null; // l'ha già scritto l'AI
+      continue;
+    }
     ev.racconto = { chiave: `${state.world.seed}:${state.world.anno}:${p.id}:${ev.id}:${voce.variante}`, contesto: contestoNarrativo(state, data, p), evento: { titolo: ev.titolo, testo: ev.testo, scelte: ev.scelte.map((s) => s.testo) } };
   }
   const risolti = state.world.eventi_anno
     .filter((e) => e.risolto && state.persone[e.persona])
     .map((e) => {
       const p = state.persone[e.persona];
-      const ev = data.evento[e.evento];
+      const ev = eventoDi(state, data, e.evento);
       const s = ev.scelte.find((x) => x.id === e.scelta);
       return { titolo: titoloEvento(state, data, p, ev), scelta: s ? testoScelta(state, data, p, s) : "", esito: e.esito, persona: p.id === io.id ? null : p.nome };
     });

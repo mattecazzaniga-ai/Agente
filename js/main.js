@@ -6,7 +6,7 @@ import { generaFamiglia } from "./generator.js";
 import { iniziaAnno, fineAnno, risolviEvento, continuaCon, cambiaPrincipale, impostaControllo, risolviTuttoInAutomatico } from "./engine.js";
 import { carica, cancella, esporta, importa, salva } from "./state.js";
 import { seedDa } from "./rng.js";
-import { vistaFamiglia, vistaGeneratore, vistaImpostazioni, vistaSoldi, vistaVita } from "./vista.js";
+import { richiesteEventiAI, vistaFamiglia, vistaGeneratore, vistaImpostazioni, vistaSoldi, vistaVita } from "./vista.js";
 import { animaBarre, avviso } from "./ui/componenti.js";
 import * as Generatore from "./ui/generatore.js";
 import * as Vita from "./ui/vita.js";
@@ -14,6 +14,7 @@ import * as Soldi from "./ui/soldi.js";
 import * as Famiglia from "./ui/famiglia.js";
 import * as Impostazioni from "./ui/impostazioni.js";
 import { creaNarratore } from "./ai.js";
+import { preparaEventiAI } from "./eventi_ai.js";
 
 const schermo = document.getElementById("schermo");
 const nav = document.getElementById("nav");
@@ -71,10 +72,33 @@ function sostituisci(chiave, testo) {
   el.classList.add("ai");
 }
 
+/**
+ * L'AI inventa gli eventi dell'anno in corso (se non ci sono ancora) e del prossimo.
+ * Le proposte passano da preparaEventiAI, che le controlla e prende gli effetti dai profili del gioco.
+ */
+function inventaEventi() {
+  const partita = app.partita;
+  if (!partita || !narratore.disponibile() || !narratore.impostazioni().eventi_ai) return;
+  for (const r of richiesteEventiAI(partita, app.dati)) {
+    narratore.inventaEventi(r.chiave, r.contesto, r.profili).then((proposte) => {
+      if (!proposte || app.partita !== partita) return;
+      const aggiunti = preparaEventiAI(partita, app.dati, r.persona, r.anno, proposte);
+      if (!aggiunti.length) return;
+      salvaOra();
+      // un evento per l'anno in corso compare subito nella schermata Vita
+      if (r.anno === partita.world.anno && app.schermata === "vita") {
+        disegna();
+        avviso("Nuovo evento ✦");
+      }
+    });
+  }
+}
+
 /** Chiede al narratore i testi della schermata Vita: evento attuale per primo, poi gli altri, il riassunto, l'epitaffio. */
 function raccontaVita(v) {
   if (!narratore.disponibile()) return;
-  for (const ev of v.eventi) narratore.evento(ev.racconto.chiave, ev.racconto.contesto, ev.racconto.evento).then((t) => sostituisci(ev.racconto.chiave, t));
+  inventaEventi();
+  for (const ev of v.eventi.filter((e) => e.racconto)) narratore.evento(ev.racconto.chiave, ev.racconto.contesto, ev.racconto.evento).then((t) => sostituisci(ev.racconto.chiave, t));
   const r = v.riepilogo?.racconto;
   if (r) narratore.anno(r.chiave, r.contesto, r.righe).then((t) => sostituisci(r.chiave, t));
   const e = v.epilogo?.racconto;
@@ -191,6 +215,7 @@ const azioni = {
     const campo = (id) => document.getElementById(id);
     narratore.salvaImpostazioni({
       attivo: campo("ai-attivo").checked,
+      eventi_ai: campo("ai-eventi").checked,
       chiave: campo("ai-chiave").value,
       modello: campo("ai-modello").value.trim(),
       limite_minuto: campo("ai-minuto").value,

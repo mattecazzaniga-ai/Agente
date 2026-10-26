@@ -16,6 +16,7 @@ const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 
 export const IMPOSTAZIONI_PREDEFINITE = {
   attivo: false,
+  eventi_ai: true, // l'AI inventa anche gli eventi (situazioni, domande, scelte)
   chiave: "",
   modello: "gemini-2.5-flash",
   limite_minuto: 6, // il piano gratuito ne concede circa 10 al minuto: restiamo sotto
@@ -53,6 +54,27 @@ export function convalidaRisposta(testoRisposta, campo, fonte, { min = 30, max =
   const ammessi = new Set(numeri(fonte));
   if (numeri(t).some((n) => !ammessi.has(n))) return { ok: false, motivo: "numeri inventati" };
   return { ok: true, testo: t };
+}
+
+/**
+ * Controlla gli eventi inventati: struttura, lunghezze, tipi di scelta ammessi, nessun numero inventato.
+ * Restituisce gli eventi validi (anche solo uno) oppure null.
+ */
+export function convalidaEventi(testoRisposta, fonte, profili) {
+  let oggetto;
+  try {
+    oggetto = JSON.parse(String(testoRisposta).trim().replace(/^```(?:json)?\s*|\s*```$/g, ""));
+  } catch {
+    return { ok: false, motivo: "risposta non in JSON" };
+  }
+  const ammessi = new Set(profili);
+  const numeriOk = new Set(numeri(fonte));
+  const pulito = (t) => typeof t === "string" && !/[{}<>]/.test(t) && numeri(t).every((n) => numeriOk.has(n));
+  const eventi = (Array.isArray(oggetto?.eventi) ? oggetto.eventi : [])
+    .filter((e) => pulito(e?.titolo) && e.titolo.length <= 80 && pulito(e?.testo) && e.testo.length >= 40 && e.testo.length <= 800 && Array.isArray(e.scelte))
+    .map((e) => ({ titolo: e.titolo.trim(), testo: e.testo.trim(), scelte: e.scelte.filter((s) => pulito(s?.testo) && s.testo.length <= 140 && ammessi.has(s?.profilo) && (s.esito == null || pulito(s.esito))) }))
+    .filter((e) => e.scelte.length >= 2);
+  return eventi.length ? { ok: true, eventi } : { ok: false, motivo: "nessun evento valido" };
 }
 
 /** Data locale AAAA-MM-GG, per il contatore giornaliero. */
@@ -116,14 +138,14 @@ export function creaNarratore({ fetch = globalThis.fetch?.bind(globalThis), stor
   };
 
   // --- una chiamata a Gemini ---
-  async function chiama(prompt, campo, i) {
+  async function chiama(prompt, campo, i, schema = null, maxToken = 600) {
     const controllo = typeof AbortController !== "undefined" ? new AbortController() : null;
     const timer = controllo ? setTimeout(() => controllo.abort(), TIMEOUT) : null;
     const config = {
       temperature: i.temperatura,
-      maxOutputTokens: 600,
+      maxOutputTokens: maxToken,
       responseMimeType: "application/json",
-      responseSchema: { type: "OBJECT", properties: { [campo]: { type: "STRING" } }, required: [campo] },
+      responseSchema: schema ?? { type: "OBJECT", properties: { [campo]: { type: "STRING" } }, required: [campo] },
     };
     if (/2\.5/.test(i.modello)) config.thinkingConfig = { thinkingBudget: 0 }; // risposte rapide, senza ragionamento
     try {
@@ -147,7 +169,7 @@ export function creaNarratore({ fetch = globalThis.fetch?.bind(globalThis), stor
   }
 
   /** Mette in coda una richiesta; una sola alla volta, con la pausa minima tra l'una e l'altra. */
-  function richiedi(chiave, prompt, campo, fonte, limiti) {
+  function richiedi(chiave, prompt, campo, fonte, limiti, { schema = null, maxToken = 600, convalida = null } = {}) {
     const pronto = giaRaccontato(chiave);
     if (pronto) return Promise.resolve(pronto);
     if (!disponibile()) return Promise.resolve(null);
@@ -166,15 +188,16 @@ export function creaNarratore({ fetch = globalThis.fetch?.bind(globalThis), stor
       ultimaRichiesta = ora().getTime();
       conta();
       try {
-        const risposta = await chiama(prompt, campo, i);
-        const v = convalidaRisposta(risposta, campo, fonte, limiti);
+        const risposta = await chiama(prompt, campo, i, schema, maxToken);
+        const v = convalida ? convalida(risposta) : convalidaRisposta(risposta, campo, fonte, limiti);
         if (!v.ok) {
           ultimoErrore = `Risposta scartata (${v.motivo}): uso il testo del gioco.`;
           return null;
         }
         ultimoErrore = null;
-        if (!chiave.startsWith("prova:")) memorizza(chiave, v.testo);
-        return v.testo;
+        const valore = v.eventi ?? v.testo;
+        if (!chiave.startsWith("prova:")) memorizza(chiave, valore);
+        return valore;
       } catch (e) {
         ultimoErrore = e.name === "AbortError" ? "Il servizio non risponde: uso il testo del gioco." : e.message;
         return null;
@@ -197,6 +220,29 @@ Personaggio: ${JSON.stringify(contesto)}
 Evento: ${JSON.stringify({ titolo: evento.titolo, testo: evento.testo, scelte: evento.scelte })}`;
       const fonte = `${evento.titolo} ${evento.testo} ${evento.scelte.join(" ")} ${JSON.stringify(contesto)}`;
       return richiedi(chiave, prompt, "testo", fonte, { min: 40, max: 700 });
+    },
+
+    /**
+     * Inventa gli eventi di un anno: situazione, domanda e 2-3 scelte. Per ogni scelta l'AI indica
+     * soltanto il tipo (da `profili`): gli effetti li decide il gioco. Restituisce le proposte o null.
+     */
+    inventaEventi(chiave, contesto, profili, quanti = 2) {
+      if (!impostazioni().eventi_ai) return Promise.resolve(null);
+      const ids = profili.map((p) => p.id);
+      const prompt = `Inventa ${quanti} eventi diversi che potrebbero capitare a ${contesto.nome} nel ${contesto.anno}, quando avrà ${contesto.eta} anni, in Italia, credibili per la sua età e la sua vita.
+Ogni evento: un titolo breve; un testo di 2-4 frasi in seconda persona al presente che descrive la situazione e finisce con un dilemma; 2 o 3 scelte, ognuna con un testo breve (come un bottone, in seconda persona), il tipo di scelta più adatto preso SOLO dall'elenco, e un esito di una frase che racconta cosa succede, senza numeri.
+Non ripetere situazioni già vissute di recente. Varia i temi (scuola, lavoro, amore, famiglia, amici, soldi, salute, città).
+Rispondi con {"eventi": [{"titolo": "...", "testo": "...", "scelte": [{"testo": "...", "profilo": "...", "esito": "..."}]}]}.
+Personaggio: ${JSON.stringify(contesto)}
+Tipi di scelta disponibili: ${JSON.stringify(profili.map((p) => ({ tipo: p.id, significa: p.descrizione })))}`;
+      const scelta = { type: "OBJECT", properties: { testo: { type: "STRING" }, profilo: { type: "STRING", enum: ids }, esito: { type: "STRING" } }, required: ["testo", "profilo", "esito"] };
+      const schema = {
+        type: "OBJECT",
+        properties: { eventi: { type: "ARRAY", items: { type: "OBJECT", properties: { titolo: { type: "STRING" }, testo: { type: "STRING" }, scelte: { type: "ARRAY", items: scelta } }, required: ["titolo", "testo", "scelte"] } } },
+        required: ["eventi"],
+      };
+      const fonte = JSON.stringify(contesto);
+      return richiedi(chiave, prompt, "eventi", fonte, {}, { schema, maxToken: 2000, convalida: (r) => convalidaEventi(r, fonte, ids) });
     },
 
     /** Breve racconto dell'anno appena passato, dalle righe del diario. */
@@ -226,6 +272,7 @@ Vita: ${JSON.stringify(vita)}`;
       const attuali = impostazioni();
       const pulite = {
         attivo: Boolean(nuove.attivo ?? attuali.attivo),
+        eventi_ai: Boolean(nuove.eventi_ai ?? attuali.eventi_ai),
         chiave: typeof nuove.chiave === "string" && nuove.chiave.trim() ? nuove.chiave.trim() : attuali.chiave,
         modello: /^[\w.-]+$/.test(nuove.modello ?? "") ? nuove.modello : attuali.modello,
         limite_minuto: Math.min(30, Math.max(1, Math.round(Number(nuove.limite_minuto) || attuali.limite_minuto))),
@@ -247,6 +294,7 @@ Vita: ${JSON.stringify(vita)}`;
       const i = impostazioni();
       return {
         attivo: i.attivo,
+        eventi_ai: i.eventi_ai,
         ha_chiave: Boolean(i.chiave),
         chiave_mascherata: i.chiave ? `••••${i.chiave.slice(-4)}` : "",
         modello: i.modello,

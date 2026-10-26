@@ -10,7 +10,7 @@ import { annota, segnaposto } from "./family.js";
 import { aggiornaAziende, aggiornaIndici, avviaNaspi, bilancioNucleo, caseVuote, esdebitazione, vendiCasePerDebiti, eredita, interessi, mantenimenti, patrimonio, pulisciNuclei, rivalutaCase, rivalutaPensione, vaInPensione } from "./economy.js";
 import { candidatiErede, controllabile, MAX_CONTROLLATI, vitaPrivata } from "./dinastia.js";
 import { assumi, iscriviSuperiori, licenzia, lasciaStudi, aggiungiRicordo } from "./azioni.js";
-import { condizioniOk, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoEvento, testoScelta, titoloEvento } from "./events.js";
+import { condizioniOk, eventoDi, risolviScelta, sceltaAutomatica, scegliEventiAnno, testoEvento, testoScelta, titoloEvento } from "./events.js";
 
 // ---------------------------------------------------------------------------
 // Inizio anno: eventi per le persone controllate dal giocatore
@@ -30,7 +30,12 @@ export function iniziaAnno(state, data) {
 /** Aggiunge alla coda gli eventi dell'anno di una persona controllata. */
 function eventiPersona(state, data, p) {
   const massimo = p.id === state.giocatore ? 3 : 2;
-  const scelti = [...obbligatori(state, data, p), ...scegliEventiAnno(state, data, p, massimo)];
+  // eventi inventati dall'AI e già convertiti (FASE 5): prendono il posto di quelli della libreria
+  const w = state.world;
+  const pronti = (w.ai_pronti ?? []).filter((x) => x.persona === p.id && x.anno === w.anno && w.eventi_ai?.[x.evento]);
+  w.ai_pronti = (w.ai_pronti ?? []).filter((x) => x.anno > w.anno);
+  const daLibreria = pronti.length ? Math.max(1, massimo - pronti.length - 1) : massimo;
+  const scelti = [...obbligatori(state, data, p), ...pronti.map((x) => ({ evento: x.evento, variante: 0 })), ...scegliEventiAnno(state, data, p, daLibreria)];
   const visti = new Set();
   for (const s of scelti) {
     if (visti.has(s.evento)) continue;
@@ -72,7 +77,7 @@ export function risolviEvento(state, data, indice, idScelta) {
   const voce = state.world.eventi_anno[indice];
   if (!voce || voce.risolto) throw new Error("Evento già risolto o inesistente");
   const p = state.persone[voce.persona];
-  const ev = data.evento[voce.evento];
+  const ev = eventoDi(state, data, voce.evento);
   const { esito, righe } = risolviScelta(state, data, p, voce.evento, idScelta);
   voce.risolto = true;
   voce.scelta = idScelta;
@@ -254,7 +259,7 @@ function eventiAutomatici(state, data, p) {
   if (probabile(state, 0.35)) scelti.push(...scegliEventiAnno(state, data, p).slice(0, 1));
   for (let i = 0; i < scelti.length && i < 8; i++) {
     const s = scelti[i];
-    const ev = data.evento[s.evento];
+    const ev = eventoDi(state, data, s.evento);
     const idScelta = sceltaAutomatica(state, data, p, s.evento);
     const { righe } = risolviScelta(state, data, p, s.evento, idScelta);
     // per chi non è giocato basta il titolo: le scelte sono scritte in seconda persona

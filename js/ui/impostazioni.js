@@ -7,8 +7,9 @@ function narratore(ai) {
   if (!ai) return "";
   return `<section class="scheda">
       <h2>Narratore AI (Gemini)</h2>
-      <p class="nota" style="margin-bottom:12px">Facoltativo. L'AI riscrive soltanto i testi degli eventi, il riassunto dell'anno e l'epitaffio: scelte, soldi e salute restano decisi dal gioco. Se non risponde o sbaglia, si usano i testi del gioco.</p>
+      <p class="nota" style="margin-bottom:12px">Facoltativo. L'AI riscrive i testi, scrive il riassunto dell'anno e l'epitaffio e, se vuoi, inventa nuovi eventi con le loro domande e scelte. Per ogni scelta indica solo il tipo (prudente, spesa, salute, amore…): soldi, salute e morale li decide sempre il gioco. Se non risponde o sbaglia, si usano i testi del gioco.</p>
       <label class="interruttore"><span>Usa il narratore AI</span><input type="checkbox" id="ai-attivo" ${ai.attivo ? "checked" : ""}></label>
+      <label class="interruttore"><span>L'AI inventa anche gli eventi<br><span class="nota">situazioni, domande e scelte; gli effetti li decide il gioco</span></span><input type="checkbox" id="ai-eventi" ${ai.eventi_ai ? "checked" : ""}></label>
       <label class="campo-ai"><span>Chiave API Gemini ${ai.ha_chiave ? `<span class="tenue">(salvata: ${esc(ai.chiave_mascherata)})</span>` : ""}</span>
         <input type="password" id="ai-chiave" autocomplete="off" spellcheck="false" placeholder="${ai.ha_chiave ? "Lascia vuoto per tenere quella salvata" : "Incolla qui la chiave"}">
       </label>

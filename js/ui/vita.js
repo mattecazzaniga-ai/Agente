@@ -3,7 +3,7 @@
 
 import { avatar, barra, chips, esc, soldi } from "./componenti.js";
 
-const TEMI = { scuola: "Scuola", universita: "Università", studio: "Studio", lavoro: "Lavoro", soldi: "Soldi", amicizie: "Amicizie", salute: "Salute", famiglia: "Famiglia", amore: "Amore", figli: "Figli", azienda: "Azienda", adulti: "Vita adulta" };
+const TEMI = { ai: "Imprevisto ✦", scuola: "Scuola", universita: "Università", studio: "Studio", lavoro: "Lavoro", soldi: "Soldi", amicizie: "Amicizie", salute: "Salute", famiglia: "Famiglia", amore: "Amore", figli: "Figli", azienda: "Azienda", adulti: "Vita adulta" };
 
 function testata(v) {
   return `<header class="testata">
@@ -39,7 +39,7 @@ function cartaEvento(ev, n, totale, racconti) {
     ${chi}
     <div class="etichetta tema">${esc(TEMI[ev.tema] ?? ev.tema)}</div>
     <h2>${esc(ev.titolo)}</h2>
-    ${testoRaccontato(ev.racconto.chiave, ev.testo, racconti, "testo")}
+    ${ev.racconto ? testoRaccontato(ev.racconto.chiave, ev.testo, racconti, "testo") : `<p class="testo">${esc(ev.testo)}</p>`}
     <div class="scelte">
       ${ev.scelte
         .map(

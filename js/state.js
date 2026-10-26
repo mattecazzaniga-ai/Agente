@@ -16,6 +16,8 @@ export function statoVuoto(seed, anno = 2026) {
       indice_prezzi: 1, // moltiplicatore dei prezzi rispetto all'anno di inizio
       indice_salari: 1, // moltiplicatore degli stipendi rispetto all'anno di inizio
       memoria: [], // conseguenze a distanza: { evento, persona, anno }
+      eventi_ai: {}, // eventi inventati dall'AI, già convertiti in eventi normali (FASE 5)
+      ai_pronti: [], // eventi inventati in anticipo per l'anno dopo: { persona, anno, evento }
       eventi_usati: {}, // { idPersona: { idEvento: anno } }
       eventi_anno: [], // eventi da risolvere nell'anno corrente
       fase: "gioco", // "gioco" | "erede" (scegliere chi continua) | "fine"

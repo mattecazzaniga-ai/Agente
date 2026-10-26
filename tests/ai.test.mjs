@@ -158,3 +158,22 @@ test("il contesto per il narratore è completo (nome, chiave di archivio, scelte
     assert.ok(!JSON.stringify(ev.racconto.contesto).includes("€"));
   }
 });
+
+test("inventaEventi: schema con l'elenco dei tipi, proposte valide restituite e archiviate", async () => {
+  const eventi = [{ titolo: "Il concerto", testo: "Il tuo gruppo preferito suona a Bari e i biglietti stanno per finire. Domani c'è la verifica.", scelte: [{ testo: "Vai", profilo: "divertimento", esito: "Una notte da ricordare." }, { testo: "Studi", profilo: "studio", esito: "Ti senti pronta." }] }];
+  let corpo = null;
+  const fetch = async (url, o) => {
+    corpo = JSON.parse(o.body);
+    return { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify({ eventi }) }] } }] }) };
+  };
+  const { n } = narratoreDiProva({ fetch });
+  const profili = [{ id: "divertimento", descrizione: "divertirsi" }, { id: "studio", descrizione: "studiare" }];
+  const r = await n.inventaEventi("inv1", { ...contesto, eta: 17, anno: 2037 }, profili);
+  assert.equal(r.length, 1);
+  assert.equal(r[0].scelte[1].profilo, "studio");
+  assert.deepEqual(corpo.generationConfig.responseSchema.properties.eventi.items.properties.scelte.items.properties.profilo.enum, ["divertimento", "studio"]);
+  assert.deepEqual(n.giaRaccontato("inv1"), r);
+  // con l'opzione spenta non si chiede niente
+  n.salvaImpostazioni({ eventi_ai: false });
+  assert.equal(await n.inventaEventi("inv2", contesto, profili), null);
+});

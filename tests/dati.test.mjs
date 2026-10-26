@@ -63,3 +63,17 @@ test("mestieri, scuole e regioni sono coerenti", () => {
   for (const r of D.regioni) assert.ok(r.citta.length >= 2 && r.affitto > 0 && r.prezzo_mq > 0, r.id);
   for (const classe of Object.values(D.generatore.classi)) for (const id of classe.mestieri) assert.ok(D.mestiere[id], id);
 });
+
+test("i tipi di scelta per l'AI hanno effetti, condizioni e tratti validi", () => {
+  assert.ok(D.profili.length >= 20);
+  assert.equal(new Set(D.profili.map((p) => p.id)).size, D.profili.length);
+  for (const p of D.profili) {
+    assert.ok(p.descrizione?.length > 5, p.id);
+    for (const k of Object.keys(p.effetti)) assert.ok(EFFETTI.has(k), `${p.id}: effetto ${k}`);
+    for (const k of Object.keys(p.esito_casuale?.effetti ?? {})) assert.ok(EFFETTI.has(k), `${p.id}: effetto casuale ${k}`);
+    for (const k of Object.keys(p.condizioni ?? {})) assert.ok(CONDIZIONI.has(k), `${p.id}: condizione ${k}`);
+    for (const r of [p.effetti.relazione ?? []].flat()) assert.ok(RELAZIONI.has(r.con), `${p.id}: relazione ${r.con}`);
+    for (const t of [...(p.tratti_favoriti ?? []), ...(p.tratti_sfavoriti ?? []), ...(p.condizioni?.tratti_esclusi ?? [])]) assert.ok(D.tratto[t], `${p.id}: tratto ${t}`);
+    if (p.effetti.tratto) assert.ok(D.tratto[p.effetti.tratto]);
+  }
+});

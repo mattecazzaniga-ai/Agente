@@ -11,6 +11,11 @@ import { accogliGenitore, convivenza, coppiaFertile, matrimonio, nasceFiglio, nu
 
 const STAT = ["salute", "morale", "felicita", "stanchezza", "reputazione"];
 
+/** Un evento della libreria (data/events) o uno inventato dall'AI e già convertito dal motore (FASE 5). */
+export function eventoDi(state, data, id) {
+  return data.evento[id] ?? state.world.eventi_ai?.[id];
+}
+
 // ---------------------------------------------------------------------------
 // Soldi della famiglia d'origine (genitori vivi), usati da condizioni ed effetti
 // ---------------------------------------------------------------------------
@@ -166,7 +171,7 @@ export function scegliEventiAnno(state, data, p, massimo = 3) {
   const dovuti = state.world.memoria.filter((m) => m.persona === p.id && m.anno <= state.world.anno);
   state.world.memoria = state.world.memoria.filter((m) => !dovuti.includes(m));
   for (const m of dovuti) {
-    const ev = data.evento[m.evento];
+    const ev = eventoDi(state, data, m.evento);
     if (ev && condizioniOk(state, data, p, ev.condizioni, { ignoraEta: true }) && !scelti.some((s) => s.evento === ev.id)) scelti.push({ evento: ev.id });
   }
   const r = casuale(state);
@@ -179,7 +184,7 @@ export function scegliEventiAnno(state, data, p, massimo = 3) {
     scelti.push({ evento: ev.id });
   }
   for (const s of scelti) {
-    const ev = data.evento[s.evento];
+    const ev = eventoDi(state, data, s.evento);
     s.variante = Math.floor(casuale(state) * ev.testi.length);
     (state.world.eventi_usati[p.id] ??= {})[ev.id] = state.world.anno;
   }
@@ -311,14 +316,20 @@ export function programmaConseguenze(state, p, conseguenze = []) {
 
 /** Risolve una scelta: effetti, conseguenze, frase di esito. */
 export function risolviScelta(state, data, p, idEvento, idScelta) {
-  const ev = data.evento[idEvento];
+  const ev = eventoDi(state, data, idEvento);
   const scelta = ev?.scelte.find((s) => s.id === idScelta);
   if (!scelta) throw new Error(`Scelta ${idScelta} inesistente nell'evento ${idEvento}`);
   const req = requisitiScelta(state, data, p, scelta);
   if (!req.ok) throw new Error(req.motivo);
   const righe = applicaEffetti(state, data, p, scelta.effetti);
   programmaConseguenze(state, p, scelta.conseguenze);
-  const esito = scelta.esito ? riempi(scelta.esito, segnaposto(state, data, p)) : null;
+  let esito = scelta.esito ? riempi(scelta.esito, segnaposto(state, data, p)) : null;
+  // esito incerto (es. una scommessa): il motore tira il dado, con il seed della partita
+  if (scelta.esito_casuale) {
+    const fortuna = probabile(state, scelta.esito_casuale.probabilita);
+    if (fortuna) righe.push(...applicaEffetti(state, data, p, scelta.esito_casuale.effetti));
+    esito = `${esito ? `${esito} ` : ""}${fortuna ? "Ti va bene." : "Non va come speravi."}`;
+  }
   return { esito, righe };
 }
 
@@ -327,7 +338,7 @@ export function risolviScelta(state, data, p, idEvento, idScelta) {
  * ×0,25 per ogni tratto sfavorito. Le scelte non disponibili sono escluse.
  */
 export function sceltaAutomatica(state, data, p, idEvento) {
-  const ev = data.evento[idEvento];
+  const ev = eventoDi(state, data, idEvento);
   const possibili = ev.scelte.filter((s) => requisitiScelta(state, data, p, s).ok);
   const scelta = pesato(state, possibili.length ? possibili : ev.scelte.slice(0, 1), (s) => {
     let peso = 1 + 2 * (s.tratti_favoriti ?? []).filter((t) => p.tratti.includes(t)).length;
