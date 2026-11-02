@@ -1,0 +1,191 @@
+{
+  "app": {
+    "nome": "BeachPick",
+    "slogan": "Notizie e pronostici di beach tennis"
+  },
+  "avviso": "Gioco di pronostici gratuito, nessuna scommessa o vincita in denaro",
+  "nav": {
+    "home": "Home",
+    "tornei": "Tornei",
+    "classifica": "Classifica",
+    "leghe": "Leghe",
+    "notizie": "Notizie",
+    "profilo": "Profilo",
+    "admin": "Admin",
+    "accedi": "Accedi"
+  },
+  "lingua": {
+    "scegli": "Lingua"
+  },
+  "home": {
+    "titolo": "Pronostica il beach tennis",
+    "intro": "Scegli chi vince partite e tornei ITF, FIP e brasiliani, sfida i tuoi amici e scala la classifica del mese.",
+    "inizia": "Inizia: è gratis",
+    "daPronosticare": "Da pronosticare",
+    "nessunaAperta": "Nessuna partita aperta ai pronostici in questo momento.",
+    "prossimiTornei": "Prossimi tornei",
+    "ultimeNotizie": "Ultime notizie",
+    "vediTutti": "Vedi tutti"
+  },
+  "accedi": {
+    "titolo": "Accedi",
+    "sottotitolo": "Con Google o con un codice via email: niente password.",
+    "google": "Continua con Google",
+    "oppure": "oppure",
+    "email": "La tua email",
+    "inviaCodice": "Mandami il codice",
+    "codiceInviato": "Ti abbiamo mandato un codice di 6 cifre a {email}.",
+    "codice": "Codice",
+    "verifica": "Entra",
+    "cambiaEmail": "Usa un'altra email",
+    "errore": "Qualcosa non ha funzionato. Riprova.",
+    "codiceErrato": "Codice sbagliato o scaduto."
+  },
+  "benvenuto": {
+    "titolo": "Come ti chiami in classifica?",
+    "nickname": "Nickname",
+    "nicknameAiuto": "Da 3 a 24 caratteri: lettere, numeri, punto, trattino o trattino basso.",
+    "paese": "Paese",
+    "scegliPaese": "Scegli il Paese",
+    "salva": "Continua",
+    "nicknameUsato": "Questo nickname è già usato.",
+    "nicknameNonValido": "Nickname non valido."
+  },
+  "stato": {
+    "in_programma": "In programma",
+    "in_corso": "In corso",
+    "concluso": "Concluso"
+  },
+  "genere": {
+    "maschile": "Maschile",
+    "femminile": "Femminile",
+    "misto": "Misto"
+  },
+  "turno": {
+    "R64": "Primo turno",
+    "R32": "Sedicesimi",
+    "R16": "Ottavi",
+    "QF": "Quarti",
+    "SF": "Semifinali",
+    "F": "Finale"
+  },
+  "tornei": {
+    "titolo": "Calendario tornei",
+    "tutti": "Tutti",
+    "inProgramma": "In programma",
+    "inCorso": "In corso",
+    "conclusi": "Conclusi",
+    "nessuno": "Nessun torneo per questo filtro.",
+    "dal": "dal {inizio} al {fine}"
+  },
+  "torneo": {
+    "chiVinceTorneo": "Chi vince il tabellone {genere}?",
+    "vincitore": "Vincitore",
+    "finalista": "Finalista (facoltativo)",
+    "nessuno": "Nessuno",
+    "salva": "Salva il pronostico",
+    "salvato": "Pronostico salvato ✓",
+    "chiusoTorneo": "Pronostici sul vincitore chiusi: il torneo è iniziato.",
+    "chiudeIl": "Si chiude {data}",
+    "partite": "Partite",
+    "nessunaPartita": "Le partite non sono ancora in calendario.",
+    "nessunaCoppia": "Le coppie iscritte non sono ancora disponibili.",
+    "tuoiPunti": "I tuoi punti: {punti}",
+    "accediPerPronosticare": "Accedi per pronosticare",
+    "hannoScelto": "{percentuale}% · {punti} pt",
+    "ilTuo": "Il tuo pronostico"
+  },
+  "partita": {
+    "chiVince": "Chi vince?",
+    "set": "Set",
+    "game": "Game totali",
+    "facoltativo": "facoltativo",
+    "salva": "Salva",
+    "salvato": "Salvato ✓",
+    "chiusa": "Pronostici chiusi",
+    "inAttesa": "In attesa delle coppie",
+    "ritiro": "ritiro",
+    "punti": "+{punti} pt",
+    "conclusa": "Conclusa"
+  },
+  "regole": {
+    "titolo": "Come si fanno i punti",
+    "partita": "Partita: vincitore giusto 3 punti (di più se lo avevano scelto in pochi, di meno se era il favorito). Se il vincitore è giusto: +2 per i set esatti, +3 per i game totali esatti o +1 se sbagli di 2 game al massimo.",
+    "torneo": "Torneo: vincitore 10 punti, finalista 5, anche questi pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
+    "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
+  },
+  "classifica": {
+    "titolo": "Classifica",
+    "globale": "Mondo",
+    "paese": "Il mio Paese",
+    "lega": "Lega",
+    "mese": "Mese",
+    "punti": "Punti",
+    "nessuno": "Ancora nessun punto in questo mese.",
+    "tu": "Tu",
+    "sei": "Sei {posizione}° su {totale}",
+    "senzaPunti": "Non hai ancora punti in questo mese.",
+    "scegliLega": "Scegli una lega",
+    "nessunaLega": "Non sei in nessuna lega.",
+    "paeseMancante": "Imposta il tuo Paese nel profilo."
+  },
+  "leghe": {
+    "titolo": "Leghe tra amici",
+    "crea": "Crea una lega",
+    "nome": "Nome della lega",
+    "creaBtn": "Crea",
+    "entra": "Entra con un codice",
+    "codice": "Codice di 6 caratteri",
+    "entraBtn": "Entra",
+    "mie": "Le mie leghe",
+    "nessuna": "Non sei ancora in nessuna lega.",
+    "invita": "Invita",
+    "esci": "Esci",
+    "classifica": "Classifica",
+    "codiceNonValido": "Codice lega non valido.",
+    "invitoTitolo": "Ti hanno invitato nella lega {nome}",
+    "invitoNonTrovato": "Questo invito non è valido.",
+    "entraOra": "Entra nella lega",
+    "invitoTesto": "Gioca con me ai pronostici di beach tennis su BeachPick! Entra nella lega «{nome}» con il codice {codice}:"
+  },
+  "notizie": {
+    "titolo": "Notizie",
+    "fonte": "Fonte: {fonte}",
+    "leggi": "Leggi l'articolo originale",
+    "nessuna": "Ancora nessuna notizia.",
+    "inLingua": "in {lingua}"
+  },
+  "profilo": {
+    "titolo": "Il tuo profilo",
+    "salva": "Salva",
+    "salvato": "Salvato ✓",
+    "esci": "Esci",
+    "elimina": "Elimina l'account",
+    "eliminaConferma": "Vuoi davvero eliminare l'account? Pronostici, punti e leghe verranno cancellati per sempre.",
+    "privacy": "Privacy"
+  },
+  "condividi": {
+    "condividi": "Condividi",
+    "pronostico": "Condividi il pronostico",
+    "classifica": "Condividi la posizione",
+    "testoPronostico": "Il mio pronostico su BeachPick: {scelta}. E il tuo?",
+    "testoClassifica": "Sono {posizione}° nella classifica di {mese} su BeachPick! Sfidami:",
+    "copiato": "Link copiato"
+  },
+  "privacy": {
+    "titolo": "Privacy",
+    "testo": "BeachPick salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo."
+  },
+  "errori": {
+    "generico": "Qualcosa non ha funzionato. Riprova.",
+    "nonTrovato": "Pagina non trovata.",
+    "email": "Email non valida.",
+    "troppe": "Troppi tentativi: aspetta un minuto e riprova.",
+    "codice": "Codice errato o scaduto.",
+    "accesso": "Devi accedere per farlo.",
+    "chiusi": "Pronostici chiusi: è già iniziato.",
+    "duplicato": "Esiste già.",
+    "nonValido": "Dati non validi.",
+    "codiceLega": "Codice lega non valido."
+  }
+}

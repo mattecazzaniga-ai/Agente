@@ -1,0 +1,191 @@
+{
+  "app": {
+    "nome": "BeachPick",
+    "slogan": "Notícias e palpites de beach tennis"
+  },
+  "avviso": "Jogo de palpites gratuito, sem apostas nem prêmios em dinheiro",
+  "nav": {
+    "home": "Início",
+    "tornei": "Torneios",
+    "classifica": "Ranking",
+    "leghe": "Ligas",
+    "notizie": "Notícias",
+    "profilo": "Perfil",
+    "admin": "Admin",
+    "accedi": "Entrar"
+  },
+  "lingua": {
+    "scegli": "Idioma"
+  },
+  "home": {
+    "titolo": "Dê seus palpites no beach tennis",
+    "intro": "Escolha quem vence jogos e torneios ITF, FIP e brasileiros, desafie seus amigos e suba no ranking do mês.",
+    "inizia": "Começar: é grátis",
+    "daPronosticare": "Para palpitar",
+    "nessunaAperta": "Nenhum jogo aberto para palpites agora.",
+    "prossimiTornei": "Próximos torneios",
+    "ultimeNotizie": "Últimas notícias",
+    "vediTutti": "Ver todos"
+  },
+  "accedi": {
+    "titolo": "Entrar",
+    "sottotitolo": "Com Google ou com um código por e-mail: sem senha.",
+    "google": "Continuar com Google",
+    "oppure": "ou",
+    "email": "Seu e-mail",
+    "inviaCodice": "Enviar código",
+    "codiceInviato": "Enviamos um código de 6 dígitos para {email}.",
+    "codice": "Código",
+    "verifica": "Entrar",
+    "cambiaEmail": "Usar outro e-mail",
+    "errore": "Algo deu errado. Tente de novo.",
+    "codiceErrato": "Código errado ou expirado."
+  },
+  "benvenuto": {
+    "titolo": "Qual é o seu nome no ranking?",
+    "nickname": "Apelido",
+    "nicknameAiuto": "De 3 a 24 caracteres: letras, números, ponto, hífen ou sublinhado.",
+    "paese": "País",
+    "scegliPaese": "Escolha o país",
+    "salva": "Continuar",
+    "nicknameUsato": "Este apelido já está em uso.",
+    "nicknameNonValido": "Apelido inválido."
+  },
+  "stato": {
+    "in_programma": "Programado",
+    "in_corso": "Em andamento",
+    "concluso": "Encerrado"
+  },
+  "genere": {
+    "maschile": "Masculino",
+    "femminile": "Feminino",
+    "misto": "Misto"
+  },
+  "turno": {
+    "R64": "Primeira rodada",
+    "R32": "Rodada de 32",
+    "R16": "Oitavas",
+    "QF": "Quartas",
+    "SF": "Semifinais",
+    "F": "Final"
+  },
+  "tornei": {
+    "titolo": "Calendário de torneios",
+    "tutti": "Todos",
+    "inProgramma": "Programados",
+    "inCorso": "Em andamento",
+    "conclusi": "Encerrados",
+    "nessuno": "Nenhum torneio para este filtro.",
+    "dal": "de {inizio} a {fine}"
+  },
+  "torneo": {
+    "chiVinceTorneo": "Quem vence a chave {genere}?",
+    "vincitore": "Campeão",
+    "finalista": "Vice (opcional)",
+    "nessuno": "Nenhum",
+    "salva": "Salvar palpite",
+    "salvato": "Palpite salvo ✓",
+    "chiusoTorneo": "Palpites de campeão encerrados: o torneio já começou.",
+    "chiudeIl": "Fecha {data}",
+    "partite": "Jogos",
+    "nessunaPartita": "Os jogos ainda não estão na programação.",
+    "nessunaCoppia": "As duplas inscritas ainda não estão disponíveis.",
+    "tuoiPunti": "Seus pontos: {punti}",
+    "accediPerPronosticare": "Entre para palpitar",
+    "hannoScelto": "{percentuale}% · {punti} pts",
+    "ilTuo": "Seu palpite"
+  },
+  "partita": {
+    "chiVince": "Quem vence?",
+    "set": "Sets",
+    "game": "Games totais",
+    "facoltativo": "opcional",
+    "salva": "Salvar",
+    "salvato": "Salvo ✓",
+    "chiusa": "Palpites encerrados",
+    "inAttesa": "Aguardando as duplas",
+    "ritiro": "abandono",
+    "punti": "+{punti} pts",
+    "conclusa": "Encerrado"
+  },
+  "regole": {
+    "titolo": "Como funcionam os pontos",
+    "partita": "Jogo: vencedor certo vale 3 pontos (mais se poucos escolheram, menos se era o favorito). Se acertar o vencedor: +2 pelo placar exato em sets, +3 pelo total exato de games ou +1 se errar por até 2 games.",
+    "torneo": "Torneio: campeão 10 pontos, vice 5, também ponderados pela quantidade de palpites iguais (de metade a duas vezes e meia).",
+    "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
+  },
+  "classifica": {
+    "titolo": "Ranking",
+    "globale": "Mundo",
+    "paese": "Meu país",
+    "lega": "Liga",
+    "mese": "Mês",
+    "punti": "Pontos",
+    "nessuno": "Ainda não há pontos neste mês.",
+    "tu": "Você",
+    "sei": "Você é o {posizione}º de {totale}",
+    "senzaPunti": "Você ainda não tem pontos neste mês.",
+    "scegliLega": "Escolha uma liga",
+    "nessunaLega": "Você não está em nenhuma liga.",
+    "paeseMancante": "Defina seu país no perfil."
+  },
+  "leghe": {
+    "titolo": "Ligas entre amigos",
+    "crea": "Criar uma liga",
+    "nome": "Nome da liga",
+    "creaBtn": "Criar",
+    "entra": "Entrar com um código",
+    "codice": "Código de 6 caracteres",
+    "entraBtn": "Entrar",
+    "mie": "Minhas ligas",
+    "nessuna": "Você ainda não está em nenhuma liga.",
+    "invita": "Convidar",
+    "esci": "Sair",
+    "classifica": "Ranking",
+    "codiceNonValido": "Código de liga inválido.",
+    "invitoTitolo": "Você foi convidado para a liga {nome}",
+    "invitoNonTrovato": "Este convite não é válido.",
+    "entraOra": "Entrar na liga",
+    "invitoTesto": "Jogue comigo os palpites de beach tennis no BeachPick! Entre na liga «{nome}» com o código {codice}:"
+  },
+  "notizie": {
+    "titolo": "Notícias",
+    "fonte": "Fonte: {fonte}",
+    "leggi": "Ler a matéria original",
+    "nessuna": "Ainda não há notícias.",
+    "inLingua": "em {lingua}"
+  },
+  "profilo": {
+    "titolo": "Seu perfil",
+    "salva": "Salvar",
+    "salvato": "Salvo ✓",
+    "esci": "Sair",
+    "elimina": "Excluir a conta",
+    "eliminaConferma": "Quer mesmo excluir a conta? Palpites, pontos e ligas serão apagados para sempre.",
+    "privacy": "Privacidade"
+  },
+  "condividi": {
+    "condividi": "Compartilhar",
+    "pronostico": "Compartilhar palpite",
+    "classifica": "Compartilhar posição",
+    "testoPronostico": "Meu palpite no BeachPick: {scelta}. E o seu?",
+    "testoClassifica": "Estou em {posizione}º no ranking de {mese} no BeachPick! Me desafie:",
+    "copiato": "Link copiado"
+  },
+  "privacy": {
+    "titolo": "Privacidade",
+    "testo": "O BeachPick guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil."
+  },
+  "errori": {
+    "generico": "Algo deu errado. Tente de novo.",
+    "nonTrovato": "Página não encontrada.",
+    "email": "E-mail inválido.",
+    "troppe": "Muitas tentativas: espere um minuto e tente de novo.",
+    "codice": "Código errado ou expirado.",
+    "accesso": "Você precisa entrar para fazer isso.",
+    "chiusi": "Palpites encerrados: já começou.",
+    "duplicato": "Já existe.",
+    "nonValido": "Dados inválidos.",
+    "codiceLega": "Código de liga inválido."
+  }
+}

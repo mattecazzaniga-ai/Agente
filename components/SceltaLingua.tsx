@@ -1,0 +1,37 @@
+"use client";
+import { useLocale } from "next-intl";
+import { useTransition } from "react";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { NOMI_LINGUE, routing, type Lingua } from "@/i18n/routing";
+import { salvaLingua } from "@/app/[locale]/azioni";
+
+/** Cambio lingua con un tocco: resta sulla stessa pagina e la ricorda nel profilo. */
+export default function SceltaLingua({ etichetta }: { etichetta: string }) {
+  const lingua = useLocale();
+  const percorso = usePathname();
+  const router = useRouter();
+  const [, avvia] = useTransition();
+  return (
+    <label className="relative inline-flex items-center">
+      <span className="sr-only">{etichetta}</span>
+      <select
+        value={lingua}
+        onChange={(e) => {
+          const nuova = e.target.value as Lingua;
+          avvia(() => {
+            void salvaLingua(nuova);
+            router.replace(percorso, { locale: nuova });
+          });
+        }}
+        className="h-9 appearance-none rounded-full border border-white/30 bg-white/10 pl-3 pr-7 text-sm font-semibold text-white outline-none"
+      >
+        {routing.locales.map((l) => (
+          <option key={l} value={l} className="text-inchiostro">
+            {NOMI_LINGUE[l]}
+          </option>
+        ))}
+      </select>
+      <span className="pointer-events-none absolute right-2.5 text-xs text-white" aria-hidden>▾</span>
+    </label>
+  );
+}

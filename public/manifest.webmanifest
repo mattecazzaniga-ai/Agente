@@ -1,0 +1,16 @@
+{
+  "name": "BeachPick",
+  "short_name": "BeachPick",
+  "description": "Beach tennis: notizie e pronostici. Gioco gratuito, nessuna scommessa o vincita in denaro.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf7f1",
+  "theme_color": "#0b4f6c",
+  "icons": [
+    { "src": "/icone/icona-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icone/icona-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icone/maschera-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

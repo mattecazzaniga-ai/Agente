@@ -1,0 +1,191 @@
+{
+  "app": {
+    "nome": "BeachPick",
+    "slogan": "Beach tennis news and predictions"
+  },
+  "avviso": "Free prediction game, no betting and no cash prizes",
+  "nav": {
+    "home": "Home",
+    "tornei": "Tournaments",
+    "classifica": "Leaderboard",
+    "leghe": "Leagues",
+    "notizie": "News",
+    "profilo": "Profile",
+    "admin": "Admin",
+    "accedi": "Sign in"
+  },
+  "lingua": {
+    "scegli": "Language"
+  },
+  "home": {
+    "titolo": "Predict beach tennis",
+    "intro": "Pick who wins ITF, FIP and Brazilian matches and tournaments, challenge your friends and climb the monthly leaderboard.",
+    "inizia": "Start: it's free",
+    "daPronosticare": "Open for predictions",
+    "nessunaAperta": "No matches open for predictions right now.",
+    "prossimiTornei": "Upcoming tournaments",
+    "ultimeNotizie": "Latest news",
+    "vediTutti": "See all"
+  },
+  "accedi": {
+    "titolo": "Sign in",
+    "sottotitolo": "With Google or a code by email: no password.",
+    "google": "Continue with Google",
+    "oppure": "or",
+    "email": "Your email",
+    "inviaCodice": "Send me the code",
+    "codiceInviato": "We sent a 6-digit code to {email}.",
+    "codice": "Code",
+    "verifica": "Sign in",
+    "cambiaEmail": "Use another email",
+    "errore": "Something went wrong. Please try again.",
+    "codiceErrato": "Wrong or expired code."
+  },
+  "benvenuto": {
+    "titolo": "What's your name on the leaderboard?",
+    "nickname": "Nickname",
+    "nicknameAiuto": "3 to 24 characters: letters, numbers, dot, hyphen or underscore.",
+    "paese": "Country",
+    "scegliPaese": "Choose your country",
+    "salva": "Continue",
+    "nicknameUsato": "This nickname is already taken.",
+    "nicknameNonValido": "Invalid nickname."
+  },
+  "stato": {
+    "in_programma": "Upcoming",
+    "in_corso": "In progress",
+    "concluso": "Finished"
+  },
+  "genere": {
+    "maschile": "Men's",
+    "femminile": "Women's",
+    "misto": "Mixed"
+  },
+  "turno": {
+    "R64": "First round",
+    "R32": "Round of 32",
+    "R16": "Round of 16",
+    "QF": "Quarter-finals",
+    "SF": "Semi-finals",
+    "F": "Final"
+  },
+  "tornei": {
+    "titolo": "Tournament calendar",
+    "tutti": "All",
+    "inProgramma": "Upcoming",
+    "inCorso": "In progress",
+    "conclusi": "Finished",
+    "nessuno": "No tournaments for this filter.",
+    "dal": "{inizio} – {fine}"
+  },
+  "torneo": {
+    "chiVinceTorneo": "Who wins the {genere} draw?",
+    "vincitore": "Winner",
+    "finalista": "Runner-up (optional)",
+    "nessuno": "None",
+    "salva": "Save prediction",
+    "salvato": "Prediction saved ✓",
+    "chiusoTorneo": "Winner predictions closed: the tournament has started.",
+    "chiudeIl": "Closes {data}",
+    "partite": "Matches",
+    "nessunaPartita": "Matches are not scheduled yet.",
+    "nessunaCoppia": "The entry list is not available yet.",
+    "tuoiPunti": "Your points: {punti}",
+    "accediPerPronosticare": "Sign in to predict",
+    "hannoScelto": "{percentuale}% · {punti} pts",
+    "ilTuo": "Your prediction"
+  },
+  "partita": {
+    "chiVince": "Who wins?",
+    "set": "Sets",
+    "game": "Total games",
+    "facoltativo": "optional",
+    "salva": "Save",
+    "salvato": "Saved ✓",
+    "chiusa": "Predictions closed",
+    "inAttesa": "Waiting for the teams",
+    "ritiro": "retired",
+    "punti": "+{punti} pts",
+    "conclusa": "Finished"
+  },
+  "regole": {
+    "titolo": "How points work",
+    "partita": "Match: correct winner 3 points (more if few people picked it, fewer if it was the favourite). If the winner is right: +2 for the exact set score, +3 for the exact total games or +1 if you are off by 2 games at most.",
+    "torneo": "Tournament: winner 10 points, runner-up 5, also weighted by how many picked them (from half to two and a half times).",
+    "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
+  },
+  "classifica": {
+    "titolo": "Leaderboard",
+    "globale": "World",
+    "paese": "My country",
+    "lega": "League",
+    "mese": "Month",
+    "punti": "Points",
+    "nessuno": "No points yet this month.",
+    "tu": "You",
+    "sei": "You are {posizione} of {totale}",
+    "senzaPunti": "You have no points yet this month.",
+    "scegliLega": "Choose a league",
+    "nessunaLega": "You are not in any league.",
+    "paeseMancante": "Set your country in your profile."
+  },
+  "leghe": {
+    "titolo": "Leagues with friends",
+    "crea": "Create a league",
+    "nome": "League name",
+    "creaBtn": "Create",
+    "entra": "Join with a code",
+    "codice": "6-character code",
+    "entraBtn": "Join",
+    "mie": "My leagues",
+    "nessuna": "You are not in any league yet.",
+    "invita": "Invite",
+    "esci": "Leave",
+    "classifica": "Leaderboard",
+    "codiceNonValido": "Invalid league code.",
+    "invitoTitolo": "You have been invited to the league {nome}",
+    "invitoNonTrovato": "This invite is not valid.",
+    "entraOra": "Join the league",
+    "invitoTesto": "Play beach tennis predictions with me on BeachPick! Join the league “{nome}” with the code {codice}:"
+  },
+  "notizie": {
+    "titolo": "News",
+    "fonte": "Source: {fonte}",
+    "leggi": "Read the original article",
+    "nessuna": "No news yet.",
+    "inLingua": "in {lingua}"
+  },
+  "profilo": {
+    "titolo": "Your profile",
+    "salva": "Save",
+    "salvato": "Saved ✓",
+    "esci": "Sign out",
+    "elimina": "Delete account",
+    "eliminaConferma": "Do you really want to delete your account? Predictions, points and leagues will be erased forever.",
+    "privacy": "Privacy"
+  },
+  "condividi": {
+    "condividi": "Share",
+    "pronostico": "Share prediction",
+    "classifica": "Share my rank",
+    "testoPronostico": "My BeachPick prediction: {scelta}. What's yours?",
+    "testoClassifica": "I'm #{posizione} in the {mese} leaderboard on BeachPick! Challenge me:",
+    "copiato": "Link copied"
+  },
+  "privacy": {
+    "titolo": "Privacy",
+    "testo": "BeachPick stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile."
+  },
+  "errori": {
+    "generico": "Something went wrong. Please try again.",
+    "nonTrovato": "Page not found.",
+    "email": "Invalid email.",
+    "troppe": "Too many attempts: wait a minute and try again.",
+    "codice": "Wrong or expired code.",
+    "accesso": "You need to sign in to do this.",
+    "chiusi": "Predictions closed: it has already started.",
+    "duplicato": "It already exists.",
+    "nonValido": "Invalid data.",
+    "codiceLega": "Invalid league code."
+  }
+}

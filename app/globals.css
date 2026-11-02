@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* BeachPick: mare, sabbia e palla. Pensato per il telefono. */
+@theme {
+  --color-mare: #0b4f6c;
+  --color-mare-scuro: #073449;
+  --color-onda: #e6f2f7;
+  --color-sabbia: #f6ecd9;
+  --color-sabbia-scura: #e8d5b0;
+  --color-sole: #f9c22e;
+  --color-corallo: #e8604c;
+  --color-inchiostro: #0f2a3d;
+  --color-nebbia: #5b6b78;
+  --radius-scheda: 18px;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { background: #faf7f1; color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+
+@layer components {
+  .scheda { @apply rounded-[var(--radius-scheda)] bg-white p-4 shadow-[0_1px_2px_rgba(15,42,61,.05),0_6px_20px_rgba(15,42,61,.06)]; }
+  .bottone { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-mare px-5 font-semibold text-white transition active:scale-[.98] disabled:opacity-50; }
+  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-sabbia-scura bg-sabbia px-5 font-semibold text-inchiostro transition active:scale-[.98] disabled:opacity-50; }
+  .campo { @apply min-h-12 w-full rounded-xl border border-sabbia-scura bg-white px-3 text-base outline-none focus:border-mare focus:ring-2 focus:ring-mare/20; }
+  .etichetta { @apply mb-1 block text-sm font-medium text-nebbia; }
+  .chip { @apply inline-flex items-center rounded-full bg-onda px-2.5 py-0.5 text-xs font-semibold text-mare; }
+  .titolo-sezione { @apply mb-2 mt-6 text-lg font-bold; }
+}

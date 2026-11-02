@@ -1,4 +1,4 @@
-# BeachPick (nome provvisorio) — Architettura e schema · FASE 1
+# BeachPick (nome provvisorio) — Architettura e schema
 
 Web app mobile-first (PWA) di notizie e pronostici sul beach tennis, in italiano, portoghese brasiliano, spagnolo e inglese.
 Obiettivo dell'MVP: capire se gli appassionati tornano ogni settimana. **Soglia di successo: 500 utenti attivi a settimana.**
@@ -17,7 +17,7 @@ Obiettivo dell'MVP: capire se gli appassionati tornano ogni settimana. **Soglia 
 
 Limiti dei piani gratuiti da sapere:
 - **Supabase Free**: 500 MB di database, 50.000 utenti attivi al mese per l'autenticazione. Il progetto **va in pausa dopo 7 giorni senza traffico**, cosa che con utenti settimanali non dovrebbe succedere.
-- **Email di Supabase**: il servizio email incluso è pensato solo per le prove e manda pochissime email l'ora. Per i codici di login serve un SMTP gratuito (per esempio Resend, 3.000 email al mese, oppure Brevo, 300 al giorno). Si configura nella Fase 2.
+- **Email di Supabase**: il servizio email incluso è pensato solo per le prove e manda pochissime email l'ora. Per i codici di login serve un SMTP gratuito (per esempio Resend, 3.000 email al mese, oppure Brevo, 300 al giorno): vedi [DEPLOY.md](DEPLOY.md).
 - **Vercel Hobby**: è per uso personale e non commerciale. Va bene per un MVP senza ricavi; se arrivano ricavi si passa al piano Pro.
 
 ## 2. Pagine (rotte)
@@ -34,7 +34,8 @@ Limiti dei piani gratuiti da sapere:
 /[lingua]/notizie            Elenco notizie (titolo, 3 righe, fonte, link all'originale)
 /[lingua]/profilo            Nickname, Paese, lingua, esci, elimina account
 /[lingua]/admin/...          Pannello admin: tornei, tabelloni, coppie, partite e risultati, giocatori, notizie, metriche
-/api/condividi/...           Immagini PNG generate (pronostico, posizione in classifica) per WhatsApp/Instagram
+/api/immagine/pronostico     PNG 1080×1080 del proprio pronostico (la RLS lo mostra solo al proprietario)
+/api/immagine/classifica     PNG della propria posizione (mese, globale/Paese/lega)
 ```
 
 Ogni pagina mostra l'avviso legale nel piè di pagina, e la pagina dei pronostici lo mostra anche sopra.
@@ -49,7 +50,11 @@ Ogni pagina mostra l'avviso legale nel piè di pagina, e la pagina dei pronostic
 
 ## 3. Schema del database
 
-File: `supabase/migrations/20261102000000_schema.sql` (testato con `scripts/test-db.sh`).
+File in `supabase/migrations/` (testati con `scripts/test-db.sh`):
+- `20261102000000_schema.sql`: tabelle, regole, RLS, classifiche, leghe, notizie, metriche.
+- `20261102010000_punti_rarita.sql`: punti pesati secondo la rarità, più `voti_partita` e `voti_tabellone`.
+- `20261102020000_avanzamento.sql`: il vincitore passa da solo al turno successivo.
+- `20261102030000_inviti.sql`: `lega_da_codice` (pagina d'invito) e `voti_del_torneo`.
 
 ```
 auth.users ─1:1─ profili (nickname unico, paese ISO, lingua, is_admin)
@@ -69,10 +74,20 @@ attivita (utente, giorno)  → utenti attivi a settimana
 - **Blocco dei pronostici.** Sul vincitore del torneo ci si chiude all'inizio del torneo (`tornei.inizio_at`, il primo incontro). Su una partita ci si chiude al suo inizio, ed è aperta solo quando entrambe le coppie sono note. Dopo il blocco non si può né modificare né cancellare.
 - **Pronostici coerenti.** Le coppie scelte devono essere iscritte a quel tabellone o giocare quella partita, e il punteggio in set deve essere compatibile con il formato.
 - **Risultati coerenti.** L'admin inserisce solo i game di ogni set (es. 6-4 3-6 10-7) e il database ricava il vincitore. In caso di ritiro basta indicare chi passa.
-- **Punti calcolati dal database, con ricalcolo automatico se l'admin corregge un risultato:**
-  - Partita conclusa: vincitore giusto **3**. Se il vincitore è giusto, in più **+2** per i set esatti (solo nelle partite al meglio dei 3 set) e **+3** per i game totali esatti, oppure **+1** se l'errore è di 2 game al massimo. Il super tie-break conta 1 game.
-  - Torneo concluso: vincitore esatto **10**, finalista esatto **5**. "Finalista" vuol dire la coppia che perde la finale.
+- **Punti calcolati dal database, pesati secondo la rarità** e ricalcolati da soli se l'admin corregge un risultato.
+  - Il calcolo è `punti_rarita(base, voti_scelta, voti_totali, opzioni)`:
+    - p = (voti per quell'esito + 1) / (voti totali + opzioni). Il +1 su ogni opzione evita gli estremi quando i voti sono pochi.
+    - q = 1 / opzioni, cioè la quota "neutra".
+    - moltiplicatore = √(q / p), limitato tra **0,5 e 2,5**.
+    - punti = arrotondamento di base × moltiplicatore, con un minimo di 1.
+  - Esempio: se il 90% sceglie i favoriti e vincono, chi li ha scelti prende circa la metà dei punti. Chi ha indovinato la sorpresa scelta dal 10% ne prende più del doppio. Indovinare resta sempre conveniente, e le percentuali da sole non regalano punti a chi sbaglia.
+  - **Partita** (2 opzioni): vincitore giusto base **3**. Se il vincitore è giusto si aggiungono bonus fissi:
+    - **+2** per i set esatti (solo al meglio dei 3);
+    - **+3** per i game totali esatti, oppure **+1** se l'errore è di 2 game al massimo. Il super tie-break conta 1 game.
+  - **Torneo** (opzioni = coppie del tabellone): vincitore base **10**, finalista base **5**. "Finalista" vuol dire la coppia che perde la finale.
+  - Le percentuali di voto (`voti_partita`, `voti_tabellone`) si vedono solo dopo la chiusura, così nessuno copia la massa.
   - I punti entrano nella classifica del mese della partita, oppure del mese in cui finisce il torneo (mese UTC).
+- **Avanzamento automatico.** Quando una partita si conclude, il vincitore della partita n entra nella partita ⌈n/2⌉ del turno successivo: coppia A se n è dispari, B se è pari. Se quella partita non c'è ancora, si crea, il giorno dopo alla stessa ora; l'admin poi corregge l'orario.
 - **Classifica mensile.** C'è la funzione `classifica(mese, ambito, paese, lega)` (globale, per Paese, per lega) e la funzione `mia_posizione(...)`. Espongono solo i totali, così i pronostici dei singoli restano privati e nessuno li copia.
 - **Leghe.** `crea_lega(nome)` genera un codice di 6 caratteri senza simboli ambigui (niente 0/O o 1/I); `unisciti_lega(codice)` ed `esci_lega`. La lega e la sua classifica le vede solo chi ne fa parte. Limiti: 10 leghe create per utente, 200 membri per lega.
 - **Sicurezza.** Row Level Security su tutte le tabelle:
@@ -89,17 +104,35 @@ attivita (utente, giorno)  → utenti attivi a settimana
 - Notizie: un titolo e un riassunto per lingua, scritti dall'admin. Se manca la lingua dell'utente si mostra un'altra lingua disponibile, con un'etichetta.
 - Nomi di tornei e giocatori uguali in tutte le lingue. Date e ore nel fuso orario e nel formato del telefono (`Intl`).
 
-## 5. Struttura del codice (Fase 2 in poi)
+## 5. Importazione dei tabelloni (senza scraping)
+Chiedere al codice di "prendere da solo" tabelloni e partite ITF vorrebbe dire fare scraping del sito ITF. Il sito non ha un'API pubblica per questi dati e i suoi termini d'uso lo vietano, oltre al vincolo del progetto "dati inseriti a mano". Quindi l'admin copia la entry list o il tabellone dalla fonte ufficiale e li **incolla** nel pannello: il resto lo fa l'app.
+- Righe accettate (una coppia per riga, nell'ordine del tabellone):
+  - `1. Andrea Ricci (ITA) / Paolo Neri (ITA)`
+  - `RICCI Andrea ITA / NERI Paolo ITA`
+  - `Ricci, Andrea – Neri, Paolo`
+  - CSV `nome;cognome;paese;nome;cognome;paese;tds`
+  - `BYE`
+- Codici Paese ITF a 3 lettere convertiti in ISO (`lib/paesi.ts`). I giocatori già presenti (stesso nome, cognome e Paese) si riusano.
+- Dimensione del tabellone: la potenza di 2 successiva, fino a 64. Si crea il primo turno; chi ha il BYE passa al turno dopo.
+- Se il primo turno comincia prima di `tornei.inizio_at`, la chiusura dei pronostici sul torneo si anticipa.
+- Codice: `lib/importa.ts` (testato in `tests/importa.test.ts`) e `importaTabellone` in `app/[locale]/admin/azioni.ts`.
+
+## 6. Struttura del codice
 ```
-app/[lingua]/...             pagine (Server Components) + Server Actions
-app/api/condividi/...        immagini di condivisione (next/og)
-components/                  UI riusabili (card torneo, scelta coppia, riga classifica, avviso legale)
-lib/supabase/                client server/browser (@supabase/ssr), tipi generati dallo schema
-lib/punti.ts                 solo per mostrare le regole: i punti veri li calcola il database
+app/[locale]/                pagine (Server Components): home, tornei, torneo, classifica, leghe, invito, notizie, profilo, privacy
+app/[locale]/azioni.ts       Server Actions degli utenti (accesso, profilo, pronostici, leghe)
+app/[locale]/admin/          pannello admin (solo italiano) + admin/azioni.ts
+app/api/immagine/            immagini di condivisione (next/og, senza font o emoji esterni)
+app/auth/callback/           ritorno dal login Google
+components/                  UI: SchedaPartita, PronosticoPartita, PronosticoTorneo, Condividi, Invita, ...
+lib/dati.ts                  letture dal database per le pagine
+lib/importa.ts, punteggio.ts lettura di entry list e punteggi scritti dall'admin
 messages/{it,pt-BR,es,en}.json   testi dell'interfaccia
-supabase/migrations/         schema SQL versionato
+public/                      manifest, service worker, pagina offline, icone (scripts/icone.mjs)
+supabase/migrations/         schema SQL versionato; supabase/seed.sql = dati inventati per lo sviluppo
 supabase/tests/              test dello schema (Postgres locale)
+tests/                       unit (vitest) ed e2e (Playwright)
 ```
 
-## 6. Fuori dall'MVP (non si fa)
+## 7. Fuori dall'MVP (non si fa)
 Pagamenti, abbonamenti, chat, notifiche push native, app iOS/Android, live score, API o scraping di dati esterni.
