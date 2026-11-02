@@ -1,0 +1,297 @@
+-- Test dello schema: permessi, blocco dei pronostici, calcolo dei punti, classifiche, leghe, notizie.
+-- Si esegue con scripts/test-db.sh su un Postgres locale (dopo 00_finto_supabase.sql e le migrazioni).
+\set ON_ERROR_STOP 1
+\set QUIET 1
+\o /dev/null
+
+create schema prova;
+grant usage on schema prova to anon, authenticated;
+
+/** Imposta l'utente "collegato" (come fa Supabase con il token). */
+create function prova.come(u uuid) returns void language sql as $$
+  select set_config('request.jwt.claim.sub', coalesce(u::text, ''), false)
+$$;
+
+create function prova.ok(condizione boolean, messaggio text) returns void language plpgsql as $$
+begin
+  if condizione is not true then raise exception 'TEST FALLITO: %', messaggio; end if;
+end $$;
+
+/** La query deve fallire con un messaggio che contiene `frammento`. */
+create function prova.errore(q text, frammento text) returns void language plpgsql as $$
+begin
+  begin
+    execute q;
+  exception when others then
+    if position(lower(frammento) in lower(sqlerrm)) = 0 then
+      raise exception 'TEST FALLITO: errore inatteso per [%]: %', q, sqlerrm;
+    end if;
+    return;
+  end;
+  raise exception 'TEST FALLITO: doveva dare errore: %', q;
+end $$;
+
+grant execute on all functions in schema prova to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Utenti: alla registrazione nasce il profilo
+-- ---------------------------------------------------------------------------
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('00000000-0000-0000-0000-00000000000a', 'admin@example.com', '{"lingua":"it"}'),
+  ('00000000-0000-0000-0000-000000000001', 'u1@example.com', '{"lingua":"it"}'),
+  ('00000000-0000-0000-0000-000000000002', 'u2@example.com', '{"lingua":"pt-BR"}'),
+  ('00000000-0000-0000-0000-000000000003', 'u3@example.com', '{"lingua":"xx"}');
+select prova.ok((select count(*) from profili) = 4, 'un profilo per ogni utente');
+select prova.ok((select lingua from profili where id = '00000000-0000-0000-0000-000000000002') = 'pt-BR', 'lingua dalla registrazione');
+select prova.ok((select lingua from profili where id = '00000000-0000-0000-0000-000000000003') = 'it', 'lingua sconosciuta → it');
+-- il primo admin si nomina dal pannello SQL (nessun utente collegato)
+update profili set is_admin = true where id = '00000000-0000-0000-0000-00000000000a';
+
+-- ---------------------------------------------------------------------------
+-- Profilo: ognuno cambia il proprio, nessuno si fa admin da solo
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+update profili set nickname = 'Marco_BT', paese = 'IT', profilo_completo = true where id = auth.uid();
+select prova.ok((select nickname from profili where id = auth.uid()) = 'Marco_BT', 'nickname aggiornato');
+select prova.errore($$update profili set is_admin = true where id = auth.uid()$$, 'permission denied');
+update profili set nickname = 'Hacker' where id = '00000000-0000-0000-0000-000000000002'; -- RLS: nessuna riga
+select prova.ok((select nickname from profili where id = '00000000-0000-0000-0000-000000000002') <> 'Hacker', 'non modifico il profilo di altri');
+select prova.errore($$update profili set nickname = 'ab' where id = auth.uid()$$, 'check');
+reset role;
+
+select prova.come('00000000-0000-0000-0000-000000000002');
+set role authenticated;
+update profili set nickname = 'Joana', paese = 'BR' where id = auth.uid();
+select prova.errore($$update profili set nickname = 'marco_bt' where id = auth.uid()$$, 'duplicate'); -- unico senza maiuscole/minuscole
+reset role;
+select prova.come('00000000-0000-0000-0000-000000000003');
+set role authenticated;
+update profili set nickname = 'Luca', paese = 'IT' where id = auth.uid();
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Dati sportivi: solo l'admin scrive, tutti leggono
+-- ---------------------------------------------------------------------------
+select prova.come(null);
+set role anon;
+select prova.errore($$insert into tornei (nome, luogo, circuito, data_inizio, data_fine, inizio_at) values ('X torneo', 'Roma', 'ITF', now(), now(), now())$$, 'row-level security');
+reset role;
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+select prova.errore($$insert into giocatori (nome, cognome) values ('Pi', 'Rata')$$, 'row-level security');
+reset role;
+
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into giocatori (id, nome, cognome, paese, sesso) values
+  ('10000000-0000-0000-0000-000000000001', 'Andrea', 'Ricci', 'IT', 'M'),
+  ('10000000-0000-0000-0000-000000000002', 'Paolo', 'Neri', 'IT', 'M'),
+  ('10000000-0000-0000-0000-000000000003', 'João', 'Silva', 'BR', 'M'),
+  ('10000000-0000-0000-0000-000000000004', 'Pedro', 'Costa', 'BR', 'M'),
+  ('10000000-0000-0000-0000-000000000005', 'Luis', 'García', 'ES', 'M'),
+  ('10000000-0000-0000-0000-000000000006', 'Marc', 'Puig', 'ES', 'M'),
+  ('10000000-0000-0000-0000-000000000007', 'Tom', 'Dupont', 'FR', 'M'),
+  ('10000000-0000-0000-0000-000000000008', 'Hugo', 'Martin', 'FR', 'M');
+insert into tornei (id, nome, luogo, paese, circuito, categoria, data_inizio, data_fine, inizio_at) values
+  ('20000000-0000-0000-0000-000000000001', 'Torneo di prova', 'Ravenna', 'IT', 'ITF', 'BT200', current_date, (now() - interval '1 hour')::date + 1, now() + interval '2 days');
+insert into tabelloni (id, torneo_id, genere) values
+  ('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'maschile'),
+  ('30000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000001', 'femminile');
+insert into coppie (id, tabellone_id, giocatore1_id, giocatore2_id, testa_di_serie) values
+  ('40000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', 1),
+  ('40000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000004', 2),
+  ('40000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000006', null),
+  ('40000000-0000-0000-0000-000000000004', '30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000008', null),
+  -- una coppia di un altro tabellone, per i test
+  ('40000000-0000-0000-0000-000000000099', '30000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000003', null);
+select prova.errore($$insert into coppie (tabellone_id, giocatore1_id, giocatore2_id) values ('30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001')$$, 'duplicate');
+insert into partite (id, tabellone_id, turno, ordine, coppia_a_id, coppia_b_id, inizio_at, set_per_vincere) values
+  ('50000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', 'SF', 1, '40000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000004', now() + interval '2 days', 1),
+  ('50000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000001', 'SF', 2, '40000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000003', now() + interval '2 days', 1),
+  ('50000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000001', 'F', 1, null, null, now() + interval '3 days', 2);
+select prova.errore($$insert into partite (tabellone_id, turno, coppia_a_id, coppia_b_id, inizio_at) values ('30000000-0000-0000-0000-000000000001', 'QF', '40000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000099', now())$$, 'stesso tabellone');
+reset role;
+
+select prova.come(null);
+set role anon;
+select prova.ok((select count(*) from tornei) = 1 and (select count(*) from partite) = 3, 'gli anonimi leggono il calendario');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Pronostici: aperti fino all'inizio, coppie valide, niente punti scritti dall'utente
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+insert into pronostici_torneo (tabellone_id, vincitore_id, finalista_id) values ('30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000002');
+select prova.errore($$insert into pronostici_torneo (tabellone_id, vincitore_id) values ('30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000002')$$, 'duplicate');
+select prova.errore($$update pronostici_torneo set punti = 100$$, 'permission denied');
+select prova.errore($$insert into pronostici_torneo (tabellone_id, vincitore_id) values ('30000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001')$$, 'iscritte');
+insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', 1, 0, 10);
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente) values ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000002', 2, 0)$$, 'formato');
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id) values ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001')$$, 'due coppie');
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001')$$, 'chiusi'); -- finale senza coppie
+-- cambiare idea prima dell'inizio si può
+update pronostici_torneo set finalista_id = '40000000-0000-0000-0000-000000000002' where utente_id = auth.uid();
+reset role;
+
+select prova.come('00000000-0000-0000-0000-000000000002');
+set role authenticated;
+insert into pronostici_torneo (tabellone_id, vincitore_id, finalista_id) values ('30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001');
+insert into pronostici_partita (partita_id, vincitore_id, totale_game) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000004', 11);
+select prova.ok((select count(*) from pronostici_torneo) = 1, 'vedo solo i miei pronostici');
+-- forzare l'utente di un altro: bloccato dalla RLS
+select prova.errore($$insert into pronostici_partita (utente_id, partita_id, vincitore_id) values ('00000000-0000-0000-0000-000000000003', '50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000002')$$, 'permission denied');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Inizio del torneo e delle semifinali: tutto si blocca
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update tornei set inizio_at = now() - interval '2 hours', stato = 'in_corso' where id = '20000000-0000-0000-0000-000000000001';
+update partite set inizio_at = now() - interval '1 hour' where turno = 'SF';
+reset role;
+
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+select prova.errore($$update pronostici_torneo set vincitore_id = '40000000-0000-0000-0000-000000000003' where utente_id = auth.uid()$$, 'chiusi');
+select prova.errore($$update pronostici_partita set totale_game = 12 where utente_id = auth.uid()$$, 'chiusi');
+select prova.errore($$delete from pronostici_partita where utente_id = auth.uid()$$, 'chiusi');
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id) values ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000002')$$, 'chiusi');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Risultati: punteggio coerente, punti calcolati da soli
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select prova.errore($$update partite set stato = 'conclusa', game_a = '{6}', game_b = '{6}' where id = '50000000-0000-0000-0000-000000000001'$$, 'non chiude');
+select prova.errore($$update partite set stato = 'conclusa', game_a = '{6,6}', game_b = '{4,4}' where id = '50000000-0000-0000-0000-000000000001'$$, 'troppi set');
+update partite set stato = 'conclusa', game_a = '{6}', game_b = '{4}' where id = '50000000-0000-0000-0000-000000000001';
+select prova.ok((select vincitore_id from partite where id = '50000000-0000-0000-0000-000000000001') = '40000000-0000-0000-0000-000000000001', 'vincitore dal punteggio');
+-- semifinale 2 vinta per ritiro dalla coppia 3
+update partite set stato = 'conclusa', ritiro = true, vincitore_id = '40000000-0000-0000-0000-000000000003' where id = '50000000-0000-0000-0000-000000000002';
+-- la finale: coppia 1 contro coppia 3, al meglio dei 3 set, si apre ai pronostici
+update partite set coppia_a_id = '40000000-0000-0000-0000-000000000001', coppia_b_id = '40000000-0000-0000-0000-000000000003' where id = '50000000-0000-0000-0000-000000000003';
+reset role;
+
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001') = 6, 'vincitore giusto (3) + game esatti (3) in un set unico');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000002') = 0, 'vincitore sbagliato: 0 anche se i game sono vicini');
+select prova.ok((select mese from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001') = date_trunc('month', (now() - interval '1 hour') at time zone 'UTC')::date, 'mese della partita');
+
+select prova.come('00000000-0000-0000-0000-000000000003');
+set role authenticated;
+insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', 2, 1, 21);
+reset role;
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', 2, 0, 19);
+reset role;
+
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update partite set inizio_at = now() - interval '30 minutes' where id = '50000000-0000-0000-0000-000000000003';
+update partite set stato = 'conclusa', game_a = '{6,3,10}', game_b = '{4,6,7}' where id = '50000000-0000-0000-0000-000000000003';
+reset role;
+-- 6-4 3-6 10-7: totale 6+4+3+6+1 (il super tie-break conta 1) = 20
+select prova.ok(totale_game('{6,3,10}', '{4,6,7}', 2::smallint) = 20, 'super tie-break = 1 game');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003') = 6, 'finale: vincitore 3 + set esatti 2 + game a ±1 1');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001' and partita_id = '50000000-0000-0000-0000-000000000003') = 4, 'finale: vincitore 3 + set sbagliati 0 + game a ±1 1');
+select prova.ok((select bool_and(punti is null) from pronostici_torneo), 'i punti del torneo arrivano solo alla chiusura');
+
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update tornei set stato = 'concluso', data_fine = (now() - interval '1 hour')::date where id = '20000000-0000-0000-0000-000000000001';
+reset role;
+select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000001') = 10, 'vincitore esatto 10, finalista sbagliato 0');
+select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000002') = 0, 'chi ha scelto il vincitore come finalista non prende i 5 punti');
+
+-- ---------------------------------------------------------------------------
+-- Classifiche mensili: globale, per Paese, per lega
+-- ---------------------------------------------------------------------------
+\set mese 'date_trunc(''month'', now() - interval ''1 hour'')::date'
+select prova.ok((select punti from classifica(:mese) where nickname = 'Marco_BT') = 20, 'Marco: 6 + 4 + 10 = 20');
+select prova.ok((select posizione from classifica(:mese) where nickname = 'Marco_BT') = 1, 'Marco primo');
+select prova.ok((select count(*) from classifica(:mese, 'paese', 'BR')) = 1, 'classifica Brasile: solo Joana');
+select prova.ok((select count(*) from classifica(:mese - 31)) = 0, 'mese precedente vuoto');
+
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+create temp table lega_prova as select * from crea_lega('Amici del lido');
+select prova.ok((select codice ~ '^[A-Z2-9]{6}$' from lega_prova), 'codice invito di 6 caratteri');
+select prova.errore($$insert into leghe (nome, codice, creata_da) values ('Furba', 'AAAAAA', auth.uid())$$, 'permission denied');
+reset role;
+grant select on lega_prova to authenticated;
+
+select prova.come('00000000-0000-0000-0000-000000000002');
+set role authenticated;
+select prova.errore($$select unisciti_lega('XXXXXX')$$, 'non valido');
+select prova.ok(unisciti_lega((select lower(codice) from lega_prova)) = (select id from lega_prova), 'entro con il codice, anche in minuscolo');
+select prova.ok((select count(*) from classifica(:mese, 'lega', null, (select id from lega_prova))) = 2, 'classifica della lega: 2 membri');
+select prova.ok((select posizione from mia_posizione(:mese, 'lega', null, (select id from lega_prova))) = 2, 'Joana seconda nella lega');
+reset role;
+
+select prova.come('00000000-0000-0000-0000-000000000003');
+set role authenticated;
+select prova.ok((select count(*) from leghe) = 0, 'chi non è membro non vede la lega');
+select prova.ok((select count(*) from classifica(:mese, 'lega', null, (select id from lega_prova))) = 0, 'né la sua classifica');
+select prova.ok((select punti from mia_posizione(:mese)) = 6, 'la mia posizione globale');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Notizie: visibili solo se pubblicate, riassunto breve
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into notizie (id, fonte_nome, url_originale) values ('60000000-0000-0000-0000-000000000001', 'Sito di prova', 'https://example.com/articolo');
+insert into notizie_traduzioni values ('60000000-0000-0000-0000-000000000001', 'it', 'Una notizia di prova', 'Un riassunto scritto con parole nostre, breve e chiaro.');
+select prova.errore($$insert into notizie_traduzioni values ('60000000-0000-0000-0000-000000000001', 'en', 'Too long', repeat('x', 400))$$, 'check');
+select prova.errore($$insert into notizie (fonte_nome, url_originale) values ('Sito', 'javascript:alert(1)')$$, 'check');
+reset role;
+select prova.come(null);
+set role anon;
+select prova.ok((select count(*) from notizie) = 0 and (select count(*) from notizie_traduzioni) = 0, 'le bozze non si vedono');
+reset role;
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update notizie set stato = 'pubblicata';
+reset role;
+select prova.ok((select pubblicata_at is not null from notizie), 'data di pubblicazione automatica');
+select prova.come(null);
+set role anon;
+select prova.ok((select count(*) from notizie_traduzioni) = 1, 'la notizia pubblicata si vede');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Attività settimanale (per misurare i 500 utenti attivi) ed eliminazione dell'account
+-- ---------------------------------------------------------------------------
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+select segna_attivita();
+select segna_attivita();
+select prova.errore($$select * from metriche_settimanali()$$, 'amministratori');
+select prova.ok((select count(*) from attivita) = 0, 'le attività non si leggono');
+reset role;
+select prova.ok((select count(*) from attivita) = 1, 'una riga al giorno per utente');
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select prova.ok((select attivi from metriche_settimanali(2) order by settimana desc limit 1) = 1, 'l''admin vede gli attivi della settimana');
+reset role;
+
+-- riaprire il torneo cancella i punti del vincitore (correzioni dell'admin)
+select prova.come('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update tornei set stato = 'in_corso' where id = '20000000-0000-0000-0000-000000000001';
+reset role;
+select prova.ok((select bool_and(punti is null) from pronostici_torneo), 'torneo riaperto: punti del vincitore annullati');
+
+select prova.come('00000000-0000-0000-0000-000000000003');
+set role authenticated;
+select elimina_account();
+reset role;
+select prova.ok(not exists (select 1 from profili where id = '00000000-0000-0000-0000-000000000003'), 'account eliminato con tutti i suoi dati');
+select prova.ok(not exists (select 1 from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003'), 'pronostici eliminati');
+
+\o
+\echo 'Tutti i test dello schema sono passati.'
