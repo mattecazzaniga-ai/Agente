@@ -2,7 +2,9 @@
 import { useLocale } from "next-intl";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { NOMI_LINGUE, routing, type Lingua } from "@/i18n/routing";
+import { routing, type Lingua } from "@/i18n/routing";
+
+const SIGLE: Record<Lingua, string> = { it: "🇮🇹 IT", "pt-BR": "🇧🇷 PT", es: "🇪🇸 ES", en: "🇬🇧 EN" };
 import { salvaLingua } from "@/app/[locale]/azioni";
 
 /** Cambio lingua con un tocco: resta sulla stessa pagina e la ricorda nel profilo. */
@@ -23,15 +25,15 @@ export default function SceltaLingua({ etichetta }: { etichetta: string }) {
             router.replace(percorso, { locale: nuova });
           });
         }}
-        className="h-9 appearance-none rounded-full border border-white/30 bg-white/10 pl-3 pr-7 text-sm font-semibold text-white outline-none"
+        className="h-9 appearance-none rounded-full border-2 border-sabbia-scura bg-white pl-3 pr-7 text-sm font-bold text-inchiostro outline-none"
       >
         {routing.locales.map((l) => (
           <option key={l} value={l} className="text-inchiostro">
-            {NOMI_LINGUE[l]}
+            {SIGLE[l]}
           </option>
         ))}
       </select>
-      <span className="pointer-events-none absolute right-2.5 text-xs text-white" aria-hidden>▾</span>
+      <span className="pointer-events-none absolute right-2.5 text-xs text-nebbia" aria-hidden>▾</span>
     </label>
   );
 }

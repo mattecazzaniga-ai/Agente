@@ -6,6 +6,7 @@ import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { esciLega } from "../azioni";
 import FormLeghe from "@/components/FormLeghe";
 import Invita from "@/components/Invita";
+import { IconaAmici, IconaPodio } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -22,21 +23,24 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
   const [t, leghe, sito] = await Promise.all([getTranslations(), mieLeghe(), indirizzoSito()]);
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">{t("leghe.titolo")}</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t("leghe.titolo")}</h1>
       <FormLeghe sito={sito} />
       <h2 className="titolo-sezione">{t("leghe.mie")}</h2>
-      {leghe.length === 0 && <p className="scheda text-sm text-nebbia">{t("leghe.nessuna")}</p>}
+      {leghe.length === 0 && <p className="scheda text-center text-nebbia">{t("leghe.nessuna")}</p>}
       {leghe.map((l) => (
         <div key={l.id} className="scheda space-y-3">
           <div className="flex items-center gap-2">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-menta-chiaro text-menta">
+              <IconaAmici />
+            </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-bold">{l.nome}</p>
+              <p className="truncate font-extrabold">{l.nome}</p>
               <p className="text-xs text-nebbia">
-                <span className="font-mono tracking-widest">{l.codice}</span> · 👥 {l.membri}
+                <span className="font-mono font-bold tracking-widest">{l.codice}</span> · {l.membri} 👤
               </p>
             </div>
             <Link href={`/classifica?ambito=lega&lega=${l.id}`} className="chip py-1.5">
-              📊 {t("leghe.classifica")}
+              <IconaPodio className="h-4 w-4" /> {t("leghe.classifica")}
             </Link>
           </div>
           <Invita nome={l.nome} codice={l.codice} sito={sito} />

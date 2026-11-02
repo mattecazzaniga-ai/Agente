@@ -15,7 +15,7 @@ export default async function Notizie({ params }: { params: Promise<{ locale: st
   const [t, notizie] = await Promise.all([getTranslations(), notiziePubblicate(locale, 50)]);
   return (
     <div className="space-y-3">
-      <h1 className="text-2xl font-extrabold">{t("notizie.titolo")}</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t("notizie.titolo")}</h1>
       {notizie.length === 0 && <p className="scheda text-sm text-nebbia">{t("notizie.nessuna")}</p>}
       {notizie.map((n) => (
         <SchedaNotizia key={n.id} notizia={n} />

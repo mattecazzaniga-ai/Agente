@@ -4,6 +4,7 @@ import { sessione } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import FormLeghe from "@/components/FormLeghe";
 import Avviso from "@/components/Avviso";
+import { IconaAmici } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -28,10 +29,12 @@ export default async function Invito({ params }: { params: Promise<{ locale: str
   }
   return (
     <div className="space-y-4 pt-2">
-      <div className="scheda space-y-1 text-center">
-        <div className="text-5xl" aria-hidden>👥</div>
-        <h1 className="text-xl font-extrabold">{t("leghe.invitoTitolo", { nome: lega.nome })}</h1>
-        <p className="text-sm text-nebbia">👥 {lega.membri}</p>
+      <div className="scheda space-y-2 text-center">
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-menta-chiaro text-menta">
+          <IconaAmici className="h-9 w-9" />
+        </span>
+        <h1 className="text-2xl font-black tracking-tight">{t("leghe.invitoTitolo", { nome: lega.nome })}</h1>
+        <p className="text-sm text-nebbia">{lega.membri} 👤</p>
       </div>
       {user ? (
         <FormLeghe sito={await indirizzoSito()} codiceIniziale={codice} soloEntra />

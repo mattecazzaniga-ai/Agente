@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { sessione } from "@/lib/dati";
 import FormAccesso from "./FormAccesso";
 import Avviso from "@/components/Avviso";
+import { Logo } from "@/components/Icone";
 
 export async function generateMetadata() {
   const t = await getTranslations();
@@ -20,8 +21,8 @@ export default async function Accedi({ params, searchParams }: { params: Promise
   return (
     <div className="space-y-5 pt-4">
       <div className="text-center">
-        <div className="text-5xl" aria-hidden>🎾</div>
-        <h1 className="mt-2 text-2xl font-extrabold">{t("accedi.titolo")}</h1>
+        <Logo className="mx-auto h-16 w-16" />
+        <h1 className="mt-3 text-3xl font-black tracking-tight">{t("accedi.titolo")}</h1>
         <p className="mt-1 text-nebbia">{t("accedi.sottotitolo")}</p>
       </div>
       <div className="scheda">

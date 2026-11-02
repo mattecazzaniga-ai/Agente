@@ -1,29 +1,38 @@
 @import "tailwindcss";
 
-/* BeachPick: mare, sabbia e palla. Pensato per il telefono. */
+/* BeachPick: colori da spiaggia d'estate. Chiari, caldi, positivi. Pensato per il telefono. */
 @theme {
-  --color-mare: #0b4f6c;
-  --color-mare-scuro: #073449;
-  --color-onda: #e6f2f7;
-  --color-sabbia: #f6ecd9;
-  --color-sabbia-scura: #e8d5b0;
-  --color-sole: #f9c22e;
-  --color-corallo: #e8604c;
-  --color-inchiostro: #0f2a3d;
-  --color-nebbia: #5b6b78;
-  --radius-scheda: 18px;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-mare: #0a7ea4;        /* azione principale */
+  --color-mare-scuro: #075b78;
+  --color-onda: #e3f4fa;        /* sfondi azzurri leggeri */
+  --color-cielo: #bfe7f5;
+  --color-sabbia: #fbf1df;
+  --color-sabbia-scura: #ecdcbf;
+  --color-sole: #ffc83d;
+  --color-sole-chiaro: #fff3cc;
+  --color-corallo: #f2674f;
+  --color-menta: #1fa98a;       /* successo, punti */
+  --color-menta-chiaro: #dff5ee;
+  --color-inchiostro: #17323f;
+  --color-nebbia: #627886;
+  --color-crema: #fffaf2;
+  --radius-scheda: 22px;
+  --font-sans: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 html { -webkit-text-size-adjust: 100%; }
-body { background: #faf7f1; color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+body { background: var(--color-crema); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+
+@keyframes salta { 0% { transform: scale(.9); opacity: 0 } 60% { transform: scale(1.04); opacity: 1 } 100% { transform: scale(1) } }
 
 @layer components {
-  .scheda { @apply rounded-[var(--radius-scheda)] bg-white p-4 shadow-[0_1px_2px_rgba(15,42,61,.05),0_6px_20px_rgba(15,42,61,.06)]; }
-  .bottone { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-mare px-5 font-semibold text-white transition active:scale-[.98] disabled:opacity-50; }
-  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-sabbia-scura bg-sabbia px-5 font-semibold text-inchiostro transition active:scale-[.98] disabled:opacity-50; }
-  .campo { @apply min-h-12 w-full rounded-xl border border-sabbia-scura bg-white px-3 text-base outline-none focus:border-mare focus:ring-2 focus:ring-mare/20; }
-  .etichetta { @apply mb-1 block text-sm font-medium text-nebbia; }
-  .chip { @apply inline-flex items-center rounded-full bg-onda px-2.5 py-0.5 text-xs font-semibold text-mare; }
-  .titolo-sezione { @apply mb-2 mt-6 text-lg font-bold; }
+  .scheda { @apply rounded-[var(--radius-scheda)] border border-sabbia-scura/50 bg-white p-4; box-shadow: 0 1px 0 rgba(23, 50, 63, .04), 0 8px 24px -12px rgba(23, 50, 63, .12); }
+  .bottone { @apply inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-mare px-6 text-base font-bold text-white transition active:scale-[.97] disabled:opacity-40; box-shadow: 0 6px 16px -8px rgba(10, 126, 164, .7); }
+  .bottone-sole { @apply inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-sole px-6 text-base font-bold text-inchiostro transition active:scale-[.97]; box-shadow: 0 6px 16px -8px rgba(200, 140, 0, .8); }
+  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-sabbia-scura bg-white px-5 font-bold text-inchiostro transition active:scale-[.97] disabled:opacity-40; }
+  .campo { @apply min-h-12 w-full rounded-2xl border-2 border-sabbia-scura/70 bg-white px-4 text-base outline-none transition focus:border-mare focus:ring-4 focus:ring-mare/15; }
+  .etichetta { @apply mb-1.5 block text-sm font-semibold text-nebbia; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full bg-onda px-2.5 py-0.5 text-xs font-bold text-mare-scuro; }
+  .titolo-sezione { @apply mb-3 mt-8 text-xl font-extrabold tracking-tight; }
+  .festa { animation: salta .35s ease-out; }
 }

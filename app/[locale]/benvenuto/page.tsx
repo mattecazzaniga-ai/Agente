@@ -13,7 +13,7 @@ export default async function Benvenuto({ params, searchParams }: { params: Prom
   const destinazione = dopo && dopo.startsWith("/") && !dopo.startsWith("//") ? dopo : `/${locale}`;
   return (
     <div className="space-y-5 pt-4">
-      <h1 className="text-center text-2xl font-extrabold">{t("benvenuto.titolo")}</h1>
+      <h1 className="text-center text-3xl font-black tracking-tight">{t("benvenuto.titolo")}</h1>
       <div className="scheda">
         <FormProfilo nickname={profilo.nickname} paese={profilo.paese} dopo={destinazione} testoBottone={t("benvenuto.salva")} />
       </div>

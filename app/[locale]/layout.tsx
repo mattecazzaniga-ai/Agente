@@ -10,6 +10,7 @@ import SceltaLingua from "@/components/SceltaLingua";
 import Avviso from "@/components/Avviso";
 import Attivita from "@/components/Attivita";
 import RegistraSW from "@/components/RegistraSW";
+import { Logo } from "@/components/Icone";
 import "../globals.css";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export const viewport: Viewport = { themeColor: "#0b4f6c", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#fffaf2", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,24 +43,25 @@ export default async function LayoutLingua({ children, params }: { children: Rea
     <html lang={locale}>
       <body className="min-h-dvh font-sans antialiased">
         <NextIntlClientProvider>
-          <header className="sticky top-0 z-20 bg-mare pt-[env(safe-area-inset-top)] text-white">
-            <div className="mx-auto flex max-w-xl items-center gap-3 px-4 py-2.5">
-              <Link href="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
-                <span aria-hidden>🎾</span> {t("app.nome")}
+          <header className="sticky top-0 z-20 border-b border-sabbia-scura/50 bg-crema/90 pt-[env(safe-area-inset-top)] backdrop-blur">
+            <div className="mx-auto flex max-w-xl items-center gap-2 px-4 py-2.5">
+              <Link href="/" className="flex items-center gap-2 text-xl font-black tracking-tight text-inchiostro">
+                <Logo className="h-8 w-8" />
+                Beach<span className="-ml-2 text-mare">Pick</span>
               </Link>
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />
                 {profilo?.is_admin && (
-                  <Link href="/admin" className="rounded-full bg-sole px-3 py-1.5 text-sm font-bold text-inchiostro">
+                  <Link href="/admin" className="rounded-full bg-sole-chiaro px-3 py-1.5 text-sm font-bold text-inchiostro">
                     {t("nav.admin")}
                   </Link>
                 )}
                 {user ? (
-                  <Link href="/profilo" className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-sm font-bold" aria-label={t("nav.profilo")}>
+                  <Link href="/profilo" className="grid h-9 w-9 place-items-center rounded-full bg-sole text-sm font-black text-inchiostro" aria-label={t("nav.profilo")}>
                     {(profilo?.nickname ?? "?").slice(0, 1).toUpperCase()}
                   </Link>
                 ) : (
-                  <Link href="/accedi" className="rounded-full bg-white px-3 py-1.5 text-sm font-bold text-mare">
+                  <Link href="/accedi" className="rounded-full bg-mare px-4 py-2 text-sm font-bold text-white">
                     {t("nav.accedi")}
                   </Link>
                 )}

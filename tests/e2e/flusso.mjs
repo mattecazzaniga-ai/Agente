@@ -32,7 +32,7 @@ async function codiceDa(email) {
 }
 
 async function registra(page, email, nickname, paese) {
-  await page.getByRole("link", { name: /^(Accedi|Entrar|Sign in)$/ }).first().click();
+  await page.locator('header a[href$="/accedi"]').click();
   await page.locator('input[name="email"]').fill(email);
   await page.locator('form button:not([type="button"])').first().click();
   const codice = await codiceDa(email);
@@ -78,7 +78,7 @@ try {
   const scheda = page.locator("article").filter({ has: page.locator('input[name="partita_id"]') }).first();
   await scheda.locator('button[aria-pressed]').first().click();
   await scheda.getByRole("button", { name: "Guardar" }).click();
-  await scheda.getByText("Guardado ✓").waitFor();
+  await scheda.getByText("¡Hecho! 🎉").waitFor();
   ok(true, "pronostico salvato");
   // entra nella lega con il link d'invito e vede la classifica
   await page.goto(`${SITO}/es/leghe/${codice}`);

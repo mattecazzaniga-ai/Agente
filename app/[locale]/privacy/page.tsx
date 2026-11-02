@@ -12,7 +12,7 @@ export default async function Privacy({ params }: { params: Promise<{ locale: st
   const t = await getTranslations();
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">{t("privacy.titolo")}</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t("privacy.titolo")}</h1>
       <p className="scheda leading-relaxed">{t("privacy.testo")}</p>
       <Avviso grande />
     </div>

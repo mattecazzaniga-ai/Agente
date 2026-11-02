@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { IconaCondividi } from "./Icone";
 
 /** Invito a una lega: menu di condivisione del telefono, altrimenti WhatsApp o copia del link. */
 export default function Invita({ nome, codice, sito }: { nome: string; codice: string; sito: string }) {
@@ -32,7 +33,7 @@ export default function Invita({ nome, codice, sito }: { nome: string; codice: s
   return (
     <div className="space-y-2">
       <button type="button" onClick={invita} className="bottone">
-        <span aria-hidden>📨</span> {t("leghe.invita")}
+        <IconaCondividi /> {t("leghe.invita")}
       </button>
       {fallback && (
         <div className="grid grid-cols-2 gap-2">

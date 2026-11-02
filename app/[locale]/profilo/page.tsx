@@ -22,7 +22,7 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   const t = await getTranslations();
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">{t("profilo.titolo")}</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t("profilo.titolo")}</h1>
       <p className="text-sm text-nebbia">{user.email}</p>
       <div className="scheda">
         <FormProfilo nickname={profilo.nickname} paese={profilo.paese} testoBottone={t("profilo.salva")} />

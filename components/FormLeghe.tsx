@@ -15,7 +15,7 @@ export default function FormLeghe({ sito, codiceIniziale = "", soloEntra = false
   return (
     <div className="space-y-4">
       <form action={entra} className="scheda space-y-3">
-        <h2 className="font-bold">{t("leghe.entra")}</h2>
+        <h2 className="text-lg font-extrabold">{t("leghe.entra")}</h2>
         <input type="hidden" name="lingua" value={lingua} />
         <input
           name="codice"
@@ -37,7 +37,7 @@ export default function FormLeghe({ sito, codiceIniziale = "", soloEntra = false
 
       {!soloEntra && (
       <form action={crea} className="scheda space-y-3">
-        <h2 className="font-bold">{t("leghe.crea")}</h2>
+        <h2 className="text-lg font-extrabold">{t("leghe.crea")}</h2>
         <input name="nome" required minLength={3} maxLength={40} placeholder={t("leghe.nome")} aria-label={t("leghe.nome")} className="campo" />
         {errore(creata)}
         <button className="bottone-secondario" disabled={creando}>

@@ -8,6 +8,8 @@ import { TURNI, type Coppia, type Genere } from "@/lib/tipi";
 import PronosticoTorneo from "@/components/PronosticoTorneo";
 import SchedaPartita, { type VotoMostrato } from "@/components/SchedaPartita";
 import Regole from "@/components/Regole";
+import Ora from "@/components/Ora";
+import { IconaCoppa, IconaIndietro } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -47,33 +49,33 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
 
   return (
     <div>
-      <Link href="/tornei" className="text-sm font-semibold text-mare">
-        ← {t("tornei.titolo")}
+      <Link href="/tornei" className="inline-flex items-center gap-1 text-sm font-bold text-mare">
+        <IconaIndietro /> {t("tornei.titolo")}
       </Link>
-      <header className="scheda mt-2 space-y-1">
-        <div className="flex items-start gap-3">
-          <span className="text-4xl" aria-hidden>{bandiera(torneo.paese)}</span>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-extrabold leading-tight">{torneo.nome}</h1>
-            <p className="text-sm text-nebbia">
-              {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2 pt-1">
-          <span className="chip">
+      <header className="mt-3 overflow-hidden rounded-[28px] bg-gradient-to-br from-cielo/70 via-onda to-sabbia p-5">
+        <div className="flex flex-wrap gap-1.5">
+          <span className={`chip ${torneo.stato === "in_corso" ? "bg-corallo text-white" : torneo.stato === "concluso" ? "bg-white/70 text-nebbia" : "bg-white text-mare-scuro"}`}>
+            {torneo.stato === "in_corso" && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />}
+            {t(`stato.${torneo.stato}`)}
+          </span>
+          <span className="chip bg-white/80 text-inchiostro">
             {torneo.circuito}
             {torneo.categoria ? ` ${torneo.categoria}` : ""}
           </span>
-          <span className="chip">{t(`stato.${torneo.stato}`)}</span>
-          {user && mieiPunti > 0 && <span className="chip bg-sole/30 text-inchiostro">{t("torneo.tuoiPunti", { punti: mieiPunti })}</span>}
         </div>
+        <h1 className="mt-3 text-[26px] font-black leading-tight tracking-tight">{torneo.nome}</h1>
+        <p className="mt-1 text-inchiostro/75">
+          {bandiera(torneo.paese)} {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
+        </p>
+        {user && mieiPunti > 0 && (
+          <p className="festa mt-3 inline-flex items-center gap-2 rounded-full bg-menta px-4 py-1.5 text-sm font-black text-white">{t("torneo.tuoiPunti", { punti: mieiPunti })} 🎉</p>
+        )}
       </header>
 
       {tabelloni.length > 1 && (
-        <div className="mt-3 flex gap-2">
+        <div className="mt-4 flex gap-1 rounded-full bg-sabbia p-1">
           {tabelloni.map((x) => (
-            <Link key={x.id} href={`/tornei/${id}?tab=${x.genere}`} className={`flex-1 rounded-full py-2 text-center text-sm font-semibold ${x.id === scelto?.id ? "bg-mare text-white" : "bg-white shadow-sm"}`}>
+            <Link key={x.id} href={`/tornei/${id}?tab=${x.genere}`} className={`flex-1 rounded-full py-2 text-center text-sm font-bold transition ${x.id === scelto?.id ? "bg-white text-mare shadow-sm" : "text-nebbia"}`}>
               {t(`genere.${x.genere as Genere}`)}
             </Link>
           ))}
@@ -84,8 +86,13 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
         <p className="scheda mt-4 text-sm text-nebbia">{t("torneo.nessunaCoppia")}</p>
       ) : (
         <>
-          <section className="scheda mt-4 space-y-3">
-            <h2 className="text-lg font-bold">🏆 {t("torneo.chiVinceTorneo", { genere: t(`genere.${scelto.genere}`).toLowerCase() })}</h2>
+          <section className="scheda mt-4 space-y-4">
+            <h2 className="flex items-center gap-2.5 text-lg font-extrabold leading-tight">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-sole-chiaro">
+                <IconaCoppa className="h-6 w-6" />
+              </span>
+              {t("torneo.chiVinceTorneo", { genere: t(`genere.${scelto.genere}`).toLowerCase() })}
+            </h2>
             <PronosticoTorneo
               tabelloneId={scelto.id}
               titolo={t(`genere.${scelto.genere}`)}
@@ -104,8 +111,8 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
           <h2 className="titolo-sezione">{t("torneo.partite")}</h2>
           {scelto.partite.length === 0 && <p className="scheda text-sm text-nebbia">{t("torneo.nessunaPartita")}</p>}
           {TURNI.filter((tu) => scelto.partite.some((p) => p.turno === tu)).map((tu) => (
-            <section key={tu} className="mb-4">
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-nebbia">{t(`turno.${tu}`)}</h3>
+            <section key={tu} className="mb-6">
+              <h3 className="mb-2 flex items-center gap-2 text-sm font-black uppercase tracking-wide text-nebbia"><span className="h-px flex-1 bg-sabbia-scura" />{t(`turno.${tu}`)}<span className="h-px flex-1 bg-sabbia-scura" /></h3>
               <div className="space-y-3">
                 {scelto.partite
                   .filter((p) => p.turno === tu && (p.coppia_a_id || p.coppia_b_id))
@@ -123,7 +130,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                         urlAccesso={urlAccesso(locale, ritorno)}
                         sito={sito}
                         descrizione={`${nomeCoppia(coppia(p.coppia_a_id))} vs ${nomeCoppia(coppia(p.coppia_b_id))} · ${torneo.nome}`}
-                        intestazione={<span className="font-semibold">{t(`turno.${p.turno}`)}</span>}
+                        intestazione={<span className="font-semibold capitalize"><Ora iso={p.inizio_at} /></span>}
                       />
                     );
                   })}

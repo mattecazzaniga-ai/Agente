@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { IconaCondividi } from "./Icone";
 
 /**
  * Condivide un'immagine generata (pronostico o posizione) con il menu del telefono: WhatsApp,
@@ -31,7 +32,7 @@ export default function Condividi({ immagine, testo, url, etichetta, nomeFile = 
   return (
     <div className="space-y-2">
       <button type="button" onClick={condividi} className="bottone-secondario" disabled={stato === "attesa"}>
-        <span aria-hidden>📤</span> {etichetta}
+        <IconaCondividi /> {etichetta}
       </button>
       {stato === "fallback" && (
         <div className="grid grid-cols-2 gap-2">
