@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import { costruisciPrimoTurno, leggiEntryList, type CoppiaLetta, type GiocatoreLetto } from "@/lib/importa";
 import { leggiPunteggio } from "@/lib/punteggio";
+import { leggiTabelloneItf, sembraTabelloneItf } from "@/lib/importaItf";
 import { CIRCUITI, GENERI, TURNI, type Turno } from "@/lib/tipi";
 
 export type EsitoAdmin = { ok: boolean; messaggio: string } | null;
@@ -148,6 +149,7 @@ export async function importaTabellone(_: EsitoAdmin, form: FormData): Promise<E
   const setPerVincere = testo(form.get("set_per_vincere")) === "2" ? 2 : 1;
   const soloCoppie = form.get("solo_coppie") === "1";
   if (!tabellone_id || (!soloCoppie && !inizio)) return ko("Indica l'orario del primo turno.");
+  if (!soloCoppie && sembraTabelloneItf(testo(form.get("testo")))) return importaTabelloneItf(supabase, tabellone_id, testo(form.get("testo")), inizio!);
   const lettura = leggiEntryList(testo(form.get("testo")));
   if (lettura.errori.length) return ko(`Righe non riconosciute:\n${lettura.errori.map((e) => `riga ${e.riga}: ${e.testo}`).join("\n")}`);
   const reali = lettura.posti.filter((p): p is CoppiaLetta => Boolean(p));
@@ -213,6 +215,93 @@ export async function importaTabellone(_: EsitoAdmin, form: FormData): Promise<E
 
   aggiorna();
   return ok(`Importate ${reali.length} coppie e ${partite.length} partite (${primo.turno}, tabellone da ${primo.dimensione})${dopo.size ? `, ${primo.avanzati.length} BYE` : ""}.`);
+}
+
+const TURNI_ORDINE: Turno[] = ["R64", "R32", "R16", "QF", "SF", "F"];
+
+/**
+ * Tabellone ITF incollato da "Draws & Results": coppie, tutte le partite del primo turno e i risultati
+ * già giocati di ogni turno. I vincitori avanzano da soli (trigger del database). Le partite ancora da
+ * giocare prendono l'orario indicato (un giorno in più per ogni turno successivo).
+ */
+async function importaTabelloneItf(supabase: Awaited<ReturnType<typeof admin>>, tabellone_id: string, testoItf: string, inizio: string): Promise<EsitoAdmin> {
+  const letto = leggiTabelloneItf(testoItf, 2);
+  if ("errore" in letto) return ko(`Tabellone ITF: ${letto.errore}.`);
+  const { data: tabellone } = await supabase.from("tabelloni").select("id, torneo_id, partite(count)").eq("id", tabellone_id).single();
+  if (!tabellone) return ko("Tabellone non trovato.");
+  if (((tabellone.partite as unknown as { count: number }[])?.[0]?.count ?? 0) > 0) return ko("Il tabellone ha già delle partite: eliminale prima di importare di nuovo.");
+  const primo = costruisciPrimoTurno(letto.posti);
+  if ("errore" in primo) return ko(`Tabellone: ${primo.errore}.`);
+
+  let idPosti: (string | null)[];
+  try {
+    const reali = letto.posti.filter((p): p is CoppiaLetta => Boolean(p));
+    const ids = await idCoppie(supabase, tabellone_id, reali);
+    let k = 0;
+    idPosti = letto.posti.map((p) => (p ? ids[k++] : null));
+  } catch (e) {
+    return ko((e as Error).message);
+  }
+
+  const giocata = (turno: Turno, ordine: number) => letto.giocate.find((g) => g.turno === turno && g.ordine === ordine);
+  const passato = new Date(Date.now() - 86_400_000).toISOString();
+  const risultatoDi = (g: NonNullable<ReturnType<typeof giocata>>) => ({
+    stato: "conclusa",
+    game_a: g.game_a.length ? g.game_a : null,
+    game_b: g.game_b.length ? g.game_b : null,
+    ritiro: g.ritiro,
+    vincitore_id: g.ritiro ? idPosti[g.vince === "a" ? g.a : g.b] : null,
+    inizio_at: passato,
+  });
+
+  // 1. Primo turno (i risultati già giocati fanno avanzare i vincitori al turno dopo)
+  const righe = primo.partite.map((p) => {
+    const g = giocata(primo.turno, p.ordine);
+    const base = { tabellone_id, turno: primo.turno, ordine: p.ordine, coppia_a_id: idPosti[p.a], coppia_b_id: idPosti[p.b], inizio_at: inizio, set_per_vincere: 2 };
+    return g ? { ...base, ...risultatoDi(g) } : base;
+  });
+  for (const r of righe) {
+    const { error } = await supabase.from("partite").insert(r);
+    if (error) return ko(`Partita ${r.turno} n.${r.ordine}: ${error.message}`);
+  }
+  // BYE: la coppia entra direttamente nella partita del turno dopo
+  for (const av of primo.avanzati) {
+    const campo = av.lato === "a" ? "coppia_a_id" : "coppia_b_id";
+    const { data: esiste } = await supabase.from("partite").select("id").eq("tabellone_id", tabellone_id).eq("turno", av.turno).eq("ordine", av.ordine).maybeSingle();
+    const { error } = esiste
+      ? await supabase.from("partite").update({ [campo]: idPosti[av.posto] }).eq("id", esiste.id)
+      : await supabase.from("partite").insert({ tabellone_id, turno: av.turno, ordine: av.ordine, [campo]: idPosti[av.posto], inizio_at: inizio, set_per_vincere: 2 });
+    if (error) return ko(`BYE: ${error.message}`);
+  }
+
+  // 2. Risultati dei turni successivi, in ordine
+  let giocateDopo = 0;
+  for (const g of letto.giocate.filter((x) => x.turno !== primo.turno).sort((x, y) => TURNI_ORDINE.indexOf(x.turno) - TURNI_ORDINE.indexOf(y.turno))) {
+    const { data: p } = await supabase.from("partite").select("id, coppia_a_id, coppia_b_id").eq("tabellone_id", tabellone_id).eq("turno", g.turno).eq("ordine", g.ordine).maybeSingle();
+    if (!p || p.coppia_a_id !== idPosti[g.a] || p.coppia_b_id !== idPosti[g.b]) {
+      letto.avvisi.push(`${g.turno} n.${g.ordine}: le coppie non corrispondono al tabellone, risultato non inserito.`);
+      continue;
+    }
+    const { error } = await supabase.from("partite").update(risultatoDi(g)).eq("id", p.id);
+    if (error) letto.avvisi.push(`${g.turno} n.${g.ordine}: ${error.message}`);
+    else giocateDopo++;
+  }
+
+  // 3. Orari delle partite da giocare: il primo turno ancora aperto all'orario indicato, poi +1 giorno per turno
+  const { data: aperte } = await supabase.from("partite").select("id, turno").eq("tabellone_id", tabellone_id).eq("stato", "in_programma");
+  const primoAperto = Math.min(...(aperte ?? []).map((a) => TURNI_ORDINE.indexOf(a.turno as Turno)));
+  for (const a of aperte ?? []) {
+    const giorni = TURNI_ORDINE.indexOf(a.turno as Turno) - primoAperto;
+    await supabase.from("partite").update({ inizio_at: new Date(new Date(inizio).getTime() + giorni * 86_400_000).toISOString() }).eq("id", a.id);
+  }
+
+  aggiorna();
+  const giocatePrimo = righe.filter((r) => "stato" in r).length;
+  return ok(
+    `Tabellone ITF da ${letto.dimensione}: ${idPosti.filter(Boolean).length} coppie, ${righe.length} partite del primo turno (${giocatePrimo} già giocate), ${giocateDopo} risultati dei turni successivi. ` +
+      `Partite ancora da giocare: ${aperte?.length ?? 0}, dalle ${new Date(inizio).toLocaleString("it-IT", { timeZone: "Europe/Rome" })}.` +
+      (letto.avvisi.length ? `\n\nDa controllare:\n${letto.avvisi.join("\n")}` : ""),
+  );
 }
 
 export async function eliminaCoppia(form: FormData) {

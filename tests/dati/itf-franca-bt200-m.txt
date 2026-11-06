@@ -1,0 +1,309 @@
+RenzoTesta Lutzenberger Amancio
+BRA
+LeonardoBranco
+[1]
+6
+6
+BRA
+DiegoBandeira Casagrande
+BRA
+EnzoVacchiano
+4
+3
+ITA
+RiccardoPonti
+ITA
+EmilianoZapparata
+6
+6
+BRA
+FlavioArouca
+BRA
+giovanecury bueres
+2
+2
+BRA
+GiovanniNomelini
+BRA
+GabrielSantos
+6
+1
+10
+BRA
+LucasCherione
+BRA
+DouglasCollani
+3
+6
+6
+BRA
+MatheusSchiavinato
+BRA
+AndreySoares
+6
+6
+BRA
+Joao PedroLinhares da Fonseca
+ITA
+FedericoGaleazzi
+[6]
+3
+1
+BRA
+MateusBusnardo Buemo
+BRA
+Pedro LucaSilva
+[3]
+6
+6
+BRA
+ArthurDorta
+BRA
+OctavioScholl Pereira
+0
+1
+BRA
+GianpieroMoretto Bello
+BRA
+LucasLima
+6
+6
+BRA
+DaviAbdanur
+BRA
+VictorAmorim Gonzaga
+3
+4
+BRA
+AugustoLaranja
+BRA
+LucasSantos
+1
+6
+10
+BRA
+RyanKin Okamoto
+BRA
+HenriVicentin
+6
+1
+6
+BRA
+MatheusMuseti Bezerra
+BRA
+EnzoD Lucca
+4
+3
+ITA
+LucaAndreolini
+BRA
+MiguelPeres
+[8]
+6
+6
+BRA
+DaviBallerini
+BRA
+MateusYuji
+[7]
+6
+6
+BRA
+LucasBarroso
+BRA
+PietroMota
+2
+1
+BRA
+Joao PedroPelloso Carvalho
+BRA
+EduardoAraujo Rodrigues
+RETIRED
+1
+5
+BRA
+AndreGomes Lamana
+BRA
+GuilhermeSampaio Ferreira
+6
+5
+FRA
+LouisBepoldin
+ITA
+TristanoFrattolillo
+7
+5
+9
+BRA
+EnzoDe michielli
+POR
+AfonsoDorey
+69
+7
+11
+BRA
+LeviLopes Goldmann
+BRA
+MiguelMazzaro
+2
+4
+BRA
+HenriqueHenrique Barros Medeiros
+BRA
+FelipeRoman
+[4]
+6
+6
+VEN
+Carlos JesusFernandez Da Silva
+BRA
+LeonardoNeiva Mariani
+[5]
+7
+6
+BRA
+Felipe AndrePoffo
+BRA
+JoaoWiesinger
+5
+3
+ITA
+AlessandroGalletti
+BRA
+CaioGazoli
+7
+6
+BRA
+CristianoAraujo Correa
+BRA
+Joao VitorSequinatto
+5
+3
+BRA
+GabrielLeite
+BRA
+Luiz Villar
+3
+5
+BRA
+Richarddo Espirito Santo Gomes
+VEN
+RamonGuedez
+6
+7
+BRA
+BrunoCarreira de Alcantara
+BRA
+Ricardo GarciaDos Santos
+65
+0
+NikitaBurmakin
+BRA
+AllanOliveira
+[2]
+7
+6
+BRA
+RenzoTesta Lutzenberger Amancio
+BRA
+LeonardoBranco
+[1]
+
+ITA
+RiccardoPonti
+ITA
+EmilianoZapparata
+
+BRA
+GiovanniNomelini
+BRA
+GabrielSantos
+
+BRA
+MatheusSchiavinato
+BRA
+AndreySoares
+
+BRA
+MateusBusnardo Buemo
+BRA
+Pedro LucaSilva
+[3]
+
+BRA
+GianpieroMoretto Bello
+BRA
+LucasLima
+
+BRA
+AugustoLaranja
+BRA
+LucasSantos
+
+ITA
+LucaAndreolini
+BRA
+MiguelPeres
+[8]
+
+BRA
+DaviBallerini
+BRA
+MateusYuji
+[7]
+6
+6
+
+BRA
+AndreGomes Lamana
+BRA
+GuilhermeSampaio Ferreira
+0
+2
+
+BRA
+EnzoDe michielli
+POR
+AfonsoDorey
+0
+3
+
+BRA
+HenriqueHenrique Barros Medeiros
+BRA
+FelipeRoman
+[4]
+6
+6
+
+VEN
+Carlos JesusFernandez Da Silva
+BRA
+LeonardoNeiva Mariani
+[5]
+4
+7
+10
+
+ITA
+AlessandroGalletti
+BRA
+CaioGazoli
+6
+5
+3
+
+BRA
+Richarddo Espirito Santo Gomes
+VEN
+RamonGuedez
+2
+6
+10
+
+NikitaBurmakin
+BRA
+AllanOliveira
+[2]
+6
+3

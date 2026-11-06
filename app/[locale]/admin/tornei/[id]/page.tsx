@@ -87,7 +87,7 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
       <Pannello titolo={<>📋 Importa entry list / tabellone</>} aperto={tb.coppie.length === 0}>
         <p className="mt-2 text-xs text-nebbia">
           Incolla le coppie <b>nell&apos;ordine del tabellone</b> (dall&apos;alto in basso), una per riga. Scrivi BYE per un posto vuoto. Si creano giocatori (senza doppioni), coppie e
-          partite del primo turno; chi ha il BYE passa al turno dopo. Copia i dati a mano dalla fonte ufficiale: niente scraping.
+          partite del primo turno; chi ha il BYE passa al turno dopo. <b>Tabellone ITF:</b> apri «Draws &amp; Results» sul sito ITF, Seleziona tutto → Copia e incolla qui: vengono create tutte le partite con i risultati già giocati (l&apos;orario sotto vale per le partite ancora da giocare).
         </p>
         <div className="mt-3">
           <FormAdmin azione={importaTabellone} bottone="Importa">
