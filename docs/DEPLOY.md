@@ -11,8 +11,9 @@ Gli account sono tuoi: io non posso crearli. Servono circa 30 minuti.
 3. *Authentication → URL Configuration*:
    - *Site URL* = l'indirizzo Vercel (es. `https://beachpick.vercel.app`);
    - tra i *Redirect URLs* aggiungi `https://beachpick.vercel.app/**`.
-4. *Authentication → Email Templates*: in "Magic Link" e "Confirm signup" incolla il contenuto di `supabase/templates/codice.html`. Il modello mostra il codice `{{ .Token }}` nelle 4 lingue.
+4. *Authentication → Email Templates* (richiede lo SMTP del punto 5): in "Magic Link" incolla `supabase/templates/codice.html` (codice `{{ .Token }}` + bottone), in "Confirm signup" incolla `supabase/templates/conferma.html`. Entrambi i bottoni puntano a `/auth/callback?token_hash=…` e funzionano da qualunque browser.
 5. *Authentication → SMTP*: l'email inclusa in Supabase manda pochissime email l'ora, quindi collega un SMTP gratuito.
+   - Con Brevo (300 email al giorno, basta verificare il mittente): host `smtp-relay.brevo.com`, porta 587, utente = il *Login* SMTP di Brevo, password = la *SMTP key*.
    - Con Resend (3.000 email al mese) l'host è `smtp.resend.com`, porta 465, utente `resend`, password = la tua API key. Il mittente deve essere su un dominio verificato.
    - Dopo, alza il limite in *Rate Limits → emails*.
 6. Google (facoltativo):
