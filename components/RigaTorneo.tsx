@@ -32,9 +32,9 @@ export default async function RigaTorneo({ torneo: to, scheda = false }: { torne
             {to.stato === "in_corso" && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-corallo" />}
             {t(`stato.${to.stato}`)}
           </span>
-          <span className="chip bg-sabbia text-inchiostro">
+          <span className="chip bg-inchiostro text-white">
             {to.circuito}
-            {to.categoria ? ` ${to.categoria}` : ""}
+            {to.categoria ? <span className="text-sole">{to.categoria}</span> : null}
           </span>
         </span>
       </span>

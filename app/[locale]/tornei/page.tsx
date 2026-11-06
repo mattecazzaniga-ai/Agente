@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
+import Vuoto from "@/components/Vuoto";
 import RigaTorneo from "@/components/RigaTorneo";
 import { CIRCUITI, type Circuito, type StatoTorneo, type Torneo } from "@/lib/tipi";
 
@@ -55,15 +56,8 @@ export default async function Tornei({ params, searchParams }: { params: Promise
           </Link>
         ))}
       </div>
-      <div className="-mx-4 mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
-        {CIRCUITI.map((c) => (
-          <Link key={c} href={link(stato, circuito === c ? undefined : c)} className={pill(circuito === c)}>
-            {c}
-          </Link>
-        ))}
-      </div>
       <ul className="mt-4 space-y-3">
-        {tornei.length === 0 && <li className="scheda text-center text-nebbia">{t("tornei.nessuno")}</li>}
+        {tornei.length === 0 && <li><Vuoto emoji="📅" testo={t("tornei.nessuno")} /></li>}
         {tornei.map((to) => (
           <li key={to.id}>
             <RigaTorneo torneo={to} scheda />

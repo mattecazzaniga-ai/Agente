@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
 import { mieLeghe, sessione } from "@/lib/dati";
 import { indirizzoSito } from "@/lib/sito";
@@ -114,7 +115,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
         </div>
       )}
 
-      {puoMostrare && lista.length === 0 && <p className="scheda mt-4 text-center text-nebbia">{t("classifica.nessuno")}</p>}
+      {puoMostrare && lista.length === 0 && <div className="mt-4"><Vuoto emoji="🏆" testo={t("classifica.nessuno")} colore="bg-sole-chiaro" /></div>}
       {puoMostrare && lista.length > 0 && (
         <>
           <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} />

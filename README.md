@@ -7,7 +7,7 @@ Architettura, schema e regole dei punti: [docs/ARCHITETTURA.md](docs/ARCHITETTUR
 
 ## Cosa c'è
 - **Notizie**: titolo e riassunto di 3 righe scritti a mano (mai copiati), fonte e link all'articolo originale, in 4 lingue.
-- **Calendario tornei** ITF / FIP / BR con stato (in programma, in corso, concluso) e filtri.
+- **Calendario tornei** solo ITF, con stato (in programma, in corso, concluso) e filtri.
 - **Pronostici** su ogni partita (chi vince, set, game totali) e sul torneo (vincitore e finalista facoltativo). Si chiudono all'inizio.
 - **Punti "equi" secondo la rarità**: chi indovina una scelta fatta da pochi prende di più, da metà a due volte e mezzo i punti base. Le percentuali di voto si vedono solo dopo la chiusura.
 - **Classifiche mensili**: globale, per Paese, tra amici (lega privata con codice o link d'invito).

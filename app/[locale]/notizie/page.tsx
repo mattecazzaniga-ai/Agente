@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Vuoto from "@/components/Vuoto";
 import { notiziePubblicate } from "@/lib/dati";
 import SchedaNotizia from "@/components/SchedaNotizia";
 
@@ -16,7 +17,7 @@ export default async function Notizie({ params }: { params: Promise<{ locale: st
   return (
     <div className="space-y-3">
       <h1 className="text-3xl font-black tracking-tight">{t("notizie.titolo")}</h1>
-      {notizie.length === 0 && <p className="scheda text-sm text-nebbia">{t("notizie.nessuna")}</p>}
+      {notizie.length === 0 && <Vuoto emoji="📰" testo={t("notizie.nessuna")} colore="bg-menta-chiaro" />}
       {notizie.map((n) => (
         <SchedaNotizia key={n.id} notizia={n} />
       ))}

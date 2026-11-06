@@ -54,7 +54,7 @@ export default function PronosticoPartita(props: {
       </>
     );
     const classe = `relative flex min-h-24 flex-col items-center justify-center rounded-2xl border-2 px-2 py-3 text-center transition active:scale-[.97] ${
-      scelto ? "border-mare bg-mare text-white shadow-[0_8px_20px_-10px_rgba(10,126,164,.9)]" : "border-sabbia-scura bg-white hover:border-cielo"
+      scelto ? "border-mare bg-mare text-white shadow-[0_8px_20px_-10px_rgba(10,126,164,.9)]" : "border-sabbia-scura/80 bg-gradient-to-b from-white to-crema hover:border-cielo"
     }`;
     if (!props.collegato)
       return (
@@ -84,7 +84,7 @@ export default function PronosticoPartita(props: {
       <div className="relative grid grid-cols-2 gap-3">
         {bottone(props.a)}
         {bottone(props.b)}
-        <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-sabbia-scura bg-crema text-[11px] font-black text-nebbia">VS</span>
+        <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] border-white bg-sole text-[11px] font-black text-inchiostro shadow-md">VS</span>
       </div>
 
       {!props.collegato ? (

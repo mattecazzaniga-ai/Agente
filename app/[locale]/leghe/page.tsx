@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Vuoto from "@/components/Vuoto";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { mieLeghe, sessione } from "@/lib/dati";
@@ -26,7 +27,7 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
       <h1 className="text-3xl font-black tracking-tight">{t("leghe.titolo")}</h1>
       <FormLeghe sito={sito} />
       <h2 className="titolo-sezione">{t("leghe.mie")}</h2>
-      {leghe.length === 0 && <p className="scheda text-center text-nebbia">{t("leghe.nessuna")}</p>}
+      {leghe.length === 0 && <Vuoto emoji="🤝" testo={t("leghe.nessuna")} colore="bg-menta-chiaro" />}
       {leghe.map((l) => (
         <div key={l.id} className="scheda space-y-3">
           <div className="flex items-center gap-2">

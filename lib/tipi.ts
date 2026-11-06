@@ -1,12 +1,15 @@
 // Tipi delle righe del database (vedi supabase/migrations). Scritti a mano: lo schema è piccolo.
-export type Circuito = "ITF" | "FIP" | "BR";
+/** Solo tornei ITF (nel database restano i valori storici dell'enum, ma un vincolo accetta solo ITF). */
+export type Circuito = "ITF";
 export type StatoTorneo = "in_programma" | "in_corso" | "concluso";
 export type Genere = "maschile" | "femminile" | "misto";
 export type Turno = "R64" | "R32" | "R16" | "QF" | "SF" | "F";
 export type StatoPartita = "in_programma" | "in_corso" | "conclusa" | "annullata";
 
 export const TURNI: Turno[] = ["R64", "R32", "R16", "QF", "SF", "F"];
-export const CIRCUITI: Circuito[] = ["ITF", "FIP", "BR"];
+export const CIRCUITI: Circuito[] = ["ITF"];
+/** Categorie dei tornei ITF di beach tennis. */
+export const CATEGORIE_ITF = ["BT10", "BT50", "BT100", "BT200", "BT400", "Finals"] as const;
 export const GENERI: Genere[] = ["maschile", "femminile", "misto"];
 
 export interface Giocatore {

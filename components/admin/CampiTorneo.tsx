@@ -1,5 +1,5 @@
 import type { Torneo } from "@/lib/tipi";
-import { CIRCUITI } from "@/lib/tipi";
+import { CATEGORIE_ITF } from "@/lib/tipi";
 import CampoDataOra from "./CampoDataOra";
 
 /** Campi del modulo torneo (nuovo o modifica). */
@@ -21,22 +21,17 @@ export default function CampiTorneo({ torneo }: { torneo?: Torneo }) {
           <input name="paese" maxLength={2} defaultValue={torneo?.paese ?? ""} placeholder="IT" className="campo uppercase" />
         </label>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <label className="block">
-          <span className="etichetta">Circuito</span>
-          <select name="circuito" defaultValue={torneo?.circuito ?? "ITF"} className="campo">
-            {CIRCUITI.map((c) => (
-              <option key={c} value={c}>
-                {c === "BR" ? "BR (Brasile)" : c}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="etichetta">Categoria</span>
-          <input name="categoria" maxLength={40} defaultValue={torneo?.categoria ?? ""} placeholder="BT400" className="campo" />
-        </label>
-      </div>
+      <input type="hidden" name="circuito" value="ITF" />
+      <label className="block">
+        <span className="etichetta">Categoria ITF</span>
+        <select name="categoria" defaultValue={torneo?.categoria ?? "BT400"} className="campo">
+          {CATEGORIE_ITF.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </label>
       <div className="grid grid-cols-2 gap-2">
         <label className="block">
           <span className="etichetta">Dal</span>

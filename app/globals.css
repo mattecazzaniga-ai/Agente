@@ -21,7 +21,7 @@
 }
 
 html { -webkit-text-size-adjust: 100%; }
-body { background: var(--color-crema); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+body { background: linear-gradient(180deg, #fff6e6 0, var(--color-crema) 420px) no-repeat, var(--color-crema); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
 
 @keyframes salta { 0% { transform: scale(.9); opacity: 0 } 60% { transform: scale(1.04); opacity: 1 } 100% { transform: scale(1) } }
 
@@ -35,4 +35,5 @@ body { background: var(--color-crema); color: var(--color-inchiostro); -webkit-t
   .chip { @apply inline-flex items-center gap-1 rounded-full bg-onda px-2.5 py-0.5 text-xs font-bold text-mare-scuro; }
   .titolo-sezione { @apply mb-3 mt-8 text-xl font-extrabold tracking-tight; }
   .festa { animation: salta .35s ease-out; }
+  .eroe { background: radial-gradient(120% 90% at 85% 0%, #ffd56b 0, rgba(255, 213, 107, 0) 45%), linear-gradient(160deg, #0b8fb8 0%, #0a7ea4 45%, #075b78 100%); }
 }
