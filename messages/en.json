@@ -48,7 +48,9 @@
     "verifica": "Sign in",
     "cambiaEmail": "Use another email",
     "errore": "Something went wrong. Please try again.",
-    "codiceErrato": "Wrong or expired code."
+    "codiceErrato": "Wrong or expired code.",
+    "entrando": "Signing you in…",
+    "linkScaduto": "This link has expired or was already used. Ask for a new one."
   },
   "benvenuto": {
     "titolo": "What's your name on the leaderboard?",

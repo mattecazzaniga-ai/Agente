@@ -48,7 +48,9 @@
     "verifica": "Entra",
     "cambiaEmail": "Usa un'altra email",
     "errore": "Qualcosa non ha funzionato. Riprova.",
-    "codiceErrato": "Codice sbagliato o scaduto."
+    "codiceErrato": "Codice sbagliato o scaduto.",
+    "entrando": "Sto entrando…",
+    "linkScaduto": "Il link è scaduto o è già stato usato. Chiedine uno nuovo."
   },
   "benvenuto": {
     "titolo": "Come ti chiami in classifica?",

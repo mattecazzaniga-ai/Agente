@@ -48,7 +48,9 @@
     "verifica": "Entrar",
     "cambiaEmail": "Usar outro e-mail",
     "errore": "Algo deu errado. Tente de novo.",
-    "codiceErrato": "Código errado ou expirado."
+    "codiceErrato": "Código errado ou expirado.",
+    "entrando": "Entrando…",
+    "linkScaduto": "O link expirou ou já foi usado. Peça um novo."
   },
   "benvenuto": {
     "titolo": "Qual é o seu nome no ranking?",

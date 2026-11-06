@@ -4,7 +4,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 import { routing } from "@/i18n/routing";
 import { indirizzoSito } from "@/lib/sito";
 
@@ -37,9 +39,12 @@ export async function inviaCodice(_: Esito | null, form: FormData): Promise<Esit
   const loc = lingua(form.get("lingua"));
   const dopo = testo(form.get("dopo"));
   const destinazione = dopo.startsWith("/") && !dopo.startsWith("//") ? dopo : `/${loc}`;
-  // Se l'email contiene un link invece del codice (email standard di Supabase), il link riporta qui.
-  const ritorno = `${await indirizzoSito()}/auth/callback?lingua=${loc}&dopo=${encodeURIComponent(destinazione)}`;
-  const supabase = await supabaseServer();
+  // Se l'email contiene un link invece del codice (email standard di Supabase), il link porta i token
+  // nel frammento dell'URL (flusso "implicit"): così funziona anche aperto in un altro browser o nell'app di posta.
+  const ritorno = `${await indirizzoSito()}/${loc}/accedi/link?dopo=${encodeURIComponent(destinazione)}`;
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
   const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: ritorno, data: { lingua: loc } } });
   if (error) return { ok: false, errore: error.status === 429 ? "troppe" : "generico" };
   return { ok: true, dati: { email } };
