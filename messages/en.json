@@ -43,7 +43,7 @@
     "oppure": "or",
     "email": "Your email",
     "inviaCodice": "Send me the code",
-    "codiceInviato": "We sent a 6-digit code to {email}.",
+    "codiceInviato": "We sent an email to {email}. Open the link inside it, or type the code here if there is one.",
     "codice": "Code",
     "verifica": "Sign in",
     "cambiaEmail": "Use another email",

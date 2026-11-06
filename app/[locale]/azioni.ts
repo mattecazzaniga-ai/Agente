@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import { routing } from "@/i18n/routing";
+import { indirizzoSito } from "@/lib/sito";
 
 export type Esito = { ok: true; messaggio?: string; dati?: Record<string, string> } | { ok: false; errore: string };
 
@@ -33,8 +34,13 @@ function chiaveErrore(messaggio: string): string {
 export async function inviaCodice(_: Esito | null, form: FormData): Promise<Esito> {
   const email = testo(form.get("email")).toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, errore: "email" };
+  const loc = lingua(form.get("lingua"));
+  const dopo = testo(form.get("dopo"));
+  const destinazione = dopo.startsWith("/") && !dopo.startsWith("//") ? dopo : `/${loc}`;
+  // Se l'email contiene un link invece del codice (email standard di Supabase), il link riporta qui.
+  const ritorno = `${await indirizzoSito()}/auth/callback?lingua=${loc}&dopo=${encodeURIComponent(destinazione)}`;
   const supabase = await supabaseServer();
-  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, data: { lingua: lingua(form.get("lingua")) } } });
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: ritorno, data: { lingua: loc } } });
   if (error) return { ok: false, errore: error.status === 429 ? "troppe" : "generico" };
   return { ok: true, dati: { email } };
 }

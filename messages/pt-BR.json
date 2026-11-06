@@ -43,7 +43,7 @@
     "oppure": "ou",
     "email": "Seu e-mail",
     "inviaCodice": "Enviar código",
-    "codiceInviato": "Enviamos um código de 6 dígitos para {email}.",
+    "codiceInviato": "Enviamos um e-mail para {email}. Abra o link dele ou digite aqui o código, se houver.",
     "codice": "Código",
     "verifica": "Entrar",
     "cambiaEmail": "Usar outro e-mail",

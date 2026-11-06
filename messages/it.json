@@ -43,7 +43,7 @@
     "oppure": "oppure",
     "email": "La tua email",
     "inviaCodice": "Mandami il codice",
-    "codiceInviato": "Ti abbiamo mandato un codice di 6 cifre a {email}.",
+    "codiceInviato": "Ti abbiamo mandato un'email a {email}. Apri il link che contiene, oppure scrivi qui il codice se c'è.",
     "codice": "Codice",
     "verifica": "Entra",
     "cambiaEmail": "Usa un'altra email",

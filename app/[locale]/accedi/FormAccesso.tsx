@@ -38,6 +38,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
       {!email ? (
         <form action={(f) => { setCambia(false); inviaAzione(f); }} className="space-y-3">
           <input type="hidden" name="lingua" value={lingua} />
+          <input type="hidden" name="dopo" value={dopo} />
           <label className="block">
             <span className="etichetta">{t("accedi.email")}</span>
             <input name="email" type="email" inputMode="email" autoComplete="email" required className="campo" placeholder="nome@email.com" />
