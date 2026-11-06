@@ -2,7 +2,9 @@ import "server-only";
 // Letture dal database per le pagine (Server Components). Le scritture sono nelle Server Actions.
 // La sicurezza la fa la RLS: qui si chiede quello che serve, il database restituisce solo il permesso.
 
+import { cache } from "react";
 import { supabaseServer } from "./supabase/server";
+import { REGOLE_PREDEFINITE, type Regole } from "./punti";
 import type { Coppia, Notizia, Partita, Profilo, PronosticoPartita, PronosticoTorneo, StatoTorneo, Tabellone, Torneo } from "./tipi";
 
 export const SELECT_COPPIA =
@@ -53,7 +55,7 @@ export async function mieiPronostici(tabelloni: string[], partite: string[]) {
   const supabase = await supabaseServer();
   const [{ data: pt }, { data: pp }] = await Promise.all([
     tabelloni.length ? supabase.from("pronostici_torneo").select("id, tabellone_id, vincitore_id, finalista_id, punti").in("tabellone_id", tabelloni) : Promise.resolve({ data: [] }),
-    partite.length ? supabase.from("pronostici_partita").select("id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, game_a, game_b, punti").in("partita_id", partite) : Promise.resolve({ data: [] }),
+    partite.length ? supabase.from("pronostici_partita").select("id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, game_a, game_b, game_previsti_a, game_previsti_b, punti_vincitore, punti_set, punti_game, errore_game, punti").in("partita_id", partite) : Promise.resolve({ data: [] }),
   ]);
   return {
     torneo: new Map(((pt as PronosticoTorneo[]) ?? []).map((p) => [p.tabellone_id, p])),
@@ -131,3 +133,10 @@ export async function mieLeghe(): Promise<LegaMia[]> {
     membri: l.leghe_membri?.[0]?.count ?? 0,
   }));
 }
+
+/** Valori dei punti dalla tabella regole_punti (una lettura per richiesta). */
+export const regolePunti = cache(async (): Promise<Regole> => {
+  const supabase = await supabaseServer();
+  const { data } = await supabase.from("regole_punti").select("chiave, punti");
+  return { ...REGOLE_PREDEFINITE, ...Object.fromEntries((data ?? []).map((r) => [r.chiave as string, r.punti as number])) };
+});

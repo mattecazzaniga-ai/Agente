@@ -1,27 +1,27 @@
 import { describe, expect, it } from "vitest";
-import { dettaglioPunti, puntiSet, setValido } from "@/lib/punti";
+import { combinazioniGame, gamePossibili, gameTotali, limitiGame, massimoPartita, REGOLE_PREDEFINITE, scalaGame } from "@/lib/punti";
 
-describe("punti", () => {
-  it("set validi", () => {
-    expect(setValido(6, 4)).toBe(true);
-    expect(setValido(7, 6)).toBe(true);
-    expect(setValido(6, 5)).toBe(false);
-    expect(setValido(7, 3)).toBe(false);
+describe("regolamento", () => {
+  it("massimo 12 punti e scala dei game 5-4-3-2-1", () => {
+    expect(massimoPartita(REGOLE_PREDEFINITE)).toBe(12);
+    expect(scalaGame(REGOLE_PREDEFINITE)).toEqual([5, 4, 3, 2, 1]);
   });
-  it("vicinanza di un set (come nel database)", () => {
-    expect(puntiSet(6, 3, 6, 4)).toBe(3);
-    expect(puntiSet(6, 2, 6, 4)).toBe(1);
-    expect(puntiSet(6, 4, 4, 6)).toBe(0);
-    expect(puntiSet(7, 6, 7, 6)).toBe(5);
+  it("super tie-break = 1 game a chi lo vince", () => {
+    expect(gameTotali([6, 3, 10], [4, 6, 7], 2)).toEqual([10, 10]);
+    expect(gameTotali([6, 3, 10], [4, 6, 7], 2)).toEqual([10, 10]);
+    expect(gameTotali([4, 6, 10], [6, 3, 7], 2)).toEqual([11, 9]);
+    expect(gameTotali([6, 6], [4, 3], 2)).toEqual([12, 7]);
   });
-  const finale = { vincitore_id: "A", coppia_a_id: "A", game_a: [6, 3, 10], game_b: [4, 6, 7], ritiro: false, set_per_vincere: 2 };
-  it("dettaglio 2-1 vicino (19 punti come nel test del database)", () => {
-    expect(dettaglioPunti({ vincitore_id: "A", game_a: [6, 4], game_b: [3, 6], set_perdente: 1, punti: 19 }, finale)).toEqual({ vincitore: 8, set: 5, perSet: [3, 3], esatto: 0 });
+  it("game possibili (come game_possibili nel database)", () => {
+    expect(gamePossibili(2, 0, 12, 8)).toBe(true);
+    expect(gamePossibili(2, 1, 10, 10)).toBe(true);
+    expect(gamePossibili(2, 0, 7, 10)).toBe(false);
+    expect(gamePossibili(2, 1, 15, 3)).toBe(false);
+    expect(gamePossibili(1, 0, 6, 4)).toBe(true);
+    expect(gamePossibili(1, 0, 6, 5)).toBe(false);
   });
-  it("risultato esatto", () => {
-    expect(dettaglioPunti({ vincitore_id: "A", game_a: [6, 3], game_b: [4, 6], set_perdente: 1, punti: 33 }, finale)).toEqual({ vincitore: 8, set: 5, perSet: [5, 5], esatto: 10 });
-  });
-  it("vincitore sbagliato", () => {
-    expect(dettaglioPunti({ vincitore_id: "B", game_a: [4, 6], game_b: [6, 3], set_perdente: 1, punti: 0 }, finale)?.vincitore).toBe(0);
+  it("limiti dei contatori", () => {
+    expect(limitiGame(2, 0)).toEqual({ vincitore: [12, 14], perdente: [0, 12] });
+    expect(combinazioniGame(2, 1).has("11-10")).toBe(true);
   });
 });

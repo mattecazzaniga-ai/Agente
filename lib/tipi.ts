@@ -91,6 +91,12 @@ export interface PronosticoPartita {
   totale_game: number | null;
   game_a: number[] | null; // risultato pronosticato, game per set dal lato della coppia A (senza super tie-break)
   game_b: number[] | null;
+  game_previsti_a: number | null; // game totali previsti per la coppia A (super tie-break = 1)
+  game_previsti_b: number | null;
+  punti_vincitore: number | null; // dettaglio dei punti, dopo la partita
+  punti_set: number | null;
+  punti_game: number | null;
+  errore_game: number | null;
   punti: number | null;
 }
 
@@ -108,6 +114,9 @@ export interface RigaClassifica {
   paese: string | null;
   punti: number;
   pronostici: number;
+  vincitori: number; // vincitori indovinati
+  set_esatti: number; // risultati dei set esatti
+  game_esatti: number; // pronostici esatti sui game
 }
 
 export interface Notizia {

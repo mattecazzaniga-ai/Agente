@@ -120,24 +120,37 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       {puoMostrare && lista.length > 0 && (
         <>
           <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} />
-          {lista.length > 3 && (
-            <ol className="scheda mt-4 divide-y divide-sabbia-scura/40 p-0">
-              {lista.slice(3).map((r) => {
+          <div className="scheda mt-4 overflow-hidden p-0">
+            <div className="grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 border-b border-sabbia-scura/50 bg-sabbia/60 px-3 py-2 text-[10px] font-black uppercase tracking-wide text-nebbia">
+              <span>#</span>
+              <span>{t("classifica.utente")}</span>
+              <span className="text-right">{t("classifica.punti")}</span>
+              <span className="text-right">{t("classifica.colPronostici")}</span>
+              <span className="text-right">{t("classifica.colVincitori")}</span>
+              <span className="text-right">{t("classifica.colSet")}</span>
+              <span className="text-right">{t("classifica.colGame")}</span>
+            </div>
+            <ol className="divide-y divide-sabbia-scura/40">
+              {lista.map((r) => {
                 const sonoIo = r.utente_id === user?.id;
                 return (
-                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-3 ${sonoIo ? "bg-sole-chiaro" : ""}`}>
-                    <span className="w-7 text-center font-black tabular-nums text-nebbia">{r.posizione}</span>
-                    <span aria-hidden>{bandiera(r.paese)}</span>
-                    <span className="min-w-0 flex-1 truncate font-semibold">
-                      {r.nickname}
-                      {sonoIo && <span className="chip ml-2 bg-sole text-inchiostro">{t("classifica.tu")}</span>}
+                  <li key={r.utente_id} className={`grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 px-3 py-2.5 text-sm tabular-nums ${sonoIo ? "bg-sole-chiaro" : ""}`}>
+                    <span className="font-black text-nebbia">{r.posizione}</span>
+                    <span className="min-w-0 truncate font-semibold">
+                      <span aria-hidden>{bandiera(r.paese)}</span> {r.nickname}
+                      {sonoIo && <span className="chip ml-1 bg-sole text-inchiostro">{t("classifica.tu")}</span>}
                     </span>
-                    <span className="font-black tabular-nums">{r.punti}</span>
+                    <span className="text-right text-base font-black">{r.punti}</span>
+                    <span className="text-right text-nebbia">{r.pronostici}</span>
+                    <span className="text-right">{r.vincitori}</span>
+                    <span className="text-right">{r.set_esatti}</span>
+                    <span className="text-right">{r.game_esatti}</span>
                   </li>
                 );
               })}
             </ol>
-          )}
+          </div>
+          <p className="mt-2 px-1 text-xs leading-relaxed text-nebbia">{t("classifica.legenda")}</p>
         </>
       )}
     </div>

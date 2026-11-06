@@ -142,12 +142,16 @@
     "lovince": "lo gana {nome}",
     "superTieBreak": "El tercer set (súper tie-break) lo gana {nome}.",
     "completa": "Completa el resultado",
-    "inPalio": "En juego: ganador 10 pts (más si lo eligen pocos) · sets acertados +5 · cada set hasta +5 · resultado exacto +10"
+    "inPalio": "Hasta {massimo} puntos: ganador {vincitore} · sets {set} · juegos exactos {game}",
+    "risultatoSet": "Resultado en sets de {nome}",
+    "gameTotali": "Juegos totales de cada pareja",
+    "notaSuperTieBreak": "El súper tie-break vale 1 juego para quien lo gana.",
+    "gameReali": "Juegos reales {a}-{b}"
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
-    "partita": "Partido: elige quién gana y el resultado exacto de cada set. Ganador acertado 10 puntos (de 5 a 25: más si lo eligieron pocos). Si aciertas el ganador: +5 por acertar 2-0 o 2-1; por cada set en que aciertas quién lo gana, +5 si es exacto, +3 a un juego, +1 a dos; +10 si todo el resultado es exacto. Ganador equivocado: 0.",
-    "torneo": "Torneo: ganador 30 puntos, finalista 15, también ponderados según cuántos los eligieron (de la mitad a dos veces y media).",
+    "partita": "Partido, máximo {massimo} puntos. Elige quién gana, el resultado en sets (2-0 o 2-1) y los juegos totales de cada pareja: el súper tie-break vale 1 juego para quien lo gana. Ganador acertado +{vincitore}. Resultado en sets exacto +{set}. Juegos: se suma el error de las dos parejas (ej. previsto 6-10, real 7-10 = error 1) y sumas {scala} puntos (error→puntos); más allá de {oltre}, nada.",
+    "torneo": "Torneo: ganador {vincitore} puntos, finalista {finalista}, ponderados según cuántos los eligieron (de la mitad a dos veces y media).",
     "blocco": "Los pronósticos cierran al inicio del partido o del torneo. Los porcentajes de votos se ven solo después del cierre."
   },
   "classifica": {
@@ -164,7 +168,13 @@
     "scegliLega": "Elige una liga",
     "nessunaLega": "No estás en ninguna liga.",
     "paeseMancante": "Indica tu país en el perfil.",
-    "sottotitoloPagina": "Quién sumó más puntos este mes"
+    "sottotitoloPagina": "Quién sumó más puntos este mes",
+    "colPronostici": "Pron.",
+    "colVincitori": "Gan.",
+    "colSet": "Sets",
+    "colGame": "Juegos",
+    "legenda": "Pron. = pronósticos · Gan. = ganadores acertados · Sets = resultados en sets exactos · Juegos = juegos exactos. A igualdad de puntos cuentan sets exactos, luego ganadores, luego juegos exactos.",
+    "utente": "Jugador"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -235,11 +245,14 @@
     "password": "La contraseña debe tener al menos 6 caracteres.",
     "esiste": "Este correo ya tiene una cuenta: entra.",
     "stessaPassword": "Es igual a la contraseña actual.",
-    "risultato": "Elige el resultado de cada set."
+    "risultato": "Elige el resultado en sets y los juegos.",
+    "gameImpossibili": "Esos juegos no son posibles con este resultado en sets."
   },
   "punti": {
     "vincitore": "Ganador",
     "set": "Sets",
-    "esatto": "Exacto"
+    "esatto": "Exacto",
+    "game": "Juegos",
+    "errore": "error {n}"
   }
 }

@@ -142,12 +142,16 @@
     "lovince": "lo vince {nome}",
     "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
     "completa": "Completa il risultato",
-    "inPalio": "In palio: vincitore 10 pt (di più se lo scelgono in pochi) · set giusti +5 · ogni set fino a +5 · risultato esatto +10"
+    "inPalio": "In palio fino a {massimo} punti: vincitore {vincitore} · set {set} · game esatti {game}",
+    "risultatoSet": "Risultato dei set di {nome}",
+    "gameTotali": "Game totali di ciascuna coppia",
+    "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
+    "gameReali": "Game reali {a}-{b}"
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita: scegli chi vince e il risultato esatto di ogni set. Vincitore giusto 10 punti (da 5 a 25: di più se lo avevano scelto in pochi). Se il vincitore è giusto: +5 se indovini 2-0 o 2-1; per ogni set di cui indovini chi lo vince +5 se esatto, +3 a un game di distanza, +1 a due; +10 se il risultato è tutto esatto. Vincitore sbagliato: 0.",
-    "torneo": "Torneo: vincitore 30 punti, finalista 15, anche questi pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
+    "partita": "Partita, massimo {massimo} punti. Scegli chi vince, il risultato dei set (2-0 o 2-1) e i game totali di ciascuna coppia: il super tie-break vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto +{set}. Game: si somma l'errore sulle due coppie (es. previsto 6-10, reale 7-10 = errore 1) e prendi {scala} punti (errore→punti); oltre {oltre} niente.",
+    "torneo": "Torneo: vincitore {vincitore} punti, finalista {finalista}, pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
   "classifica": {
@@ -164,7 +168,13 @@
     "scegliLega": "Scegli una lega",
     "nessunaLega": "Non sei in nessuna lega.",
     "paeseMancante": "Imposta il tuo Paese nel profilo.",
-    "sottotitoloPagina": "Chi ha fatto più punti questo mese"
+    "sottotitoloPagina": "Chi ha fatto più punti questo mese",
+    "colPronostici": "Pron.",
+    "colVincitori": "Vinc.",
+    "colSet": "Set",
+    "colGame": "Game",
+    "legenda": "Pron. = pronostici · Vinc. = vincitori indovinati · Set = risultati dei set esatti · Game = game esatti. A parità di punti contano set esatti, poi vincitori, poi game esatti.",
+    "utente": "Giocatore"
   },
   "leghe": {
     "titolo": "Leghe tra amici",
@@ -235,11 +245,14 @@
     "password": "La password deve avere almeno 6 caratteri.",
     "esiste": "Questa email ha già un account: accedi.",
     "stessaPassword": "È uguale alla password attuale.",
-    "risultato": "Scegli il risultato di ogni set."
+    "risultato": "Scegli il risultato dei set e i game.",
+    "gameImpossibili": "Questi game non sono possibili con questo risultato dei set."
   },
   "punti": {
     "vincitore": "Vincitore",
     "set": "Set",
-    "esatto": "Esatto"
+    "esatto": "Esatto",
+    "game": "Game",
+    "errore": "errore {n}"
   }
 }

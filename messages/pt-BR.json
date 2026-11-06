@@ -142,12 +142,16 @@
     "lovince": "vence {nome}",
     "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
     "completa": "Complete o placar",
-    "inPalio": "Em jogo: vencedor 10 pts (mais se poucos escolherem) · sets certos +5 · cada set até +5 · placar exato +10"
+    "inPalio": "Até {massimo} pontos: vencedor {vincitore} · sets {set} · games exatos {game}",
+    "risultatoSet": "Placar em sets de {nome}",
+    "gameTotali": "Games totais de cada dupla",
+    "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
+    "gameReali": "Games reais {a}-{b}"
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo: escolha quem vence e o placar exato de cada set. Vencedor certo 10 pontos (de 5 a 25: mais se poucos escolheram). Se acertar o vencedor: +5 por acertar 2-0 ou 2-1; em cada set em que acertar quem vence, +5 se exato, +3 a um game, +1 a dois; +10 se o placar inteiro for exato. Vencedor errado: 0.",
-    "torneo": "Torneio: vencedor 30 pontos, finalista 15, também ponderados por quantos escolheram (de metade a duas vezes e meia).",
+    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence, o placar em sets (2-0 ou 2-1) e os games totais de cada dupla: o super tie-break vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato +{set}. Games: soma-se o erro das duas duplas (ex. previsto 6-10, real 7-10 = erro 1) e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada.",
+    "torneo": "Torneio: vencedor {vincitore} pontos, finalista {finalista}, ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
   "classifica": {
@@ -164,7 +168,13 @@
     "scegliLega": "Escolha uma liga",
     "nessunaLega": "Você não está em nenhuma liga.",
     "paeseMancante": "Defina seu país no perfil.",
-    "sottotitoloPagina": "Quem fez mais pontos neste mês"
+    "sottotitoloPagina": "Quem fez mais pontos neste mês",
+    "colPronostici": "Palp.",
+    "colVincitori": "Venc.",
+    "colSet": "Sets",
+    "colGame": "Games",
+    "legenda": "Palp. = palpites · Venc. = vencedores certos · Sets = placares em sets exatos · Games = games exatos. Em caso de empate contam sets exatos, depois vencedores, depois games exatos.",
+    "utente": "Jogador"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -235,11 +245,14 @@
     "password": "A senha deve ter pelo menos 6 caracteres.",
     "esiste": "Este e-mail já tem uma conta: entre.",
     "stessaPassword": "É igual à senha atual.",
-    "risultato": "Escolha o placar de cada set."
+    "risultato": "Escolha o placar em sets e os games.",
+    "gameImpossibili": "Esses games não são possíveis com esse placar em sets."
   },
   "punti": {
     "vincitore": "Vencedor",
     "set": "Sets",
-    "esatto": "Exato"
+    "esatto": "Exato",
+    "game": "Games",
+    "errore": "erro {n}"
   }
 }

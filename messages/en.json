@@ -142,12 +142,16 @@
     "lovince": "won by {nome}",
     "superTieBreak": "The third set (super tie-break) goes to {nome}.",
     "completa": "Complete the score",
-    "inPalio": "Up for grabs: winner 10 pts (more if few pick it) · right sets +5 · each set up to +5 · exact score +10"
+    "inPalio": "Up to {massimo} points: winner {vincitore} · sets {set} · exact games {game}",
+    "risultatoSet": "Set score for {nome}",
+    "gameTotali": "Total games for each pair",
+    "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
+    "gameReali": "Actual games {a}-{b}"
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match: pick the winner and the exact score of each set. Right winner 10 points (5 to 25: more if few people picked it). If the winner is right: +5 for guessing 2-0 or 2-1; for each set where you guessed who wins it, +5 if exact, +3 one game off, +1 two games off; +10 if the whole score is exact. Wrong winner: 0.",
-    "torneo": "Tournament: winner 30 points, finalist 15, also weighted by how many people picked them (from half to two and a half times).",
+    "partita": "Match, up to {massimo} points. Pick the winner, the set score (2-0 or 2-1) and the total games of each pair: the super tie-break counts as 1 game for whoever wins it. Right winner +{vincitore}. Exact set score +{set}. Games: the errors on both pairs are added up (e.g. predicted 6-10, actual 7-10 = error 1) and you get {scala} points (error→points); beyond {oltre}, nothing.",
+    "torneo": "Tournament: winner {vincitore} points, finalist {finalista}, weighted by how many picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
   "classifica": {
@@ -164,7 +168,13 @@
     "scegliLega": "Choose a league",
     "nessunaLega": "You are not in any league.",
     "paeseMancante": "Set your country in your profile.",
-    "sottotitoloPagina": "Who scored the most this month"
+    "sottotitoloPagina": "Who scored the most this month",
+    "colPronostici": "Picks",
+    "colVincitori": "Win.",
+    "colSet": "Sets",
+    "colGame": "Games",
+    "legenda": "Picks = predictions · Win. = winners guessed · Sets = exact set scores · Games = exact games. Ties are broken by exact sets, then winners, then exact games.",
+    "utente": "Player"
   },
   "leghe": {
     "titolo": "Leagues with friends",
@@ -235,11 +245,14 @@
     "password": "The password must be at least 6 characters.",
     "esiste": "This email already has an account: sign in.",
     "stessaPassword": "It's the same as your current password.",
-    "risultato": "Pick the score of each set."
+    "risultato": "Pick the set score and the games.",
+    "gameImpossibili": "These games aren't possible with this set score."
   },
   "punti": {
     "vincitore": "Winner",
     "set": "Sets",
-    "esatto": "Exact"
+    "esatto": "Exact",
+    "game": "Games",
+    "errore": "off by {n}"
   }
 }

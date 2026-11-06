@@ -3,7 +3,8 @@ import type { Coppia, Partita, PronosticoPartita as Pronostico } from "@/lib/tip
 import { bandiera, nomeCoppia, punteggio } from "@/lib/formato";
 import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
 import Tra from "./Tra";
-import { dettaglioPunti } from "@/lib/punti";
+import { gameTotali, massimoPartita } from "@/lib/punti";
+import { regolePunti } from "@/lib/dati";
 import { IconaLucchetto, IconaOrologio, IconaSpunta } from "./Icone";
 
 export interface VotoMostrato {
@@ -38,15 +39,17 @@ export default async function SchedaPartita(props: {
   const conclusa = p.stato === "conclusa";
   const inCorso = p.stato === "in_corso" || (p.stato === "in_programma" && !aperta && a && b);
   const haVoti = Object.keys(props.voti).length > 0;
-  /** "Ricci/Neri 6-4 3-6" dal lato della coppia scelta. */
+  /** "Ricci/Neri 2-1 · game 11-10" (game dal lato A-B, come il risultato). */
   const scelto = (m: Pronostico) => {
     const c = m.vincitore_id === a?.id ? a : b;
     const nome = c ? `${c.g1.cognome}/${c.g2.cognome}` : "";
-    if (!m.game_a || !m.game_b) return nome;
-    const daA = m.vincitore_id === a?.id;
-    return `${nome} ${m.game_a.map((x, i) => (daA ? `${x}-${m.game_b![i]}` : `${m.game_b![i]}-${x}`)).join(" ")}`;
+    const set = m.set_vincitore != null ? ` ${m.set_vincitore}-${m.set_perdente}` : "";
+    const game = m.game_previsti_a != null ? ` · ${t("partita.game")} ${m.game_previsti_a}-${m.game_previsti_b}` : "";
+    return `${nome}${set}${game}`;
   };
-  const dettaglio = mio && conclusa ? dettaglioPunti(mio, p) : null;
+  const regole = await regolePunti();
+  const reali = conclusa && !p.ritiro && p.game_a && p.game_b ? gameTotali(p.game_a, p.game_b, p.set_per_vincere) : null;
+  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, massimo: massimoPartita(regole) });
 
   const stato = aperta ? (
     <span className="chip bg-sole-chiaro text-inchiostro">
@@ -111,6 +114,7 @@ export default async function SchedaPartita(props: {
           urlAccesso={props.urlAccesso}
           sito={props.sito}
           descrizione={props.descrizione}
+          inPalio={inPalio}
         />
       ) : (
         <>
@@ -132,12 +136,16 @@ export default async function SchedaPartita(props: {
                 </span>
                 {mio.punti != null && <span className={`shrink-0 text-base font-black ${mio.punti > 0 ? "text-menta" : "text-nebbia"}`}>{mio.punti > 0 ? t("partita.punti", { punti: mio.punti }) : "0 pt"}</span>}
               </p>
-              {dettaglio && mio.punti! > 0 && (
+              {mio.punti != null && (
                 <p className="mt-1.5 flex flex-wrap gap-1.5 text-[11px] font-bold">
-                  <span className="chip bg-white text-menta">{t("punti.vincitore")} +{dettaglio.vincitore}</span>
-                  {dettaglio.set > 0 && <span className="chip bg-white text-menta">{t("punti.set")} +{dettaglio.set}</span>}
-                  {dettaglio.perSet.map((x, i) => (x > 0 ? <span key={i} className="chip bg-white text-menta">{t("partita.setN", { n: i + 1 })} +{x}</span> : null))}
-                  {dettaglio.esatto > 0 && <span className="chip bg-sole text-inchiostro">🎯 {t("punti.esatto")} +{dettaglio.esatto}</span>}
+                  {reali && <span className="chip bg-white text-inchiostro">{t("partita.gameReali", { a: reali[0], b: reali[1] })}</span>}
+                  <span className={`chip ${mio.punti_vincitore ? "bg-white text-menta" : "bg-white/60 text-nebbia"}`}>{t("punti.vincitore")} +{mio.punti_vincitore ?? 0}</span>
+                  <span className={`chip ${mio.punti_set ? "bg-white text-menta" : "bg-white/60 text-nebbia"}`}>{t("punti.set")} +{mio.punti_set ?? 0}</span>
+                  <span className={`chip ${mio.punti_game ? (mio.errore_game === 0 ? "bg-sole text-inchiostro" : "bg-white text-menta") : "bg-white/60 text-nebbia"}`}>
+                    {mio.errore_game === 0 ? "🎯 " : ""}
+                    {t("punti.game")} +{mio.punti_game ?? 0}
+                    {mio.errore_game != null && mio.errore_game > 0 ? ` (${t("punti.errore", { n: mio.errore_game })})` : ""}
+                  </span>
                 </p>
               )}
             </div>
