@@ -38,7 +38,7 @@
   },
   "accedi": {
     "titolo": "Sign in",
-    "sottotitolo": "With Google or a code by email: no password.",
+    "sottotitolo": "With email and password, or with an email link.",
     "google": "Continue with Google",
     "oppure": "or",
     "email": "Your email",
@@ -50,7 +50,19 @@
     "errore": "Something went wrong. Please try again.",
     "codiceErrato": "Wrong or expired code.",
     "entrando": "Signing you in…",
-    "linkScaduto": "This link has expired or was already used. Ask for a new one."
+    "linkScaduto": "This link has expired or was already used. Ask for a new one.",
+    "schedaAccedi": "Sign in",
+    "schedaRegistrati": "Sign up",
+    "password": "Password",
+    "entra": "Sign in",
+    "dimenticata": "Forgot your password? Sign in with an email link",
+    "sceglPassword": "Choose a password",
+    "passwordAiuto": "At least 6 characters.",
+    "creaAccount": "Create account",
+    "confermaEmail": "Almost done: open the email we sent you to confirm.",
+    "spiegaLink": "We'll send you a link to sign in. Then you can set a new password in your profile.",
+    "inviaLink": "Send me the link",
+    "tornaPassword": "Back to password sign-in"
   },
   "benvenuto": {
     "titolo": "What's your name on the leaderboard?",
@@ -176,7 +188,11 @@
     "esci": "Sign out",
     "elimina": "Delete account",
     "eliminaConferma": "Do you really want to delete your account? Predictions, points and leagues will be erased forever.",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "passwordTitolo": "Password",
+    "passwordNuova": "New password",
+    "passwordSalva": "Save password",
+    "passwordSalvata": "Password saved ✓"
   },
   "condividi": {
     "condividi": "Share",
@@ -200,6 +216,10 @@
     "chiusi": "Predictions closed: it has already started.",
     "duplicato": "It already exists.",
     "nonValido": "Invalid data.",
-    "codiceLega": "Invalid league code."
+    "codiceLega": "Invalid league code.",
+    "credenziali": "Wrong email or password.",
+    "password": "The password must be at least 6 characters.",
+    "esiste": "This email already has an account: sign in.",
+    "stessaPassword": "It's the same as your current password."
   }
 }

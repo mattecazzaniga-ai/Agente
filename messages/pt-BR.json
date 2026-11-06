@@ -38,7 +38,7 @@
   },
   "accedi": {
     "titolo": "Entrar",
-    "sottotitolo": "Com Google ou com um código por e-mail: sem senha.",
+    "sottotitolo": "Com e-mail e senha, ou com um link por e-mail.",
     "google": "Continuar com Google",
     "oppure": "ou",
     "email": "Seu e-mail",
@@ -50,7 +50,19 @@
     "errore": "Algo deu errado. Tente de novo.",
     "codiceErrato": "Código errado ou expirado.",
     "entrando": "Entrando…",
-    "linkScaduto": "O link expirou ou já foi usado. Peça um novo."
+    "linkScaduto": "O link expirou ou já foi usado. Peça um novo.",
+    "schedaAccedi": "Entrar",
+    "schedaRegistrati": "Cadastrar",
+    "password": "Senha",
+    "entra": "Entrar",
+    "dimenticata": "Esqueceu a senha? Entre com um link por e-mail",
+    "sceglPassword": "Escolha uma senha",
+    "passwordAiuto": "Pelo menos 6 caracteres.",
+    "creaAccount": "Criar conta",
+    "confermaEmail": "Quase lá: abra o e-mail que enviamos para confirmar.",
+    "spiegaLink": "Enviamos um link para você entrar. Depois pode definir uma nova senha no perfil.",
+    "inviaLink": "Me envie o link",
+    "tornaPassword": "Voltar para entrar com senha"
   },
   "benvenuto": {
     "titolo": "Qual é o seu nome no ranking?",
@@ -176,7 +188,11 @@
     "esci": "Sair",
     "elimina": "Excluir a conta",
     "eliminaConferma": "Quer mesmo excluir a conta? Palpites, pontos e ligas serão apagados para sempre.",
-    "privacy": "Privacidade"
+    "privacy": "Privacidade",
+    "passwordTitolo": "Senha",
+    "passwordNuova": "Nova senha",
+    "passwordSalva": "Salvar senha",
+    "passwordSalvata": "Senha salva ✓"
   },
   "condividi": {
     "condividi": "Compartilhar",
@@ -200,6 +216,10 @@
     "chiusi": "Palpites encerrados: já começou.",
     "duplicato": "Já existe.",
     "nonValido": "Dados inválidos.",
-    "codiceLega": "Código de liga inválido."
+    "codiceLega": "Código de liga inválido.",
+    "credenziali": "E-mail ou senha incorretos.",
+    "password": "A senha deve ter pelo menos 6 caracteres.",
+    "esiste": "Este e-mail já tem uma conta: entre.",
+    "stessaPassword": "É igual à senha atual."
   }
 }

@@ -5,6 +5,7 @@ import { sessione } from "@/lib/dati";
 import { urlAccesso } from "@/lib/sito";
 import { esci, eliminaAccount } from "../azioni";
 import FormProfilo from "@/components/FormProfilo";
+import FormPassword from "@/components/FormPassword";
 import BottoneConferma from "@/components/BottoneConferma";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,10 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
       <p className="text-sm text-nebbia">{user.email}</p>
       <div className="scheda">
         <FormProfilo nickname={profilo.nickname} paese={profilo.paese} testoBottone={t("profilo.salva")} />
+      </div>
+      <div className="scheda">
+        <h2 className="mb-3 font-extrabold">{t("profilo.passwordTitolo")}</h2>
+        <FormPassword />
       </div>
       <form action={esci}>
         <input type="hidden" name="lingua" value={locale} />

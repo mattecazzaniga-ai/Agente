@@ -53,14 +53,59 @@ export async function inviaCodice(_: Esito | null, form: FormData): Promise<Esit
 export async function verificaCodice(_: Esito | null, form: FormData): Promise<Esito> {
   const email = testo(form.get("email")).toLowerCase();
   const token = testo(form.get("codice")).replace(/\s/g, "");
-  const loc = lingua(form.get("lingua"));
-  const dopo = testo(form.get("dopo"));
   const supabase = await supabaseServer();
   const { data, error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
   if (error || !data.user) return { ok: false, errore: "codice" };
-  const { data: profilo } = await supabase.from("profili").select("profilo_completo").eq("id", data.user.id).single();
+  return vaiDopoAccesso(supabase, data.user.id, form);
+}
+
+/** Dove andare dopo l'accesso: onboarding se manca il nickname, altrimenti la destinazione. */
+async function vaiDopoAccesso(supabase: Awaited<ReturnType<typeof supabaseServer>>, userId: string, form: FormData): Promise<never> {
+  const loc = lingua(form.get("lingua"));
+  const dopo = testo(form.get("dopo"));
+  const { data: profilo } = await supabase.from("profili").select("profilo_completo").eq("id", userId).single();
   const destinazione = dopo.startsWith("/") && !dopo.startsWith("//") ? dopo : `/${loc}`;
   redirect(profilo?.profilo_completo ? destinazione : `/${loc}/benvenuto?dopo=${encodeURIComponent(destinazione)}`);
+}
+
+const LUNGHEZZA_PASSWORD = 6;
+
+export async function accediConPassword(_: Esito | null, form: FormData): Promise<Esito> {
+  const email = testo(form.get("email")).toLowerCase();
+  const password = String(form.get("password") ?? "");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, errore: "email" };
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.user) return { ok: false, errore: error?.status === 429 ? "troppe" : "credenziali" };
+  return vaiDopoAccesso(supabase, data.user.id, form);
+}
+
+export async function registrati(_: Esito | null, form: FormData): Promise<Esito> {
+  const email = testo(form.get("email")).toLowerCase();
+  const password = String(form.get("password") ?? "");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, errore: "email" };
+  if (password.length < LUNGHEZZA_PASSWORD) return { ok: false, errore: "password" };
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { lingua: lingua(form.get("lingua")) } } });
+  if (error) {
+    const m = error.message.toLowerCase();
+    if (m.includes("registered") || m.includes("exists")) return { ok: false, errore: "esiste" };
+    if (m.includes("password")) return { ok: false, errore: "password" };
+    return { ok: false, errore: error.status === 429 ? "troppe" : "generico" };
+  }
+  // Email già registrata: Supabase non dà errore ma restituisce un utente senza identità.
+  if (data.user && data.user.identities?.length === 0) return { ok: false, errore: "esiste" };
+  if (!data.session || !data.user) return { ok: true, messaggio: "conferma" };
+  return vaiDopoAccesso(supabase, data.user.id, form);
+}
+
+export async function impostaPassword(_: Esito | null, form: FormData): Promise<Esito> {
+  const password = String(form.get("password") ?? "");
+  if (password.length < LUNGHEZZA_PASSWORD) return { ok: false, errore: "password" };
+  const supabase = await supabaseServer();
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { ok: false, errore: error.message.toLowerCase().includes("different") ? "stessaPassword" : "generico" };
+  return { ok: true };
 }
 
 export async function esci(form: FormData) {

@@ -1,16 +1,19 @@
 "use client";
 import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { inviaCodice, verificaCodice, type Esito } from "../azioni";
+import { accediConPassword, inviaCodice, registrati, verificaCodice, type Esito } from "../azioni";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
-/** Accesso in due passi: email → codice di 6 cifre. Oppure Google con un tocco. */
+/** Accesso con email e password (registrazione inclusa). Piano B: link via email. Oppure Google. */
 export default function FormAccesso({ dopo, google }: { dopo: string; google: boolean }) {
   const t = useTranslations();
   const lingua = useLocale();
   const [invio, inviaAzione, invioInCorso] = useActionState<Esito | null, FormData>(inviaCodice, null);
   const [verifica, verificaAzione, verificaInCorso] = useActionState<Esito | null, FormData>(verificaCodice, null);
   const [cambia, setCambia] = useState(false);
+  const [modo, setModo] = useState<"accedi" | "registrati" | "link">("accedi");
+  const [accesso, accessoAzione, accessoInCorso] = useActionState<Esito | null, FormData>(accediConPassword, null);
+  const [registra, registraAzione, registraInCorso] = useActionState<Esito | null, FormData>(registrati, null);
   const email = invio?.ok && !cambia ? invio.dati?.email : null;
 
   async function conGoogle() {
@@ -35,33 +38,90 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
         </>
       )}
 
-      {!email ? (
-        <form action={(f) => { setCambia(false); inviaAzione(f); }} className="space-y-3">
+      {modo !== "link" && (
+        <div className="grid grid-cols-2 rounded-full bg-sabbia p-1 text-sm font-bold">
+          {(["accedi", "registrati"] as const).map((m) => (
+            <button key={m} type="button" onClick={() => setModo(m)} className={`rounded-full py-2 transition ${modo === m ? "bg-white text-mare shadow-sm" : "text-nebbia"}`}>
+              {t(m === "accedi" ? "accedi.schedaAccedi" : "accedi.schedaRegistrati")}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {modo === "accedi" && (
+        <form action={accessoAzione} className="space-y-3">
           <input type="hidden" name="lingua" value={lingua} />
           <input type="hidden" name="dopo" value={dopo} />
           <label className="block">
             <span className="etichetta">{t("accedi.email")}</span>
             <input name="email" type="email" inputMode="email" autoComplete="email" required className="campo" placeholder="nome@email.com" />
           </label>
-          {invio && !invio.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${invio.errore}`)}</p>}
-          <button className="bottone" disabled={invioInCorso}>{invioInCorso ? "…" : t("accedi.inviaCodice")}</button>
+          <label className="block">
+            <span className="etichetta">{t("accedi.password")}</span>
+            <input name="password" type="password" autoComplete="current-password" required className="campo" />
+          </label>
+          {accesso && !accesso.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${accesso.errore}`)}</p>}
+          <button className="bottone" disabled={accessoInCorso}>{accessoInCorso ? "…" : t("accedi.entra")}</button>
+          <button type="button" onClick={() => setModo("link")} className="w-full text-sm text-nebbia underline">
+            {t("accedi.dimenticata")}
+          </button>
         </form>
-      ) : (
-        <form action={verificaAzione} className="space-y-3">
-          <p className="rounded-xl bg-onda p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
-          <input type="hidden" name="email" value={email} />
+      )}
+
+      {modo === "registrati" && (
+        <form action={registraAzione} className="space-y-3">
           <input type="hidden" name="lingua" value={lingua} />
           <input type="hidden" name="dopo" value={dopo} />
           <label className="block">
-            <span className="etichetta">{t("accedi.codice")}</span>
-            <input name="codice" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,8}" maxLength={8} required autoFocus className="campo text-center text-2xl tracking-[.4em]" />
+            <span className="etichetta">{t("accedi.email")}</span>
+            <input name="email" type="email" inputMode="email" autoComplete="email" required className="campo" placeholder="nome@email.com" />
           </label>
-          {verifica && !verifica.ok && <p className="text-sm font-medium text-corallo">{t("accedi.codiceErrato")}</p>}
-          <button className="bottone" disabled={verificaInCorso}>{verificaInCorso ? "…" : t("accedi.verifica")}</button>
-          <button type="button" onClick={() => setCambia(true)} className="w-full text-sm text-nebbia underline">
-            {t("accedi.cambiaEmail")}
-          </button>
+          <label className="block">
+            <span className="etichetta">{t("accedi.sceglPassword")}</span>
+            <input name="password" type="password" autoComplete="new-password" minLength={6} required className="campo" />
+            <span className="mt-1 block text-xs text-nebbia">{t("accedi.passwordAiuto")}</span>
+          </label>
+          {registra && !registra.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${registra.errore}`)}</p>}
+          {registra?.ok && <p className="rounded-xl bg-onda p-3 text-sm">{t("accedi.confermaEmail")}</p>}
+          <button className="bottone" disabled={registraInCorso}>{registraInCorso ? "…" : t("accedi.creaAccount")}</button>
         </form>
+      )}
+
+      {modo === "link" && (
+        <div className="space-y-3">
+          <p className="text-sm text-nebbia">{t("accedi.spiegaLink")}</p>
+      {!email ? (
+          <form action={(f) => { setCambia(false); inviaAzione(f); }} className="space-y-3">
+            <input type="hidden" name="lingua" value={lingua} />
+            <input type="hidden" name="dopo" value={dopo} />
+            <label className="block">
+              <span className="etichetta">{t("accedi.email")}</span>
+              <input name="email" type="email" inputMode="email" autoComplete="email" required className="campo" placeholder="nome@email.com" />
+            </label>
+            {invio && !invio.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${invio.errore}`)}</p>}
+            <button className="bottone" disabled={invioInCorso}>{invioInCorso ? "…" : t("accedi.inviaLink")}</button>
+          </form>
+        ) : (
+          <form action={verificaAzione} className="space-y-3">
+            <p className="rounded-xl bg-onda p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
+            <input type="hidden" name="email" value={email} />
+            <input type="hidden" name="lingua" value={lingua} />
+            <input type="hidden" name="dopo" value={dopo} />
+            <label className="block">
+              <span className="etichetta">{t("accedi.codice")}</span>
+              <input name="codice" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,8}" maxLength={8} required autoFocus className="campo text-center text-2xl tracking-[.4em]" />
+            </label>
+            {verifica && !verifica.ok && <p className="text-sm font-medium text-corallo">{t("accedi.codiceErrato")}</p>}
+            <button className="bottone" disabled={verificaInCorso}>{verificaInCorso ? "…" : t("accedi.verifica")}</button>
+            <button type="button" onClick={() => setCambia(true)} className="w-full text-sm text-nebbia underline">
+              {t("accedi.cambiaEmail")}
+            </button>
+          </form>
+        )}
+          <button type="button" onClick={() => setModo("accedi")} className="w-full text-sm text-nebbia underline">
+            ← {t("accedi.tornaPassword")}
+          </button>
+        </div>
       )}
     </div>
   );

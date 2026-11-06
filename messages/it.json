@@ -38,7 +38,7 @@
   },
   "accedi": {
     "titolo": "Accedi",
-    "sottotitolo": "Con Google o con un codice via email: niente password.",
+    "sottotitolo": "Con email e password, oppure con un link via email.",
     "google": "Continua con Google",
     "oppure": "oppure",
     "email": "La tua email",
@@ -50,7 +50,19 @@
     "errore": "Qualcosa non ha funzionato. Riprova.",
     "codiceErrato": "Codice sbagliato o scaduto.",
     "entrando": "Sto entrando…",
-    "linkScaduto": "Il link è scaduto o è già stato usato. Chiedine uno nuovo."
+    "linkScaduto": "Il link è scaduto o è già stato usato. Chiedine uno nuovo.",
+    "schedaAccedi": "Accedi",
+    "schedaRegistrati": "Registrati",
+    "password": "Password",
+    "entra": "Entra",
+    "dimenticata": "Password dimenticata? Entra con un link via email",
+    "sceglPassword": "Scegli una password",
+    "passwordAiuto": "Almeno 6 caratteri.",
+    "creaAccount": "Crea account",
+    "confermaEmail": "Quasi fatto: apri l'email che ti abbiamo mandato per confermare.",
+    "spiegaLink": "Ti mandiamo un link per entrare. Poi puoi impostare una nuova password dal profilo.",
+    "inviaLink": "Mandami il link",
+    "tornaPassword": "Torna all'accesso con password"
   },
   "benvenuto": {
     "titolo": "Come ti chiami in classifica?",
@@ -176,7 +188,11 @@
     "esci": "Esci",
     "elimina": "Elimina l'account",
     "eliminaConferma": "Vuoi davvero eliminare l'account? Pronostici, punti e leghe verranno cancellati per sempre.",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "passwordTitolo": "Password",
+    "passwordNuova": "Nuova password",
+    "passwordSalva": "Salva password",
+    "passwordSalvata": "Password salvata ✓"
   },
   "condividi": {
     "condividi": "Condividi",
@@ -200,6 +216,10 @@
     "chiusi": "Pronostici chiusi: è già iniziato.",
     "duplicato": "Esiste già.",
     "nonValido": "Dati non validi.",
-    "codiceLega": "Codice lega non valido."
+    "codiceLega": "Codice lega non valido.",
+    "credenziali": "Email o password sbagliate.",
+    "password": "La password deve avere almeno 6 caratteri.",
+    "esiste": "Questa email ha già un account: accedi.",
+    "stessaPassword": "È uguale alla password attuale."
   }
 }

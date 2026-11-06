@@ -38,7 +38,7 @@
   },
   "accedi": {
     "titolo": "Entrar",
-    "sottotitolo": "Con Google o con un código por email: sin contraseña.",
+    "sottotitolo": "Con correo y contraseña, o con un enlace por correo.",
     "google": "Continuar con Google",
     "oppure": "o",
     "email": "Tu email",
@@ -50,7 +50,19 @@
     "errore": "Algo salió mal. Inténtalo de nuevo.",
     "codiceErrato": "Código incorrecto o caducado.",
     "entrando": "Entrando…",
-    "linkScaduto": "El enlace caducó o ya se usó. Pide uno nuevo."
+    "linkScaduto": "El enlace caducó o ya se usó. Pide uno nuevo.",
+    "schedaAccedi": "Entrar",
+    "schedaRegistrati": "Registrarse",
+    "password": "Contraseña",
+    "entra": "Entrar",
+    "dimenticata": "¿Olvidaste la contraseña? Entra con un enlace por correo",
+    "sceglPassword": "Elige una contraseña",
+    "passwordAiuto": "Al menos 6 caracteres.",
+    "creaAccount": "Crear cuenta",
+    "confermaEmail": "Casi listo: abre el correo que te enviamos para confirmar.",
+    "spiegaLink": "Te enviamos un enlace para entrar. Luego puedes poner una nueva contraseña en tu perfil.",
+    "inviaLink": "Envíame el enlace",
+    "tornaPassword": "Volver a entrar con contraseña"
   },
   "benvenuto": {
     "titolo": "¿Cómo te llamas en el ranking?",
@@ -176,7 +188,11 @@
     "esci": "Salir",
     "elimina": "Eliminar la cuenta",
     "eliminaConferma": "¿Seguro que quieres eliminar la cuenta? Pronósticos, puntos y ligas se borrarán para siempre.",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "passwordTitolo": "Contraseña",
+    "passwordNuova": "Nueva contraseña",
+    "passwordSalva": "Guardar contraseña",
+    "passwordSalvata": "Contraseña guardada ✓"
   },
   "condividi": {
     "condividi": "Compartir",
@@ -200,6 +216,10 @@
     "chiusi": "Pronósticos cerrados: ya empezó.",
     "duplicato": "Ya existe.",
     "nonValido": "Datos no válidos.",
-    "codiceLega": "Código de liga no válido."
+    "codiceLega": "Código de liga no válido.",
+    "credenziali": "Correo o contraseña incorrectos.",
+    "password": "La contraseña debe tener al menos 6 caracteres.",
+    "esiste": "Este correo ya tiene una cuenta: entra.",
+    "stessaPassword": "Es igual a la contraseña actual."
   }
 }
