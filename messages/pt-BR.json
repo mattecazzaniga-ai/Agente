@@ -1,6 +1,6 @@
 {
   "app": {
-    "nome": "BeachPick",
+    "nome": "Beach Peck",
     "slogan": "Notícias e palpites de beach tennis"
   },
   "avviso": "Jogo de palpites gratuito, sem apostas nem prêmios em dinheiro",
@@ -172,7 +172,7 @@
     "invitoTitolo": "Você foi convidado para a liga {nome}",
     "invitoNonTrovato": "Este convite não é válido.",
     "entraOra": "Entrar na liga",
-    "invitoTesto": "Jogue comigo os palpites de beach tennis no BeachPick! Entre na liga «{nome}» com o código {codice}:"
+    "invitoTesto": "Jogue comigo os palpites de beach tennis no Beach Peck! Entre na liga «{nome}» com o código {codice}:"
   },
   "notizie": {
     "titolo": "Notícias",
@@ -198,13 +198,13 @@
     "condividi": "Compartilhar",
     "pronostico": "Compartilhar palpite",
     "classifica": "Compartilhar posição",
-    "testoPronostico": "Meu palpite no BeachPick: {scelta}. E o seu?",
-    "testoClassifica": "Estou em {posizione}º no ranking de {mese} no BeachPick! Me desafie:",
+    "testoPronostico": "Meu palpite no Beach Peck: {scelta}. E o seu?",
+    "testoClassifica": "Estou em {posizione}º no ranking de {mese} no Beach Peck! Me desafie:",
     "copiato": "Link copiado"
   },
   "privacy": {
     "titolo": "Privacidade",
-    "testo": "O BeachPick guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil."
+    "testo": "O Beach Peck guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil."
   },
   "errori": {
     "generico": "Algo deu errado. Tente de novo.",

@@ -1,6 +1,6 @@
 {
   "app": {
-    "nome": "BeachPick",
+    "nome": "Beach Peck",
     "slogan": "Noticias y pronósticos de beach tennis"
   },
   "avviso": "Juego de pronósticos gratuito, sin apuestas ni premios en dinero",
@@ -172,7 +172,7 @@
     "invitoTitolo": "Te invitaron a la liga {nome}",
     "invitoNonTrovato": "Esta invitación no es válida.",
     "entraOra": "Entrar en la liga",
-    "invitoTesto": "¡Juega conmigo a los pronósticos de beach tennis en BeachPick! Entra en la liga «{nome}» con el código {codice}:"
+    "invitoTesto": "¡Juega conmigo a los pronósticos de beach tennis en Beach Peck! Entra en la liga «{nome}» con el código {codice}:"
   },
   "notizie": {
     "titolo": "Noticias",
@@ -198,13 +198,13 @@
     "condividi": "Compartir",
     "pronostico": "Compartir pronóstico",
     "classifica": "Compartir posición",
-    "testoPronostico": "Mi pronóstico en BeachPick: {scelta}. ¿Y el tuyo?",
-    "testoClassifica": "¡Soy {posizione}º en el ranking de {mese} en BeachPick! Rétame:",
+    "testoPronostico": "Mi pronóstico en Beach Peck: {scelta}. ¿Y el tuyo?",
+    "testoClassifica": "¡Soy {posizione}º en el ranking de {mese} en Beach Peck! Rétame:",
     "copiato": "Enlace copiado"
   },
   "privacy": {
     "titolo": "Privacidad",
-    "testo": "BeachPick guarda solo los datos necesarios para el juego: email (para el acceso), apodo, país, idioma, tus pronósticos, las ligas y los días en que usas la app (para saber cuántos usuarios activos hay). No vendemos ni compartimos datos y no usamos cookies de perfilado: solo cookies técnicas de acceso e idioma. Puedes eliminar la cuenta y todos los datos en cualquier momento desde el perfil."
+    "testo": "Beach Peck guarda solo los datos necesarios para el juego: email (para el acceso), apodo, país, idioma, tus pronósticos, las ligas y los días en que usas la app (para saber cuántos usuarios activos hay). No vendemos ni compartimos datos y no usamos cookies de perfilado: solo cookies técnicas de acceso e idioma. Puedes eliminar la cuenta y todos los datos en cualquier momento desde el perfil."
   },
   "errori": {
     "generico": "Algo salió mal. Inténtalo de nuevo.",

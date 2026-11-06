@@ -247,11 +247,11 @@ otp_expiry = 3600
 # Uncomment to customize email template
 # Email con il codice di accesso a 6 cifre (anche in produzione: Authentication → Email Templates → Magic Link)
 [auth.email.template.magic_link]
-subject = "BeachPick: il tuo codice · seu código · tu código · your code"
+subject = "Beach Peck: il tuo codice · seu código · tu código · your code"
 content_path = "./supabase/templates/codice.html"
 
 [auth.email.template.confirmation]
-subject = "BeachPick: il tuo codice · seu código · tu código · your code"
+subject = "Beach Peck: il tuo codice · seu código · tu código · your code"
 content_path = "./supabase/templates/codice.html"
 
 # [auth.email.template.invite]

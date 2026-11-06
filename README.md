@@ -1,4 +1,4 @@
-# BeachPick (nome provvisorio)
+# Beach Peck (nome provvisorio)
 
 Notizie e pronostici di beach tennis: web app mobile-first (PWA) in italiano, portoghese brasiliano, spagnolo e inglese.
 **Gioco di pronostici gratuito, nessuna scommessa o vincita in denaro.** Solo punti virtuali: niente denaro, premi o conversioni.

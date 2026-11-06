@@ -1,6 +1,6 @@
 {
   "app": {
-    "nome": "BeachPick",
+    "nome": "Beach Peck",
     "slogan": "Notizie e pronostici di beach tennis"
   },
   "avviso": "Gioco di pronostici gratuito, nessuna scommessa o vincita in denaro",
@@ -172,7 +172,7 @@
     "invitoTitolo": "Ti hanno invitato nella lega {nome}",
     "invitoNonTrovato": "Questo invito non è valido.",
     "entraOra": "Entra nella lega",
-    "invitoTesto": "Gioca con me ai pronostici di beach tennis su BeachPick! Entra nella lega «{nome}» con il codice {codice}:"
+    "invitoTesto": "Gioca con me ai pronostici di beach tennis su Beach Peck! Entra nella lega «{nome}» con il codice {codice}:"
   },
   "notizie": {
     "titolo": "Notizie",
@@ -198,13 +198,13 @@
     "condividi": "Condividi",
     "pronostico": "Condividi il pronostico",
     "classifica": "Condividi la posizione",
-    "testoPronostico": "Il mio pronostico su BeachPick: {scelta}. E il tuo?",
-    "testoClassifica": "Sono {posizione}° nella classifica di {mese} su BeachPick! Sfidami:",
+    "testoPronostico": "Il mio pronostico su Beach Peck: {scelta}. E il tuo?",
+    "testoClassifica": "Sono {posizione}° nella classifica di {mese} su Beach Peck! Sfidami:",
     "copiato": "Link copiato"
   },
   "privacy": {
     "titolo": "Privacy",
-    "testo": "BeachPick salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo."
+    "testo": "Beach Peck salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo."
   },
   "errori": {
     "generico": "Qualcosa non ha funzionato. Riprova.",

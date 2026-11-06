@@ -1,4 +1,4 @@
-# Mettere BeachPick online (costo zero)
+# Mettere Beach Peck online (costo zero)
 
 Gli account sono tuoi: io non posso crearli. Servono circa 30 minuti.
 
@@ -9,8 +9,8 @@ Gli account sono tuoi: io non posso crearli. Servono circa 30 minuti.
    - dal *SQL Editor*: esegui in ordine i file di `supabase/migrations/`.
    **Non** caricare `seed.sql`: contiene dati inventati.
 3. *Authentication → URL Configuration*:
-   - *Site URL* = l'indirizzo Vercel (es. `https://beachpick.vercel.app`);
-   - tra i *Redirect URLs* aggiungi `https://beachpick.vercel.app/**`.
+   - *Site URL* = l'indirizzo Vercel (es. `https://beachpeck.vercel.app`);
+   - tra i *Redirect URLs* aggiungi `https://beachpeck.vercel.app/**`.
 4. *Authentication → Email Templates* (richiede lo SMTP del punto 5): in "Magic Link" incolla `supabase/templates/codice.html` (codice `{{ .Token }}` + bottone), in "Confirm signup" incolla `supabase/templates/conferma.html`. Entrambi i bottoni puntano a `/auth/callback?token_hash=…` e funzionano da qualunque browser.
 5. *Authentication → SMTP*: l'email inclusa in Supabase manda pochissime email l'ora, quindi collega un SMTP gratuito.
    - Con Brevo (300 email al giorno, basta verificare il mittente): host `smtp-relay.brevo.com`, porta 587, utente = il *Login* SMTP di Brevo, password = la *SMTP key*.

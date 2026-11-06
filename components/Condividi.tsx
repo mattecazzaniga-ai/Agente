@@ -6,7 +6,7 @@ import { IconaCondividi } from "./Icone";
  * Condivide un'immagine generata (pronostico o posizione) con il menu del telefono: WhatsApp,
  * Instagram (storie), Telegram… Dove la condivisione di file non c'è: WhatsApp con link + scarica immagine.
  */
-export default function Condividi({ immagine, testo, url, etichetta, nomeFile = "beachpick.png" }: { immagine: string; testo: string; url: string; etichetta: string; nomeFile?: string }) {
+export default function Condividi({ immagine, testo, url, etichetta, nomeFile = "beachpeck.png" }: { immagine: string; testo: string; url: string; etichetta: string; nomeFile?: string }) {
   const [stato, setStato] = useState<"" | "attesa" | "fallback">("");
   async function condividi() {
     setStato("attesa");

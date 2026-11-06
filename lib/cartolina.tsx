@@ -10,7 +10,7 @@ export function cartolina({ etichetta, titolo, riga, dettaglio, piede, avviso }:
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "linear-gradient(170deg, #bfe7f5 0%, #e3f4fa 45%, #fbf1df 100%)", color: "#17323f", padding: 80, fontFamily: "sans-serif" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ width: 64, height: 64, borderRadius: 32, background: "#ffc83d", display: "flex" }} />
-          <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: -1, display: "flex" }}>Beach<span style={{ color: "#0a7ea4" }}>Pick</span></div>
+          <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: -1, display: "flex" }}>Beach<span style={{ color: "#0a7ea4", marginLeft: 14 }}>Peck</span></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", gap: 28 }}>
           <div style={{ fontSize: 40, color: "#0a7ea4", fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>{etichetta}</div>

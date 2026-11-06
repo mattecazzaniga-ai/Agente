@@ -47,7 +47,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
             <div className="mx-auto flex max-w-xl items-center gap-2 px-4 py-2.5">
               <Link href="/" className="flex items-center gap-2 text-xl font-black tracking-tight text-inchiostro">
                 <Logo className="h-8 w-8" />
-                Beach<span className="-ml-2 text-mare">Pick</span>
+                <span>Beach <span className="text-mare">Peck</span></span>
               </Link>
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />

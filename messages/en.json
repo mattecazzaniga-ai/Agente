@@ -1,6 +1,6 @@
 {
   "app": {
-    "nome": "BeachPick",
+    "nome": "Beach Peck",
     "slogan": "Beach tennis news and predictions"
   },
   "avviso": "Free prediction game, no betting and no cash prizes",
@@ -172,7 +172,7 @@
     "invitoTitolo": "You have been invited to the league {nome}",
     "invitoNonTrovato": "This invite is not valid.",
     "entraOra": "Join the league",
-    "invitoTesto": "Play beach tennis predictions with me on BeachPick! Join the league “{nome}” with the code {codice}:"
+    "invitoTesto": "Play beach tennis predictions with me on Beach Peck! Join the league “{nome}” with the code {codice}:"
   },
   "notizie": {
     "titolo": "News",
@@ -198,13 +198,13 @@
     "condividi": "Share",
     "pronostico": "Share prediction",
     "classifica": "Share my rank",
-    "testoPronostico": "My BeachPick prediction: {scelta}. What's yours?",
-    "testoClassifica": "I'm #{posizione} in the {mese} leaderboard on BeachPick! Challenge me:",
+    "testoPronostico": "My Beach Peck prediction: {scelta}. What's yours?",
+    "testoClassifica": "I'm #{posizione} in the {mese} leaderboard on Beach Peck! Challenge me:",
     "copiato": "Link copied"
   },
   "privacy": {
     "titolo": "Privacy",
-    "testo": "BeachPick stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile."
+    "testo": "Beach Peck stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile."
   },
   "errori": {
     "generico": "Something went wrong. Please try again.",

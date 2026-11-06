@@ -1,4 +1,4 @@
--- BeachPick (nome provvisorio) — schema del database, FASE 1.
+-- Beach Peck (nome provvisorio) — schema del database, FASE 1.
 -- Notizie e pronostici di beach tennis. Solo punti virtuali: nessun denaro, nessun premio, nessuna scommessa.
 -- Tutti i dati (tornei, giocatori, risultati, notizie) li inserisce a mano un amministratore.
 --

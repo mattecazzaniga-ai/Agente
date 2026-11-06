@@ -1,4 +1,4 @@
-# BeachPick (nome provvisorio) — Architettura e schema
+# Beach Peck (nome provvisorio) — Architettura e schema
 
 Web app mobile-first (PWA) di notizie e pronostici sul beach tennis, in italiano, portoghese brasiliano, spagnolo e inglese.
 Obiettivo dell'MVP: capire se gli appassionati tornano ogni settimana. **Soglia di successo: 500 utenti attivi a settimana.**

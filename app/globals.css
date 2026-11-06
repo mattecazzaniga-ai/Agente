@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* BeachPick: colori da spiaggia d'estate. Chiari, caldi, positivi. Pensato per il telefono. */
+/* Beach Peck: colori da spiaggia d'estate. Chiari, caldi, positivi. Pensato per il telefono. */
 @theme {
   --color-mare: #0a7ea4;        /* azione principale */
   --color-mare-scuro: #075b78;
