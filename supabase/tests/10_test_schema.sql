@@ -127,7 +127,12 @@ insert into pronostici_torneo (tabellone_id, vincitore_id, finalista_id) values 
 select prova.errore($$insert into pronostici_torneo (tabellone_id, vincitore_id) values ('30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000002')$$, 'duplicate');
 select prova.errore($$update pronostici_torneo set punti = 100$$, 'permission denied');
 select prova.errore($$insert into pronostici_torneo (tabellone_id, vincitore_id) values ('30000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001')$$, 'iscritte');
-insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', 1, 0, 10);
+-- risultato esatto: il punteggio di ogni set deve essere valido e coerente con il vincitore scelto
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '{6}', '{5}')$$, 'non valido');
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '{3}', '{6}')$$, 'almeno un set');
+select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '{6,6}', '{4,4}')$$, 'ogni set');
+insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '{6}', '{4}');
+select prova.ok((select set_vincitore = 1 and set_perdente = 0 from pronostici_partita where partita_id = '50000000-0000-0000-0000-000000000001'), 'set ricavati dal punteggio');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente) values ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000002', 2, 0)$$, 'formato');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id) values ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001')$$, 'due coppie');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001')$$, 'chiusi'); -- finale senza coppie
@@ -179,17 +184,17 @@ reset role;
 select prova.ok((select coppia_a_id from partite where id = '50000000-0000-0000-0000-000000000003') = '40000000-0000-0000-0000-000000000001', 'vincitore SF1 in finale come coppia A');
 select prova.ok((select coppia_b_id from partite where id = '50000000-0000-0000-0000-000000000003') = '40000000-0000-0000-0000-000000000003', 'vincitore SF2 (ritiro) in finale come coppia B');
 
-select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001') = 6, 'vincitore giusto (3) + game esatti (3) in un set unico');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001') = 25, 'set unico esatto: vincitore 10 + set esatto 5 + risultato esatto 10');
 select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000002') = 0, 'vincitore sbagliato: 0 anche se i game sono vicini');
 select prova.ok((select mese from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001') = date_trunc('month', (now() - interval '1 hour') at time zone 'UTC')::date, 'mese della partita');
 
 select prova.come('00000000-0000-0000-0000-000000000003');
 set role authenticated;
-insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', 2, 1, 21);
+insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4}', '{3,6}');
 reset role;
 select prova.come('00000000-0000-0000-0000-000000000001');
 set role authenticated;
-insert into pronostici_partita (partita_id, vincitore_id, set_vincitore, set_perdente, totale_game) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', 2, 0, 19);
+insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,6}', '{4,4}');
 reset role;
 
 select prova.come('00000000-0000-0000-0000-00000000000a');
@@ -199,18 +204,19 @@ update partite set stato = 'conclusa', game_a = '{6,3,10}', game_b = '{4,6,7}' w
 reset role;
 -- 6-4 3-6 10-7: totale 6+4+3+6+1 (il super tie-break conta 1) = 20
 select prova.ok(totale_game('{6,3,10}', '{4,6,7}', 2::smallint) = 20, 'super tie-break = 1 game');
--- in finale entrambi hanno scelto la coppia 1 (favorita al 100%): il vincitore vale 2 invece di 3
-select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003') = 5, 'finale: vincitore favorito 2 + set esatti 2 + game a ±1 1');
-select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001' and partita_id = '50000000-0000-0000-0000-000000000003') = 3, 'finale: vincitore favorito 2 + set sbagliati 0 + game a ±1 1');
+-- in finale entrambi hanno scelto la coppia 1 (favorita al 100%): il vincitore vale 8 invece di 10
+select prova.ok(punti_set(6, 3, 6, 4) = 3 and punti_set(6, 2, 6, 4) = 1 and punti_set(6, 4, 4, 6) = 0 and punti_set(7, 6, 7, 6) = 5, 'vicinanza di un set');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003') = 19, 'finale 2-1: vincitore 8 + set giusti 5 + 6-3 vs 6-4 (3) + 4-6 vs 3-6 (3)');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001' and partita_id = '50000000-0000-0000-0000-000000000003') = 13, 'finale 2-0 invece di 2-1: vincitore 8 + primo set esatto 5, secondo set sbagliato 0');
 select prova.ok((select bool_and(punti is null) from pronostici_torneo), 'i punti del torneo arrivano solo alla chiusura');
 
 select prova.come('00000000-0000-0000-0000-00000000000a');
 set role authenticated;
 update tornei set stato = 'concluso', data_fine = (now() - interval '1 hour')::date where id = '20000000-0000-0000-0000-000000000001';
 reset role;
--- 1 voto su 2 per la coppia vincitrice, 4 coppie nel tabellone: 10 × radice(0,25 / (2/6)) ≈ 8,7 → 9
-select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000001') = 9, 'vincitore esatto (scelto da metà dei votanti) 9, finalista sbagliato 0');
-select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000002') = 0, 'chi ha scelto il vincitore come finalista non prende i 5 punti');
+-- 1 voto su 2 per la coppia vincitrice, 4 coppie nel tabellone: 30 × radice(0,25 / (2/6)) ≈ 26
+select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000001') = 26, 'vincitore esatto (scelto da metà dei votanti) 26, finalista sbagliato 0');
+select prova.ok((select punti from pronostici_torneo where utente_id = '00000000-0000-0000-0000-000000000002') = 0, 'chi ha scelto il vincitore come finalista non prende i punti del finalista');
 
 -- ---------------------------------------------------------------------------
 -- Punti in base alla rarità: equi, smorzati, nascosti finché i pronostici sono aperti
@@ -226,7 +232,7 @@ select prova.ok((select percentuale from voti_partita('50000000-0000-0000-0000-0
 -- Classifiche mensili: globale, per Paese, per lega
 -- ---------------------------------------------------------------------------
 \set mese 'date_trunc(''month'', now() - interval ''1 hour'')::date'
-select prova.ok((select punti from classifica(:mese) where nickname = 'Marco_BT') = 18, 'Marco: 6 + 3 + 9 = 18');
+select prova.ok((select punti from classifica(:mese) where nickname = 'Marco_BT') = 64, 'Marco: 25 + 13 + 26 = 64');
 select prova.ok((select posizione from classifica(:mese) where nickname = 'Marco_BT') = 1, 'Marco primo');
 select prova.ok((select count(*) from classifica(:mese, 'paese', 'BR')) = 1, 'classifica Brasile: solo Joana');
 select prova.ok((select count(*) from classifica(:mese - 31)) = 0, 'mese precedente vuoto');
@@ -251,7 +257,7 @@ select prova.come('00000000-0000-0000-0000-000000000003');
 set role authenticated;
 select prova.ok((select count(*) from leghe) = 0, 'chi non è membro non vede la lega');
 select prova.ok((select count(*) from classifica(:mese, 'lega', null, (select id from lega_prova))) = 0, 'né la sua classifica');
-select prova.ok((select punti from mia_posizione(:mese)) = 5, 'la mia posizione globale');
+select prova.ok((select punti from mia_posizione(:mese)) = 19, 'la mia posizione globale');
 reset role;
 
 -- ---------------------------------------------------------------------------

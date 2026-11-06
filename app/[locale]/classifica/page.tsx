@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Intestazione from "@/components/Intestazione";
 import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
 import { mieLeghe, sessione } from "@/lib/dati";
@@ -50,7 +51,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
 
   return (
     <div>
-      <h1 className="text-3xl font-black tracking-tight">{t("classifica.titolo")}</h1>
+      <Intestazione emoji="🏆" titolo={t("classifica.titolo")} sotto={t("classifica.sottotitoloPagina")} colore="bg-sole-chiaro" />
       <div className="mt-4 flex gap-1 rounded-full bg-sabbia p-1">
         <Link href={href("globale")} className={tab("globale")}>
           {t("classifica.globale")}

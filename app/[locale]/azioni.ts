@@ -26,6 +26,7 @@ function chiaveErrore(messaggio: string): string {
   if (m.includes("profili_nickname_unico") || m.includes("duplicate")) return "duplicato";
   if (m.includes("check")) return "nonValido";
   if (m.includes("codice lega non valido")) return "codiceLega";
+  if (m.includes("ogni set") || m.includes("non valido") || m.includes("almeno un set")) return "risultato";
   return "generico";
 }
 
@@ -186,11 +187,13 @@ export async function salvaPronosticoPartita(_: Esito | null, form: FormData): P
   const partita_id = uuidOpz(form.get("partita_id"));
   const vincitore_id = uuidOpz(form.get("vincitore_id"));
   if (!partita_id || !vincitore_id) return { ok: false, errore: "nonValido" };
-  const setTesto = testo(form.get("set")); // "2-0", "2-1" oppure ""
-  const [sv, sp] = /^\d-\d$/.test(setTesto) ? setTesto.split("-").map(Number) : [null, null];
-  const gameTesto = testo(form.get("game"));
-  const totale_game = /^\d{1,2}$/.test(gameTesto) ? Number(gameTesto) : null;
-  const campi = { vincitore_id, set_vincitore: sv, set_perdente: sp, totale_game };
+  // Risultato esatto obbligatorio: game di ogni set dal lato delle coppie A e B, es. "6,4" e "3,6".
+  // Set vinti e perdenti li ricava il database dal punteggio.
+  const numeri = (x: FormDataEntryValue | null) => (/^\d(,\d)*$/.test(testo(x)) ? testo(x).split(",").map(Number) : null);
+  const game_a = numeri(form.get("game_a"));
+  const game_b = numeri(form.get("game_b"));
+  if (!game_a || !game_b || game_a.length !== game_b.length) return { ok: false, errore: "risultato" };
+  const campi = { vincitore_id, game_a, game_b, set_vincitore: null, set_perdente: null, totale_game: null };
   const { data: esistente } = await supabase.from("pronostici_partita").select("id").eq("partita_id", partita_id).maybeSingle();
   const { data, error } = esistente
     ? await supabase.from("pronostici_partita").update(campi).eq("id", esistente.id).select("id").single()

@@ -99,7 +99,8 @@
     "inCorso": "In corso",
     "conclusi": "Conclusi",
     "nessuno": "Nessun torneo per questo filtro.",
-    "dal": "dal {inizio} al {fine}"
+    "dal": "dal {inizio} al {fine}",
+    "sottotitoloPagina": "Tornei ITF di beach tennis"
   },
   "torneo": {
     "chiVinceTorneo": "Chi vince il tabellone {genere}?",
@@ -132,12 +133,21 @@
     "conclusa": "Conclusa",
     "chiudeTra": "chiude {quando}",
     "puoiCambiare": "Puoi cambiarlo fino all'inizio della partita.",
-    "scegliPrima": "Prima scegli chi vince"
+    "scegliPrima": "Prima scegli chi vince",
+    "tocca": "Tocca la coppia che secondo te vince",
+    "risultatoDi": "Risultato esatto di {nome}",
+    "setPerso": "Perde il",
+    "setN": "{n}° set",
+    "ilSet": "Set",
+    "lovince": "lo vince {nome}",
+    "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
+    "completa": "Completa il risultato",
+    "inPalio": "In palio: vincitore 10 pt (di più se lo scelgono in pochi) · set giusti +5 · ogni set fino a +5 · risultato esatto +10"
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita: vincitore giusto 3 punti (di più se lo avevano scelto in pochi, di meno se era il favorito). Se il vincitore è giusto: +2 per i set esatti, +3 per i game totali esatti o +1 se sbagli di 2 game al massimo.",
-    "torneo": "Torneo: vincitore 10 punti, finalista 5, anche questi pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
+    "partita": "Partita: scegli chi vince e il risultato esatto di ogni set. Vincitore giusto 10 punti (da 5 a 25: di più se lo avevano scelto in pochi). Se il vincitore è giusto: +5 se indovini 2-0 o 2-1; per ogni set di cui indovini chi lo vince +5 se esatto, +3 a un game di distanza, +1 a due; +10 se il risultato è tutto esatto. Vincitore sbagliato: 0.",
+    "torneo": "Torneo: vincitore 30 punti, finalista 15, anche questi pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
   "classifica": {
@@ -153,7 +163,8 @@
     "senzaPunti": "Fai un pronostico per entrare in classifica.",
     "scegliLega": "Scegli una lega",
     "nessunaLega": "Non sei in nessuna lega.",
-    "paeseMancante": "Imposta il tuo Paese nel profilo."
+    "paeseMancante": "Imposta il tuo Paese nel profilo.",
+    "sottotitoloPagina": "Chi ha fatto più punti questo mese"
   },
   "leghe": {
     "titolo": "Leghe tra amici",
@@ -172,14 +183,16 @@
     "invitoTitolo": "Ti hanno invitato nella lega {nome}",
     "invitoNonTrovato": "Questo invito non è valido.",
     "entraOra": "Entra nella lega",
-    "invitoTesto": "Gioca con me ai pronostici di beach tennis su Beach Peck! Entra nella lega «{nome}» con il codice {codice}:"
+    "invitoTesto": "Gioca con me ai pronostici di beach tennis su Beach Peck! Entra nella lega «{nome}» con il codice {codice}:",
+    "sottotitoloPagina": "Sfida i tuoi amici in una classifica tutta vostra"
   },
   "notizie": {
     "titolo": "Notizie",
     "fonte": "Fonte: {fonte}",
     "leggi": "Leggi l'articolo originale",
     "nessuna": "Ancora nessuna notizia.",
-    "inLingua": "in {lingua}"
+    "inLingua": "in {lingua}",
+    "sottotitoloPagina": "Le ultime dal beach tennis"
   },
   "profilo": {
     "titolo": "Il tuo profilo",
@@ -192,7 +205,8 @@
     "passwordTitolo": "Password",
     "passwordNuova": "Nuova password",
     "passwordSalva": "Salva password",
-    "passwordSalvata": "Password salvata ✓"
+    "passwordSalvata": "Password salvata ✓",
+    "sottotitoloPagina": "Nickname, Paese e password"
   },
   "condividi": {
     "condividi": "Condividi",
@@ -220,6 +234,12 @@
     "credenziali": "Email o password sbagliate.",
     "password": "La password deve avere almeno 6 caratteri.",
     "esiste": "Questa email ha già un account: accedi.",
-    "stessaPassword": "È uguale alla password attuale."
+    "stessaPassword": "È uguale alla password attuale.",
+    "risultato": "Scegli il risultato di ogni set."
+  },
+  "punti": {
+    "vincitore": "Vincitore",
+    "set": "Set",
+    "esatto": "Esatto"
   }
 }

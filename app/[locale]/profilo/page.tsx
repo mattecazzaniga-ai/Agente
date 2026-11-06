@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Intestazione from "@/components/Intestazione";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { sessione } from "@/lib/dati";
@@ -23,7 +24,7 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   const t = await getTranslations();
   return (
     <div className="space-y-4">
-      <h1 className="text-3xl font-black tracking-tight">{t("profilo.titolo")}</h1>
+      <Intestazione emoji="😎" titolo={t("profilo.titolo")} sotto={t("profilo.sottotitoloPagina")} colore="bg-sole-chiaro" />
       <p className="text-sm text-nebbia">{user.email}</p>
       <div className="scheda">
         <FormProfilo nickname={profilo.nickname} paese={profilo.paese} testoBottone={t("profilo.salva")} />

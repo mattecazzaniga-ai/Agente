@@ -3,6 +3,7 @@ import type { Coppia, Partita, PronosticoPartita as Pronostico } from "@/lib/tip
 import { bandiera, nomeCoppia, punteggio } from "@/lib/formato";
 import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
 import Tra from "./Tra";
+import { dettaglioPunti } from "@/lib/punti";
 import { IconaLucchetto, IconaOrologio, IconaSpunta } from "./Icone";
 
 export interface VotoMostrato {
@@ -37,6 +38,15 @@ export default async function SchedaPartita(props: {
   const conclusa = p.stato === "conclusa";
   const inCorso = p.stato === "in_corso" || (p.stato === "in_programma" && !aperta && a && b);
   const haVoti = Object.keys(props.voti).length > 0;
+  /** "Ricci/Neri 6-4 3-6" dal lato della coppia scelta. */
+  const scelto = (m: Pronostico) => {
+    const c = m.vincitore_id === a?.id ? a : b;
+    const nome = c ? `${c.g1.cognome}/${c.g2.cognome}` : "";
+    if (!m.game_a || !m.game_b) return nome;
+    const daA = m.vincitore_id === a?.id;
+    return `${nome} ${m.game_a.map((x, i) => (daA ? `${x}-${m.game_b![i]}` : `${m.game_b![i]}-${x}`)).join(" ")}`;
+  };
+  const dettaglio = mio && conclusa ? dettaglioPunti(mio, p) : null;
 
   const stato = aperta ? (
     <span className="chip bg-sole-chiaro text-inchiostro">
@@ -78,7 +88,7 @@ export default async function SchedaPartita(props: {
             </span>
           )}
           {haVoti && voto && <span className="text-xs font-bold tabular-nums text-nebbia">{voto.percentuale}%</span>}
-          {conclusa && giochi && !p.ritiro && <span className={`w-14 text-right font-mono tabular-nums ${vinta ? "font-extrabold" : "text-nebbia"}`}>{giochi.join(" ")}</span>}
+          {conclusa && giochi && !p.ritiro && <span className={`flex shrink-0 gap-2.5 font-mono tabular-nums ${vinta ? "font-extrabold" : "text-nebbia"}`}>{giochi.map((x, i) => <span key={i} className="w-5 text-right">{x}</span>)}</span>}
         </div>
       </div>
     );
@@ -113,11 +123,24 @@ export default async function SchedaPartita(props: {
               </p>
             )}
           </div>
-          {mio && mio.punti != null && (
-            <p className={`festa flex items-center justify-between rounded-2xl px-3 py-2 text-sm font-bold ${mio.punti > 0 ? "bg-menta-chiaro text-menta" : "bg-sabbia text-nebbia"}`}>
-              <span>{t("torneo.ilTuo")}</span>
-              <span className="text-base">{mio.punti > 0 ? t("partita.punti", { punti: mio.punti }) : "0"}</span>
-            </p>
+          {mio && (
+            <div className={`rounded-2xl px-3 py-2.5 text-sm ${mio.punti != null && mio.punti > 0 ? "festa bg-menta-chiaro" : "bg-crema"}`}>
+              <p className="flex items-start justify-between gap-2 font-bold">
+                <span className="min-w-0">
+                  <span className="block text-xs font-semibold text-nebbia">{t("torneo.ilTuo")}</span>
+                  <span className="block font-extrabold">{scelto(mio)}</span>
+                </span>
+                {mio.punti != null && <span className={`shrink-0 text-base font-black ${mio.punti > 0 ? "text-menta" : "text-nebbia"}`}>{mio.punti > 0 ? t("partita.punti", { punti: mio.punti }) : "0 pt"}</span>}
+              </p>
+              {dettaglio && mio.punti! > 0 && (
+                <p className="mt-1.5 flex flex-wrap gap-1.5 text-[11px] font-bold">
+                  <span className="chip bg-white text-menta">{t("punti.vincitore")} +{dettaglio.vincitore}</span>
+                  {dettaglio.set > 0 && <span className="chip bg-white text-menta">{t("punti.set")} +{dettaglio.set}</span>}
+                  {dettaglio.perSet.map((x, i) => (x > 0 ? <span key={i} className="chip bg-white text-menta">{t("partita.setN", { n: i + 1 })} +{x}</span> : null))}
+                  {dettaglio.esatto > 0 && <span className="chip bg-sole text-inchiostro">🎯 {t("punti.esatto")} +{dettaglio.esatto}</span>}
+                </p>
+              )}
+            </div>
           )}
           {!conclusa && (
             <p className="flex items-center gap-1.5 text-xs text-nebbia">

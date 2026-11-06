@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Intestazione from "@/components/Intestazione";
 import { Link } from "@/i18n/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import Vuoto from "@/components/Vuoto";
@@ -48,7 +49,7 @@ export default async function Tornei({ params, searchParams }: { params: Promise
 
   return (
     <div>
-      <h1 className="text-3xl font-black tracking-tight">{t("tornei.titolo")}</h1>
+      <Intestazione emoji="🗓️" titolo={t("tornei.titolo")} sotto={t("tornei.sottotitoloPagina")} colore="bg-onda" />
       <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
         {STATI.map((s) => (
           <Link key={s.chiave} href={link(s.valore, circuito)} className={pill(stato === s.valore)}>

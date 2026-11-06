@@ -99,7 +99,8 @@
     "inCorso": "Em andamento",
     "conclusi": "Encerrados",
     "nessuno": "Nenhum torneio para este filtro.",
-    "dal": "de {inizio} a {fine}"
+    "dal": "de {inizio} a {fine}",
+    "sottotitoloPagina": "Torneios ITF de beach tennis"
   },
   "torneo": {
     "chiVinceTorneo": "Quem vence a chave {genere}?",
@@ -132,12 +133,21 @@
     "conclusa": "Encerrado",
     "chiudeTra": "fecha {quando}",
     "puoiCambiare": "Você pode mudar até o início do jogo.",
-    "scegliPrima": "Primeiro escolha quem vence"
+    "scegliPrima": "Primeiro escolha quem vence",
+    "tocca": "Toque na dupla que você acha que vence",
+    "risultatoDi": "Placar exato de {nome}",
+    "setPerso": "Perde o",
+    "setN": "{n}º set",
+    "ilSet": "Set",
+    "lovince": "vence {nome}",
+    "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
+    "completa": "Complete o placar",
+    "inPalio": "Em jogo: vencedor 10 pts (mais se poucos escolherem) · sets certos +5 · cada set até +5 · placar exato +10"
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo: vencedor certo vale 3 pontos (mais se poucos escolheram, menos se era o favorito). Se acertar o vencedor: +2 pelo placar exato em sets, +3 pelo total exato de games ou +1 se errar por até 2 games.",
-    "torneo": "Torneio: campeão 10 pontos, vice 5, também ponderados pela quantidade de palpites iguais (de metade a duas vezes e meia).",
+    "partita": "Jogo: escolha quem vence e o placar exato de cada set. Vencedor certo 10 pontos (de 5 a 25: mais se poucos escolheram). Se acertar o vencedor: +5 por acertar 2-0 ou 2-1; em cada set em que acertar quem vence, +5 se exato, +3 a um game, +1 a dois; +10 se o placar inteiro for exato. Vencedor errado: 0.",
+    "torneo": "Torneio: vencedor 30 pontos, finalista 15, também ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
   "classifica": {
@@ -153,7 +163,8 @@
     "senzaPunti": "Dê um palpite para entrar no ranking.",
     "scegliLega": "Escolha uma liga",
     "nessunaLega": "Você não está em nenhuma liga.",
-    "paeseMancante": "Defina seu país no perfil."
+    "paeseMancante": "Defina seu país no perfil.",
+    "sottotitoloPagina": "Quem fez mais pontos neste mês"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -172,14 +183,16 @@
     "invitoTitolo": "Você foi convidado para a liga {nome}",
     "invitoNonTrovato": "Este convite não é válido.",
     "entraOra": "Entrar na liga",
-    "invitoTesto": "Jogue comigo os palpites de beach tennis no Beach Peck! Entre na liga «{nome}» com o código {codice}:"
+    "invitoTesto": "Jogue comigo os palpites de beach tennis no Beach Peck! Entre na liga «{nome}» com o código {codice}:",
+    "sottotitoloPagina": "Desafie seus amigos num ranking só de vocês"
   },
   "notizie": {
     "titolo": "Notícias",
     "fonte": "Fonte: {fonte}",
     "leggi": "Ler a matéria original",
     "nessuna": "Ainda não há notícias.",
-    "inLingua": "em {lingua}"
+    "inLingua": "em {lingua}",
+    "sottotitoloPagina": "As últimas do beach tennis"
   },
   "profilo": {
     "titolo": "Seu perfil",
@@ -192,7 +205,8 @@
     "passwordTitolo": "Senha",
     "passwordNuova": "Nova senha",
     "passwordSalva": "Salvar senha",
-    "passwordSalvata": "Senha salva ✓"
+    "passwordSalvata": "Senha salva ✓",
+    "sottotitoloPagina": "Apelido, país e senha"
   },
   "condividi": {
     "condividi": "Compartilhar",
@@ -220,6 +234,12 @@
     "credenziali": "E-mail ou senha incorretos.",
     "password": "A senha deve ter pelo menos 6 caracteres.",
     "esiste": "Este e-mail já tem uma conta: entre.",
-    "stessaPassword": "É igual à senha atual."
+    "stessaPassword": "É igual à senha atual.",
+    "risultato": "Escolha o placar de cada set."
+  },
+  "punti": {
+    "vincitore": "Vencedor",
+    "set": "Sets",
+    "esatto": "Exato"
   }
 }

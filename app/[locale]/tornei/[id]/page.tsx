@@ -19,15 +19,22 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: r?.torneo.nome ?? "—" };
 }
 
-export default async function PaginaTorneo({ params, searchParams }: { params: Promise<{ locale: string; id: string }>; searchParams: Promise<{ tab?: string }> }) {
+export default async function PaginaTorneo({ params, searchParams }: { params: Promise<{ locale: string; id: string }>; searchParams: Promise<{ tab?: string; turno?: string }> }) {
   const { locale, id } = await params;
   setRequestLocale(locale);
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const [r, { user, supabase }, sito, t] = await Promise.all([caricaTorneo(id), sessione(), indirizzoSito(), getTranslations()]);
   if (!r) notFound();
   const { torneo, tabelloni } = r;
-  const { tab } = await searchParams;
+  const { tab, turno } = await searchParams;
   const scelto = tabelloni.find((x) => x.genere === tab) ?? tabelloni[0];
+  // Turni del tabellone; si apre su quello con partite ancora da pronosticare (o sull'ultimo giocato)
+  const apribile = (p: { stato: string; inizio_at: string; coppia_a_id: string | null; coppia_b_id: string | null }) =>
+    p.stato === "in_programma" && Boolean(p.coppia_a_id && p.coppia_b_id) && new Date(p.inizio_at).getTime() > Date.now();
+  const turni = scelto ? TURNI.filter((tu) => scelto.partite.some((p) => p.turno === tu && (p.coppia_a_id || p.coppia_b_id))) : [];
+  const aperteIn = (tu: string) => scelto?.partite.filter((p) => p.turno === tu && apribile(p)).length ?? 0;
+  const turnoScelto =
+    turni.find((tu) => tu === turno) ?? turni.find((tu) => aperteIn(tu) > 0) ?? [...turni].reverse().find((tu) => scelto?.partite.some((p) => p.turno === tu && p.stato !== "in_programma")) ?? turni[0];
 
   const [miei, { data: votiRighe }] = await Promise.all([
     user ? mieiPronostici(tabelloni.map((x) => x.id), tabelloni.flatMap((x) => x.partite.map((p) => p.id))) : Promise.resolve(null),
@@ -52,23 +59,25 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
       <Link href="/tornei" className="inline-flex items-center gap-1 text-sm font-bold text-mare">
         <IconaIndietro /> {t("tornei.titolo")}
       </Link>
-      <header className="mt-3 overflow-hidden rounded-[28px] bg-gradient-to-br from-cielo/70 via-onda to-sabbia p-5">
+      <header className="eroe relative mt-3 overflow-hidden rounded-[28px] p-5 text-white shadow-[0_18px_40px_-20px_rgba(7,91,120,.8)]">
+        <span className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-sole/90" aria-hidden />
+        <span className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-sole/20" aria-hidden />
         <div className="flex flex-wrap gap-1.5">
-          <span className={`chip ${torneo.stato === "in_corso" ? "bg-corallo text-white" : torneo.stato === "concluso" ? "bg-white/70 text-nebbia" : "bg-white text-mare-scuro"}`}>
+          <span className={`chip relative ${torneo.stato === "in_corso" ? "bg-corallo text-white" : torneo.stato === "concluso" ? "bg-white/70 text-nebbia" : "bg-white text-mare-scuro"}`}>
             {torneo.stato === "in_corso" && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />}
             {t(`stato.${torneo.stato}`)}
           </span>
-          <span className="chip bg-white/80 text-inchiostro">
+          <span className="chip relative bg-inchiostro text-white">
             {torneo.circuito}
-            {torneo.categoria ? ` ${torneo.categoria}` : ""}
+            {torneo.categoria ? <span className="text-sole">{torneo.categoria}</span> : null}
           </span>
         </div>
-        <h1 className="mt-3 text-[26px] font-black leading-tight tracking-tight">{torneo.nome}</h1>
-        <p className="mt-1 text-inchiostro/75">
+        <h1 className="relative mt-3 text-[28px] font-black leading-tight tracking-tight">{torneo.nome}</h1>
+        <p className="relative mt-1 text-white/85">
           {bandiera(torneo.paese)} {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
         </p>
         {user && mieiPunti > 0 && (
-          <p className="festa mt-3 inline-flex items-center gap-2 rounded-full bg-menta px-4 py-1.5 text-sm font-black text-white">{t("torneo.tuoiPunti", { punti: mieiPunti })} 🎉</p>
+          <p className="festa relative mt-3 inline-flex items-center gap-2 rounded-full bg-sole px-4 py-1.5 text-sm font-black text-inchiostro">{t("torneo.tuoiPunti", { punti: mieiPunti })} 🎉</p>
         )}
       </header>
 
@@ -110,12 +119,31 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
 
           <h2 className="titolo-sezione">{t("torneo.partite")}</h2>
           {scelto.partite.length === 0 && <p className="scheda text-sm text-nebbia">{t("torneo.nessunaPartita")}</p>}
-          {TURNI.filter((tu) => scelto.partite.some((p) => p.turno === tu)).map((tu) => (
-            <section key={tu} className="mb-6">
-              <h3 className="mb-2 flex items-center gap-2 text-sm font-black uppercase tracking-wide text-nebbia"><span className="h-px flex-1 bg-sabbia-scura" />{t(`turno.${tu}`)}<span className="h-px flex-1 bg-sabbia-scura" /></h3>
+          {turni.length > 0 && (
+            <nav className="-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1" aria-label={t("torneo.partite")}>
+              {turni.map((tu) => {
+                const attivo = tu === turnoScelto;
+                const aperte = aperteIn(tu);
+                return (
+                  <Link
+                    key={tu}
+                    href={`/tornei/${id}?${new URLSearchParams({ ...(scelto ? { tab: scelto.genere } : {}), turno: tu })}`}
+                    scroll={false}
+                    className={`flex shrink-0 items-center gap-1.5 rounded-full border-2 px-4 py-1.5 text-sm font-bold transition ${attivo ? "border-mare bg-mare text-white" : "border-sabbia-scura bg-white text-inchiostro"}`}
+                  >
+                    {t(`turno.${tu}`)}
+                    {aperte > 0 && <span className={`grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-black ${attivo ? "bg-sole text-inchiostro" : "bg-sole-chiaro text-inchiostro"}`}>{aperte}</span>}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
+          {turnoScelto && (
+            <section key={turnoScelto} className="mb-6">
               <div className="space-y-3">
                 {scelto.partite
-                  .filter((p) => p.turno === tu && (p.coppia_a_id || p.coppia_b_id))
+                  .filter((p) => p.turno === turnoScelto && (p.coppia_a_id || p.coppia_b_id))
+                  .sort((x, y) => Number(apribile(y)) - Number(apribile(x)) || x.ordine - y.ordine)
                   .map((p) => {
                     const coppia = (cid: string | null): Coppia | null => scelto.coppie.find((c) => c.id === cid) ?? null;
                     return (
@@ -136,7 +164,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                   })}
               </div>
             </section>
-          ))}
+          )}
         </>
       )}
       <Regole />

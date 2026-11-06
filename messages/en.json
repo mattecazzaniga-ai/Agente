@@ -99,7 +99,8 @@
     "inCorso": "In progress",
     "conclusi": "Finished",
     "nessuno": "No tournaments for this filter.",
-    "dal": "{inizio} – {fine}"
+    "dal": "{inizio} – {fine}",
+    "sottotitoloPagina": "ITF beach tennis tournaments"
   },
   "torneo": {
     "chiVinceTorneo": "Who wins the {genere} draw?",
@@ -132,12 +133,21 @@
     "conclusa": "Finished",
     "chiudeTra": "closes {quando}",
     "puoiCambiare": "You can change it until the match starts.",
-    "scegliPrima": "First pick who wins"
+    "scegliPrima": "First pick who wins",
+    "tocca": "Tap the pair you think will win",
+    "risultatoDi": "Exact score for {nome}",
+    "setPerso": "Loses the",
+    "setN": "Set {n}",
+    "ilSet": "Set",
+    "lovince": "won by {nome}",
+    "superTieBreak": "The third set (super tie-break) goes to {nome}.",
+    "completa": "Complete the score",
+    "inPalio": "Up for grabs: winner 10 pts (more if few pick it) · right sets +5 · each set up to +5 · exact score +10"
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match: correct winner 3 points (more if few people picked it, fewer if it was the favourite). If the winner is right: +2 for the exact set score, +3 for the exact total games or +1 if you are off by 2 games at most.",
-    "torneo": "Tournament: winner 10 points, runner-up 5, also weighted by how many picked them (from half to two and a half times).",
+    "partita": "Match: pick the winner and the exact score of each set. Right winner 10 points (5 to 25: more if few people picked it). If the winner is right: +5 for guessing 2-0 or 2-1; for each set where you guessed who wins it, +5 if exact, +3 one game off, +1 two games off; +10 if the whole score is exact. Wrong winner: 0.",
+    "torneo": "Tournament: winner 30 points, finalist 15, also weighted by how many people picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
   "classifica": {
@@ -153,7 +163,8 @@
     "senzaPunti": "Make a prediction to join the leaderboard.",
     "scegliLega": "Choose a league",
     "nessunaLega": "You are not in any league.",
-    "paeseMancante": "Set your country in your profile."
+    "paeseMancante": "Set your country in your profile.",
+    "sottotitoloPagina": "Who scored the most this month"
   },
   "leghe": {
     "titolo": "Leagues with friends",
@@ -172,14 +183,16 @@
     "invitoTitolo": "You have been invited to the league {nome}",
     "invitoNonTrovato": "This invite is not valid.",
     "entraOra": "Join the league",
-    "invitoTesto": "Play beach tennis predictions with me on Beach Peck! Join the league “{nome}” with the code {codice}:"
+    "invitoTesto": "Play beach tennis predictions with me on Beach Peck! Join the league “{nome}” with the code {codice}:",
+    "sottotitoloPagina": "Challenge your friends in your own leaderboard"
   },
   "notizie": {
     "titolo": "News",
     "fonte": "Source: {fonte}",
     "leggi": "Read the original article",
     "nessuna": "No news yet.",
-    "inLingua": "in {lingua}"
+    "inLingua": "in {lingua}",
+    "sottotitoloPagina": "The latest from beach tennis"
   },
   "profilo": {
     "titolo": "Your profile",
@@ -192,7 +205,8 @@
     "passwordTitolo": "Password",
     "passwordNuova": "New password",
     "passwordSalva": "Save password",
-    "passwordSalvata": "Password saved ✓"
+    "passwordSalvata": "Password saved ✓",
+    "sottotitoloPagina": "Nickname, country and password"
   },
   "condividi": {
     "condividi": "Share",
@@ -220,6 +234,12 @@
     "credenziali": "Wrong email or password.",
     "password": "The password must be at least 6 characters.",
     "esiste": "This email already has an account: sign in.",
-    "stessaPassword": "It's the same as your current password."
+    "stessaPassword": "It's the same as your current password.",
+    "risultato": "Pick the score of each set."
+  },
+  "punti": {
+    "vincitore": "Winner",
+    "set": "Sets",
+    "esatto": "Exact"
   }
 }

@@ -36,7 +36,7 @@ export async function GET(req: Request) {
   const { data } = await supabase
     .from("pronostici_partita")
     .select(
-      `set_vincitore, set_perdente, totale_game, vincitore:coppie!pronostici_partita_vincitore_id_fkey(${SELECT_COPPIA}), partita:partite(turno, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(nome)))`,
+      `set_vincitore, set_perdente, game_a, game_b, vincitore_id, vincitore:coppie!pronostici_partita_vincitore_id_fkey(${SELECT_COPPIA}), partita:partite(turno, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(nome)))`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -44,11 +44,17 @@ export async function GET(req: Request) {
   const d = data as unknown as {
     set_vincitore: number | null;
     set_perdente: number | null;
-    totale_game: number | null;
+    game_a: number[] | null;
+    game_b: number[] | null;
+    vincitore_id: string;
     vincitore: Coppia;
     partita: { turno: string; coppia_a: Coppia; coppia_b: Coppia; tabellone: { genere: string; torneo: { nome: string } } };
   };
-  const extra = [d.set_vincitore != null ? `${t("partita.set")} ${d.set_vincitore}-${d.set_perdente}` : "", d.totale_game ? `${t("partita.game")}: ${d.totale_game}` : ""].filter(Boolean).join(" · ");
+  // risultato dal lato della coppia scelta, es. "6-4 3-6 + super tie-break"
+  const daA = d.vincitore_id === d.partita.coppia_a.id;
+  const extra = d.game_a && d.game_b
+    ? d.game_a.map((x, i) => (daA ? `${x}-${d.game_b![i]}` : `${d.game_b![i]}-${x}`)).join(" ") + (d.set_perdente ? " + STB" : "")
+    : d.set_vincitore != null ? `${t("partita.set")} ${d.set_vincitore}-${d.set_perdente}` : "";
   return cartolina({
     etichetta: t("partita.chiVince"),
     titolo: nomeCoppia(d.vincitore),

@@ -89,6 +89,8 @@ export interface PronosticoPartita {
   set_vincitore: number | null;
   set_perdente: number | null;
   totale_game: number | null;
+  game_a: number[] | null; // risultato pronosticato, game per set dal lato della coppia A (senza super tie-break)
+  game_b: number[] | null;
   punti: number | null;
 }
 

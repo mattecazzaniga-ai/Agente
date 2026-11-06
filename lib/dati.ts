@@ -53,7 +53,7 @@ export async function mieiPronostici(tabelloni: string[], partite: string[]) {
   const supabase = await supabaseServer();
   const [{ data: pt }, { data: pp }] = await Promise.all([
     tabelloni.length ? supabase.from("pronostici_torneo").select("id, tabellone_id, vincitore_id, finalista_id, punti").in("tabellone_id", tabelloni) : Promise.resolve({ data: [] }),
-    partite.length ? supabase.from("pronostici_partita").select("id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, punti").in("partita_id", partite) : Promise.resolve({ data: [] }),
+    partite.length ? supabase.from("pronostici_partita").select("id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, game_a, game_b, punti").in("partita_id", partite) : Promise.resolve({ data: [] }),
   ]);
   return {
     torneo: new Map(((pt as PronosticoTorneo[]) ?? []).map((p) => [p.tabellone_id, p])),
