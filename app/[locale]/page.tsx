@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTornei, situazioneTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
+import { caricaTornei, diarioRecente, situazioneTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese } from "@/lib/formato";
 import { FOTO } from "@/lib/foto";
@@ -10,6 +10,7 @@ import type { RigaClassifica } from "@/lib/tipi";
 import SchedaPartita from "@/components/SchedaPartita";
 import RigaPartita from "@/components/RigaPartita";
 import SchedaNotizia from "@/components/SchedaNotizia";
+import Diario from "@/components/Diario";
 import RigaTorneo from "@/components/RigaTorneo";
 import Vuoto from "@/components/Vuoto";
 import { IconaSpunta, Marchio } from "@/components/Icone";
@@ -40,7 +41,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   setRequestLocale(locale);
   const t = await getTranslations();
   const mese = meseIso();
-  const [{ user, profilo, supabase }, aperte, live, risultati, inCorso, prossimi, notizie, sito, regole] = await Promise.all([
+  const [{ user, profilo, supabase }, aperte, live, risultati, inCorso, prossimi, notizie, diario, sito, regole] = await Promise.all([
     sessione(),
     partiteAperte(8),
     partiteInCorso(6),
@@ -48,6 +49,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     caricaTornei("in_corso", 4),
     caricaTornei("in_programma", 4),
     notiziePubblicate(locale, 3),
+    diarioRecente(3),
     indirizzoSito(),
     regolePunti(),
   ]);
@@ -235,13 +237,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             )}
           </Sezione>
 
-          {notizie.length > 0 && (
+          {(notizie.length > 0 || diario.length > 0) && (
             <Sezione titolo={t("home.ultimeNotizie")} link="/notizie" testoLink={t("home.vediTutti")}>
-              <div className="space-y-3">
-                {notizie.map((n) => (
-                  <SchedaNotizia key={n.id} notizia={n} />
-                ))}
-              </div>
+              {notizie.length > 0 ? (
+                <div className="space-y-3">
+                  {notizie.map((n) => (
+                    <SchedaNotizia key={n.id} notizia={n} />
+                  ))}
+                </div>
+              ) : (
+                <Diario voci={diario} compatto />
+              )}
             </Sezione>
           )}
         </aside>

@@ -265,7 +265,10 @@
     "entraOra": "Entrar na liga",
     "invitoTesto": "Jogue comigo os palpites de beach tennis no Beach Peck! Entre na liga «{nome}» com o código {codice}:",
     "sottotitoloPagina": "Um ranking só para você e seus amigos da arena",
-    "entraOCrea": "Entre ou crie"
+    "entraOCrea": "Entre ou crie",
+    "nessunPunto": "Nenhum ponto em {mese} nesta liga: o primeiro lugar está livre.",
+    "tuSei": "Você é {posizione}º de {totale}",
+    "inTesta": "você lidera, defenda o primeiro lugar"
   },
   "notizie": {
     "titolo": "Notícias",
@@ -503,5 +506,25 @@
     "titoloInCorso": "Quem palpita melhor neste torneio",
     "sottoInCorso": "Ranking provisório: no fim os três primeiros viram campeões",
     "tuaPosizione": "Você é {posizione}º com {punti} pontos"
+  },
+  "diario": {
+    "titolo": "Das quadras",
+    "sotto": "Fatos das chaves ITF, atualizados com os resultados",
+    "tipo": {
+      "campioni": "Campeões",
+      "turno": "Chave",
+      "imbattuti": "Embalados",
+      "sorpresa": "Zebra",
+      "long": "Long de tirar o fôlego"
+    },
+    "campioni": "{coppia} vencem o {torneo}",
+    "campioniSotto": "{punteggio} na final contra {altra}",
+    "turno": "{turno} do {torneo}",
+    "imbattuti": "{n, plural, one {{coppia}: {turno} sem perder set} other {Nas {turno} sem perder set: {coppia}}}",
+    "sorpresa": "Cai a cabeça de chave {n}: {perdente} derrotados por {vincitore}",
+    "long": "{coppia} vencem no long {punteggio}",
+    "contro": "contra {coppia}",
+    "curate": "Do mundo do beach tennis",
+    "fonteDati": "As notícias «Das quadras» se baseiam só nos resultados das chaves ITF."
   }
 }

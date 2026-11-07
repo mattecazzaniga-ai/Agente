@@ -265,7 +265,10 @@
     "entraOra": "Join the league",
     "invitoTesto": "Play beach tennis predictions with me on Beach Peck! Join the league “{nome}” with the code {codice}:",
     "sottotitoloPagina": "A leaderboard just for you and your club friends",
-    "entraOCrea": "Join or create"
+    "entraOCrea": "Join or create",
+    "nessunPunto": "No points in {mese} in this league yet: first place is up for grabs.",
+    "tuSei": "You're #{posizione} of {totale}",
+    "inTesta": "you're leading, defend first place"
   },
   "notizie": {
     "titolo": "News",
@@ -503,5 +506,25 @@
     "titoloInCorso": "Best predictors in this tournament",
     "sottoInCorso": "Live standings: when the tournament ends the top three become champions",
     "tuaPosizione": "You're #{posizione} with {punti} points"
+  },
+  "diario": {
+    "titolo": "From the courts",
+    "sotto": "Facts from the ITF draws, updated with the results",
+    "tipo": {
+      "campioni": "Champions",
+      "turno": "Draw",
+      "imbattuti": "On fire",
+      "sorpresa": "Upset",
+      "long": "Nail-biting long"
+    },
+    "campioni": "{coppia} win the {torneo}",
+    "campioniSotto": "{punteggio} in the final against {altra}",
+    "turno": "{turno} at the {torneo}",
+    "imbattuti": "{n, plural, one {{coppia}: {turno} without dropping a set} other {Into the {turno} without dropping a set: {coppia}}}",
+    "sorpresa": "Seed {n} out: {perdente} beaten by {vincitore}",
+    "long": "{coppia} edge it in the long {punteggio}",
+    "contro": "against {coppia}",
+    "curate": "From the beach tennis world",
+    "fonteDati": "«From the courts» stories are based only on ITF draw results."
   }
 }

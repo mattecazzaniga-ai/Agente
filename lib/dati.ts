@@ -298,3 +298,15 @@ export async function schedaGiocatore(utenteId: string) {
     voci,
   };
 }
+
+/** Il diario dei tornei in corso e degli ultimi conclusi, generato dai risultati. */
+export async function diarioRecente(limite = 12) {
+  const { diarioTorneo } = await import("./diario");
+  const [inCorso, conclusi] = await Promise.all([caricaTornei("in_corso", 3), caricaTornei("concluso", 2)]);
+  const tornei = await Promise.all([...inCorso, ...conclusi].map((t) => caricaTorneo(t.id)));
+  return tornei
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .flatMap((x) => diarioTorneo(x.torneo, x.tabelloni))
+    .sort((x, y) => y.quando.localeCompare(x.quando))
+    .slice(0, limite);
+}

@@ -265,7 +265,10 @@
     "entraOra": "Entra nella lega",
     "invitoTesto": "Gioca con me ai pronostici di beach tennis su Beach Peck! Entra nella lega «{nome}» con il codice {codice}:",
     "sottotitoloPagina": "Una classifica solo per te e i tuoi amici del circolo",
-    "entraOCrea": "Entra o crea"
+    "entraOCrea": "Entra o crea",
+    "nessunPunto": "Nessun punto a {mese} in questa lega: il primo posto è libero.",
+    "tuSei": "Tu sei {posizione}° su {totale}",
+    "inTesta": "sei in testa, difendi il primo posto"
   },
   "notizie": {
     "titolo": "Notizie",
@@ -503,5 +506,25 @@
     "titoloInCorso": "Chi pronostica meglio questo torneo",
     "sottoInCorso": "Classifica provvisoria: a fine torneo i primi tre diventano i campioni",
     "tuaPosizione": "Tu sei {posizione}° con {punti} punti"
+  },
+  "diario": {
+    "titolo": "Dai campi",
+    "sotto": "Fatti presi dai tabelloni ITF, aggiornati con i risultati",
+    "tipo": {
+      "campioni": "Campioni",
+      "turno": "Tabellone",
+      "imbattuti": "In forma",
+      "sorpresa": "Sorpresa",
+      "long": "Long al cardiopalma"
+    },
+    "campioni": "{coppia} vincono il {torneo}",
+    "campioniSotto": "{punteggio} in finale contro {altra}",
+    "turno": "{turno} del {torneo}",
+    "imbattuti": "{n, plural, one {{coppia}: {turno} senza perdere un set} other {In {turno} senza perdere un set: {coppia}}}",
+    "sorpresa": "Fuori la testa di serie {n}: {perdente} battuti da {vincitore}",
+    "long": "{coppia} la spuntano al long {punteggio}",
+    "contro": "contro {coppia}",
+    "curate": "Dal mondo del beach tennis",
+    "fonteDati": "Le notizie «Dai campi» si basano solo sui risultati dei tabelloni ITF."
   }
 }

@@ -265,7 +265,10 @@
     "entraOra": "Entrar en la liga",
     "invitoTesto": "¡Juega conmigo a los pronósticos de beach tennis en Beach Peck! Entra en la liga «{nome}» con el código {codice}:",
     "sottotitoloPagina": "Una clasificación solo para ti y tus amigos del club",
-    "entraOCrea": "Únete o crea"
+    "entraOCrea": "Únete o crea",
+    "nessunPunto": "Ningún punto en {mese} en esta liga: el primer puesto está libre.",
+    "tuSei": "Eres {posizione}.º de {totale}",
+    "inTesta": "vas primero, defiende el liderato"
   },
   "notizie": {
     "titolo": "Noticias",
@@ -503,5 +506,25 @@
     "titoloInCorso": "Quién pronostica mejor este torneo",
     "sottoInCorso": "Clasificación provisional: al final los tres primeros son los campeones",
     "tuaPosizione": "Eres {posizione}.º con {punti} puntos"
+  },
+  "diario": {
+    "titolo": "Desde las pistas",
+    "sotto": "Hechos de los cuadros ITF, actualizados con los resultados",
+    "tipo": {
+      "campioni": "Campeones",
+      "turno": "Cuadro",
+      "imbattuti": "En racha",
+      "sorpresa": "Sorpresa",
+      "long": "Long de infarto"
+    },
+    "campioni": "{coppia} ganan el {torneo}",
+    "campioniSotto": "{punteggio} en la final contra {altra}",
+    "turno": "{turno} del {torneo}",
+    "imbattuti": "{n, plural, one {{coppia}: {turno} sin perder un set} other {En {turno} sin perder un set: {coppia}}}",
+    "sorpresa": "Fuera la cabeza de serie {n}: {perdente} vencidos por {vincitore}",
+    "long": "{coppia} se imponen en el long {punteggio}",
+    "contro": "contra {coppia}",
+    "curate": "Del mundo del beach tennis",
+    "fonteDati": "Las noticias «Desde las pistas» se basan solo en los resultados de los cuadros ITF."
   }
 }
