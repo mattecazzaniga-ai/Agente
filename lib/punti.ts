@@ -93,3 +93,92 @@ export function setValido(a: number, b: number): boolean {
   const [hi, lo] = [Math.max(a, b), Math.min(a, b)];
   return lo >= 0 && ((hi === 6 && lo <= 4) || (hi === 7 && (lo === 5 || lo === 6)));
 }
+
+/** Una riga del riepilogo "il tuo pronostico / com'è finita": cosa avevi messo, cos'è successo, quanti punti. */
+export interface RigaRecap {
+  voce: "chiVince" | "comeFinisce" | "set" | "long";
+  numero?: number; // per i set: 1 o 2
+  tuo: string | null;
+  reale: string | null;
+  punti: number | null; // null finché la partita non è conclusa
+  esito: "giusto" | "sbagliato" | "esatto" | "differenza" | "troppo" | "soloSeVince" | "noLong" | null;
+  differenza?: number;
+}
+
+const coppiaPunteggio = (a?: number | null, b?: number | null) => (a == null || b == null ? null : `${a}-${b}`);
+
+/**
+ * Riepilogo voce per voce, con le stesse regole del database (calcola_punti_partita).
+ * I game dei set sono sempre nell'ordine coppia A - coppia B, come nella scheda.
+ */
+export function recapPronostico(
+  r: Regole,
+  mio: { vincitore_id: string; set_vincitore: number | null; set_perdente: number | null; game_a: number[] | null; game_b: number[] | null; punti_vincitore?: number | null; punti_set?: number | null; punti_long?: number | null },
+  p: { stato: string; vincitore_id: string | null; game_a: number[] | null; game_b: number[] | null; ritiro: boolean; set_per_vincere: number },
+  nome: (id: string | null) => string | null,
+): RigaRecap[] {
+  const conclusa = p.stato === "conclusa";
+  const ga = p.game_a ?? [];
+  const gb = p.game_b ?? [];
+  const righe: RigaRecap[] = [];
+  const vinceGiusto = conclusa && mio.vincitore_id === p.vincitore_id;
+
+  righe.push({
+    voce: "chiVince",
+    tuo: nome(mio.vincitore_id),
+    reale: conclusa ? nome(p.vincitore_id) : null,
+    punti: conclusa ? (mio.punti_vincitore ?? (vinceGiusto ? r.vincitore ?? 0 : 0)) : null,
+    esito: conclusa ? (vinceGiusto ? "giusto" : "sbagliato") : null,
+  });
+
+  if (p.set_per_vincere === 2 || (mio.punti_set ?? 0) > 0) {
+    let vintiA = 0;
+    let vintiB = 0;
+    ga.forEach((x, i) => (x > (gb[i] ?? 0) ? vintiA++ : vintiB++));
+    const realeSet = conclusa && !p.ritiro && ga.length ? `${Math.max(vintiA, vintiB)}-${Math.min(vintiA, vintiB)}` : null;
+    const tuoSet = coppiaPunteggio(mio.set_vincitore, mio.set_perdente);
+    righe.push({
+      voce: "comeFinisce",
+      tuo: tuoSet,
+      reale: realeSet,
+      punti: conclusa ? (mio.punti_set ?? 0) : null,
+      esito: !conclusa || p.ritiro ? null : !vinceGiusto ? "soloSeVince" : tuoSet === realeSet ? "giusto" : "sbagliato",
+    });
+  }
+
+  for (let i = 0; i < p.set_per_vincere; i++) {
+    const tuo = coppiaPunteggio(mio.game_a?.[i], mio.game_b?.[i]);
+    const reale = conclusa ? coppiaPunteggio(ga[i], gb[i]) : null;
+    let punti: number | null = null;
+    let esito: RigaRecap["esito"] = null;
+    let differenza: number | undefined;
+    if (conclusa) {
+      if (p.ritiro || tuo == null || reale == null) punti = 0;
+      else {
+        differenza = Math.abs(mio.game_a![i] - ga[i]) + Math.abs(mio.game_b![i] - gb[i]);
+        punti = r[`set_errore_${differenza}`] ?? 0;
+        esito = differenza === 0 ? "esatto" : punti > 0 ? "differenza" : "troppo";
+      }
+    }
+    righe.push({ voce: "set", numero: i + 1, tuo, reale, punti, esito, differenza });
+  }
+
+  if (p.set_per_vincere === 2) {
+    const tuo = coppiaPunteggio(mio.game_a?.[2], mio.game_b?.[2]);
+    const giocato = ga.length >= 3;
+    const reale = conclusa && giocato ? coppiaPunteggio(ga[2], gb[2]) : null;
+    if (tuo || giocato) {
+      let esito: RigaRecap["esito"] = null;
+      let differenza: number | undefined;
+      if (conclusa && !p.ritiro) {
+        if (!giocato) esito = "noLong";
+        else if (tuo) {
+          differenza = Math.abs(mio.game_a![2] - ga[2]) + Math.abs(mio.game_b![2] - gb[2]);
+          esito = differenza === 0 ? "esatto" : (r[`long_errore_${differenza}`] ?? 0) > 0 ? "differenza" : "troppo";
+        }
+      }
+      righe.push({ voce: "long", tuo, reale, punti: conclusa ? (mio.punti_long ?? 0) : null, esito, differenza });
+    }
+  }
+  return righe;
+}

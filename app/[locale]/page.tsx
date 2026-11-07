@@ -95,7 +95,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
           </div>
           <div className="group relative h-56 overflow-hidden md:h-auto">
-            <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" fill sizes="(min-width: 768px) 540px, 100vw" className="foto-zoom object-cover object-[55%_60%]" />
+            <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" fill sizes="(min-width: 768px) 540px, 100vw" className="foto-zoom object-cover object-[50%_38%]" />
           </div>
         </section>
       )}
@@ -103,7 +103,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* Apertura per chi gioca: la spiaggia, il saluto e subito la situazione */}
       {user && (
       <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border">
-        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[55%_60%] sm:h-72" />
+        <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[50%_38%] sm:h-72" />
         <div className="velo absolute inset-0" aria-hidden />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6 sm:pb-6">
           {user ? (

@@ -186,7 +186,17 @@
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match, up to {massimo} points. Pick the winner and write each set's score; if the sets are split, also the long tie-break. Right winner +{vincitore}. Right set result: 2-0 +{set20}, 2-1 +{set21}. Each set: exact games +{s0}, one game off +{s1}, two games +{s2}. Long tie-break: exact points +{l0}, one point off +{l1}, two points +{l2}.",
+    "intro": "In every match pick who wins and write each set's score. Up to {massimo} points per match, adding these four:",
+    "chiVince": "Who wins",
+    "chiVinceTesto": "You guess which pair wins the match.",
+    "comeFinisce": "Sets won",
+    "comeFinisceTesto": "You also guess how it ends in sets: 2-0 is worth {set20}, 2-1 is worth {set21} (2-0 is harder to nail). Counts only if you got the winner right.",
+    "ogniSet": "Games in each set",
+    "ogniSetTesto": "For sets 1 and 2 we compare the games: exact +{s0}, 1 game off +{s1}, 2 games off +{s2}, more 0. They count even if you got the winner wrong.",
+    "long": "Long tie-break",
+    "longTesto": "If the match goes to a third set (long to 10): exact points +{l0}, 1 point off +{l1}, 2 points off +{l2}.",
+    "esempio": "Example: you write 6-4 6-3 and it ends 6-4 6-2. Winner +{vincitore}, 2-0 +{set20}, set 1 exact +{s0}, set 2 one game off +{s1}: {totale} points in total.",
+    "fino": "up to +{n}",
     "torneo": "Tournament: winner {vincitore} points, finalist {finalista}, weighted by how many picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
@@ -324,5 +334,26 @@
   },
   "sponsor": {
     "titolo": "Our sponsors"
+  },
+  "recap": {
+    "titolo": "Your prediction",
+    "tu": "You",
+    "finale": "Final",
+    "punti": "Points",
+    "totale": "Total",
+    "attesa": "Result coming: points are added when the match ends.",
+    "chiVince": "Who wins",
+    "comeFinisce": "Sets won",
+    "set": "Set {n}",
+    "long": "Long tie-break",
+    "giusto": "right",
+    "sbagliato": "wrong",
+    "esatto": "exact",
+    "differenza": "{n, plural, one {# game off} other {# games off}}",
+    "differenzaLong": "{n, plural, one {# point off} other {# points off}}",
+    "troppo": "too far",
+    "soloSeVince": "counts only with the right winner",
+    "noLong": "not played",
+    "ritiro": "Match ended by retirement: only the winner counts."
   }
 }

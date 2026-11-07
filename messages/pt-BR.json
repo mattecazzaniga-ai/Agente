@@ -186,7 +186,17 @@
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo, até {massimo} pontos. Escolha quem vence e escreva o placar de cada set; se empatarem, também o long tie-break. Vencedor certo +{vincitore}. Resultado em sets certo: 2-0 +{set20}, 2-1 +{set21}. Cada set: games exatos +{s0}, um game de diferença +{s1}, dois games +{s2}. Long tie-break: pontos exatos +{l0}, um ponto de diferença +{l1}, dois pontos +{l2}.",
+    "intro": "Em cada jogo escolha quem vence e escreva o placar de cada set. Até {massimo} pontos por jogo, somando estas quatro partes:",
+    "chiVince": "Quem vence",
+    "chiVinceTesto": "Você acerta qual dupla vence o jogo.",
+    "comeFinisce": "Sets vencidos",
+    "comeFinisceTesto": "Acerta também como termina em sets: 2-0 vale {set20}, 2-1 vale {set21} (o 2-0 é mais difícil). Só conta se acertou quem vence.",
+    "ogniSet": "Games de cada set",
+    "ogniSetTesto": "No 1º e 2º set comparamos os games: exatos +{s0}, 1 game de diferença +{s1}, 2 games +{s2}, mais 0. Contam mesmo se errar o vencedor.",
+    "long": "Long tie-break",
+    "longTesto": "Se o jogo for ao terceiro set (long a 10): pontos exatos +{l0}, 1 ponto de diferença +{l1}, 2 pontos +{l2}.",
+    "esempio": "Exemplo: você escreve 6-4 6-3 e termina 6-4 6-2. Vencedor +{vincitore}, 2-0 +{set20}, 1º set exato +{s0}, 2º set com 1 game +{s1}: {totale} pontos no total.",
+    "fino": "até +{n}",
     "torneo": "Torneio: vencedor {vincitore} pontos, finalista {finalista}, ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
@@ -324,5 +334,26 @@
   },
   "sponsor": {
     "titolo": "Nossos patrocinadores"
+  },
+  "recap": {
+    "titolo": "Seu palpite",
+    "tu": "Você",
+    "finale": "Final",
+    "punti": "Pontos",
+    "totale": "Total",
+    "attesa": "Resultado a caminho: os pontos entram no fim do jogo.",
+    "chiVince": "Quem vence",
+    "comeFinisce": "Sets vencidos",
+    "set": "{n}º set",
+    "long": "Long tie-break",
+    "giusto": "certo",
+    "sbagliato": "errado",
+    "esatto": "exato",
+    "differenza": "{n, plural, one {# game de diferença} other {# games de diferença}}",
+    "differenzaLong": "{n, plural, one {# ponto de diferença} other {# pontos de diferença}}",
+    "troppo": "longe demais",
+    "soloSeVince": "vale só com o vencedor certo",
+    "noLong": "não jogado",
+    "ritiro": "Jogo terminado por desistência: só conta quem vence."
   }
 }

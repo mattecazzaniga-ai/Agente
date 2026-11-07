@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Coppia, Partita, PronosticoPartita as Pronostico } from "@/lib/tipi";
 import { bandiera, nomeCoppia, punteggio } from "@/lib/formato";
-import { massimoPartita } from "@/lib/punti";
+import { massimoPartita, recapPronostico, type RigaRecap } from "@/lib/punti";
 import { regolePunti } from "@/lib/dati";
 import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
 import Tra from "./Tra";
@@ -104,17 +104,22 @@ export default async function SchedaPartita(props: {
     );
   };
 
-  const vincitoreMio = mio ? (mio.vincitore_id === a?.id ? a : b) : null;
-  // colonne del dettaglio punti: vincitore, risultato in set, punteggio dei set e, se c'è stato, il long
-  const conLong = Boolean(mio && (p.game_a?.length ?? 0) === 3);
-  const colonne: [string, number, string][] = mio
-    ? [
-        [t("punti.vincitore"), mio.punti_vincitore ?? 0, ""],
-        [t("punti.risultato"), mio.punti_set ?? 0, ""],
-        [t("punti.puntiSet"), mio.punti_game ?? 0, mio.errore_game === 0 ? t("punti.esatti") : ""],
-        ...(conLong ? [[t("punti.long"), mio.punti_long ?? 0, ""] as [string, number, string]] : []),
-      ]
-    : [];
+  const coppiaDi = (id: string | null) => (id === a?.id ? a : id === b?.id ? b : null);
+  const nome = (id: string | null) => {
+    const c = coppiaDi(id);
+    return c ? `${c.g1.cognome}/${c.g2.cognome}` : null;
+  };
+  const righeRecap = mio ? recapPronostico(regole, mio, p, nome) : [];
+  const esitoTesto = (r: RigaRecap) =>
+    r.esito === "differenza"
+      ? t(r.voce === "long" ? "recap.differenzaLong" : "recap.differenza", { n: r.differenza ?? 0 })
+      : r.esito
+        ? t(`recap.${r.esito}`)
+        : "";
+  // i due cognomi uno sotto l'altro, così non si spezzano a metà parola
+  const aCapo = (v: string | null) =>
+    v ? v.split("/").map((x, i) => (<span key={i} className="block truncate">{x}</span>)) : "—";
+  const nomeVoce = (r: RigaRecap) => (r.voce === "set" ? t("recap.set", { n: r.numero ?? 1 }) : t(`recap.${r.voce}`));
 
   return (
     <article className={`pannello overflow-hidden transition ${imminente ? "border-viola/40" : ""}`}>
@@ -153,39 +158,46 @@ export default async function SchedaPartita(props: {
               </p>
             )}
             
-            {mio && vincitoreMio && (
-              <div className={`mt-4 rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-viola/40 bg-viola/[.06]" : "border-linea bg-sabbia-2"}`}>
-                <div className="flex items-center justify-between gap-3 px-3 py-2.5">
-                  <div className="min-w-0">
-                    <p className=" text-xs font-semibold text-tenue">{t("torneo.ilTuo")}</p>
-                    <p className="truncate font-semibold">
-                      {vincitoreMio.g1.cognome}/{vincitoreMio.g2.cognome}
-                      {mio.set_vincitore != null && <span className="cifre ml-2 text-viola">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
-                      {mio.game_a && mio.game_b && (
-                        <span className="cifre ml-2">{mio.game_a.map((x, i) => (mio.vincitore_id === a?.id ? `${x}-${mio.game_b![i]}` : `${mio.game_b![i]}-${x}`)).join(" ")}</span>
-                      )}
+            {mio && righeRecap.length > 0 && (
+              <div className={`mt-4 overflow-hidden rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-viola/40" : "border-linea"}`}>
+                <div className={`flex items-center justify-between gap-3 px-3 py-2.5 ${mio.punti && mio.punti > 0 ? "bg-viola/[.06]" : "bg-sabbia-2"}`}>
+                  <p className="text-sm font-semibold">{t("recap.titolo")}</p>
+                  {mio.punti != null && (
+                    <p className="flex items-baseline gap-1.5">
+                      <span className="text-xs font-semibold text-tenue">{t("recap.totale")}</span>
+                      <span className={`cifre text-3xl leading-none ${mio.punti > 0 ? "text-viola" : "text-tenue"}`}>+{mio.punti}</span>
                     </p>
-                    <p className="truncate text-sm">
-                      {mio.game_previsti_a != null && (
-                        <span className="text-tenue">
-                          {t("partita.game")} <span className="cifre text-inchiostro">{`${mio.game_previsti_a}-${mio.game_previsti_b}`}</span>
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                  {mio.punti != null && <span className={`cifre shrink-0 text-3xl leading-none ${mio.punti > 0 ? "text-viola" : "text-tenue"}`}>+{mio.punti}</span>}
+                  )}
                 </div>
-                {mio.punti != null && (
-                  <dl className={`grid border-t border-linea text-center ${colonne.length === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
-                    {colonne.map(([nome, punti, nota], i) => (
-                      <div key={i} className={`px-2 py-2 ${i > 0 ? "border-l border-linea" : ""}`}>
-                        <dt className=" text-xs font-semibold text-tenue">{nome}</dt>
-                        <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-viola" : "text-tenue"}`}>+{punti}</dd>
-                        {nota && <dd className="text-xs text-tenue">{nota}</dd>}
-                      </div>
-                    ))}
-                  </dl>
-                )}
+                <table className="w-full table-fixed text-sm">
+                  <thead>
+                    <tr className="border-t border-linea text-left text-xs font-semibold text-tenue">
+                      <th className="w-[31%] px-3 py-1.5 font-semibold"></th>
+                      <th className="px-1 py-1.5 font-semibold">{t("recap.tu")}</th>
+                      <th className="px-1 py-1.5 font-semibold">{conclusa ? t("recap.finale") : ""}</th>
+                      <th className="w-14 px-3 py-1.5 text-right font-semibold">{conclusa ? t("recap.punti") : ""}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {righeRecap.map((r, i) => {
+                      const preso = (r.punti ?? 0) > 0;
+                      const nomi = r.voce === "chiVince";
+                      return (
+                        <tr key={i} className="border-t border-linea align-top">
+                          <td className="px-3 py-2">
+                            <span className="block font-semibold leading-tight">{nomeVoce(r)}</span>
+                            {r.esito && <span className={`block text-xs leading-tight ${preso ? "text-viola" : "text-tenue"}`}>{esitoTesto(r)}</span>}
+                          </td>
+                          <td className={`px-1 py-2 ${nomi ? "text-[13px] font-semibold leading-tight" : "cifre text-base"}`}>{nomi ? aCapo(r.tuo) : (r.tuo ?? "—")}</td>
+                          <td className={`px-1 py-2 ${nomi ? "text-[13px] leading-tight" : "cifre text-base"}`}>{conclusa ? (nomi ? aCapo(r.reale) : (r.reale ?? "—")) : ""}</td>
+                          <td className={`cifre px-3 py-2 text-right text-lg leading-tight ${preso ? "text-viola" : "text-tenue"}`}>{r.punti != null ? `+${r.punti}` : ""}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                {!conclusa && <p className="border-t border-linea px-3 py-2 text-xs text-tenue">{t("recap.attesa")}</p>}
+                {conclusa && p.ritiro && <p className="border-t border-linea px-3 py-2 text-xs text-tenue">{t("recap.ritiro")}</p>}
               </div>
             )}
             {!conclusa && (

@@ -186,7 +186,17 @@
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
-    "partita": "Partido, hasta {massimo} puntos. Elige quién gana y escribe el resultado de cada set; si quedan empatados, también el long tie-break. Ganador acertado +{vincitore}. Resultado en sets acertado: 2-0 +{set20}, 2-1 +{set21}. Cada set: juegos exactos +{s0}, un juego de diferencia +{s1}, dos juegos +{s2}. Long tie-break: puntos exactos +{l0}, un punto de diferencia +{l1}, dos puntos +{l2}.",
+    "intro": "En cada partido elige quién gana y escribe el resultado de cada set. Hasta {massimo} puntos por partido, sumando estas cuatro partes:",
+    "chiVince": "Quién gana",
+    "chiVinceTesto": "Aciertas qué pareja gana el partido.",
+    "comeFinisce": "Sets ganados",
+    "comeFinisceTesto": "Aciertas también cómo termina en sets: 2-0 vale {set20}, 2-1 vale {set21} (el 2-0 es más difícil). Solo cuenta si aciertas quién gana.",
+    "ogniSet": "Juegos de cada set",
+    "ogniSetTesto": "En el 1.º y 2.º set comparamos los juegos: exactos +{s0}, 1 juego de diferencia +{s1}, 2 juegos +{s2}, más 0. Cuentan aunque falles el ganador.",
+    "long": "Long tie-break",
+    "longTesto": "Si el partido va a tercer set (long a 10): puntos exactos +{l0}, 1 punto de diferencia +{l1}, 2 puntos +{l2}.",
+    "esempio": "Ejemplo: escribes 6-4 6-3 y termina 6-4 6-2. Ganador +{vincitore}, 2-0 +{set20}, 1.er set exacto +{s0}, 2.º set a 1 juego +{s1}: {totale} puntos en total.",
+    "fino": "hasta +{n}",
     "torneo": "Torneo: ganador {vincitore} puntos, finalista {finalista}, ponderados según cuántos los eligieron (de la mitad a dos veces y media).",
     "blocco": "Los pronósticos cierran al inicio del partido o del torneo. Los porcentajes de votos se ven solo después del cierre."
   },
@@ -324,5 +334,26 @@
   },
   "sponsor": {
     "titolo": "Nuestros patrocinadores"
+  },
+  "recap": {
+    "titolo": "Tu pronóstico",
+    "tu": "Tú",
+    "finale": "Final",
+    "punti": "Puntos",
+    "totale": "Total",
+    "attesa": "Resultado en camino: los puntos se suman al final del partido.",
+    "chiVince": "Quién gana",
+    "comeFinisce": "Sets ganados",
+    "set": "{n}.º set",
+    "long": "Long tie-break",
+    "giusto": "acertado",
+    "sbagliato": "fallado",
+    "esatto": "exacto",
+    "differenza": "{n, plural, one {# juego de diferencia} other {# juegos de diferencia}}",
+    "differenzaLong": "{n, plural, one {# punto de diferencia} other {# puntos de diferencia}}",
+    "troppo": "demasiado lejos",
+    "soloSeVince": "vale solo con el ganador acertado",
+    "noLong": "no jugado",
+    "ritiro": "Partido terminado por retiro: solo cuenta quién gana."
   }
 }

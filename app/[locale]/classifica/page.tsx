@@ -56,7 +56,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
 
   return (
     <div>
-      <TestataFoto foto={FOTO.duello} titolo={t("classifica.titolo")} sotto={t("classifica.sottotitoloPagina")} posizione="50% 62%" />
+      <TestataFoto foto={FOTO.giocatrice} titolo={t("classifica.titolo")} sotto={t("classifica.sottotitoloPagina")} posizione="50% 35%" />
       <div className="mt-4 grid grid-cols-3 gap-1 rounded-lg border border-linea bg-carta p-1">
         <Link href={href("globale")} className={tab("globale")}>
           {t("classifica.globale")}

@@ -186,7 +186,17 @@
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita, fino a {massimo} punti. Scegli chi vince e scrivi il punteggio di ogni set; se finisce un set pari anche il long tie-break. Vincitore giusto +{vincitore}. Risultato in set giusto: 2-0 +{set20}, 2-1 +{set21}. Ogni set: game esatti +{s0}, un game di differenza +{s1}, due game +{s2}. Long tie-break: punti esatti +{l0}, un punto di differenza +{l1}, due punti +{l2}.",
+    "intro": "In ogni partita scegli chi vince e scrivi il punteggio di ogni set. Fino a {massimo} punti a partita, sommando queste quattro voci:",
+    "chiVince": "Chi vince",
+    "chiVinceTesto": "Indovini quale coppia vince la partita.",
+    "comeFinisce": "Set vinti",
+    "comeFinisceTesto": "Indovini anche come finisce in set: 2-0 vale {set20}, 2-1 vale {set21} (2-0 è più difficile da azzeccare). Conta solo se hai indovinato chi vince.",
+    "ogniSet": "Game di ogni set",
+    "ogniSetTesto": "Per il 1° e il 2° set confrontiamo i game: esatti +{s0}, sbagliati di 1 game +{s1}, di 2 game +{s2}, di più 0. Contano anche se hai sbagliato chi vince.",
+    "long": "Long tie-break",
+    "longTesto": "Se la partita va al terzo set (long a 10): punti esatti +{l0}, 1 punto di differenza +{l1}, 2 punti +{l2}.",
+    "esempio": "Esempio: scrivi 6-4 6-3 e finisce 6-4 6-2. Chi vince +{vincitore}, 2-0 +{set20}, 1° set esatto +{s0}, 2° set sbagliato di 1 game +{s1}: totale {totale} punti.",
+    "fino": "fino a +{n}",
     "torneo": "Torneo: vincitore {vincitore} punti, finalista {finalista}, pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
@@ -324,5 +334,26 @@
   },
   "sponsor": {
     "titolo": "I nostri sponsor"
+  },
+  "recap": {
+    "titolo": "Il tuo pronostico",
+    "tu": "Tu",
+    "finale": "Finale",
+    "punti": "Punti",
+    "totale": "Totale",
+    "attesa": "Risultato in arrivo: i punti si calcolano a fine partita.",
+    "chiVince": "Chi vince",
+    "comeFinisce": "Set vinti",
+    "set": "{n}° set",
+    "long": "Long tie-break",
+    "giusto": "giusto",
+    "sbagliato": "sbagliato",
+    "esatto": "esatto",
+    "differenza": "{n, plural, one {# game di differenza} other {# game di differenza}}",
+    "differenzaLong": "{n, plural, one {# punto di differenza} other {# punti di differenza}}",
+    "troppo": "troppo lontano",
+    "soloSeVince": "vale solo con il vincitore giusto",
+    "noLong": "non giocato",
+    "ritiro": "Partita finita per ritiro: contano solo chi vince."
   }
 }

@@ -9,7 +9,9 @@ import Pannello from "@/components/admin/Pannello";
 import CampiTorneo from "@/components/admin/CampiTorneo";
 import CampoDataOra from "@/components/admin/CampoDataOra";
 import BottoneConferma from "@/components/BottoneConferma";
+import TurniAdmin from "@/components/admin/TurniAdmin";
 
+const NOME_TURNO = { R64: "Primo turno", R32: "Sedicesimi", R16: "Ottavi", QF: "Quarti", SF: "Semifinali", F: "Finale" } as const;
 const GENERE_IT = { maschile: "Maschile", femminile: "Femminile", misto: "Misto" } as const;
 const ESEMPIO = `1. Andrea Ricci (ITA) / Paolo Neri (ITA)
 2. SILVA João BRA / SANTOS Pedro BRA
@@ -76,6 +78,7 @@ export default async function AdminTorneo({ params }: { params: Promise<{ id: st
 
 function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
   const c = (id: string | null) => tb.coppie.find((x) => x.id === id) ?? null;
+  const turni = TURNI.filter((t) => tb.partite.some((p) => p.turno === t));
   return (
     <section className="space-y-3 rounded-[var(--radius-scheda)] border-2 border-linea p-3">
       <div className="flex items-center gap-2">
@@ -155,16 +158,21 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
         </ul>
       </Pannello>
 
-      {TURNI.filter((t) => tb.partite.some((p) => p.turno === t)).map((t) => (
-        <div key={t} className="space-y-2">
-          <h3 className="text-sm font-bold text-tenue">{t}</h3>
-          {tb.partite
-            .filter((p) => p.turno === t)
-            .map((p) => (
-              <SchedaRisultato key={p.id} p={p} a={c(p.coppia_a_id)} b={c(p.coppia_b_id)} coppie={tb.coppie} />
-            ))}
-        </div>
-      ))}
+      {tb.partite.length > 0 && (
+        <TurniAdmin
+          iniziale={Math.max(0, turni.findIndex((t) => tb.partite.some((p) => p.turno === t && p.stato !== "conclusa" && p.stato !== "annullata")))}
+          pagine={turni.map((t) => {
+            const qui = tb.partite.filter((p) => p.turno === t).sort((x, y) => x.ordine - y.ordine);
+            return {
+              turno: t,
+              nome: NOME_TURNO[t],
+              fatte: qui.filter((p) => p.stato === "conclusa" || p.stato === "annullata").length,
+              totale: qui.length,
+              contenuto: qui.map((p) => <SchedaRisultato key={p.id} p={p} a={c(p.coppia_a_id)} b={c(p.coppia_b_id)} coppie={tb.coppie} />),
+            };
+          })}
+        />
+      )}
 
       <Pannello titolo={<>+ Partita a mano</>}>
         <div className="mt-3">
