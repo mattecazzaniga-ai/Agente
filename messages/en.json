@@ -41,7 +41,10 @@
     "inCorso": "On court now",
     "ultimiRisultati": "Latest results",
     "classificaMese": "{mese} leaderboard",
-    "aperteOra": "matches to predict · {torneo}"
+    "aperteOra": "matches to predict · {torneo}",
+    "puntoGratis": "Free",
+    "puntoNoScommesse": "No betting",
+    "puntoAmici": "Leaderboard with friends"
   },
   "accedi": {
     "titolo": "Sign in",

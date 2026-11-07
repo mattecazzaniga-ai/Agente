@@ -41,7 +41,10 @@
     "inCorso": "En pista ahora",
     "ultimiRisultati": "Últimos resultados",
     "classificaMese": "Clasificación de {mese}",
-    "aperteOra": "partidos por pronosticar · {torneo}"
+    "aperteOra": "partidos por pronosticar · {torneo}",
+    "puntoGratis": "Gratis",
+    "puntoNoScommesse": "Sin apuestas",
+    "puntoAmici": "Clasificación con amigos"
   },
   "accedi": {
     "titolo": "Entrar",

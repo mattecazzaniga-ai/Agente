@@ -41,7 +41,10 @@
     "inCorso": "Em quadra agora",
     "ultimiRisultati": "Últimos resultados",
     "classificaMese": "Ranking de {mese}",
-    "aperteOra": "jogos para palpitar · {torneo}"
+    "aperteOra": "jogos para palpitar · {torneo}",
+    "puntoGratis": "Grátis",
+    "puntoNoScommesse": "Sem apostas",
+    "puntoAmici": "Ranking com os amigos"
   },
   "accedi": {
     "titolo": "Entrar",

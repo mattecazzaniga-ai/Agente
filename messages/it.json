@@ -41,7 +41,10 @@
     "inCorso": "In campo ora",
     "ultimiRisultati": "Ultimi risultati",
     "classificaMese": "Classifica di {mese}",
-    "aperteOra": "partite da pronosticare · {torneo}"
+    "aperteOra": "partite da pronosticare · {torneo}",
+    "puntoGratis": "Gratis",
+    "puntoNoScommesse": "Nessuna scommessa",
+    "puntoAmici": "Classifica con gli amici"
   },
   "accedi": {
     "titolo": "Accedi",

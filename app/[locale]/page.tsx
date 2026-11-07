@@ -12,7 +12,7 @@ import RigaPartita from "@/components/RigaPartita";
 import SchedaNotizia from "@/components/SchedaNotizia";
 import RigaTorneo from "@/components/RigaTorneo";
 import Vuoto from "@/components/Vuoto";
-import { Marchio } from "@/components/Icone";
+import { IconaSpunta, Marchio } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -78,7 +78,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <section className="relative -mx-4 -mt-5 overflow-hidden border-b border-linea bg-carta sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border md:grid md:grid-cols-[1.05fr_1fr]">
           <div className="relative px-5 pb-6 pt-5 sm:px-8 sm:pb-8">
             <span className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-sole/20 blur-2xl" aria-hidden />
-            <Marchio className="relative h-auto w-full max-w-[340px]" />
+            <Marchio className="relative h-auto w-full max-w-[230px] sm:max-w-[340px]" />
             <h1 className="relative mt-3 max-w-[18ch] font-display text-[38px] font-bold leading-[1.02] text-inchiostro sm:text-5xl">{t("home.titolo")}</h1>
             <p className="relative mt-3 max-w-md text-base leading-snug text-tenue">{t("home.intro")}</p>
             {inEvidenza && (
@@ -96,6 +96,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 {t("home.comeFunziona")}
               </a>
             </div>
+            <ul className="relative mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold text-inchiostro/80">
+              {[t("home.puntoGratis"), t("home.puntoNoScommesse"), t("home.puntoAmici")].map((x) => (
+                <li key={x} className="flex items-center gap-1.5">
+                  <IconaSpunta className="h-4 w-4 text-viola" />
+                  {x}
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="group relative h-56 overflow-hidden md:h-auto">
             <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" fill sizes="(min-width: 768px) 540px, 100vw" className="foto-zoom object-cover object-[50%_38%]" />
