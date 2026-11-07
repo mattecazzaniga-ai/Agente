@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { caricaTorneo } from "@/lib/dati";
 import { nomeCoppia, nomeCoppiaLungo, punteggio } from "@/lib/formato";
 import { GENERI, TURNI, type Coppia, type Partita, type Tabellone } from "@/lib/tipi";
-import { creaTabellone, eliminaCoppia, eliminaPartita, eliminaTabellone, eliminaTorneo, importaTabellone, salvaPartita, salvaRisultato, salvaTorneo } from "../../azioni";
+import { creaTabellone, eliminaCoppia, eliminaPartita, eliminaTabellone, eliminaTorneo, importaTabellone, salvaChiusura, salvaPartita, salvaRisultato, salvaTorneo } from "../../azioni";
 import FormAdmin from "@/components/admin/FormAdmin";
 import Pannello from "@/components/admin/Pannello";
 import CampiTorneo from "@/components/admin/CampiTorneo";
@@ -256,6 +256,23 @@ function SchedaRisultato({ p, a, b, coppie }: { p: Partita; a: Coppia | null; b:
         </span>
         <span className="text-xs text-tenue">{p.stato === "conclusa" ? punteggio(p) || "✓" : new Date(p.inizio_at).toLocaleString("it", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
       </div>
+      {p.stato !== "conclusa" && p.stato !== "annullata" && (
+        <details className="rounded-lg border border-viola/30 bg-viola/[.04] px-3 py-2 text-sm" open={!pronta ? false : new Date(p.inizio_at).getTime() > Date.now()}>
+          <summary className="cursor-pointer font-semibold text-viola">
+            {new Date(p.inizio_at).getTime() > Date.now() ? "Pronostici aperti fino a " : "Pronostici chiusi da "}
+            {new Date(p.inizio_at).toLocaleString("it-IT", { timeZone: "Europe/Rome", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+          </summary>
+          <div className="mt-2">
+            <FormAdmin azione={salvaChiusura} bottone="Salva orario" secondario className="space-y-2">
+              <input type="hidden" name="id" value={p.id} />
+              <CampoDataOra nome="inizio_at" valore={p.inizio_at} etichetta="Chiusura pronostici (inizio partita)" />
+              <label className="flex items-center gap-2">
+                <input type="checkbox" name="tutto_turno" value="1" className="h-5 w-5" /> Stesso orario per tutte le partite del turno da giocare
+              </label>
+            </FormAdmin>
+          </div>
+        </details>
+      )}
       {pronta && (
         <FormAdmin azione={salvaRisultato} bottone="Salva risultato" className="space-y-2">
           <input type="hidden" name="id" value={p.id} />

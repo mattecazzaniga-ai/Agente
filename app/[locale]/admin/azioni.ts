@@ -365,6 +365,30 @@ export async function salvaPartita(_: EsitoAdmin, form: FormData): Promise<Esito
   return ok("Salvata.");
 }
 
+/**
+ * Orario di chiusura dei pronostici di una partita (coincide con l'inizio della partita).
+ * Con "tutto il turno" vale per tutte le partite dello stesso turno non ancora giocate.
+ */
+export async function salvaChiusura(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
+  const supabase = await admin();
+  const id = uuid(form.get("id"));
+  const quando = iso(form.get("inizio_at"));
+  if (!id || !quando) return ko("Indica data e ora.");
+  const { data: p } = await supabase.from("partite").select("tabellone_id, turno, stato").eq("id", id).single();
+  if (!p) return ko("Partita non trovata.");
+  if (p.stato === "conclusa") return ko("La partita è già conclusa.");
+  const turno = form.get("tutto_turno") === "1";
+  const q = supabase.from("partite").update({ inizio_at: quando });
+  const { data, error } = turno
+    ? await q.eq("tabellone_id", p.tabellone_id).eq("turno", p.turno).in("stato", ["in_programma", "in_corso"]).select("id")
+    : await q.eq("id", id).select("id");
+  if (error) return ko(`Errore: ${error.message}`);
+  aggiorna();
+  const ora = new Date(quando).toLocaleString("it-IT", { timeZone: "Europe/Rome", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const n = data?.length ?? 0;
+  return ok(`${n === 1 ? "Pronostici chiusi" : `${n} partite: pronostici chiusi`} ${ora} (ora italiana).${new Date(quando).getTime() <= Date.now() ? " L'orario è già passato: i pronostici sono chiusi da subito." : ""}`);
+}
+
 /** Risultato: "6-4 3-6 10-7" dal punto di vista della coppia A. Il vincitore lo ricava il database. */
 export async function salvaRisultato(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
   const supabase = await admin();
