@@ -110,7 +110,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       )}
 
       {user && puoMostrare && (
-        <section className="pannello mt-4 overflow-hidden border-l-4 border-l-lime">
+        <section className="pannello mt-4 overflow-hidden border-l-4 border-l-viola">
           {io ? (
             <div className="flex flex-wrap items-end gap-x-6 gap-y-2 p-4">
               <div>
@@ -152,36 +152,51 @@ export default async function Classifica({ params, searchParams }: { params: Pro
           <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} premi={inPalio} />
           <h2 className="titolo-sezione">{t("classifica.completa")}</h2>
           <div className="pannello overflow-hidden">
-            <div className="grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 border-b border-linea bg-sabbia-2 px-3 py-2 text-xs font-semibold text-tenue">
+            {/* telefono: posizione, giocatore e punti, con le statistiche in piccolo sotto il nome; da tablet in su anche le colonne */}
+            <div className="grid grid-cols-[2rem_1fr_3rem] items-center gap-2 border-b border-linea bg-sabbia-2 px-3 py-2 text-xs font-semibold text-tenue sm:grid-cols-[2rem_1fr_3rem_3rem_3rem_3rem_3rem]">
               <span>#</span>
               <span>{t("classifica.utente")}</span>
               <span className="text-right">{t("classifica.punti")}</span>
-              <span className="text-right">{t("classifica.colPronostici")}</span>
-              <span className="text-right">{t("classifica.colVincitori")}</span>
-              <span className="text-right">{t("classifica.colSet")}</span>
-              <span className="text-right">{t("classifica.colGame")}</span>
+              <span className="hidden text-right sm:block">{t("classifica.colPronostici")}</span>
+              <span className="hidden text-right sm:block">{t("classifica.colVincitori")}</span>
+              <span className="hidden text-right sm:block">{t("classifica.colSet")}</span>
+              <span className="hidden text-right sm:block">{t("classifica.colGame")}</span>
             </div>
             <ol className="divide-y divide-linea">
               {lista.map((r) => {
                 const sonoIo = r.utente_id === user?.id;
                 return (
-                  <li key={r.utente_id} className={`entra grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 px-3 py-2.5 text-sm tabular-nums ${sonoIo ? "bg-viola/10 shadow-[inset_3px_0_0_var(--color-lime)]" : ""}`}>
-                    <span className="cifre text-base text-tenue">{r.posizione}</span>
-                    <span className="min-w-0 truncate font-semibold">
-                      <span aria-hidden>{bandiera(r.paese)}</span> {r.nickname}
-                      {sonoIo && <span className="chip ml-1 bg-viola text-white">{t("classifica.tu")}</span>}
+                  <li key={r.utente_id} className={`entra grid grid-cols-[2rem_1fr_3rem] items-center gap-2 px-3 py-2.5 text-sm tabular-nums sm:grid-cols-[2rem_1fr_3rem_3rem_3rem_3rem_3rem] ${sonoIo ? "bg-viola/10 shadow-[inset_3px_0_0_var(--color-viola)]" : ""}`}>
+                    <span className={`cifre text-lg ${r.posizione <= 3 ? "text-viola" : "text-tenue"}`}>{r.posizione}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold">
+                        <span aria-hidden>{bandiera(r.paese)}</span> {r.nickname}
+                        {sonoIo && <span className="chip ml-1 bg-viola text-white">{t("classifica.tu")}</span>}
+                      </span>
+                      <span className="block text-xs text-tenue sm:hidden">
+                        {t("classifica.statRiga", { pronostici: r.pronostici, vincitori: r.vincitori, set: r.set_esatti, game: r.game_esatti })}
+                      </span>
                     </span>
-                    <span className="cifre text-right text-lg">{r.punti}</span>
-                    <span className="text-right text-tenue">{r.pronostici}</span>
-                    <span className="text-right">{r.vincitori}</span>
-                    <span className="text-right">{r.set_esatti}</span>
-                    <span className="text-right">{r.game_esatti}</span>
+                    <span className="cifre text-right text-xl">{r.punti}</span>
+                    <span className="hidden text-right text-tenue sm:block">{r.pronostici}</span>
+                    <span className="hidden text-right sm:block">{r.vincitori}</span>
+                    <span className="hidden text-right sm:block">{r.set_esatti}</span>
+                    <span className="hidden text-right sm:block">{r.game_esatti}</span>
                   </li>
                 );
               })}
             </ol>
           </div>
           <p className="mt-2 px-1 text-xs leading-relaxed text-tenue">{t("classifica.legenda")}</p>
+          {lista.length < 5 && (
+            <section className="mt-6 rounded-xl bg-inchiostro p-5 text-white">
+              <h2 className="font-display text-2xl font-bold leading-tight">{t("classifica.pochiTitolo")}</h2>
+              <p className="mt-1.5 text-sm text-white/80">{t("classifica.pochiTesto")}</p>
+              <Link href={user ? "/leghe" : "/accedi"} className="bottone mt-4 w-auto bg-sole px-6 text-inchiostro hover:bg-sole/90">
+                {t("classifica.pochiAzione")}
+              </Link>
+            </section>
+          )}
         </>
       )}
     </div>

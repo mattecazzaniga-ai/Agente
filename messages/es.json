@@ -219,7 +219,7 @@
     "colVincitori": "Gan.",
     "colSet": "Sets",
     "colGame": "Juegos",
-    "legenda": "Pron. = pronósticos · Gan. = ganadores acertados · Sets = resultados en sets exactos · Juegos = juegos exactos. A igualdad de puntos cuentan sets exactos, luego ganadores, luego juegos exactos.",
+    "legenda": "Pron. = pronósticos hechos · Gan. = ganadores acertados · Sets = sets ganados acertados (2-0 o 2-1) · Juegos = partidos con los juegos de ambos sets exactos. A igualdad de puntos gana quien tiene más Sets, luego más Gan., luego más Juegos.",
     "utente": "Jugador",
     "tuaPosizione": "Tu posición",
     "giocatori": "Jugadores",
@@ -227,7 +227,11 @@
     "completa": "Clasificación completa",
     "dalPrimo": "−{punti} pts",
     "vaiAPronosticare": "Haz tu primer pronóstico",
-    "inPalio": "Premios de este mes"
+    "inPalio": "Premios de este mes",
+    "statRiga": "{pronostici} pron. · {vincitori} gan. · {set} sets · {game} juegos",
+    "pochiTitolo": "El desafío acaba de empezar",
+    "pochiTesto": "Crea una liga, manda el código al grupo de tu club y descubre quién sabe de verdad de beach tennis.",
+    "pochiAzione": "Desafía a tus amigos"
   },
   "leghe": {
     "titolo": "Ligas",

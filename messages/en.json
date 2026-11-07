@@ -219,7 +219,7 @@
     "colVincitori": "Win.",
     "colSet": "Sets",
     "colGame": "Games",
-    "legenda": "Picks = predictions · Win. = winners guessed · Sets = exact set scores · Games = exact games. Ties are broken by exact sets, then winners, then exact games.",
+    "legenda": "Picks = predictions made · Win. = winners guessed · Sets = sets won guessed (2-0 or 2-1) · Games = matches with both sets' games exact. On equal points, more Sets wins, then more Win., then more Games.",
     "utente": "Player",
     "tuaPosizione": "Your rank",
     "giocatori": "Players",
@@ -227,7 +227,11 @@
     "completa": "Full leaderboard",
     "dalPrimo": "−{punti} pts",
     "vaiAPronosticare": "Make your first prediction",
-    "inPalio": "Prizes this month"
+    "inPalio": "Prizes this month",
+    "statRiga": "{pronostici} picks · {vincitori} win. · {set} sets · {game} games",
+    "pochiTitolo": "The challenge has just begun",
+    "pochiTesto": "Create a league, send the code to your club's group and find out who really knows beach tennis.",
+    "pochiAzione": "Challenge your friends"
   },
   "leghe": {
     "titolo": "Leagues",

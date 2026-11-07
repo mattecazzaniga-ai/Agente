@@ -219,7 +219,7 @@
     "colVincitori": "Vinc.",
     "colSet": "Set",
     "colGame": "Game",
-    "legenda": "Pron. = pronostici · Vinc. = vincitori indovinati · Set = risultati dei set esatti · Game = game esatti. A parità di punti contano set esatti, poi vincitori, poi game esatti.",
+    "legenda": "Pron. = pronostici fatti · Vinc. = vincitori indovinati · Set = set vinti indovinati (2-0 o 2-1) · Game = partite con i game di entrambi i set esatti. A parità di punti vince chi ha più Set, poi più Vinc., poi più Game.",
     "utente": "Giocatore",
     "tuaPosizione": "La tua posizione",
     "giocatori": "Giocatori",
@@ -227,7 +227,11 @@
     "completa": "Classifica completa",
     "dalPrimo": "−{punti} pt",
     "vaiAPronosticare": "Fai il primo pronostico",
-    "inPalio": "In palio questo mese"
+    "inPalio": "In palio questo mese",
+    "statRiga": "{pronostici} pron. · {vincitori} vinc. · {set} set · {game} game",
+    "pochiTitolo": "La sfida è appena cominciata",
+    "pochiTesto": "Crea una lega, manda il codice nel gruppo del tuo circolo e scopri chi ne capisce davvero di beach tennis.",
+    "pochiAzione": "Sfida i tuoi amici"
   },
   "leghe": {
     "titolo": "Leghe",
