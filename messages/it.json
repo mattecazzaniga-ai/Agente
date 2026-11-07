@@ -40,7 +40,8 @@
     "daFare": "Da pronosticare",
     "inCorso": "In corso",
     "ultimiRisultati": "Ultimi risultati",
-    "classificaMese": "Classifica · {mese}"
+    "classificaMese": "Classifica · {mese}",
+    "aperteOra": "partite aperte ora · {torneo}"
   },
   "accedi": {
     "titolo": "Accedi",
@@ -206,7 +207,8 @@
     "giocatori": "Giocatori",
     "distacco": "Ti mancano {punti} punti per superare {nome}.",
     "completa": "Classifica completa",
-    "dalPrimo": "−{punti} pt"
+    "dalPrimo": "−{punti} pt",
+    "vaiAPronosticare": "Fai il primo pronostico"
   },
   "leghe": {
     "titolo": "Leghe tra amici",
@@ -264,7 +266,8 @@
   "privacy": {
     "titolo": "Privacy",
     "testo": "Beach Peck salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo.",
-    "crediti": "Crediti fotografici"
+    "crediti": "Crediti fotografici",
+    "creditiBreve": "Foto"
   },
   "errori": {
     "generico": "Qualcosa non ha funzionato. Riprova.",

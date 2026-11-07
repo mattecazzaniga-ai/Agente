@@ -11,6 +11,7 @@ import Avviso from "@/components/Avviso";
 import Attivita from "@/components/Attivita";
 import RegistraSW from "@/components/RegistraSW";
 import { Marchio } from "@/components/Icone";
+import CreditiFoto from "@/components/CreditoFoto";
 import "@fontsource/barlow/400.css";
 import "@fontsource/barlow/500.css";
 import "@fontsource/barlow/600.css";
@@ -59,20 +60,20 @@ export default async function LayoutLingua({ children, params }: { children: Rea
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />
                 {profilo?.is_admin && (
-                  <Link href="/admin" className="hidden h-9 items-center rounded-lg border border-linea px-3 font-display text-sm font-bold uppercase tracking-wide text-tenue hover:text-testo sm:inline-flex">
+                  <Link href="/admin" className="hidden h-10 items-center rounded-lg border border-linea px-3 font-display text-sm font-bold uppercase tracking-wide text-tenue hover:text-testo sm:inline-flex">
                     {t("nav.admin")}
                   </Link>
                 )}
                 {user ? (
                   <Link
                     href="/profilo"
-                    className="grid h-9 w-9 place-items-center rounded-lg bg-pannello-2 font-display text-base font-extrabold uppercase text-lime ring-1 ring-linea hover:ring-lime"
+                    className="grid h-10 w-10 place-items-center rounded-lg bg-pannello-2 font-display text-base font-extrabold uppercase text-lime ring-1 ring-linea hover:ring-lime"
                     aria-label={t("nav.profilo")}
                   >
                     {(profilo?.nickname ?? "?").slice(0, 1)}
                   </Link>
                 ) : (
-                  <Link href="/accedi" className="inline-flex h-9 items-center rounded-lg bg-lime px-4 font-display text-[15px] font-bold uppercase tracking-wide text-notte hover:bg-lime-scuro">
+                  <Link href="/accedi" className="inline-flex h-10 items-center rounded-lg bg-lime px-4 transition active:scale-95 font-display text-[15px] font-bold uppercase tracking-wide text-notte hover:bg-lime-scuro">
                     {t("nav.accedi")}
                   </Link>
                 )}
@@ -83,10 +84,11 @@ export default async function LayoutLingua({ children, params }: { children: Rea
           <footer className="mx-auto max-w-6xl border-t border-linea px-4 pb-24 pt-5 md:pb-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Avviso />
-              <Link href="/privacy" className="text-xs text-tenue underline-offset-2 hover:underline">
+              <Link href="/privacy" className="inline-flex min-h-11 items-center text-xs text-tenue underline-offset-2 hover:text-testo hover:underline">
                 {t("profilo.privacy")}
               </Link>
             </div>
+            <CreditiFoto etichetta={t("privacy.creditiBreve")} />
           </footer>
           <Navigazione tipo="barra" />
           <Attivita collegato={Boolean(user)} />

@@ -104,7 +104,7 @@ export default function PronosticoPartita(props: {
         </span>
         <span className="mt-2 block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[0]}</span>
         <span className="block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[1]}</span>
-        {c.testa_di_serie ? <span className={`mt-1.5 block font-display text-[11px] font-bold uppercase tracking-wider ${scelto ? "text-notte/70" : "text-sabbia"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
+        {c.testa_di_serie ? <span className={`mt-1.5 block font-display text-xs font-bold uppercase tracking-wider ${scelto ? "text-notte/70" : "text-sabbia"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
         {scelto && (
           <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded bg-notte text-lime">
             <IconaSpunta className="h-3.5 w-3.5" />
@@ -231,7 +231,7 @@ export default function PronosticoPartita(props: {
 
           {/* Riepilogo: quello che verrà salvato */}
           <div className="rounded-lg bg-notte px-3 py-2.5 ring-1 ring-linea">
-            <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</p>
+            <p className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</p>
             <p className="font-semibold">
               {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-lime">{formula}</span>
               <span className="cifre ml-2">{tutti.map(([v, p]) => `${v}-${p}`).join(" ")}</span>

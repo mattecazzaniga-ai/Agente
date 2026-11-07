@@ -10,7 +10,7 @@ export default async function RigaTorneo({ torneo: to, scheda = false }: { torne
   const giorno = new Date(`${to.data_inizio}T12:00:00Z`);
   const live = to.stato === "in_corso";
   return (
-    <Link href={`/tornei/${to.id}`} className={`group flex items-center gap-4 px-4 py-3.5 transition hover:bg-pannello-2 ${scheda ? "pannello" : ""}`}>
+    <Link href={`/tornei/${to.id}`} className={`group flex items-center gap-4 px-4 py-3.5 transition hover:bg-pannello-2 active:bg-linea/50 ${scheda ? "pannello solleva" : ""}`}>
       <span className="w-11 shrink-0 text-center">
         <span className="cifre block text-[28px] leading-none">{giorno.getUTCDate()}</span>
         <span className="block font-display text-[12px] font-bold uppercase tracking-wider text-tenue">

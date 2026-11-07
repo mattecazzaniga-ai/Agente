@@ -1,16 +1,13 @@
-import type { Foto } from "@/lib/foto";
+import { FOTO } from "@/lib/foto";
 
-/** Attribuzione obbligatoria per le foto CC BY-SA: autore, licenza, fonte. Discreta, sopra la foto. */
-export default function CreditoFoto({ foto, className = "" }: { foto: Foto; className?: string }) {
+/** Crediti delle foto (CC BY-SA 4.0) in una sola riga nel piè di pagina: niente didascalie sulle immagini. */
+export default function CreditiFoto({ etichetta }: { etichetta: string }) {
+  const autori = [...new Set(Object.values(FOTO).map((f) => f.autore))];
   return (
-    <p className={`text-[10px] leading-tight text-testo/60 ${className}`}>
-      Foto{" "}
-      <a href={foto.fonte} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
-        {foto.autore} / Wikimedia Commons
-      </a>
-      ,{" "}
-      <a href={foto.urlLicenza} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
-        {foto.licenza}
+    <p className="text-xs text-tenue">
+      {etichetta}: {autori.join(", ")} / Wikimedia Commons,{" "}
+      <a href={FOTO.partita.urlLicenza} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-testo hover:underline">
+        CC BY-SA 4.0
       </a>
     </p>
   );

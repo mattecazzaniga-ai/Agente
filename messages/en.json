@@ -40,7 +40,8 @@
     "daFare": "To predict",
     "inCorso": "Live",
     "ultimiRisultati": "Latest results",
-    "classificaMese": "Leaderboard · {mese}"
+    "classificaMese": "Leaderboard · {mese}",
+    "aperteOra": "matches open now · {torneo}"
   },
   "accedi": {
     "titolo": "Sign in",
@@ -206,7 +207,8 @@
     "giocatori": "Players",
     "distacco": "You need {punti} points to overtake {nome}.",
     "completa": "Full leaderboard",
-    "dalPrimo": "−{punti} pts"
+    "dalPrimo": "−{punti} pts",
+    "vaiAPronosticare": "Make your first prediction"
   },
   "leghe": {
     "titolo": "Leagues with friends",
@@ -264,7 +266,8 @@
   "privacy": {
     "titolo": "Privacy",
     "testo": "Beach Peck stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile.",
-    "crediti": "Photo credits"
+    "crediti": "Photo credits",
+    "creditiBreve": "Photos"
   },
   "errori": {
     "generico": "Something went wrong. Please try again.",

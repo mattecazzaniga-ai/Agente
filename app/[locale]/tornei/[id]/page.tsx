@@ -11,7 +11,6 @@ import Regole from "@/components/Regole";
 import { IconaIndietro } from "@/components/Icone";
 import Image from "next/image";
 import { FOTO } from "@/lib/foto";
-import CreditoFoto from "@/components/CreditoFoto";
 import Vuoto from "@/components/Vuoto";
 
 export const dynamic = "force-dynamic";
@@ -63,10 +62,9 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
         <IconaIndietro /> {t("tornei.titolo")}
       </Link>
 
-      <header className="relative -mx-4 mt-3 overflow-hidden border-y border-linea sm:mx-0 sm:rounded-xl sm:border">
-        <Image src={FOTO.torneo.src} alt={FOTO.torneo.alt} placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="h-56 w-full object-cover object-[50%_45%] sm:h-64" />
+      <header className="group relative -mx-4 mt-3 overflow-hidden border-y border-linea sm:mx-0 sm:rounded-xl sm:border">
+        <Image src={FOTO.torneo.src} alt={FOTO.torneo.alt} placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[50%_45%] sm:h-64" />
         <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/75 to-notte/20" aria-hidden />
-        <CreditoFoto foto={FOTO.torneo} className="absolute right-3 top-2" />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-6">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="chip bg-testo text-notte">
@@ -89,7 +87,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
         {user && mieiPunti > 0 && (
           <div className="festa absolute right-4 top-9 rounded-lg bg-lime px-3 py-1.5 text-center text-notte sm:right-6">
             <p className="cifre text-2xl leading-none">+{mieiPunti}</p>
-            <p className="font-display text-[10px] font-bold uppercase tracking-wider">{t("torneo.tuoiPuntiBreve")}</p>
+            <p className="font-display text-xs font-bold uppercase tracking-wider">{t("torneo.tuoiPuntiBreve")}</p>
           </div>
         )}
       </header>
@@ -100,7 +98,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
             <Link
               key={x.id}
               href={`/tornei/${id}?tab=${x.genere}`}
-              className={`rounded-md py-2 text-center font-display text-[15px] font-bold uppercase tracking-wider transition ${x.id === scelto?.id ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}
+              className={`min-h-11 rounded-md py-2.5 text-center font-display text-[15px] font-bold uppercase tracking-wider transition ${x.id === scelto?.id ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}
             >
               {t(`genere.${x.genere as Genere}`)}
             </Link>
@@ -128,7 +126,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                       href={`/tornei/${id}?${new URLSearchParams({ ...(scelto ? { tab: scelto.genere } : {}), turno: tu })}`}
                       scroll={false}
                       aria-current={attivo ? "page" : undefined}
-                      className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-2.5 pt-1 font-display text-[15px] font-bold uppercase tracking-wider transition ${
+                      className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-3 pt-2 font-display text-[15px] font-bold uppercase tracking-wider transition ${
                         attivo ? "text-testo after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-lime" : "text-tenue hover:text-testo"
                       }`}
                     >

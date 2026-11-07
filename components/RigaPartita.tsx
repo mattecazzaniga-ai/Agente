@@ -70,7 +70,7 @@ export default async function RigaPartita({
   };
 
   return (
-    <Link href={href} className="group flex items-stretch gap-3 px-3 py-3 transition hover:bg-pannello-2 sm:px-4">
+    <Link href={href} className="group flex items-stretch gap-3 px-3 py-3 transition hover:bg-pannello-2 active:bg-linea/50 sm:px-4">
       <div className="flex w-12 shrink-0 flex-col justify-center text-center">
         {stato === "live" ? (
           <span className="flex items-center justify-center gap-1 font-display text-[13px] font-bold uppercase tracking-wide text-corallo">
@@ -83,7 +83,7 @@ export default async function RigaPartita({
             <span className="cifre text-[15px] text-testo">
               <Ora iso={p.inizio_at} solo="ora" />
             </span>
-            <span className="text-[11px] uppercase text-tenue">
+            <span className="text-xs uppercase text-tenue">
               <Ora iso={p.inizio_at} solo="data" />
             </span>
           </>

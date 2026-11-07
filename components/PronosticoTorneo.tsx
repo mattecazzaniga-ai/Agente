@@ -48,7 +48,7 @@ export default function PronosticoTorneo(props: {
         {props.mio && (
           <div className="flex items-center gap-3 rounded-lg border border-linea bg-pannello-2 p-3 text-sm">
             <div className="min-w-0 flex-1">
-              <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
+              <p className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
               <p className="truncate font-semibold">{nome(props.mio.vincitore_id)}</p>
               {props.mio.finalista_id && (
                 <p className="truncate text-xs text-tenue">

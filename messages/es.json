@@ -40,7 +40,8 @@
     "daFare": "Por pronosticar",
     "inCorso": "En juego",
     "ultimiRisultati": "Últimos resultados",
-    "classificaMese": "Clasificación · {mese}"
+    "classificaMese": "Clasificación · {mese}",
+    "aperteOra": "partidos abiertos ahora · {torneo}"
   },
   "accedi": {
     "titolo": "Entrar",
@@ -206,7 +207,8 @@
     "giocatori": "Jugadores",
     "distacco": "Te faltan {punti} puntos para superar a {nome}.",
     "completa": "Clasificación completa",
-    "dalPrimo": "−{punti} pts"
+    "dalPrimo": "−{punti} pts",
+    "vaiAPronosticare": "Haz tu primer pronóstico"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -264,7 +266,8 @@
   "privacy": {
     "titolo": "Privacidad",
     "testo": "Beach Peck guarda solo los datos necesarios para el juego: email (para el acceso), apodo, país, idioma, tus pronósticos, las ligas y los días en que usas la app (para saber cuántos usuarios activos hay). No vendemos ni compartimos datos y no usamos cookies de perfilado: solo cookies técnicas de acceso e idioma. Puedes eliminar la cuenta y todos los datos en cualquier momento desde el perfil.",
-    "crediti": "Créditos fotográficos"
+    "crediti": "Créditos fotográficos",
+    "creditiBreve": "Fotos"
   },
   "errori": {
     "generico": "Algo salió mal. Inténtalo de nuevo.",

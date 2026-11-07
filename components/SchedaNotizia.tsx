@@ -8,7 +8,7 @@ export default async function SchedaNotizia({ notizia: n }: { notizia: NotiziaMo
   const t = await getTranslations();
   const lingua = await getLocale();
   return (
-    <article className="pannello group relative p-4 transition hover:border-tenue">
+    <article className="pannello solleva group relative p-4">
       <p className="flex flex-wrap items-center gap-x-2 font-display text-[12px] font-bold uppercase tracking-wider text-tenue">
         <span className="text-lime">{n.fonte_nome}</span>
         {n.pubblicata_at && <span>{data(n.pubblicata_at, lingua)}</span>}

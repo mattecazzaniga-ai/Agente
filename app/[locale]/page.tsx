@@ -11,7 +11,6 @@ import RigaPartita from "@/components/RigaPartita";
 import SchedaNotizia from "@/components/SchedaNotizia";
 import RigaTorneo from "@/components/RigaTorneo";
 import Vuoto from "@/components/Vuoto";
-import CreditoFoto from "@/components/CreditoFoto";
 
 export const dynamic = "force-dynamic";
 
@@ -71,10 +70,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <div>
       {/* Apertura: foto vera di una partita, messaggio breve, e subito la situazione dell'utente */}
-      <section className="relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
-        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className={`w-full object-cover object-[60%_30%] ${user ? "h-56 sm:h-72" : "h-[440px] sm:h-[480px]"}`} />
+      <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
+        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className={`foto-zoom w-full object-cover object-[60%_30%] ${user ? "h-56 sm:h-72" : "h-[440px] sm:h-[480px]"}`} />
         <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/70 to-notte/10" aria-hidden />
-        <CreditoFoto foto={FOTO.partita} className="absolute right-3 top-2" />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-5 sm:px-6 sm:pb-6">
           {user ? (
             <>
@@ -99,7 +97,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <p className="font-display text-sm font-bold uppercase tracking-[.14em] text-lime">{t("home.occhiello")}</p>
               <h1 className="mt-2 max-w-[14ch] font-display text-[44px] font-extrabold uppercase leading-[.92] tracking-tight sm:text-6xl">{t("home.titolo")}</h1>
               <p className="mt-3 max-w-md text-[15px] leading-snug text-testo/85">{t("home.intro")}</p>
-              <div className="mt-5 flex gap-3">
+              {inEvidenza && (
+                <Link href={link(inEvidenza)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-notte/70 px-3 text-sm ring-1 ring-linea backdrop-blur transition hover:ring-tenue">
+                  <span className="punto-live bg-lime" />
+                  <span className="cifre text-lg leading-none text-lime">{aperte.length}</span>
+                  <span>{t("home.aperteOra", { torneo: inEvidenza.tabellone.torneo.nome })}</span>
+                </Link>
+              )}
+              <div className="mt-4 flex gap-3">
                 <Link href="/accedi" className="bottone w-auto px-6">
                   {t("home.inizia")}
                 </Link>

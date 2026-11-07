@@ -40,7 +40,8 @@
     "daFare": "Para palpitar",
     "inCorso": "Ao vivo",
     "ultimiRisultati": "Últimos resultados",
-    "classificaMese": "Ranking · {mese}"
+    "classificaMese": "Ranking · {mese}",
+    "aperteOra": "jogos abertos agora · {torneo}"
   },
   "accedi": {
     "titolo": "Entrar",
@@ -206,7 +207,8 @@
     "giocatori": "Jogadores",
     "distacco": "Faltam {punti} pontos para passar {nome}.",
     "completa": "Ranking completo",
-    "dalPrimo": "−{punti} pts"
+    "dalPrimo": "−{punti} pts",
+    "vaiAPronosticare": "Faça seu primeiro palpite"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -264,7 +266,8 @@
   "privacy": {
     "titolo": "Privacidade",
     "testo": "O Beach Peck guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil.",
-    "crediti": "Créditos das fotos"
+    "crediti": "Créditos das fotos",
+    "creditiBreve": "Fotos"
   },
   "errori": {
     "generico": "Algo deu errado. Tente de novo.",

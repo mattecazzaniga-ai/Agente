@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import Intestazione from "@/components/Intestazione";
+import TestataFoto from "@/components/TestataFoto";
+import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -25,7 +26,7 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
   const [t, leghe, sito] = await Promise.all([getTranslations(), mieLeghe(), indirizzoSito()]);
   return (
     <div>
-      <Intestazione titolo={t("leghe.titolo")} sotto={t("leghe.sottotitoloPagina")} />
+      <TestataFoto foto={FOTO.squadre} titolo={t("leghe.titolo")} sotto={t("leghe.sottotitoloPagina")} posizione="50% 30%" />
       <div className="md:grid md:grid-cols-[minmax(0,1fr)_360px] md:gap-8">
       <div>
       <h2 className="titolo-sezione">{t("leghe.mie")}</h2>

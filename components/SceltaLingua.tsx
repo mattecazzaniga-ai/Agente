@@ -25,7 +25,7 @@ export default function SceltaLingua({ etichetta }: { etichetta: string }) {
             router.replace(percorso, { locale: nuova });
           });
         }}
-        className="h-9 appearance-none rounded-lg border border-linea bg-transparent pl-2.5 pr-6 font-display text-sm font-bold uppercase tracking-wide text-testo outline-none hover:border-tenue"
+        className="h-10 appearance-none rounded-lg border border-linea bg-transparent pl-2.5 pr-6 font-display text-sm font-bold uppercase tracking-wide text-testo outline-none hover:border-tenue"
       >
         {routing.locales.map((l) => (
           <option key={l} value={l} className="bg-pannello text-testo">
@@ -33,7 +33,7 @@ export default function SceltaLingua({ etichetta }: { etichetta: string }) {
           </option>
         ))}
       </select>
-      <span className="pointer-events-none absolute right-2 text-[10px] text-tenue" aria-hidden>▼</span>
+      <span className="pointer-events-none absolute right-2 text-xs text-tenue" aria-hidden>▼</span>
     </label>
   );
 }

@@ -43,7 +43,7 @@ export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
             <Link
               href={href}
               aria-current={attiva(href) ? "page" : undefined}
-              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 font-display text-[11px] font-bold uppercase tracking-wider transition ${attiva(href) ? "text-lime" : "text-tenue"}`}
+              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 font-display text-xs font-bold uppercase tracking-wider transition ${attiva(href) ? "text-lime" : "text-tenue"}`}
             >
               {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-lime" />}
               <Icona className="h-[22px] w-[22px]" />

@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Intestazione from "@/components/Intestazione";
+import TestataFoto from "@/components/TestataFoto";
+import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
 import { mieLeghe, sessione } from "@/lib/dati";
@@ -48,13 +49,13 @@ export default async function Classifica({ params, searchParams }: { params: Pro
     return `/classifica?${u}`;
   };
   const tab = (a: Ambito) =>
-    `rounded-md py-2 text-center font-display text-[15px] font-bold uppercase tracking-wider transition ${ambito === a ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`;
+    `flex min-h-11 items-center justify-center rounded-md font-display text-[15px] font-bold uppercase tracking-wider transition ${ambito === a ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`;
   const nomeAmbito = ambito === "lega" ? lega?.nome : ambito === "paese" ? `${bandiera(profilo?.paese)} ${t("classifica.paese")}` : t("classifica.globale");
   const immagine = `/api/immagine/classifica?${new URLSearchParams({ mese, ambito, lingua: locale, ...(lega ? { lega: lega.id } : {}) })}`;
 
   return (
     <div>
-      <Intestazione titolo={t("classifica.titolo")} sotto={t("classifica.sottotitoloPagina")} />
+      <TestataFoto foto={FOTO.duello} titolo={t("classifica.titolo")} sotto={t("classifica.sottotitoloPagina")} posizione="50% 62%" />
       <div className="mt-4 grid grid-cols-3 gap-1 rounded-lg border border-linea bg-pannello p-1">
         <Link href={href("globale")} className={tab("globale")}>
           {t("classifica.globale")}
@@ -128,13 +129,13 @@ export default async function Classifica({ params, searchParams }: { params: Pro
         </section>
       )}
 
-      {puoMostrare && lista.length === 0 && <div className="mt-4"><Vuoto testo={t("classifica.nessuno")} /></div>}
+      {puoMostrare && lista.length === 0 && <div className="mt-4"><Vuoto testo={t("classifica.nessuno")} azione={t("classifica.vaiAPronosticare")} link="/tornei" /></div>}
       {puoMostrare && lista.length > 0 && (
         <>
           <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} />
           <h2 className="titolo-sezione">{t("classifica.completa")}</h2>
           <div className="pannello overflow-hidden">
-            <div className="grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 border-b border-linea bg-pannello-2 px-3 py-2 font-display text-[11px] font-bold uppercase tracking-wider text-tenue">
+            <div className="grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 border-b border-linea bg-pannello-2 px-3 py-2 font-display text-xs font-bold uppercase tracking-wider text-tenue">
               <span>#</span>
               <span>{t("classifica.utente")}</span>
               <span className="text-right">{t("classifica.punti")}</span>
@@ -195,7 +196,7 @@ function Podio({ righe, io, tu, distacco }: { righe: RigaClassifica[]; io?: stri
         </div>
         <p className="cifre text-right text-5xl leading-none">
           {primo.punti}
-          <span className="block font-display text-[11px] font-bold uppercase tracking-wider text-tenue">pt</span>
+          <span className="block font-display text-xs font-bold uppercase tracking-wider text-tenue">pt</span>
         </p>
       </div>
       {altri.map((r) => (

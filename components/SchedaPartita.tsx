@@ -78,7 +78,7 @@ export default async function SchedaPartita(props: {
                 </span>
                 {nomeCoppia(c)}
                 {c.testa_di_serie ? <span className="ml-1.5 font-display text-xs font-bold text-sabbia">{c.testa_di_serie}</span> : null}
-                {mia && <span className="ml-2 font-display text-[11px] font-bold uppercase tracking-wider text-lime">{t("partita.tuaScelta")}</span>}
+                {mia && <span className="ml-2 font-display text-xs font-bold uppercase tracking-wider text-lime">{t("partita.tuaScelta")}</span>}
               </>
             ) : (
               <span className="text-tenue">{t("partita.inAttesa")}</span>
@@ -160,7 +160,7 @@ export default async function SchedaPartita(props: {
               <div className={`mt-4 rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-lime/40 bg-lime/[.06]" : "border-linea bg-pannello-2"}`}>
                 <div className="flex items-center justify-between gap-3 px-3 py-2.5">
                   <div className="min-w-0">
-                    <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
+                    <p className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
                     <p className="truncate font-semibold">
                       {vincitoreMio.g1.cognome}/{vincitoreMio.g2.cognome}
                       {mio.set_vincitore != null && <span className="cifre ml-2 text-lime">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
@@ -182,9 +182,9 @@ export default async function SchedaPartita(props: {
                   <dl className={`grid border-t border-linea text-center ${colonne.length === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
                     {colonne.map(([nome, punti, nota], i) => (
                       <div key={i} className={`px-2 py-2 ${i > 0 ? "border-l border-linea" : ""}`}>
-                        <dt className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{nome}</dt>
+                        <dt className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{nome}</dt>
                         <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-lime" : "text-tenue"}`}>+{punti}</dd>
-                        {nota && <dd className="text-[11px] text-tenue">{nota}</dd>}
+                        {nota && <dd className="text-xs text-tenue">{nota}</dd>}
                       </div>
                     ))}
                   </dl>

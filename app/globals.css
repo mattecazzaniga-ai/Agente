@@ -10,7 +10,7 @@
   --color-notte: #0b1018;        /* sfondo */
   --color-pannello: #121a26;     /* superfici */
   --color-pannello-2: #1a2331;   /* superfici in rilievo, campi */
-  --color-linea: #263142;        /* separatori, bordi */
+  --color-linea: #2a3547;        /* separatori, bordi */
   --color-testo: #f3eee3;        /* bianco caldo */
   --color-tenue: #8d98aa;        /* testo secondario */
   --color-lime: #d4f53c;         /* accento: azioni, punti, selezione */
@@ -32,6 +32,10 @@ body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-hi
 
 @layer base {
   :focus-visible { outline: 2px solid var(--color-lime); outline-offset: 2px; }
+  /* tutto ciò che si clicca lo dice al puntatore (Tailwind 4 non lo fa più sui bottoni) */
+  button:not(:disabled), [role="button"], summary, select, label:has(input[type="radio"]) { cursor: pointer; }
+  /* titoli senza parole isolate a capo */
+  h1, h2, h3 { text-wrap: balance; }
 }
 
 @layer components {
@@ -40,8 +44,8 @@ body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-hi
   .scheda { @apply rounded-xl border border-linea bg-pannello p-4; }
 
   /* Azioni */
-  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-lime px-5 font-display text-[17px] font-bold uppercase tracking-wide text-notte transition hover:bg-lime-scuro active:scale-[.98] disabled:cursor-not-allowed disabled:bg-pannello-2 disabled:text-tenue; }
-  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-transparent px-5 font-display text-[17px] font-bold uppercase tracking-wide text-testo transition hover:border-tenue active:scale-[.98] disabled:opacity-40; }
+  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-lime px-5 font-display text-[17px] font-bold uppercase tracking-wide text-notte transition duration-150 hover:-translate-y-px hover:bg-lime-scuro active:translate-y-0 active:scale-[.98] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-pannello-2 disabled:text-tenue; }
+  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-transparent px-5 font-display text-[17px] font-bold uppercase tracking-wide text-testo transition duration-150 hover:-translate-y-px hover:border-tenue active:translate-y-0 active:scale-[.98] disabled:opacity-40; }
 
   /* Moduli */
   .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-pannello-2 px-3.5 text-base text-testo outline-none transition placeholder:text-tenue/60 focus:border-lime; }
@@ -51,6 +55,11 @@ body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-hi
   .chip, .chip-live { @apply inline-flex items-center gap-1 rounded-md bg-pannello-2 px-2 py-0.5 font-display text-[12px] font-bold uppercase tracking-wide text-tenue; }
   .chip-live { @apply bg-corallo/15 text-corallo; }
   .punto-live { @apply inline-block h-1.5 w-1.5 rounded-full bg-corallo; animation: pulsa 1.6s ease-in-out infinite; }
+
+  /* Schede cliccabili: si alzano di 2px e il bordo si accende */
+  .solleva { @apply transition duration-200 hover:-translate-y-0.5 hover:border-tenue/60 active:translate-y-0; }
+  /* Foto dentro una cornice: zoom leggero al passaggio */
+  .foto-zoom { @apply transition-transform duration-700 ease-out group-hover:scale-[1.025]; }
 
   /* Tipografia */
   .titolo-pagina { @apply font-display text-[34px] font-extrabold uppercase leading-none tracking-tight; }
