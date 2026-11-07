@@ -12,14 +12,14 @@ export const REGOLE_PREDEFINITE: Regole = {
   game_errore_2: 3,
   game_errore_3: 2,
   game_errore_4: 1,
-  long_vicino: 2,
-  long_errore_max: 2,
+  esatto: 2,
+  quasi_esatto: 1,
   torneo_vincitore: 10,
   torneo_finalista: 5,
 };
 
-/** Punti massimi di una partita: vincitore + set + game esatti + long tie-break. */
-export const massimoPartita = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + (r.game_errore_0 ?? 0) + (r.long_vicino ?? 0);
+/** Punti massimi di una partita: vincitore + set + game esatti + punteggio esatto. */
+export const massimoPartita = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + (r.game_errore_0 ?? 0) + (r.esatto ?? 0);
 
 /** Punti dei game per errore complessivo (0, 1, 2…), fino al primo errore che non dà più punti. */
 export function scalaGame(r: Regole): number[] {

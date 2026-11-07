@@ -151,7 +151,7 @@
     "lovince": "vence {nome}",
     "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
     "completa": "Complete o placar",
-    "inPalio": "Até {massimo} pontos: {vincitore} pelo vencedor, {set} pelos sets, até {game} pelos games e {long} se acertar o long.",
+    "inPalio": "Até {massimo} pontos: {vincitore} pelo vencedor, {set} pelos sets, até {game} pelos games, e +{esatto} se o placar for exato (errou por um só: +{quasi}).",
     "risultatoSet": "Placar em sets de {nome}",
     "gameTotali": "Games totais de cada dupla",
     "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence e o placar do 1º e do 2º set; se terminar 2-1, também o long tie-break a 10. O long vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato (2-0 ou 2-1) +{set}. Games totais: soma-se o erro das duas duplas e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada. Long tie-break: se errar por {sogliaLong} pontos ou menos no total +{long}.",
+    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence e escreva o placar de cada set; se empatarem, também o long tie-break, que nos games vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato (2-0 ou 2-1) +{set}. Games totais: soma-se o erro das duas duplas e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada. Placar exato (todos os sets e o long) +{esatto}; errado por um só (um game ou um ponto) +{quasi}.",
     "torneo": "Torneio: vencedor {vincitore} pontos, finalista {finalista}, ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
@@ -302,7 +302,9 @@
     "game": "Games",
     "errore": "erro {n}",
     "esatti": "exatos",
-    "long": "Long"
+    "long": "Long",
+    "esattoBonus": "Exato",
+    "quasi": "quase"
   },
   "riga": {
     "fine": "Fim",

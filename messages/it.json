@@ -151,7 +151,7 @@
     "lovince": "lo vince {nome}",
     "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
     "completa": "Completa il risultato",
-    "inPalio": "Fino a {massimo} punti: {vincitore} per il vincitore, {set} per i set, fino a {game} per i game e {long} se ci prendi sul long.",
+    "inPalio": "Fino a {massimo} punti: {vincitore} per il vincitore, {set} per i set, fino a {game} per i game, e se il punteggio è esatto +{esatto} (sbagli di uno solo: +{quasi}).",
     "risultatoSet": "Risultato dei set di {nome}",
     "gameTotali": "Game totali di ciascuna coppia",
     "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita, massimo {massimo} punti. Scegli chi vince e il punteggio del 1° e del 2° set; se finisce 2-1 anche il long tie-break a 10. Il long vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto (2-0 o 2-1) +{set}. Game totali: si somma l'errore sulle due coppie e prendi {scala} punti (errore→punti); oltre {oltre} niente. Long tie-break: se lo sbagli di {sogliaLong} punti o meno in totale +{long}.",
+    "partita": "Partita, massimo {massimo} punti. Scegli chi vince e scrivi il punteggio di ogni set; se finisce un set pari anche il long tie-break, che nei game vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto (2-0 o 2-1) +{set}. Game totali: si somma l'errore sulle due coppie e prendi {scala} punti (errore→punti); oltre {oltre} niente. Punteggio esatto (tutti i set e il long) +{esatto}; sbagliato di uno solo (un game o un punto) +{quasi}.",
     "torneo": "Torneo: vincitore {vincitore} punti, finalista {finalista}, pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
@@ -302,7 +302,9 @@
     "game": "Game",
     "errore": "errore {n}",
     "esatti": "esatti",
-    "long": "Long"
+    "long": "Long",
+    "esattoBonus": "Esatto",
+    "quasi": "quasi"
   },
   "riga": {
     "fine": "Fin.",

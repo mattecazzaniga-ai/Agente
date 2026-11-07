@@ -151,7 +151,7 @@
     "lovince": "lo gana {nome}",
     "superTieBreak": "El tercer set (súper tie-break) lo gana {nome}.",
     "completa": "Completa el resultado",
-    "inPalio": "Hasta {massimo} puntos: {vincitore} por el ganador, {set} por los sets, hasta {game} por los juegos y {long} si aciertas el long.",
+    "inPalio": "Hasta {massimo} puntos: {vincitore} por el ganador, {set} por los sets, hasta {game} por los juegos, y +{esatto} si el resultado es exacto (fallas por uno solo: +{quasi}).",
     "risultatoSet": "Resultado en sets de {nome}",
     "gameTotali": "Juegos totales de cada pareja",
     "notaSuperTieBreak": "El súper tie-break vale 1 juego para quien lo gana.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
-    "partita": "Partido, máximo {massimo} puntos. Elige quién gana y el resultado del 1.º y 2.º set; si termina 2-1 también el long tie-break a 10. El long vale 1 juego para quien lo gana. Ganador acertado +{vincitore}. Resultado en sets exacto (2-0 o 2-1) +{set}. Juegos totales: se suma el error de las dos parejas y sumas {scala} puntos (error→puntos); más allá de {oltre}, nada. Long tie-break: si fallas por {sogliaLong} puntos o menos en total +{long}.",
+    "partita": "Partido, máximo {massimo} puntos. Elige quién gana y escribe el resultado de cada set; si quedan empatados, también el long tie-break, que en los juegos vale 1 juego para quien lo gana. Ganador acertado +{vincitore}. Resultado en sets exacto (2-0 o 2-1) +{set}. Juegos totales: se suma el error de las dos parejas y sumas {scala} puntos (error→puntos); más allá de {oltre}, nada. Resultado exacto (todos los sets y el long) +{esatto}; fallado por uno solo (un juego o un punto) +{quasi}.",
     "torneo": "Torneo: ganador {vincitore} puntos, finalista {finalista}, ponderados según cuántos los eligieron (de la mitad a dos veces y media).",
     "blocco": "Los pronósticos cierran al inicio del partido o del torneo. Los porcentajes de votos se ven solo después del cierre."
   },
@@ -302,7 +302,9 @@
     "game": "Juegos",
     "errore": "error {n}",
     "esatti": "exactos",
-    "long": "Long"
+    "long": "Long",
+    "esattoBonus": "Exacto",
+    "quasi": "casi"
   },
   "riga": {
     "fine": "Fin.",

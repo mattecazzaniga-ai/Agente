@@ -194,8 +194,8 @@ select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, 
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4,8}', '{4,6,10}')$$, 'non corrisponde');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4}', '{4,6}')$$, 'non corrisponde');
 select prova.ok(tiebreak_valido(10, 8) and tiebreak_valido(12, 10) and tiebreak_valido(50, 48) and not tiebreak_valido(51, 49) and not tiebreak_valido(12, 8) and not tiebreak_valido(10, 9), 'long tie-break valido, fino a 50');
-insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4,10}', '{4,6,8}');
-select prova.ok((select set_vincitore = 2 and set_perdente = 1 and game_previsti_a = 11 and game_previsti_b = 10 from pronostici_partita where partita_id = '50000000-0000-0000-0000-000000000003'), 'set e game ricavati dal pronostico set per set');
+insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,3,10}', '{4,6,8}');
+select prova.ok((select set_vincitore = 2 and set_perdente = 1 and game_previsti_a = 10 and game_previsti_b = 10 from pronostici_partita where partita_id = '50000000-0000-0000-0000-000000000003'), 'set e game ricavati dal pronostico set per set');
 reset role;
 select prova.come('00000000-0000-0000-0000-000000000001');
 set role authenticated;
@@ -211,9 +211,9 @@ reset role;
 select prova.ok(totale_game('{6,3,10}', '{4,6,7}', 2::smallint) = 20, 'super tie-break = 1 game');
 -- 6-4 3-6 10-7: game 6+3+1 = 10 contro 4+6 = 10 (il super tie-break vale 1 game a chi lo vince)
 select prova.ok((select game_a = 10 and game_b = 10 from game_totali('{6,3,10}', '{4,6,7}', 2::smallint)), 'game totali con super tie-break');
-select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003') = 13, 'finale 6-4 4-6 10-8 (reale 6-4 3-6 10-7): vincitore 3 + set 4 + game errore 1 → 4 + long errore 1 → 2 = 13');
-select prova.ok((select punti_long = 2 from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003'), 'bonus long tie-break');
-select prova.ok((select punti_vincitore = 3 and punti_set = 4 and punti_game = 4 and errore_game = 1 from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003'), 'dettaglio dei punti salvato');
+select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003') = 13, 'finale 6-4 3-6 10-8 (reale 6-4 3-6 10-7): vincitore 3 + set 4 + game esatti 5 + quasi esatto (1 punto) 1 = 13');
+select prova.ok((select punti_long = 1 from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003'), 'bonus quasi esatto');
+select prova.ok((select punti_vincitore = 3 and punti_set = 4 and punti_game = 5 and errore_game = 0 from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000003'), 'dettaglio dei punti salvato');
 select prova.ok((select punti from pronostici_partita where utente_id = '00000000-0000-0000-0000-000000000001' and partita_id = '50000000-0000-0000-0000-000000000003') = 4, 'finale 2-0, game 12-8: vincitore 3 + set 0 + game errore 4 → 1 = 4');
 -- regole modificabili: cambio il valore del vincitore e ricalcolo
 update regole_punti set punti = 5 where chiave = 'vincitore';

@@ -151,7 +151,7 @@
     "lovince": "won by {nome}",
     "superTieBreak": "The third set (super tie-break) goes to {nome}.",
     "completa": "Complete the score",
-    "inPalio": "Up to {massimo} points: {vincitore} for the winner, {set} for the sets, up to {game} for games and {long} if you nail the long.",
+    "inPalio": "Up to {massimo} points: {vincitore} for the winner, {set} for the sets, up to {game} for games, and +{esatto} if the score is exact (off by just one: +{quasi}).",
     "risultatoSet": "Set score for {nome}",
     "gameTotali": "Total games for each pair",
     "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match, up to {massimo} points. Pick the winner and the score of the 1st and 2nd set; if it ends 2-1, also the long tie-break to 10. The long counts as 1 game for its winner. Right winner +{vincitore}. Exact set score (2-0 or 2-1) +{set}. Total games: the errors on both pairs are added up and you get {scala} points (error→points); beyond {oltre}, nothing. Long tie-break: if you're off by {sogliaLong} points or less in total +{long}.",
+    "partita": "Match, up to {massimo} points. Pick the winner and write each set's score; if the sets are split, also the long tie-break, which counts as 1 game for its winner. Right winner +{vincitore}. Exact set score (2-0 or 2-1) +{set}. Total games: errors on both pairs are added up and you get {scala} points (error→points); beyond {oltre}, nothing. Exact score (every set and the long) +{esatto}; off by just one (a game or a point) +{quasi}.",
     "torneo": "Tournament: winner {vincitore} points, finalist {finalista}, weighted by how many picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
@@ -302,7 +302,9 @@
     "game": "Games",
     "errore": "off by {n}",
     "esatti": "exact",
-    "long": "Long"
+    "long": "Long",
+    "esattoBonus": "Exact",
+    "quasi": "close"
   },
   "riga": {
     "fine": "FT",

@@ -44,7 +44,7 @@ export default async function SchedaPartita(props: {
   const haVoti = Object.keys(props.voti).length > 0;
   const regole = await regolePunti();
   const reali = conclusa && !p.ritiro && p.game_a && p.game_b ? gameTotali(p.game_a, p.game_b, p.set_per_vincere) : null;
-  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, long: regole.long_vicino, massimo: massimoPartita(regole) });
+  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, esatto: regole.esatto, quasi: regole.quasi_esatto, massimo: massimoPartita(regole) });
 
   const stato = aperta ? (
     <span className={`chip ${imminente ? "bg-mare text-white" : "bg-mare/10 text-mare"}`}>
@@ -107,13 +107,13 @@ export default async function SchedaPartita(props: {
 
   const vincitoreMio = mio ? (mio.vincitore_id === a?.id ? a : b) : null;
   // colonne del dettaglio punti; il long compare se la partita è andata al long o lo avevi previsto
-  const conLong = Boolean(mio && ((p.game_a?.length ?? 0) === 3 || (mio.game_a?.length ?? 0) === 3));
+  const conBonus = Boolean(mio?.game_a); // pronostico set per set: c'è il bonus del punteggio esatto
   const colonne: [string, number, string][] = mio
     ? [
         [t("punti.vincitore"), mio.punti_vincitore ?? 0, ""],
         [t("punti.set"), mio.punti_set ?? 0, ""],
         [t("punti.game"), mio.punti_game ?? 0, mio.errore_game != null && mio.errore_game > 0 ? t("punti.errore", { n: mio.errore_game }) : mio.errore_game === 0 ? t("punti.esatti") : ""],
-        ...(conLong ? [[t("punti.long"), mio.punti_long ?? 0, ""] as [string, number, string]] : []),
+        ...(conBonus ? [[t("punti.esattoBonus"), mio.punti_long ?? 0, mio.punti_long === 1 ? t("punti.quasi") : ""] as [string, number, string]] : []),
       ]
     : [];
 
