@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import { costruisciPrimoTurno, leggiEntryList, type CoppiaLetta, type GiocatoreLetto } from "@/lib/importa";
 import { leggiPunteggio } from "@/lib/punteggio";
-import { leggiTabelloneItf, sembraTabelloneItf } from "@/lib/importaItf";
+import { leggiTabelloneItf, pianoAggiornamento, sembraTabelloneItf, type PartitaEsistente } from "@/lib/importaItf";
 import { CIRCUITI, GENERI, TURNI, type Turno } from "@/lib/tipi";
 
 export type EsitoAdmin = { ok: boolean; messaggio: string } | null;
@@ -229,7 +229,7 @@ async function importaTabelloneItf(supabase: Awaited<ReturnType<typeof admin>>, 
   if ("errore" in letto) return ko(`Tabellone ITF: ${letto.errore}.`);
   const { data: tabellone } = await supabase.from("tabelloni").select("id, torneo_id, partite(count)").eq("id", tabellone_id).single();
   if (!tabellone) return ko("Tabellone non trovato.");
-  if (((tabellone.partite as unknown as { count: number }[])?.[0]?.count ?? 0) > 0) return ko("Il tabellone ha già delle partite: eliminale prima di importare di nuovo.");
+  if (((tabellone.partite as unknown as { count: number }[])?.[0]?.count ?? 0) > 0) return ko("Questo tabellone ha già le partite: per i risultati nuovi usa il riquadro «Aggiorna risultati dal sito ITF» qui sopra.");
   const primo = costruisciPrimoTurno(letto.posti);
   if ("errore" in primo) return ko(`Tabellone: ${primo.errore}.`);
 
@@ -508,4 +508,77 @@ export async function eliminaSponsor(form: FormData) {
   const percorso = data?.logo_url?.split("/storage/v1/object/public/sponsor/")[1];
   if (percorso) await supabase.storage.from("sponsor").remove([percorso]);
   aggiorna();
+}
+
+/**
+ * Aggiorna un tabellone già importato incollando di nuovo la pagina ITF "Draws & Results": scrive i
+ * risultati nuovi, corregge quelli cambiati, fa avanzare i vincitori (trigger) e ripete finché i turni
+ * successivi, creati dall'avanzamento, non hanno anche loro i risultati presenti nel testo.
+ */
+export async function aggiornaTabelloneItf(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
+  const supabase = await admin();
+  const tabellone_id = uuid(form.get("tabellone_id"));
+  const testoItf = testo(form.get("testo"));
+  const orario = iso(form.get("inizio_at"));
+  if (!tabellone_id) return ko("Tabellone non trovato.");
+  if (!sembraTabelloneItf(testoItf)) return ko("Non sembra il tabellone ITF: sul sito apri «Draws & Results», Seleziona tutto → Copia e incolla qui.");
+  const letto = leggiTabelloneItf(testoItf, 2);
+  if ("errore" in letto) return ko(`Tabellone ITF: ${letto.errore}.`);
+
+  let idPosti: (string | null)[];
+  try {
+    const reali = letto.posti.filter((p): p is CoppiaLetta => Boolean(p));
+    const ids = await idCoppie(supabase, tabellone_id, reali);
+    let k = 0;
+    idPosti = letto.posti.map((p) => (p ? ids[k++] : null));
+  } catch (e) {
+    return ko((e as Error).message);
+  }
+
+  let nuovi = 0;
+  let corretti = 0;
+  let uguali = 0;
+  const avvisi = [...letto.avvisi];
+  for (let giro = 0; giro < 7; giro++) {
+    const { data: esistenti } = await supabase
+      .from("partite")
+      .select("id, turno, ordine, stato, coppia_a_id, coppia_b_id, game_a, game_b, ritiro, vincitore_id")
+      .eq("tabellone_id", tabellone_id);
+    const piano = pianoAggiornamento(letto, idPosti, (esistenti as PartitaEsistente[]) ?? []);
+    if (giro === 0) {
+      uguali = piano.uguali;
+      avvisi.push(...piano.avvisi);
+    }
+    if (piano.aggiornamenti.length === 0) break;
+    for (const u of piano.aggiornamenti) {
+      const { error } = await supabase.from("partite").update(u.campi).eq("id", u.id);
+      if (error) avvisi.push(`${u.turno} n.${u.ordine}: ${error.message}`);
+      else if (u.tipo === "nuovo") nuovi++;
+      else corretti++;
+    }
+  }
+
+  // Partite pronte da giocare con un orario già passato (create dall'avanzamento): nuovo orario se indicato
+  const { data: aperte } = await supabase
+    .from("partite")
+    .select("id, inizio_at")
+    .eq("tabellone_id", tabellone_id)
+    .eq("stato", "in_programma")
+    .not("coppia_a_id", "is", null)
+    .not("coppia_b_id", "is", null);
+  const scadute = (aperte ?? []).filter((p) => new Date(p.inizio_at).getTime() <= Date.now());
+  let nota = "";
+  if (scadute.length && orario) {
+    await supabase.from("partite").update({ inizio_at: orario }).in("id", scadute.map((p) => p.id));
+    nota = `\n${scadute.length} partite da giocare ora si chiudono alle ${new Date(orario).toLocaleString("it-IT", { timeZone: "Europe/Rome", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}.`;
+  } else if (scadute.length) {
+    nota = `\nAttenzione: ${scadute.length} partite da giocare hanno un orario già passato, quindi i pronostici sono chiusi. Indica l'orario delle prossime partite e incolla di nuovo (oppure correggilo nella partita).`;
+  }
+
+  aggiorna();
+  return ok(
+    `Fatto: ${nuovi} risultati nuovi, ${corretti} corretti, ${uguali} già presenti. Punti e avanzamenti aggiornati.` +
+      nota +
+      (avvisi.length ? `\n\nDa controllare:\n${avvisi.join("\n")}` : ""),
+  );
 }

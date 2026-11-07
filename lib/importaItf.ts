@@ -213,3 +213,59 @@ export function leggiTabelloneItf(testo: string, setPerVincere: 1 | 2 = 2): Tabe
   }
   return { dimensione, posti, giocate, avvisi };
 }
+
+export interface PartitaEsistente {
+  id: string;
+  turno: Turno;
+  ordine: number;
+  stato: string;
+  coppia_a_id: string | null;
+  coppia_b_id: string | null;
+  game_a: number[] | null;
+  game_b: number[] | null;
+  ritiro: boolean;
+  vincitore_id: string | null;
+}
+
+export interface Aggiornamento {
+  id: string;
+  turno: Turno;
+  ordine: number;
+  tipo: "nuovo" | "corretto";
+  campi: { stato: "conclusa"; game_a: number[] | null; game_b: number[] | null; ritiro: boolean; vincitore_id: string | null };
+}
+
+const ORDINE_TURNI: Turno[] = ["R64", "R32", "R16", "QF", "SF", "F"];
+
+/**
+ * Confronta il tabellone ITF incollato con le partite già nel database e dice quali risultati scrivere:
+ * i nuovi, quelli da correggere, e quante partite sono già uguali. Le partite di un turno che il database
+ * non ha ancora (verranno create dall'avanzamento) restano in "mancanti": si scrivono in un secondo passaggio.
+ */
+export function pianoAggiornamento(letto: TabelloneItf, idPosti: (string | null)[], esistenti: PartitaEsistente[]) {
+  const aggiornamenti: Aggiornamento[] = [];
+  const mancanti: PartitaItf[] = [];
+  const avvisi: string[] = [];
+  let uguali = 0;
+  const uguale = (x: number[] | null, y: number[]) => JSON.stringify(x ?? []) === JSON.stringify(y);
+  for (const g of [...letto.giocate].sort((x, y) => ORDINE_TURNI.indexOf(x.turno) - ORDINE_TURNI.indexOf(y.turno) || x.ordine - y.ordine)) {
+    const p = esistenti.find((e) => e.turno === g.turno && e.ordine === g.ordine);
+    if (!p) {
+      mancanti.push(g);
+      continue;
+    }
+    const a = idPosti[g.a];
+    const b = idPosti[g.b];
+    if (p.coppia_a_id !== a || p.coppia_b_id !== b) {
+      avvisi.push(`${g.turno} n.${g.ordine}: nel sito le coppie sono diverse da quelle del tabellone, risultato non inserito.`);
+      continue;
+    }
+    const campi = { stato: "conclusa" as const, game_a: g.game_a.length ? g.game_a : null, game_b: g.game_b.length ? g.game_b : null, ritiro: g.ritiro, vincitore_id: g.ritiro ? (g.vince === "a" ? a : b) : null };
+    if (p.stato === "conclusa" && p.ritiro === g.ritiro && uguale(p.game_a, g.game_a) && uguale(p.game_b, g.game_b)) {
+      uguali++;
+      continue;
+    }
+    aggiornamenti.push({ id: p.id, turno: g.turno, ordine: g.ordine, tipo: p.stato === "conclusa" ? "corretto" : "nuovo", campi });
+  }
+  return { aggiornamenti, mancanti, uguali, avvisi };
+}
