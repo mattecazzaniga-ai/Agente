@@ -291,7 +291,8 @@
     "storico": "I tuoi pronostici",
     "storicoVuoto": "Non hai ancora fatto pronostici.",
     "storicoAiuto": "Tocca una partita per vedere voce per voce cosa avevi messo e quanti punti hai preso.",
-    "impostazioni": "Nickname e Paese"
+    "impostazioni": "Nickname e Paese",
+    "trofei": "I tuoi trofei"
   },
   "condividi": {
     "condividi": "Condividi",
@@ -411,5 +412,54 @@
     "setVinti": "set vinti indovinati",
     "migliore": "La tua partita migliore",
     "nessunaValutata": "Le statistiche arrivano quando finiscono le partite che hai pronosticato."
+  },
+  "trofei": {
+    "sbloccati": "{n} trofei su {totale}",
+    "prossimo": "{valore}/{soglia}",
+    "massimo": "livello massimo",
+    "livello1": "Bronzo",
+    "livello2": "Argento",
+    "livello3": "Oro",
+    "medaglie": "Medaglie dei mesi passati: oro, argento, bronzo",
+    "esordio": {
+      "nome": "Esordio",
+      "descr": "Il primo pronostico"
+    },
+    "fedelissimo": {
+      "nome": "Fedelissimo",
+      "descr": "Pronostici fatti"
+    },
+    "serie": {
+      "nome": "In serie",
+      "descr": "Vincitori indovinati di fila"
+    },
+    "occhio": {
+      "nome": "Occhio di falco",
+      "descr": "Set con i game esatti"
+    },
+    "long": {
+      "nome": "Re del long",
+      "descr": "Long tie-break esatti"
+    },
+    "perfetta": {
+      "nome": "Partita perfetta",
+      "descr": "Tutto esatto, set per set"
+    },
+    "fiuto": {
+      "nome": "Fiuto per le sorprese",
+      "descr": "Teste di serie battute che avevi previsto"
+    },
+    "giramondo": {
+      "nome": "Giramondo",
+      "descr": "Tornei diversi pronosticati"
+    },
+    "campione": {
+      "nome": "Campione del mese",
+      "descr": "Mesi chiusi al 1° posto"
+    },
+    "podio": {
+      "nome": "Sul podio",
+      "descr": "Mesi chiusi tra i primi tre"
+    }
   }
 }

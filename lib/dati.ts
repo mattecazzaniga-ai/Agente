@@ -5,6 +5,7 @@ import "server-only";
 import { cache } from "react";
 import { supabaseServer } from "./supabase/server";
 import { REGOLE_PREDEFINITE, type Regole } from "./punti";
+import { ultimiMesi } from "./formato";
 import type { Coppia, Notizia, Partita, Profilo, PronosticoPartita, PronosticoTorneo, StatoTorneo, Tabellone, Torneo } from "./tipi";
 
 export const SELECT_COPPIA =
@@ -239,4 +240,12 @@ export async function sponsorAttivi(): Promise<Sponsor[]> {
   const supabase = await supabaseServer();
   const { data } = await supabase.from("sponsor").select("id, nome, link, logo_url").eq("attivo", true).order("ordine").order("creato_at");
   return (data as Sponsor[]) ?? [];
+}
+
+/** I primi tre di ogni mese già chiuso (classifica mondiale): da qui nascono le medaglie. */
+export async function podiMesiChiusi(quanti = 12): Promise<{ utente_id: string; posizione: number }[][]> {
+  const supabase = await supabaseServer();
+  const mesi = ultimiMesi(quanti + 1).slice(1);
+  const risposte = await Promise.all(mesi.map((m) => supabase.rpc("classifica", { p_mese: m, p_limite: 3 })));
+  return risposte.map((r) => ((r.data as { utente_id: string; posizione: number }[] | null) ?? []).filter((x) => x.posizione <= 3));
 }

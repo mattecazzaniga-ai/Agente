@@ -291,7 +291,8 @@
     "storico": "Tus pronósticos",
     "storicoVuoto": "Todavía no has hecho pronósticos.",
     "storicoAiuto": "Toca un partido para ver, parte por parte, qué pusiste y cuántos puntos sumaste.",
-    "impostazioni": "Nickname y país"
+    "impostazioni": "Nickname y país",
+    "trofei": "Tus trofeos"
   },
   "condividi": {
     "condividi": "Compartir",
@@ -411,5 +412,54 @@
     "setVinti": "sets ganados acertados",
     "migliore": "Tu mejor partido",
     "nessunaValutata": "Las estadísticas llegan cuando terminan los partidos que pronosticaste."
+  },
+  "trofei": {
+    "sbloccati": "{n} trofeos de {totale}",
+    "prossimo": "{valore}/{soglia}",
+    "massimo": "nivel máximo",
+    "livello1": "Bronce",
+    "livello2": "Plata",
+    "livello3": "Oro",
+    "medaglie": "Medallas de meses pasados: oro, plata, bronce",
+    "esordio": {
+      "nome": "Debut",
+      "descr": "Tu primer pronóstico"
+    },
+    "fedelissimo": {
+      "nome": "Fiel",
+      "descr": "Pronósticos hechos"
+    },
+    "serie": {
+      "nome": "En racha",
+      "descr": "Ganadores acertados seguidos"
+    },
+    "occhio": {
+      "nome": "Ojo de halcón",
+      "descr": "Sets con los juegos exactos"
+    },
+    "long": {
+      "nome": "Rey del long",
+      "descr": "Long tie-breaks exactos"
+    },
+    "perfetta": {
+      "nome": "Partido perfecto",
+      "descr": "Todo exacto, set por set"
+    },
+    "fiuto": {
+      "nome": "Olfato para sorpresas",
+      "descr": "Cabezas de serie eliminadas que previste"
+    },
+    "giramondo": {
+      "nome": "Trotamundos",
+      "descr": "Torneos distintos pronosticados"
+    },
+    "campione": {
+      "nome": "Campeón del mes",
+      "descr": "Meses terminados 1.º"
+    },
+    "podio": {
+      "nome": "En el podio",
+      "descr": "Meses terminados entre los tres primeros"
+    }
   }
 }

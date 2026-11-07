@@ -123,3 +123,45 @@ export const Logo = ({ className = "h-8 w-8" }: P) => (
 export const Marchio = ({ className = "h-11", priority = true }: P & { priority?: boolean }) => (
   <Image src={logoBeachPeck} alt="Beach Peck" priority={priority} sizes="160px" className={`w-auto ${className}`} />
 );
+export const IconaFuoco = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.2 2.2-5 3.6-7.3.6 1.5 1.5 2.4 2.6 2.8C11.9 7.4 12.9 4.9 15 3c.3 3.4 3.5 5.6 3.5 10.6 0 4.4-2.7 7.4-6.5 7.4z" />
+    <path d="M12 21c-1.6 0-2.8-1.2-2.8-2.9 0-1.8 1.6-2.7 2.3-4.1.9 1 3.3 2.3 3.3 4.3 0 1.6-1.2 2.7-2.8 2.7z" />
+  </svg>
+);
+export const IconaBersaglio = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="8.5" />
+    <circle cx="12" cy="12" r="5" />
+    <circle cx="12" cy="12" r="1.5" />
+  </svg>
+);
+export const IconaFulmine = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z" />
+  </svg>
+);
+export const IconaStella = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" />
+  </svg>
+);
+export const IconaGlobo = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M3.5 12h17M12 3.5c2.3 2.4 3.5 5.2 3.5 8.5s-1.2 6.1-3.5 8.5c-2.3-2.4-3.5-5.2-3.5-8.5s1.2-6.1 3.5-8.5z" />
+  </svg>
+);
+export const IconaPallina = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M5.5 6.5c3 1.6 4.6 3.4 4.6 5.5s-1.6 3.9-4.6 5.5M18.5 6.5c-3 1.6-4.6 3.4-4.6 5.5s1.6 3.9 4.6 5.5" />
+  </svg>
+);
+export const IconaMedaglia = ({ className = "h-6 w-6" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M8 3h8l-2.5 6h-3zM9.5 3 12 9M14.5 3 12 9" />
+    <circle cx="12" cy="15" r="5.5" />
+    <path d="m12 12.5.8 1.6 1.7.2-1.3 1.2.3 1.7-1.5-.8-1.5.8.3-1.7-1.3-1.2 1.7-.2z" />
+  </svg>
+);

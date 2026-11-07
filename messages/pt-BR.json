@@ -291,7 +291,8 @@
     "storico": "Seus palpites",
     "storicoVuoto": "Você ainda não fez palpites.",
     "storicoAiuto": "Toque em um jogo para ver, parte por parte, o que você colocou e quantos pontos fez.",
-    "impostazioni": "Nickname e país"
+    "impostazioni": "Nickname e país",
+    "trofei": "Seus troféus"
   },
   "condividi": {
     "condividi": "Compartilhar",
@@ -411,5 +412,54 @@
     "setVinti": "sets vencidos certos",
     "migliore": "Seu melhor jogo",
     "nessunaValutata": "As estatísticas aparecem quando terminam os jogos que você palpitou."
+  },
+  "trofei": {
+    "sbloccati": "{n} de {totale} troféus",
+    "prossimo": "{valore}/{soglia}",
+    "massimo": "nível máximo",
+    "livello1": "Bronze",
+    "livello2": "Prata",
+    "livello3": "Ouro",
+    "medaglie": "Medalhas dos meses passados: ouro, prata, bronze",
+    "esordio": {
+      "nome": "Estreia",
+      "descr": "Seu primeiro palpite"
+    },
+    "fedelissimo": {
+      "nome": "Fiel",
+      "descr": "Palpites feitos"
+    },
+    "serie": {
+      "nome": "Embalado",
+      "descr": "Vencedores certos seguidos"
+    },
+    "occhio": {
+      "nome": "Olho de águia",
+      "descr": "Sets com games exatos"
+    },
+    "long": {
+      "nome": "Rei do long",
+      "descr": "Long tie-breaks exatos"
+    },
+    "perfetta": {
+      "nome": "Jogo perfeito",
+      "descr": "Tudo exato, set por set"
+    },
+    "fiuto": {
+      "nome": "Faro para zebras",
+      "descr": "Cabeças de chave eliminadas que você previu"
+    },
+    "giramondo": {
+      "nome": "Viajante",
+      "descr": "Torneios diferentes palpitados"
+    },
+    "campione": {
+      "nome": "Campeão do mês",
+      "descr": "Meses terminados em 1º"
+    },
+    "podio": {
+      "nome": "No pódio",
+      "descr": "Meses terminados entre os três primeiros"
+    }
   }
 }

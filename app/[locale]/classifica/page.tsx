@@ -4,7 +4,9 @@ import TestataFoto from "@/components/TestataFoto";
 import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
-import { mieLeghe, premi, sessione } from "@/lib/dati";
+import { mieLeghe, podiMesiChiusi, premi, sessione } from "@/lib/dati";
+import { medagliePerUtente, type Medaglie } from "@/lib/trofei";
+import { MedaglieMese } from "@/components/Trofei";
 import { indirizzoSito } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese, ultimiMesi } from "@/lib/formato";
 import type { RigaClassifica } from "@/lib/tipi";
@@ -28,7 +30,9 @@ export default async function Classifica({ params, searchParams }: { params: Pro
   const mesi = ultimiMesi(6);
   const mese = mesi.includes(sp.mese ?? "") ? sp.mese! : meseIso();
   const ambito: Ambito = sp.ambito === "paese" || sp.ambito === "lega" ? sp.ambito : "globale";
-  const [{ supabase, user, profilo }, sito, inPalio] = await Promise.all([sessione(), indirizzoSito(), premi()]);
+  const [{ supabase, user, profilo }, sito, inPalio, podi] = await Promise.all([sessione(), indirizzoSito(), premi(), podiMesiChiusi()]);
+  const medaglie = medagliePerUtente(podi);
+  const titoloMedaglie = t("trofei.medaglie");
   const leghe = user ? await mieLeghe() : [];
   const lega = ambito === "lega" ? (leghe.find((l) => l.id === sp.lega) ?? leghe[0]) : undefined;
 
@@ -149,7 +153,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       {puoMostrare && lista.length === 0 && <div className="mt-4"><Vuoto testo={t("classifica.nessuno")} azione={t("classifica.vaiAPronosticare")} link="/tornei" /></div>}
       {puoMostrare && lista.length > 0 && (
         <>
-          <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} premi={inPalio} />
+          <Podio medaglie={medaglie} titoloMedaglie={titoloMedaglie} righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} premi={inPalio} />
           <h2 className="titolo-sezione">{t("classifica.completa")}</h2>
           <div className="pannello overflow-hidden">
             {/* telefono: posizione, giocatore e punti, con le statistiche in piccolo sotto il nome; da tablet in su anche le colonne */}
@@ -171,6 +175,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
                     <span className="min-w-0">
                       <span className="block truncate font-semibold">
                         <span aria-hidden>{bandiera(r.paese)}</span> {r.nickname}
+                        <MedaglieMese m={medaglie.get(r.utente_id)} titolo={titoloMedaglie} />
                         {sonoIo && <span className="chip ml-1 bg-viola text-white">{t("classifica.tu")}</span>}
                       </span>
                       <span className="block text-xs text-tenue sm:hidden">
@@ -209,7 +214,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
  */
 const MEDAGLIE: Record<number, string> = { 1: "bg-sole text-inchiostro", 2: "bg-[#c9cfdb] text-inchiostro", 3: "bg-[#d9965b] text-white" };
 
-function Podio({ righe, io, tu, distacco, premi: inPalio }: { righe: RigaClassifica[]; io?: string; tu: string; distacco: (n: number) => string; premi: Record<number, string> }) {
+function Podio({ righe, io, tu, distacco, premi: inPalio, medaglie, titoloMedaglie }: { righe: RigaClassifica[]; io?: string; tu: string; distacco: (n: number) => string; premi: Record<number, string>; medaglie: Map<string, Medaglie>; titoloMedaglie: string }) {
   const [primo, ...altri] = righe;
   if (!primo) return null;
   const max = Math.max(1, primo.punti);
@@ -222,6 +227,7 @@ function Podio({ righe, io, tu, distacco, premi: inPalio }: { righe: RigaClassif
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-2xl font-extrabold leading-tight tracking-tight">
             {bandiera(primo.paese)} {primo.nickname}
+            <MedaglieMese m={medaglie.get(primo.utente_id)} titolo={titoloMedaglie} />
             {primo.utente_id === io && <span className="chip ml-2 bg-viola align-middle text-white">{tu}</span>}
           </p>
           <p className="text-sm text-tenue">
@@ -240,6 +246,7 @@ function Podio({ righe, io, tu, distacco, premi: inPalio }: { righe: RigaClassif
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">
               {bandiera(r.paese)} {r.nickname}
+              <MedaglieMese m={medaglie.get(r.utente_id)} titolo={titoloMedaglie} />
               {r.utente_id === io && <span className="chip ml-2 bg-viola text-white">{tu}</span>}
             </p>
             {inPalio[r.posizione] && <p className="text-xs font-semibold text-seme">{inPalio[r.posizione]}</p>}

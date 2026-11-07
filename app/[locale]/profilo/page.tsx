@@ -2,7 +2,9 @@ import { redirect } from "next/navigation";
 import Intestazione from "@/components/Intestazione";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
+import { podiMesiChiusi, sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
+import { calcolaTrofei, medagliePerUtente } from "@/lib/trofei";
+import { Bacheca } from "@/components/Trofei";
 import { meseIso, nomeMese } from "@/lib/formato";
 import RigaPartita from "@/components/RigaPartita";
 import Vuoto from "@/components/Vuoto";
@@ -27,7 +29,8 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   if (!user || !profilo) redirect(urlAccesso(locale, `/${locale}/profilo`));
   const t = await getTranslations();
   const mese = meseIso();
-  const [storico, { data: mia }] = await Promise.all([storicoPronostici(user.id, 200), supabase.rpc("mia_posizione", { p_mese: mese })]);
+  const [storico, { data: mia }, podi] = await Promise.all([storicoPronostici(user.id, 500), supabase.rpc("mia_posizione", { p_mese: mese }), podiMesiChiusi()]);
+  const trofei = calcolaTrofei(storico, medagliePerUtente(podi).get(user.id) ?? { oro: 0, argento: 0, bronzo: 0 });
   const io = (mia as { posizione: number; punti: number; partecipanti: number }[] | null)?.[0];
   // statistiche solo sui pronostici già valutati (partite concluse)
   const valutati = storico.filter((x) => x.mio.punti != null);
@@ -54,6 +57,9 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
         ))}
       </dl>
       {valutati.length > 0 && <p className="px-1 text-xs text-tenue">{t("profilo.puntiTotali", { punti: puntiTotali, partite: valutati.length })}</p>}
+
+      <h2 className="titolo-sezione">{t("profilo.trofei")}</h2>
+      <Bacheca trofei={trofei} />
 
       <h2 className="titolo-sezione">{t("statistiche.tueTitolo")}</h2>
       {st.valutati === 0 ? (
