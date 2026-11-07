@@ -148,8 +148,15 @@ export async function importaTabellone(_: EsitoAdmin, form: FormData): Promise<E
   const inizio = iso(form.get("inizio_at"));
   const setPerVincere = testo(form.get("set_per_vincere")) === "2" ? 2 : 1;
   const soloCoppie = form.get("solo_coppie") === "1";
-  if (!tabellone_id || (!soloCoppie && !inizio)) return ko("Indica l'orario del primo turno.");
-  if (!soloCoppie && sembraTabelloneItf(testo(form.get("testo")))) return importaTabelloneItf(supabase, tabellone_id, testo(form.get("testo")), inizio!);
+  if (!tabellone_id) return ko("Tabellone non trovato.");
+  // Tabellone ITF incollato: se le partite ci sono già aggiorna i risultati, altrimenti crea tutto
+  if (!soloCoppie && sembraTabelloneItf(testo(form.get("testo")))) {
+    const { count } = await supabase.from("partite").select("id", { count: "exact", head: true }).eq("tabellone_id", tabellone_id);
+    if ((count ?? 0) > 0) return aggiornaTabelloneItf(_, form);
+    if (!inizio) return ko("È la prima volta che carichi questo tabellone: indica a che ora si giocano le prossime partite.");
+    return importaTabelloneItf(supabase, tabellone_id, testo(form.get("testo")), inizio);
+  }
+  if (!soloCoppie && !inizio) return ko("Indica l'orario del primo turno.");
   const lettura = leggiEntryList(testo(form.get("testo")));
   if (lettura.errori.length) return ko(`Righe non riconosciute:\n${lettura.errori.map((e) => `riga ${e.riga}: ${e.testo}`).join("\n")}`);
   const reali = lettura.posti.filter((p): p is CoppiaLetta => Boolean(p));
@@ -229,7 +236,7 @@ async function importaTabelloneItf(supabase: Awaited<ReturnType<typeof admin>>, 
   if ("errore" in letto) return ko(`Tabellone ITF: ${letto.errore}.`);
   const { data: tabellone } = await supabase.from("tabelloni").select("id, torneo_id, partite(count)").eq("id", tabellone_id).single();
   if (!tabellone) return ko("Tabellone non trovato.");
-  if (((tabellone.partite as unknown as { count: number }[])?.[0]?.count ?? 0) > 0) return ko("Questo tabellone ha già le partite: per i risultati nuovi usa il riquadro «Aggiorna risultati dal sito ITF» qui sopra.");
+  if (((tabellone.partite as unknown as { count: number }[])?.[0]?.count ?? 0) > 0) return ko("Questo tabellone ha già le partite: incolla di nuovo il tabellone ITF per aggiornare i risultati.");
   const primo = costruisciPrimoTurno(letto.posti);
   if ("errore" in primo) return ko(`Tabellone: ${primo.errore}.`);
 

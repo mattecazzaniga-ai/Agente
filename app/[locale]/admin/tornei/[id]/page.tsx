@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { caricaTorneo } from "@/lib/dati";
 import { nomeCoppia, nomeCoppiaLungo, punteggio } from "@/lib/formato";
 import { GENERI, TURNI, type Coppia, type Partita, type Tabellone } from "@/lib/tipi";
-import { aggiornaTabelloneItf, creaTabellone, eliminaCoppia, eliminaPartita, eliminaTabellone, eliminaTorneo, importaTabellone, salvaPartita, salvaRisultato, salvaTorneo } from "../../azioni";
+import { creaTabellone, eliminaCoppia, eliminaPartita, eliminaTabellone, eliminaTorneo, importaTabellone, salvaPartita, salvaRisultato, salvaTorneo } from "../../azioni";
 import FormAdmin from "@/components/admin/FormAdmin";
 import Pannello from "@/components/admin/Pannello";
 import CampiTorneo from "@/components/admin/CampiTorneo";
@@ -84,28 +84,36 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
         <span className="chip">{tb.partite.length} partite</span>
       </div>
 
-      {tb.partite.length > 0 && (
-        <Pannello titolo={<>Aggiorna risultati dal sito ITF</>} aperto className="scheda border-2 border-viola/40">
-          <ol className="mt-2 list-decimal space-y-0.5 pl-5 text-sm text-tenue">
-            <li>Sul sito ITF apri il torneo → <b>Draws &amp; Results</b> → questo tabellone.</li>
-            <li>Tieni premuto sulla pagina → <b>Seleziona tutto</b> → <b>Copia</b>.</li>
-            <li>Incolla qui sotto e premi <b>Aggiorna risultati</b>.</li>
-          </ol>
-          <p className="mt-1 text-xs text-tenue">Si scrivono solo i risultati nuovi o cambiati; i vincitori avanzano e i punti si calcolano da soli. Puoi rifarlo tutte le volte che vuoi.</p>
-          <div className="mt-3">
-            <FormAdmin azione={aggiornaTabelloneItf} bottone="Aggiorna risultati">
-              <input type="hidden" name="tabellone_id" value={tb.id} />
-              <textarea name="testo" required rows={6} placeholder="Incolla qui il testo copiato da Draws & Results" className="campo min-h-32 py-2 font-mono text-sm" />
-              <CampoDataOra nome="inizio_at" etichetta="Orario delle prossime partite (facoltativo)" obbligatorio={false} />
-            </FormAdmin>
-          </div>
-        </Pannello>
-      )}
+      <Pannello titolo={<>Incolla il tabellone ITF</>} aperto className="scheda border-2 border-viola/40">
+        <ol className="mt-2 list-decimal space-y-0.5 pl-5 text-sm text-tenue">
+          <li>Sul sito ITF apri il torneo → <b>Draws &amp; Results</b> → questo tabellone.</li>
+          <li>Tieni premuto sulla pagina → <b>Seleziona tutto</b> → <b>Copia</b>.</li>
+          <li>Incolla qui sotto e premi <b>Carica</b>.</li>
+        </ol>
+        <p className="mt-1 text-xs text-tenue">
+          {tb.partite.length === 0
+            ? "La prima volta crea coppie, partite e risultati già giocati. I vincitori avanzano da soli (1ª contro 2ª, 3ª contro 4ª…)."
+            : "Il tabellone c'è già: si scrivono solo i risultati nuovi o cambiati, i vincitori avanzano e i punti si calcolano da soli. Rifallo ogni volta che vuoi."}
+        </p>
+        <div className="mt-3">
+          <FormAdmin azione={importaTabellone} bottone={tb.partite.length === 0 ? "Carica tabellone" : "Carica risultati"}>
+            <input type="hidden" name="tabellone_id" value={tb.id} />
+            <input type="hidden" name="set_per_vincere" value="2" />
+            <textarea name="testo" required rows={6} placeholder="Incolla qui il testo copiato da Draws & Results" className="campo min-h-32 py-2 font-mono text-sm" />
+            <CampoDataOra
+              nome="inizio_at"
+              valore={tb.partite.length === 0 ? inizio : undefined}
+              etichetta={tb.partite.length === 0 ? "Orario delle prossime partite" : "Orario delle prossime partite (facoltativo)"}
+              obbligatorio={tb.partite.length === 0}
+            />
+          </FormAdmin>
+        </div>
+      </Pannello>
 
-      <Pannello titolo={<>Importa entry list / tabellone</>} aperto={tb.coppie.length === 0}>
+      <Pannello titolo={<>Altro: entry list a mano</>}>
         <p className="mt-2 text-xs text-tenue">
-          Incolla le coppie <b>nell&apos;ordine del tabellone</b> (dall&apos;alto in basso), una per riga. Scrivi BYE per un posto vuoto. Si creano giocatori (senza doppioni), coppie e
-          partite del primo turno; chi ha il BYE passa al turno dopo. <b>Tabellone ITF:</b> apri «Draws &amp; Results» sul sito ITF, Seleziona tutto → Copia e incolla qui: vengono create tutte le partite con i risultati già giocati (l&apos;orario sotto vale per le partite ancora da giocare).
+          Solo se non hai il tabellone ITF. Incolla le coppie <b>nell&apos;ordine del tabellone</b> (dall&apos;alto in basso), una per riga. Scrivi BYE per un posto vuoto. Si creano giocatori,
+          coppie e partite del primo turno; chi ha il BYE passa al turno dopo.
         </p>
         <div className="mt-3">
           <FormAdmin azione={importaTabellone} bottone="Importa">
