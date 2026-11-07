@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTornei, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
+import { caricaTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese } from "@/lib/formato";
 import { FOTO } from "@/lib/foto";
+import { massimo21 } from "@/lib/punti";
 import type { RigaClassifica } from "@/lib/tipi";
 import SchedaPartita from "@/components/SchedaPartita";
 import RigaPartita from "@/components/RigaPartita";
@@ -39,7 +40,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   setRequestLocale(locale);
   const t = await getTranslations();
   const mese = meseIso();
-  const [{ user, profilo, supabase }, aperte, live, risultati, inCorso, prossimi, notizie, sito] = await Promise.all([
+  const [{ user, profilo, supabase }, aperte, live, risultati, inCorso, prossimi, notizie, sito, regole] = await Promise.all([
     sessione(),
     partiteAperte(8),
     partiteInCorso(6),
@@ -48,6 +49,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     caricaTornei("in_programma", 4),
     notiziePubblicate(locale, 3),
     indirizzoSito(),
+    regolePunti(),
   ]);
   const [{ data: classifica }, { data: mia }, miei] = await Promise.all([
     supabase.rpc("classifica", { p_mese: mese, p_limite: 5 }),
@@ -66,7 +68,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <RigaPartita partita={p} a={p.coppia_a} b={p.coppia_b} mio={miei?.partita.get(p.id) ?? null} href={link(p)} sopra={`${p.tabellone.torneo.nome} · ${t(`turno.${p.turno}`)}`} />
     </li>
   );
-  const passi = [t("home.passo1"), t("home.passo2"), t("home.passo3")];
+  const passi = [t("home.passo1"), t("home.passo2", { m21: massimo21(regole) }), t("home.passo3")];
 
   return (
     <div>

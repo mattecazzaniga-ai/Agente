@@ -32,7 +32,7 @@
     "passo1t": "Elige",
     "passo1": "Elige quién gana y cómo terminan los sets: 6-4, 7-5… y el long si se va al tercero.",
     "passo2t": "Suma puntos",
-    "passo2": "Al final del partido sumas hasta 14 puntos. Aunque falles por poco, algo te llevas.",
+    "passo2": "Los puntos llegan solos al final del partido: hasta {m21} si lo aciertas todo. Aunque falles por poco, algo te llevas.",
     "passo3t": "Reta a tus amigos",
     "passo3": "Crea una liga con los amigos del club y descubre quién sabe más.",
     "occhiello": "Pronósticos de beach tennis · gratis",
@@ -140,7 +140,7 @@
     "ritiro": "retiro",
     "punti": "+{punti} pts",
     "conclusa": "Terminado",
-    "chiudeTra": "cierra {quando}",
+    "chiudeTra": "cierra en {quando}",
     "puoiCambiare": "Puedes cambiarlo hasta que empiece el partido.",
     "scegliPrima": "Primero elige quién gana",
     "tocca": "¿Quién gana? Toca una pareja.",
@@ -151,7 +151,7 @@
     "lovince": "lo gana {nome}",
     "superTieBreak": "El tercer set (súper tie-break) lo gana {nome}.",
     "completa": "Completa el resultado",
-    "inPalio": "Hasta {massimo} puntos: {vincitore} por el ganador, {set20} por un 2-0 acertado ({set21} por un 2-1), y hasta {set} por cada set y por el long si aciertas.",
+    "inPalio": "Hasta {m20} puntos si termina 2-0 y hasta {m21} si termina 2-1 (con el long): {vincitore} por el ganador, {set20} por el 2-0 o {set21} por el 2-1, hasta {set} por cada set y por el long.",
     "risultatoSet": "Resultado en sets de {nome}",
     "gameTotali": "Juegos totales de cada pareja",
     "notaSuperTieBreak": "El súper tie-break vale 1 juego para quien lo gana.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
-    "intro": "En cada partido elige quién gana y escribe el resultado de cada set. Hasta {massimo} puntos por partido, sumando estas cuatro partes:",
+    "intro": "En cada partido elige quién gana y escribe el resultado de cada set. El máximo es {m20} puntos si termina 2-0 y {m21} si termina 2-1, porque en el 2-1 también está el long. Son cuatro partes:",
     "chiVince": "Quién gana",
     "chiVinceTesto": "Aciertas qué pareja gana el partido.",
     "comeFinisce": "Sets ganados",
@@ -355,5 +355,10 @@
     "soloSeVince": "vale solo con el ganador acertado",
     "noLong": "no jugado",
     "ritiro": "Partido terminado por retiro: solo cuenta quién gana."
+  },
+  "tempo": {
+    "giorniOre": "{g} d {h} h",
+    "oreMinuti": "{h} h {m} min",
+    "minuti": "{m} min"
   }
 }

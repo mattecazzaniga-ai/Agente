@@ -32,7 +32,7 @@
     "passo1t": "Pick",
     "passo1": "Pick the winner and how the sets end: 6-4, 7-5… and the long tie-break if it goes to three.",
     "passo2t": "Score points",
-    "passo2": "After the match you get up to 14 points. Even a near miss scores something.",
+    "passo2": "Points arrive on their own after the match: up to {m21} if you nail everything. Even a near miss scores something.",
     "passo3t": "Challenge friends",
     "passo3": "Start a league with your club friends and find out who really knows the game.",
     "occhiello": "Beach tennis predictions · free",
@@ -140,7 +140,7 @@
     "ritiro": "retired",
     "punti": "+{punti} pts",
     "conclusa": "Finished",
-    "chiudeTra": "closes {quando}",
+    "chiudeTra": "closes in {quando}",
     "puoiCambiare": "You can change it until the match starts.",
     "scegliPrima": "First pick who wins",
     "tocca": "Who wins? Tap a pair.",
@@ -151,7 +151,7 @@
     "lovince": "won by {nome}",
     "superTieBreak": "The third set (super tie-break) goes to {nome}.",
     "completa": "Complete the score",
-    "inPalio": "Up to {massimo} points: {vincitore} for the winner, {set20} for a correct 2-0 ({set21} for 2-1), and up to {set} for each set and for the long if you nail it.",
+    "inPalio": "Up to {m20} points if it ends 2-0 and up to {m21} if it ends 2-1 (with the long): {vincitore} for the winner, {set20} for 2-0 or {set21} for 2-1, up to {set} for each set and for the long.",
     "risultatoSet": "Set score for {nome}",
     "gameTotali": "Total games for each pair",
     "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "How points work",
-    "intro": "In every match pick who wins and write each set's score. Up to {massimo} points per match, adding these four:",
+    "intro": "In every match pick who wins and write each set's score. The top score is {m20} points if it ends 2-0 and {m21} if it ends 2-1, because 2-1 also has the long. There are four parts:",
     "chiVince": "Who wins",
     "chiVinceTesto": "You guess which pair wins the match.",
     "comeFinisce": "Sets won",
@@ -355,5 +355,10 @@
     "soloSeVince": "counts only with the right winner",
     "noLong": "not played",
     "ritiro": "Match ended by retirement: only the winner counts."
+  },
+  "tempo": {
+    "giorniOre": "{g}d {h}h",
+    "oreMinuti": "{h}h {m}m",
+    "minuti": "{m} min"
   }
 }

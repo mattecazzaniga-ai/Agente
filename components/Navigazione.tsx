@@ -1,21 +1,27 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { IconaAmici, IconaCalendario, IconaCasa, IconaNotizie, IconaPodio } from "./Icone";
+import { IconaAmici, IconaCalendario, IconaCasa, IconaNotizie, IconaPersona, IconaPodio } from "./Icone";
 
-const VOCI = [
+const BASE = [
   { href: "/", chiave: "home", Icona: IconaCasa },
   { href: "/tornei", chiave: "tornei", Icona: IconaCalendario },
   { href: "/classifica", chiave: "classifica", Icona: IconaPodio },
   { href: "/leghe", chiave: "leghe", Icona: IconaAmici },
-  { href: "/notizie", chiave: "notizie", Icona: IconaNotizie },
 ] as const;
+const NOTIZIE = { href: "/notizie", chiave: "notizie", Icona: IconaNotizie } as const;
 
-/** Navigazione: barra in basso sul telefono (comoda col pollice), voci nell'header da tablet in su. */
-export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
+/**
+ * Navigazione: barra in basso sul telefono (comoda col pollice), voci nell'header da tablet in su.
+ * Le notizie compaiono solo quando ce ne sono; sul telefono l'ultima voce è il profilo (o l'accesso).
+ */
+export default function Navigazione({ tipo, conNotizie, collegato }: { tipo: "barra" | "header"; conNotizie: boolean; collegato: boolean }) {
   const t = useTranslations("nav");
   const percorso = usePathname();
   const attiva = (href: string) => (href === "/" ? percorso === "/" : percorso.startsWith(href));
+  const VOCI = tipo === "header"
+    ? [...BASE, ...(conNotizie ? [NOTIZIE] : [])]
+    : [...BASE, collegato ? { href: "/profilo", chiave: "profilo", Icona: IconaPersona } : { href: "/accedi", chiave: "accedi", Icona: IconaPersona }];
 
   if (tipo === "header")
     return (

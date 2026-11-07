@@ -32,7 +32,7 @@
     "passo1t": "Scegli",
     "passo1": "Scegli chi vince e come finiscono i set: 6-4, 7-5… e il long, se si va al terzo.",
     "passo2t": "Fai punti",
-    "passo2": "A fine partita prendi fino a 14 punti. Anche se sbagli di poco, qualcosa porti a casa.",
+    "passo2": "A fine partita i punti arrivano da soli: fino a {m21} se indovini tutto. Anche se sbagli di poco, qualcosa porti a casa.",
     "passo3t": "Sfida gli amici",
     "passo3": "Crea una lega con gli amici del circolo e scopri chi ci capisce di più.",
     "occhiello": "Pronostici di beach tennis · è gratis",
@@ -140,7 +140,7 @@
     "ritiro": "ritiro",
     "punti": "+{punti} pt",
     "conclusa": "Conclusa",
-    "chiudeTra": "chiude {quando}",
+    "chiudeTra": "chiude tra {quando}",
     "puoiCambiare": "Puoi cambiarlo fino all'inizio della partita.",
     "scegliPrima": "Prima scegli chi vince",
     "tocca": "Chi vince? Tocca una coppia.",
@@ -151,7 +151,7 @@
     "lovince": "lo vince {nome}",
     "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
     "completa": "Completa il risultato",
-    "inPalio": "Fino a {massimo} punti: {vincitore} per il vincitore, {set20} per un 2-0 giusto ({set21} per un 2-1), e per ogni set e per il long fino a {set} se ci prendi.",
+    "inPalio": "Fai fino a {m20} punti se finisce 2-0 e fino a {m21} se finisce 2-1 (col long): {vincitore} per chi vince, {set20} per il 2-0 o {set21} per il 2-1, fino a {set} per ogni set e per il long.",
     "risultatoSet": "Risultato dei set di {nome}",
     "gameTotali": "Game totali di ciascuna coppia",
     "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "intro": "In ogni partita scegli chi vince e scrivi il punteggio di ogni set. Fino a {massimo} punti a partita, sommando queste quattro voci:",
+    "intro": "In ogni partita scegli chi vince e scrivi il punteggio di ogni set. Il massimo è {m20} punti se finisce 2-0 e {m21} se finisce 2-1, perché nel 2-1 c'è anche il long. Le voci sono quattro:",
     "chiVince": "Chi vince",
     "chiVinceTesto": "Indovini quale coppia vince la partita.",
     "comeFinisce": "Set vinti",
@@ -355,5 +355,10 @@
     "soloSeVince": "vale solo con il vincitore giusto",
     "noLong": "non giocato",
     "ritiro": "Partita finita per ritiro: contano solo chi vince."
+  },
+  "tempo": {
+    "giorniOre": "{g} g {h} h",
+    "oreMinuti": "{h} h {m} min",
+    "minuti": "{m} min"
   }
 }

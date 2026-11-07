@@ -4,7 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
-import { sessione } from "@/lib/dati";
+import { notiziePubblicate, sessione } from "@/lib/dati";
 import Navigazione from "@/components/Navigazione";
 import SceltaLingua from "@/components/SceltaLingua";
 import Avviso from "@/components/Avviso";
@@ -46,7 +46,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations();
-  const { user, profilo } = await sessione();
+  const [{ user, profilo }, notizie] = await Promise.all([sessione(), notiziePubblicate(locale, 1)]);
 
   return (
     <html lang={locale}>
@@ -57,7 +57,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
               <Link href="/" aria-label={t("app.nome")} className="shrink-0 transition hover:scale-[1.03]">
                 <Marchio className="h-12" />
               </Link>
-              <Navigazione tipo="header" />
+              <Navigazione tipo="header" conNotizie={notizie.length > 0} collegato={Boolean(user)} />
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />
                 {profilo?.is_admin && (
@@ -94,7 +94,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
             </div>
             <CreditiFoto etichetta={t("privacy.creditiBreve")} />
           </footer>
-          <Navigazione tipo="barra" />
+          <Navigazione tipo="barra" conNotizie={notizie.length > 0} collegato={Boolean(user)} />
           <Attivita collegato={Boolean(user)} />
           <RegistraSW />
         </NextIntlClientProvider>

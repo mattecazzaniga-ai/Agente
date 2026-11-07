@@ -356,5 +356,16 @@ reset role;
 set role anon;
 select prova.ok((select descrizione from premi where posizione = 1) = 'Racchetta da beach tennis', 'premi visibili anche senza accesso');
 reset role;
+-- orari coerenti: una partita conclusa non resta nel futuro, il turno dopo non va oltre la fine del torneo
+insert into tornei (id, nome, luogo, circuito, data_inizio, data_fine, inizio_at) values
+  ('20000000-0000-0000-0000-000000000009', 'Corto', 'Roma', 'ITF', current_date, current_date + 1, now());
+insert into tabelloni (id, torneo_id, genere) values ('30000000-0000-0000-0000-000000000009', '20000000-0000-0000-0000-000000000009', 'misto');
+insert into coppie (id, tabellone_id, giocatore1_id, giocatore2_id) values
+  ('40000000-0000-0000-0000-000000000091', '30000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000005'),
+  ('40000000-0000-0000-0000-000000000092', '30000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000006');
+insert into partite (tabellone_id, turno, ordine, coppia_a_id, coppia_b_id, inizio_at, stato, game_a, game_b)
+values ('30000000-0000-0000-0000-000000000009', 'QF', 1, '40000000-0000-0000-0000-000000000091', '40000000-0000-0000-0000-000000000092', now() + interval '1 day', 'conclusa', '{6}', '{2}');
+select prova.ok((select inizio_at from partite where tabellone_id = '30000000-0000-0000-0000-000000000009' and turno = 'QF') <= now(), 'conclusa non resta nel futuro');
+select prova.ok((select (inizio_at at time zone 'UTC')::date from partite where tabellone_id = '30000000-0000-0000-0000-000000000009' and turno = 'SF') <= current_date + 1, 'semifinale entro la fine del torneo');
 \o
 \echo 'Tutti i test dello schema sono passati.'

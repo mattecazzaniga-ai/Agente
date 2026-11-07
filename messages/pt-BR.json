@@ -32,7 +32,7 @@
     "passo1t": "Escolha",
     "passo1": "Escolha quem vence e como terminam os sets: 6-4, 7-5… e o long, se for para o terceiro.",
     "passo2t": "Ganhe pontos",
-    "passo2": "No fim do jogo você ganha até 14 pontos. Mesmo errando por pouco, leva alguma coisa.",
+    "passo2": "Os pontos chegam sozinhos no fim do jogo: até {m21} se acertar tudo. Mesmo errando por pouco, leva alguma coisa.",
     "passo3t": "Desafie os amigos",
     "passo3": "Crie uma liga com os amigos da arena e descubra quem entende mais.",
     "occhiello": "Palpites de beach tennis · grátis",
@@ -140,7 +140,7 @@
     "ritiro": "abandono",
     "punti": "+{punti} pts",
     "conclusa": "Encerrado",
-    "chiudeTra": "fecha {quando}",
+    "chiudeTra": "fecha em {quando}",
     "puoiCambiare": "Você pode mudar até o início do jogo.",
     "scegliPrima": "Primeiro escolha quem vence",
     "tocca": "Quem vence? Toque numa dupla.",
@@ -151,7 +151,7 @@
     "lovince": "vence {nome}",
     "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
     "completa": "Complete o placar",
-    "inPalio": "Até {massimo} pontos: {vincitore} pelo vencedor, {set20} por um 2-0 certo ({set21} por um 2-1), e até {set} por cada set e pelo long se acertar.",
+    "inPalio": "Até {m20} pontos se terminar 2-0 e até {m21} se terminar 2-1 (com o long): {vincitore} pelo vencedor, {set20} pelo 2-0 ou {set21} pelo 2-1, até {set} por cada set e pelo long.",
     "risultatoSet": "Placar em sets de {nome}",
     "gameTotali": "Games totais de cada dupla",
     "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "intro": "Em cada jogo escolha quem vence e escreva o placar de cada set. Até {massimo} pontos por jogo, somando estas quatro partes:",
+    "intro": "Em cada jogo escolha quem vence e escreva o placar de cada set. O máximo é {m20} pontos se terminar 2-0 e {m21} se terminar 2-1, porque no 2-1 também tem o long. São quatro partes:",
     "chiVince": "Quem vence",
     "chiVinceTesto": "Você acerta qual dupla vence o jogo.",
     "comeFinisce": "Sets vencidos",
@@ -355,5 +355,10 @@
     "soloSeVince": "vale só com o vencedor certo",
     "noLong": "não jogado",
     "ritiro": "Jogo terminado por desistência: só conta quem vence."
+  },
+  "tempo": {
+    "giorniOre": "{g} d {h} h",
+    "oreMinuti": "{h} h {m} min",
+    "minuti": "{m} min"
   }
 }

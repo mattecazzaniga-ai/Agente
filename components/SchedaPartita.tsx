@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Coppia, Partita, PronosticoPartita as Pronostico } from "@/lib/tipi";
 import { bandiera, nomeCoppia, punteggio } from "@/lib/formato";
-import { massimoPartita, recapPronostico, type RigaRecap } from "@/lib/punti";
+import { massimo20, massimo21, recapPronostico, type RigaRecap } from "@/lib/punti";
 import { regolePunti } from "@/lib/dati";
 import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
 import Tra from "./Tra";
@@ -43,7 +43,7 @@ export default async function SchedaPartita(props: {
   const live = !conclusa && !aperta && a && b && p.stato !== "annullata";
   const haVoti = Object.keys(props.voti).length > 0;
   const regole = await regolePunti();
-  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set20: regole.set_esatti_2_0, set21: regole.set_esatti, set: regole.set_errore_0, long: regole.long_errore_0, massimo: massimoPartita(regole) });
+  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set20: regole.set_esatti_2_0, set21: regole.set_esatti, set: regole.set_errore_0, m20: massimo20(regole), m21: massimo21(regole) });
 
   const stato = aperta ? (
     <span className={`chip ${imminente ? "bg-viola text-white" : "bg-viola/10 text-viola"}`}>

@@ -1,13 +1,14 @@
 import { getTranslations } from "next-intl/server";
 import { IconaCoppa, IconaLucchetto, IconaPiu } from "./Icone";
 import { regolePunti } from "@/lib/dati";
-import { massimoPartita } from "@/lib/punti";
+import { massimo20, massimo21 } from "@/lib/punti";
 
 /** Come si fanno i punti: le quattro voci di una partita, un esempio, poi torneo e chiusura. */
 export default async function Regole() {
   const [t, r] = await Promise.all([getTranslations("regole"), regolePunti()]);
   const v = {
-    massimo: massimoPartita(r),
+    m20: massimo20(r),
+    m21: massimo21(r),
     vincitore: r.vincitore,
     set20: r.set_esatti_2_0,
     set21: r.set_esatti,
