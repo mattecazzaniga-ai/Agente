@@ -107,7 +107,11 @@
     "conclusi": "Finished",
     "nessuno": "No tournaments here, for now.",
     "dal": "{inizio} – {fine}",
-    "sottotitoloPagina": "The ITF beach tennis calendar"
+    "sottotitoloPagina": "The ITF beach tennis calendar",
+    "daPronosticare": "{n, plural, one {# match to predict} other {# matches to predict}}",
+    "chiusiProssimoTurno": "Predictions closed: they reopen with the next round",
+    "prestoAperti": "Predictions open with the first matches",
+    "tabelloneInArrivo": "Draw coming soon"
   },
   "torneo": {
     "chiVinceTorneo": "Who wins the {genere} draw?",

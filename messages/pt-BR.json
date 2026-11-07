@@ -107,7 +107,11 @@
     "conclusi": "Encerrados",
     "nessuno": "Nenhum torneio aqui, por enquanto.",
     "dal": "de {inizio} a {fine}",
-    "sottotitoloPagina": "O calendário ITF de beach tennis"
+    "sottotitoloPagina": "O calendário ITF de beach tennis",
+    "daPronosticare": "{n, plural, one {# jogo para palpitar} other {# jogos para palpitar}}",
+    "chiusiProssimoTurno": "Palpites fechados: reabrem na próxima rodada",
+    "prestoAperti": "Palpites abrem com os primeiros jogos",
+    "tabelloneInArrivo": "Chave em breve"
   },
   "torneo": {
     "chiVinceTorneo": "Quem vence a chave {genere}?",

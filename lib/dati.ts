@@ -87,6 +87,38 @@ export async function partiteAperte(limite = 6): Promise<PartitaConCoppie[]> {
   return (data as unknown as PartitaConCoppie[]) ?? [];
 }
 
+/** Per ogni torneo: quante partite si possono ancora pronosticare, quando chiude la prossima e quali tabelloni ha. */
+export interface SituazioneTorneo {
+  aperte: number;
+  chiude: string | null;
+  generi: string[];
+}
+export async function situazioneTornei(ids: string[]): Promise<Record<string, SituazioneTorneo>> {
+  const esito: Record<string, SituazioneTorneo> = Object.fromEntries(ids.map((id) => [id, { aperte: 0, chiude: null, generi: [] }]));
+  if (!ids.length) return esito;
+  const supabase = await supabaseServer();
+  const [{ data: tabelloni }, { data: aperte }] = await Promise.all([
+    supabase.from("tabelloni").select("torneo_id, genere").in("torneo_id", ids),
+    supabase
+      .from("partite")
+      .select("inizio_at, tabellone:tabelloni!inner(torneo_id)")
+      .in("tabellone.torneo_id", ids)
+      .eq("stato", "in_programma")
+      .gt("inizio_at", new Date().toISOString())
+      .not("coppia_a_id", "is", null)
+      .not("coppia_b_id", "is", null)
+      .order("inizio_at"),
+  ]);
+  for (const tb of (tabelloni as { torneo_id: string; genere: string }[]) ?? []) esito[tb.torneo_id]?.generi.push(tb.genere);
+  for (const p of (aperte as unknown as { inizio_at: string; tabellone: { torneo_id: string } }[]) ?? []) {
+    const s = esito[p.tabellone.torneo_id];
+    if (!s) continue;
+    s.aperte++;
+    s.chiude ??= p.inizio_at;
+  }
+  return esito;
+}
+
 /** Partite in corso: segnate "in corso" oppure già iniziate e non ancora concluse. */
 export async function partiteInCorso(limite = 6): Promise<PartitaConCoppie[]> {
   const supabase = await supabaseServer();

@@ -107,7 +107,11 @@
     "conclusi": "Terminados",
     "nessuno": "Ningún torneo aquí, por ahora.",
     "dal": "del {inizio} al {fine}",
-    "sottotitoloPagina": "El calendario ITF de beach tennis"
+    "sottotitoloPagina": "El calendario ITF de beach tennis",
+    "daPronosticare": "{n, plural, one {# partido por pronosticar} other {# partidos por pronosticar}}",
+    "chiusiProssimoTurno": "Pronósticos cerrados: se reabren con la próxima ronda",
+    "prestoAperti": "Pronósticos con los primeros partidos",
+    "tabelloneInArrivo": "Cuadro próximamente"
   },
   "torneo": {
     "chiVinceTorneo": "¿Quién gana el cuadro {genere}?",

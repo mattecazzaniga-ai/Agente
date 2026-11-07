@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
+import { caricaTornei, situazioneTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese } from "@/lib/formato";
 import { FOTO } from "@/lib/foto";
@@ -59,6 +59,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const primi = (classifica as RigaClassifica[] | null) ?? [];
   const io = (mia as { posizione: number; punti: number; partecipanti: number }[] | null)?.[0];
   const tornei = [...inCorso, ...prossimi].slice(0, 4);
+  const situazione = await situazioneTornei(tornei.map((x) => x.id));
   const [inEvidenza, ...altreAperte] = aperte;
   const daFare = user ? aperte.filter((p) => !miei?.partita.has(p.id)).length : aperte.length;
 
@@ -217,7 +218,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <ul className="pannello divide-y divide-linea overflow-hidden">
                 {tornei.map((to) => (
                   <li key={to.id}>
-                    <RigaTorneo torneo={to} />
+                    <RigaTorneo torneo={to} situazione={situazione[to.id]} />
                   </li>
                 ))}
               </ul>

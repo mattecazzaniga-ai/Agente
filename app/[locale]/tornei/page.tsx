@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
 import Vuoto from "@/components/Vuoto";
 import RigaTorneo from "@/components/RigaTorneo";
+import { situazioneTornei } from "@/lib/dati";
 import { CIRCUITI, type Circuito, type StatoTorneo, type Torneo } from "@/lib/tipi";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,7 @@ export default async function Tornei({ params, searchParams }: { params: Promise
     const peso = { in_corso: 0, in_programma: 1, concluso: 2 };
     tornei.sort((a, b) => peso[a.stato] - peso[b.stato] || (a.stato === "concluso" ? b.data_inizio.localeCompare(a.data_inizio) : a.data_inizio.localeCompare(b.data_inizio)));
   }
+  const situazione = await situazioneTornei(tornei.map((x) => x.id));
   const link = (s?: string, c?: string) => {
     const u = new URLSearchParams();
     if (s) u.set("stato", s);
@@ -66,7 +68,7 @@ export default async function Tornei({ params, searchParams }: { params: Promise
         <ul className="pannello mt-4 divide-y divide-linea overflow-hidden">
           {tornei.map((to) => (
             <li key={to.id}>
-              <RigaTorneo torneo={to} />
+              <RigaTorneo torneo={to} situazione={situazione[to.id]} />
             </li>
           ))}
         </ul>
