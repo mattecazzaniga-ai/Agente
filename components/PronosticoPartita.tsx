@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { salvaPronosticoPartita, type Esito } from "@/app/[locale]/azioni";
 import { gameIniziali, gamePossibili, limitiGame } from "@/lib/punti";
 import Condividi from "./Condividi";
-import { IconaSpunta } from "./Icone";
+import { IconaMeno, IconaPiu, IconaSpunta } from "./Icone";
 
 export interface LatoCoppia {
   id: string;
@@ -80,25 +80,32 @@ export default function PronosticoPartita(props: {
     setModificato(true);
   };
 
+  const passo = (n: number, titolo: string, fatto: boolean) => (
+    <p className="mb-2 flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-wider text-tenue">
+      <span className={`cifre grid h-5 w-5 place-items-center rounded text-[12px] ${fatto ? "bg-lime text-notte" : "bg-pannello-2 text-tenue"}`}>{n}</span>
+      {titolo}
+    </p>
+  );
+
   const bottone = (c: LatoCoppia) => {
     const scelto = vincitore === c.id;
     const contenuto = (
       <>
-        <span className="text-lg leading-none" aria-hidden>
+        <span className="text-xl leading-none" aria-hidden>
           {c.bandiere}
         </span>
-        <span className="mt-1.5 block text-[15px] font-extrabold leading-tight">{c.righe[0]}</span>
-        <span className="block text-[15px] font-extrabold leading-tight">{c.righe[1]}</span>
-        {c.testa_di_serie ? <span className={`mt-1 block text-[11px] font-bold ${scelto ? "text-white/80" : "text-nebbia"}`}>TDS {c.testa_di_serie}</span> : null}
+        <span className="mt-2 block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[0]}</span>
+        <span className="block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[1]}</span>
+        {c.testa_di_serie ? <span className={`mt-1.5 block font-display text-[11px] font-bold uppercase tracking-wider ${scelto ? "text-notte/70" : "text-sabbia"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
         {scelto && (
-          <span className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-white text-mare">
-            <IconaSpunta className="h-4 w-4" />
+          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded bg-notte text-lime">
+            <IconaSpunta className="h-3.5 w-3.5" />
           </span>
         )}
       </>
     );
-    const classe = `relative flex min-h-24 flex-col items-center justify-center rounded-2xl border-2 px-2 py-3 text-center transition active:scale-[.97] ${
-      scelto ? "border-mare bg-mare text-white shadow-[0_8px_20px_-10px_rgba(10,126,164,.9)]" : "border-sabbia-scura/80 bg-gradient-to-b from-white to-crema hover:border-cielo"
+    const classe = `relative flex min-h-[112px] flex-col items-center justify-center rounded-lg border px-2 py-3 text-center transition active:scale-[.98] ${
+      scelto ? "border-lime bg-lime text-notte" : "border-linea bg-pannello-2 text-testo hover:border-tenue"
     }`;
     if (!props.collegato)
       return (
@@ -115,39 +122,46 @@ export default function PronosticoPartita(props: {
 
   const contatore = (c: LatoCoppia, lim: readonly [number, number]) => {
     const valore = game[c.id] ?? lim[0];
-    const tasto = "grid h-11 w-11 place-items-center rounded-full border-2 border-sabbia-scura/70 bg-white text-xl font-black text-mare transition active:scale-90 disabled:opacity-30";
+    const tasto = "grid h-11 w-11 place-items-center rounded-lg border border-linea bg-notte text-testo transition hover:border-tenue active:scale-90 disabled:opacity-30";
     return (
-      <div className="flex items-center justify-between gap-2 rounded-2xl bg-white px-3 py-2">
-        <span className="min-w-0 truncate text-sm font-bold">
-          <span aria-hidden>{c.bandiere}</span> {c.righe.join("/")}
+      <div className="flex items-center justify-between gap-3 py-2">
+        <span className="min-w-0 truncate font-semibold">
+          <span aria-hidden className="mr-1.5">
+            {c.bandiere}
+          </span>
+          {c.righe.join(" / ")}
         </span>
-        <span className="flex shrink-0 items-center gap-2">
-          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, -1, lim)} disabled={valore <= lim[0]} aria-label="−">
-            −
+        <span className="flex shrink-0 items-center gap-1.5">
+          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, -1, lim)} disabled={valore <= lim[0]} aria-label={t("partita.meno")}>
+            <IconaMeno />
           </button>
-          <span className="w-8 text-center text-2xl font-black tabular-nums">{valore}</span>
-          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, 1, lim)} disabled={valore >= lim[1]} aria-label="+">
-            +
+          <span className="cifre w-10 text-center text-[28px] leading-none">{valore}</span>
+          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, 1, lim)} disabled={valore >= lim[1]} aria-label={t("partita.piu")}>
+            <IconaPiu />
           </button>
         </span>
       </div>
     );
   };
 
-  const pill = (attiva: boolean) =>
-    `rounded-xl border-2 py-2 text-lg font-black tabular-nums transition active:scale-95 ${attiva ? "border-mare bg-mare text-white" : "border-sabbia-scura/70 bg-white text-inchiostro"}`;
+  const segmento = (attiva: boolean) =>
+    `cifre h-11 rounded-md text-xl transition ${attiva ? "bg-lime text-notte" : "text-tenue hover:text-testo"}`;
 
   return (
-    <form action={(f) => (setModificato(false), azione(f))} className="space-y-3">
+    <form action={(f) => (setModificato(false), azione(f))} className="space-y-4">
       <input type="hidden" name="partita_id" value={props.partitaId} />
       <input type="hidden" name="vincitore_id" value={vincitore} />
       <input type="hidden" name="set" value={scelta ? formula : ""} />
       <input type="hidden" name="game_previsti_a" value={possibile ? game[props.a.id] : ""} />
       <input type="hidden" name="game_previsti_b" value={possibile ? game[props.b.id] : ""} />
-      <div className="relative grid grid-cols-2 gap-3">
-        {bottone(props.a)}
-        {bottone(props.b)}
-        <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] border-white bg-sole text-[11px] font-black text-inchiostro shadow-md">VS</span>
+
+      <div>
+        {props.collegato && passo(1, t("partita.passoVincitore"), Boolean(scelta))}
+        <div className="relative grid grid-cols-2 gap-2">
+          {bottone(props.a)}
+          {bottone(props.b)}
+          <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded bg-notte font-display text-[12px] font-bold text-tenue ring-1 ring-linea">VS</span>
+        </div>
       </div>
 
       {!props.collegato ? (
@@ -155,38 +169,56 @@ export default function PronosticoPartita(props: {
           {t("torneo.accediPerPronosticare")}
         </a>
       ) : !scelta ? (
-        <p className="text-center text-sm font-semibold text-nebbia">{t("partita.tocca")}</p>
+        <p className="text-center text-sm text-tenue">{t("partita.tocca")}</p>
       ) : (
-        <>
-          <div className="space-y-3 rounded-2xl bg-onda/60 p-3">
-            {props.setPerVincere === 2 && (
-              <div>
-                <p className="etichetta">{t("partita.risultatoSet", { nome: scelta.righe.join("/") })}</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {([0, 1] as const).map((p) => (
-                    <button key={p} type="button" onClick={() => scegliSet(p)} className={pill(persi === p)}>
-                      2-{p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+        <div className="entra space-y-4">
+          {props.setPerVincere === 2 && (
             <div>
-              <p className="etichetta">{t("partita.gameTotali")}</p>
-              <div className="space-y-1.5">
-                {[props.a, props.b].map((c) => contatore(c, c.id === scelta.id ? limiti.vincitore : limiti.perdente))}
+              {passo(2, t("partita.passoSet"), true)}
+              <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-notte p-1">
+                {([0, 1] as const).map((p) => (
+                  <button key={p} type="button" onClick={() => scegliSet(p)} className={segmento(persi === p)} aria-pressed={persi === p}>
+                    2-{p}
+                  </button>
+                ))}
               </div>
-              <p className="mt-1.5 text-xs text-nebbia">{props.setPerVincere === 2 ? t("partita.notaSuperTieBreak") : null}</p>
-              {!possibile && <p className="mt-1 text-xs font-bold text-corallo">{t("errori.gameImpossibili")}</p>}
             </div>
+          )}
+          <div>
+            {passo(props.setPerVincere === 2 ? 3 : 2, t("partita.passoGame"), possibile)}
+            <div className="divide-y divide-linea rounded-lg border border-linea bg-pannello-2 px-3">
+              {[props.a, props.b].map((c) => (
+                <div key={c.id}>{contatore(c, c.id === scelta.id ? limiti.vincitore : limiti.perdente)}</div>
+              ))}
+            </div>
+            {props.setPerVincere === 2 && <p className="mt-1.5 text-xs text-tenue">{t("partita.notaSuperTieBreak")}</p>}
+            {!possibile && <p className="mt-1.5 text-sm font-semibold text-corallo">{t("errori.gameImpossibili")}</p>}
           </div>
-          <p className="text-center text-xs leading-relaxed text-nebbia">{props.inPalio}</p>
 
-          {esito && !esito.ok && <p className="text-center text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
+          {/* Riepilogo: quello che verrà salvato, in una riga */}
+          <div className="flex items-center justify-between gap-3 rounded-lg bg-notte px-3 py-2.5 ring-1 ring-linea">
+            <p className="min-w-0 text-sm">
+              <span className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</span>
+              <span className="block truncate font-semibold">
+                {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-lime">{formula}</span>
+                {possibile && (
+                  <>
+                    {" "}
+                    · {t("partita.game")} <span className="cifre">{`${game[props.a.id]}-${game[props.b.id]}`}</span>
+                  </>
+                )}
+              </span>
+            </p>
+          </div>
+          <p className="text-xs leading-relaxed text-tenue">{props.inPalio}</p>
+
+          {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
-            <div className="festa space-y-3 rounded-2xl bg-menta-chiaro p-3 text-center">
-              <p className="font-extrabold text-menta">{t("partita.salvato")}</p>
-              <p className="text-xs text-nebbia">{t("partita.puoiCambiare")}</p>
+            <div className="festa space-y-3 rounded-lg border border-lime/40 bg-lime/[.06] p-3">
+              <p className="flex items-center gap-2 font-display text-lg font-bold uppercase tracking-wide text-lime">
+                <IconaSpunta className="h-5 w-5" /> {t("partita.salvato")}
+              </p>
+              <p className="text-xs text-tenue">{t("partita.puoiCambiare")}</p>
               {idSalvato && (
                 <Condividi
                   immagine={`/api/immagine/pronostico?tipo=partita&id=${idSalvato}&lingua=${lingua}`}
@@ -197,15 +229,17 @@ export default function PronosticoPartita(props: {
               )}
             </div>
           ) : completoSalvato && !modificato && !esito ? (
-            <p className="flex items-center justify-center gap-2 rounded-2xl bg-menta-chiaro px-3 py-2.5 text-sm font-bold text-menta">
-              <IconaSpunta className="h-4 w-4" /> {t("torneo.ilTuo")} · <span className="font-medium text-nebbia">{t("partita.puoiCambiare")}</span>
+            <p className="flex items-center gap-2 rounded-lg border border-linea px-3 py-2.5 text-sm">
+              <IconaSpunta className="h-4 w-4 text-lime" />
+              <span className="font-semibold">{t("torneo.ilTuo")}</span>
+              <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
             </p>
           ) : (
             <button className="bottone" disabled={inCorso || !possibile}>
-              {inCorso ? "…" : t("partita.salva")}
+              {inCorso ? t("partita.salvataggio") : completoSalvato ? t("partita.aggiorna") : t("partita.conferma")}
             </button>
           )}
-        </>
+        </div>
       )}
     </form>
   );

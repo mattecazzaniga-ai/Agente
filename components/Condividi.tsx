@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { IconaCondividi } from "./Icone";
 
 /**
@@ -7,6 +8,7 @@ import { IconaCondividi } from "./Icone";
  * Instagram (storie), Telegram… Dove la condivisione di file non c'è: WhatsApp con link + scarica immagine.
  */
 export default function Condividi({ immagine, testo, url, etichetta, nomeFile = "beachpeck.png" }: { immagine: string; testo: string; url: string; etichetta: string; nomeFile?: string }) {
+  const t = useTranslations("condividi");
   const [stato, setStato] = useState<"" | "attesa" | "fallback">("");
   async function condividi() {
     setStato("attesa");
@@ -40,7 +42,7 @@ export default function Condividi({ immagine, testo, url, etichetta, nomeFile = 
             WhatsApp
           </a>
           <a className="bottone-secondario text-sm" href={immagine} download={nomeFile}>
-            PNG ⬇
+            {t("scarica")}
           </a>
         </div>
       )}

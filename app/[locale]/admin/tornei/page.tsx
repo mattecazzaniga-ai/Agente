@@ -18,19 +18,19 @@ export default async function AdminTornei() {
           </FormAdmin>
         </div>
       </Pannello>
-      <ul className="scheda divide-y divide-sabbia p-0">
-        {tornei.length === 0 && <li className="p-4 text-sm text-nebbia">Nessun torneo.</li>}
+      <ul className="scheda divide-y divide-linea p-0">
+        {tornei.length === 0 && <li className="p-4 text-sm text-tenue">Nessun torneo.</li>}
         {tornei.map((t) => (
           <li key={t.id}>
             <Link href={`/admin/tornei/${t.id}`} className="flex items-center gap-3 px-4 py-3">
               <span aria-hidden>{bandiera(t.paese)}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-semibold">{t.nome}</span>
-                <span className="block text-xs text-nebbia">
+                <span className="block text-xs text-tenue">
                   {t.data_inizio} · {t.circuito} · {t.stato.replace("_", " ")}
                 </span>
               </span>
-              <span className="text-mare">›</span>
+              <span className="text-lime">›</span>
             </Link>
           </li>
         ))}

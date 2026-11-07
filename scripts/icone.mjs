@@ -1,4 +1,4 @@
-// Genera le icone dell'app (PNG) senza dipendenze: sfondo mare, palla gialla con le cuciture.
+// Genera le icone dell'app (PNG) senza dipendenze: fondo blu notte, pallina lime con la cucitura scura.
 // Uso: node scripts/icone.mjs
 import { deflateSync } from "node:zlib";
 import { writeFileSync } from "node:fs";
@@ -26,9 +26,9 @@ function icona(lato, { maschera = false } = {}) {
   const raw = Buffer.alloc((lato * 4 + 1) * lato);
   const cx = lato / 2;
   const r = lato * (maschera ? 0.3 : 0.36);
-  const mare = [11, 79, 108];
-  const sole = [249, 194, 46];
-  const bianco = [255, 255, 255];
+  const mare = [11, 16, 24]; // blu notte
+  const sole = [212, 245, 60]; // lime
+  const bianco = [11, 16, 24]; // cucitura scura
   for (let y = 0; y < lato; y++) {
     raw[y * (lato * 4 + 1)] = 0;
     for (let x = 0; x < lato; x++) {

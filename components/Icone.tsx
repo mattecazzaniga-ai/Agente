@@ -63,26 +63,49 @@ export const IconaIndietro = ({ className = "h-4 w-4" }: P) => (
   </svg>
 );
 
-/** Logo: pallina gialla con le cuciture. */
-export const Logo = ({ className = "h-8 w-8" }: P) => (
-  <svg viewBox="0 0 32 32" className={className} aria-hidden>
-    <circle cx="16" cy="16" r="14" fill="#ffc83d" />
-    <path d="M5.5 7.5c5 3.5 5 13.5 0 17M26.5 7.5c-5 3.5-5 13.5 0 17" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
+export const IconaCalendario = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} className={className}>
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+    <path d="M3.5 10h17M8 3v4M16 3v4" />
+  </svg>
+);
+export const IconaPersona = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21a8 8 0 0 1 16 0" />
+  </svg>
+);
+export const IconaInfo = ({ className = "h-4 w-4" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v6M12 7.5v.5" />
+  </svg>
+);
+export const IconaPiu = ({ className = "h-4 w-4" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+export const IconaMeno = ({ className = "h-4 w-4" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M5 12h14" />
   </svg>
 );
 
-/** Piccola scena da spiaggia per l'accoglienza: sole, mare, rete. */
-export const Spiaggia = ({ className = "" }: P) => (
-  <svg viewBox="0 0 360 140" className={className} aria-hidden preserveAspectRatio="xMidYMax slice">
-    <circle cx="300" cy="42" r="26" fill="#ffc83d" />
-    <circle cx="300" cy="42" r="38" fill="#ffc83d" opacity=".18" />
-    <path d="M0 92c40-12 80-12 120 0s80 12 120 0 80-12 120 0v48H0z" fill="#5cc3e0" />
-    <path d="M0 106c40-10 80-10 120 0s80 10 120 0 80-10 120 0v34H0z" fill="#0a7ea4" opacity=".85" />
-    <path d="M0 122c60-8 120-8 180 0s120 8 180 0v18H0z" fill="#fbf1df" />
-    <g stroke="#17323f" strokeWidth="2" opacity=".7">
-      <path d="M70 122V78M150 122V78" />
-      <path d="M70 80h80M70 92h80M70 80v12M90 80v12M110 80v12M130 80v12M150 80v12" strokeWidth="1.2" />
-    </g>
-    <circle cx="196" cy="62" r="7" fill="#ffc83d" stroke="#fff" strokeWidth="1.5" />
+/** Marchio: pallina lime con la cucitura, su fondo scuro. */
+export const Logo = ({ className = "h-8 w-8" }: P) => (
+  <svg viewBox="0 0 32 32" className={className} aria-hidden>
+    <circle cx="16" cy="16" r="15" fill="#d4f53c" />
+    <path d="M4.2 9.5C10 12 10 20 4.2 22.5M27.8 9.5C22 12 22 20 27.8 22.5" fill="none" stroke="#0b1018" strokeWidth="2.6" strokeLinecap="round" />
   </svg>
+);
+
+/** Logo completo: marchio + "BEACH PECK" in condensato. */
+export const Marchio = ({ className = "" }: P) => (
+  <span className={`inline-flex items-center gap-2 font-display text-[22px] font-extrabold uppercase leading-none tracking-tight ${className}`}>
+    <Logo className="h-7 w-7" />
+    <span>
+      Beach <span className="text-lime">Peck</span>
+    </span>
+  </span>
 );

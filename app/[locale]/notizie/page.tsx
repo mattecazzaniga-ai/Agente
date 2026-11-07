@@ -17,8 +17,8 @@ export default async function Notizie({ params }: { params: Promise<{ locale: st
   const [t, notizie] = await Promise.all([getTranslations(), notiziePubblicate(locale, 50)]);
   return (
     <div className="space-y-3">
-      <Intestazione emoji="📰" titolo={t("notizie.titolo")} sotto={t("notizie.sottotitoloPagina")} colore="bg-onda" />
-      {notizie.length === 0 && <Vuoto emoji="📰" testo={t("notizie.nessuna")} colore="bg-menta-chiaro" />}
+      <Intestazione titolo={t("notizie.titolo")} sotto={t("notizie.sottotitoloPagina")} />
+      {notizie.length === 0 && <Vuoto testo={t("notizie.nessuna")} />}
       {notizie.map((n) => (
         <SchedaNotizia key={n.id} notizia={n} />
       ))}

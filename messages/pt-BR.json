@@ -18,23 +18,29 @@
     "scegli": "Idioma"
   },
   "home": {
-    "titolo": "Adivinhe quem vence. Desafie seus amigos.",
-    "intro": "Palpites nos jogos dos torneios ITF de beach tennis. Todo mês um novo ranking.",
-    "inizia": "Começar grátis",
+    "titolo": "Acerte quem vence. Vença seus amigos.",
+    "intro": "Dê palpites de vencedor, sets e games dos jogos ITF de beach tennis. Todo mês um novo ranking.",
+    "inizia": "Jogar agora",
     "daPronosticare": "Para palpitar",
-    "nessunaAperta": "Nenhum jogo aberto agora. O próximo torneio chega logo! 🌞",
+    "nessunaAperta": "Nenhum jogo aberto agora: os palpites voltam na próxima rodada.",
     "prossimiTornei": "Próximos torneios",
     "ultimeNotizie": "Últimas notícias",
     "vediTutti": "Ver todos",
-    "ciao": "Oi, {nome}! 👋",
+    "ciao": "Olá {nome}",
     "ciaoSotto": "Quem vence hoje na sua opinião?",
     "comeFunziona": "Como funciona",
     "passo1t": "Escolha",
-    "passo1": "Toque na dupla que você acha que vence.",
+    "passo1": "Escolha a dupla vencedora, o placar em sets e os games de cada dupla.",
     "passo2t": "Ganhe pontos",
-    "passo2": "Quanto mais ousado o palpite, mais pontos você ganha.",
+    "passo2": "No fim do jogo você ganha até 12 pontos: vencedor, sets exatos e games, quanto mais perto mais pontos.",
     "passo3t": "Desafie os amigos",
-    "passo3": "Crie uma liga e suba no ranking do mês."
+    "passo3": "Crie uma liga privada e desafie seus amigos no ranking do mês.",
+    "occhiello": "Torneios ITF · Jogo gratuito",
+    "posizione": "Posição · {mese}",
+    "daFare": "Para palpitar",
+    "inCorso": "Ao vivo",
+    "ultimiRisultati": "Últimos resultados",
+    "classificaMese": "Ranking · {mese}"
   },
   "accedi": {
     "titolo": "Entrar",
@@ -108,7 +114,7 @@
     "finalista": "Vice (opcional)",
     "nessuno": "Nenhum",
     "salva": "Salvar palpite",
-    "salvato": "Pronto! Palpite salvo 🎉",
+    "salvato": "Pronto! Palpite salvo",
     "chiusoTorneo": "Palpites de campeão encerrados: o torneio já começou.",
     "chiudeIl": "Fecha {data}",
     "partite": "Jogos",
@@ -117,7 +123,9 @@
     "tuoiPunti": "Seus pontos: {punti}",
     "accediPerPronosticare": "Entre para palpitar",
     "hannoScelto": "{percentuale}% · {punti} pts",
-    "ilTuo": "Seu palpite"
+    "ilTuo": "Seu palpite",
+    "tuoiPuntiBreve": "seus pontos",
+    "match": "Jogo {n}"
   },
   "partita": {
     "chiVince": "Quem vence?",
@@ -125,7 +133,7 @@
     "game": "Games totais",
     "facoltativo": "opcional",
     "salva": "Salvar",
-    "salvato": "Pronto! 🎉",
+    "salvato": "Palpite salvo",
     "chiusa": "Palpites encerrados",
     "inAttesa": "Aguardando as duplas",
     "ritiro": "abandono",
@@ -146,7 +154,19 @@
     "risultatoSet": "Placar em sets de {nome}",
     "gameTotali": "Games totais de cada dupla",
     "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
-    "gameReali": "Games reais {a}-{b}"
+    "gameReali": "Games reais {a}-{b}",
+    "passoVincitore": "Quem vence",
+    "passoSet": "Placar em sets",
+    "passoGame": "Games totais",
+    "riepilogo": "Seu palpite",
+    "vince": "Vence {nome}",
+    "conferma": "Confirmar palpite",
+    "aggiorna": "Atualizar palpite",
+    "salvataggio": "Salvando…",
+    "tuaScelta": "Sua escolha",
+    "testaDiSerie": "Cabeça de chave {n}",
+    "meno": "Um game a menos",
+    "piu": "Um game a mais"
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
@@ -161,7 +181,7 @@
     "lega": "Liga",
     "mese": "Mês",
     "punti": "Pontos",
-    "nessuno": "Ainda sem pontos neste mês: o primeiro lugar está livre! 🏖️",
+    "nessuno": "Ainda sem pontos neste mês: o primeiro lugar está livre!",
     "tu": "Você",
     "sei": "Você é o {posizione}º de {totale}",
     "senzaPunti": "Dê um palpite para entrar no ranking.",
@@ -174,7 +194,12 @@
     "colSet": "Sets",
     "colGame": "Games",
     "legenda": "Palp. = palpites · Venc. = vencedores certos · Sets = placares em sets exatos · Games = games exatos. Em caso de empate contam sets exatos, depois vencedores, depois games exatos.",
-    "utente": "Jogador"
+    "utente": "Jogador",
+    "tuaPosizione": "Sua posição",
+    "giocatori": "Jogadores",
+    "distacco": "Faltam {punti} pontos para passar {nome}.",
+    "completa": "Ranking completo",
+    "dalPrimo": "−{punti} pts"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -194,7 +219,8 @@
     "invitoNonTrovato": "Este convite não é válido.",
     "entraOra": "Entrar na liga",
     "invitoTesto": "Jogue comigo os palpites de beach tennis no Beach Peck! Entre na liga «{nome}» com o código {codice}:",
-    "sottotitoloPagina": "Desafie seus amigos num ranking só de vocês"
+    "sottotitoloPagina": "Desafie seus amigos num ranking só de vocês",
+    "entraOCrea": "Entre ou crie"
   },
   "notizie": {
     "titolo": "Notícias",
@@ -224,11 +250,14 @@
     "classifica": "Compartilhar posição",
     "testoPronostico": "Meu palpite no Beach Peck: {scelta}. E o seu?",
     "testoClassifica": "Estou em {posizione}º no ranking de {mese} no Beach Peck! Me desafie:",
-    "copiato": "Link copiado"
+    "copiato": "Link copiado",
+    "copia": "Copiar link",
+    "scarica": "Baixar imagem"
   },
   "privacy": {
     "titolo": "Privacidade",
-    "testo": "O Beach Peck guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil."
+    "testo": "O Beach Peck guarda só os dados necessários ao jogo: e-mail (para o acesso), apelido, país, idioma, seus palpites, as ligas e os dias em que você usa o app (para saber quantos usuários ativos existem). Não vendemos nem compartilhamos dados e não usamos cookies de perfilamento: apenas cookies técnicos de acesso e idioma. Você pode excluir a conta e todos os dados a qualquer momento no perfil.",
+    "crediti": "Créditos das fotos"
   },
   "errori": {
     "generico": "Algo deu errado. Tente de novo.",
@@ -253,6 +282,13 @@
     "set": "Sets",
     "esatto": "Exato",
     "game": "Games",
-    "errore": "erro {n}"
+    "errore": "erro {n}",
+    "esatti": "exatos"
+  },
+  "riga": {
+    "fine": "Fim",
+    "rit": "Abd.",
+    "fatto": "Feito",
+    "pronostica": "Jogar"
   }
 }

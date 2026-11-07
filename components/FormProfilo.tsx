@@ -18,7 +18,7 @@ export default function FormProfilo({ nickname, paese, dopo, testoBottone }: { n
       <label className="block">
         <span className="etichetta">{t("benvenuto.nickname")}</span>
         <input name="nickname" defaultValue={nickname.startsWith("giocatore_") ? "" : nickname} required minLength={3} maxLength={24} pattern="[A-Za-z0-9_.\-]{3,24}" autoComplete="nickname" className="campo" />
-        <span className="mt-1 block text-xs text-nebbia">{t("benvenuto.nicknameAiuto")}</span>
+        <span className="mt-1 block text-xs text-tenue">{t("benvenuto.nicknameAiuto")}</span>
       </label>
       <label className="block">
         <span className="etichetta">{t("benvenuto.paese")}</span>
@@ -36,7 +36,7 @@ export default function FormProfilo({ nickname, paese, dopo, testoBottone }: { n
       {esito && !esito.ok && (
         <p className="text-sm font-medium text-corallo">{esito.errore === "duplicato" ? t("benvenuto.nicknameUsato") : esito.errore === "nonValido" ? t("benvenuto.nicknameNonValido") : t("errori.generico")}</p>
       )}
-      {esito?.ok && <p className="text-sm font-medium text-mare">{t("profilo.salvato")}</p>}
+      {esito?.ok && <p className="text-sm font-medium text-lime">{t("profilo.salvato")}</p>}
       <button className="bottone" disabled={inCorso}>{inCorso ? "…" : testoBottone}</button>
     </form>
   );

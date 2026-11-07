@@ -22,9 +22,9 @@ function CampiNotizia({ n }: { n?: Notizia }) {
           <input name="url_originale" type="url" required defaultValue={n?.url_originale} placeholder="https://…" className="campo" />
         </label>
       </div>
-      <p className="text-xs text-nebbia">Titolo e riassunto vanno scritti con parole tue: mai copiare il testo della fonte. Basta una lingua; le altre mostrano quella disponibile.</p>
+      <p className="text-xs text-tenue">Titolo e riassunto vanno scritti con parole tue: mai copiare il testo della fonte. Basta una lingua; le altre mostrano quella disponibile.</p>
       {routing.locales.map((l) => (
-        <fieldset key={l} className="space-y-1 rounded-xl bg-sabbia/50 p-2">
+        <fieldset key={l} className="space-y-1 rounded-xl bg-pannello-2 p-2">
           <legend className="text-xs font-bold">{NOMI_LINGUE[l]}</legend>
           <input name={`titolo_${l}`} maxLength={120} defaultValue={tr(l)?.titolo} placeholder="Titolo" className="campo" />
           <CampoRiassunto nome={`riassunto_${l}`} valore={tr(l)?.riassunto} />
@@ -54,7 +54,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold">Notizie</h1>
-      {salvata && <p className="rounded-xl bg-onda p-3 text-sm font-medium text-mare">Notizia salvata.</p>}
+      {salvata && <p className="rounded-xl bg-pannello-2 p-3 text-sm font-medium text-lime">Notizia salvata.</p>}
       <div className="scheda">
         <h2 className="mb-3 font-bold">{inModifica ? "Modifica notizia" : "+ Nuova notizia"}</h2>
         <FormAdmin key={inModifica?.id ?? "nuova"} azione={salvaNotizia} bottone={inModifica ? "Salva modifiche" : "Salva notizia"}>
@@ -62,7 +62,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
         </FormAdmin>
         {inModifica && (
           <div className="mt-3 flex items-center justify-between">
-            <Link href="/admin/notizie" className="text-sm text-mare underline">
+            <Link href="/admin/notizie" className="text-sm text-lime underline">
               Annulla
             </Link>
             <form action={eliminaNotizia}>
@@ -74,8 +74,8 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
           </div>
         )}
       </div>
-      <ul className="scheda divide-y divide-sabbia p-0">
-        {notizie.length === 0 && <li className="p-4 text-sm text-nebbia">Nessuna notizia.</li>}
+      <ul className="scheda divide-y divide-linea p-0">
+        {notizie.length === 0 && <li className="p-4 text-sm text-tenue">Nessuna notizia.</li>}
         {notizie.map((n) => {
           const t = n.notizie_traduzioni.find((x) => x.lingua === "it") ?? n.notizie_traduzioni[0];
           return (
@@ -83,11 +83,11 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
               <Link href={`/admin/notizie?modifica=${n.id}`} className="flex items-center gap-3 px-4 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{t?.titolo ?? "(senza titolo)"}</span>
-                  <span className="block text-xs text-nebbia">
+                  <span className="block text-xs text-tenue">
                     {n.fonte_nome} · {n.notizie_traduzioni.map((x) => x.lingua).join(", ")}
                   </span>
                 </span>
-                <span className={`chip ${n.stato === "pubblicata" ? "" : "bg-sabbia text-nebbia"}`}>{n.stato}</span>
+                <span className={`chip ${n.stato === "pubblicata" ? "" : "bg-pannello-2 text-tenue"}`}>{n.stato}</span>
               </Link>
             </li>
           );

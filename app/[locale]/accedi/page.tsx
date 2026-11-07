@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { sessione } from "@/lib/dati";
 import FormAccesso from "./FormAccesso";
 import Avviso from "@/components/Avviso";
-import { Logo } from "@/components/Icone";
+import Image from "next/image";
+import { FOTO } from "@/lib/foto";
+import CreditoFoto from "@/components/CreditoFoto";
 
 export async function generateMetadata() {
   const t = await getTranslations();
@@ -19,16 +21,20 @@ export default async function Accedi({ params, searchParams }: { params: Promise
   if (user) redirect(destinazione);
   const t = await getTranslations();
   return (
-    <div className="space-y-5 pt-4">
-      <div className="text-center">
-        <Logo className="mx-auto h-16 w-16" />
-        <h1 className="mt-3 text-3xl font-black tracking-tight">{t("accedi.titolo")}</h1>
-        <p className="mt-1 text-nebbia">{t("accedi.sottotitolo")}</p>
+    <div className="mx-auto grid max-w-4xl overflow-hidden rounded-xl border border-linea bg-pannello md:grid-cols-[1fr_1.1fr]">
+      <div className="relative h-44 md:h-auto">
+        <Image src={FOTO.giocatrice.src} alt={FOTO.giocatrice.alt} placeholder="blur" fill sizes="(min-width: 768px) 420px, 100vw" className="object-cover object-[50%_25%]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-pannello via-pannello/30 to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-pannello/80" aria-hidden />
+        <CreditoFoto foto={FOTO.giocatrice} className="absolute bottom-2 left-3" />
       </div>
-      <div className="scheda">
+      <div className="space-y-5 p-5 sm:p-8">
+        <div>
+          <h1 className="titolo-pagina">{t("accedi.titolo")}</h1>
+          <p className="mt-1.5 text-sm text-tenue">{t("accedi.sottotitolo")}</p>
+        </div>
         <FormAccesso dopo={destinazione} google={process.env.NEXT_PUBLIC_GOOGLE_ABILITATO === "1"} />
+        <Avviso grande />
       </div>
-      <Avviso grande />
     </div>
   );
 }

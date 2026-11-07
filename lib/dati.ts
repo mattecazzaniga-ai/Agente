@@ -70,17 +70,43 @@ export interface PartitaConCoppie extends Partita {
 }
 
 /** Partite aperte ai pronostici nei prossimi giorni (per la home). */
+const SELECT_PARTITA = `*, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(id, nome))`;
+
+/** Partite su cui si può ancora pronosticare, dalla più vicina. */
 export async function partiteAperte(limite = 6): Promise<PartitaConCoppie[]> {
   const supabase = await supabaseServer();
   const { data } = await supabase
     .from("partite")
-    .select(`*, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(id, nome))`)
+    .select(SELECT_PARTITA)
     .eq("stato", "in_programma")
     .gt("inizio_at", new Date().toISOString())
     .not("coppia_a_id", "is", null)
     .not("coppia_b_id", "is", null)
     .order("inizio_at")
     .limit(limite);
+  return (data as unknown as PartitaConCoppie[]) ?? [];
+}
+
+/** Partite in corso: segnate "in corso" oppure già iniziate e non ancora concluse. */
+export async function partiteInCorso(limite = 6): Promise<PartitaConCoppie[]> {
+  const supabase = await supabaseServer();
+  const { data } = await supabase
+    .from("partite")
+    .select(SELECT_PARTITA)
+    .in("stato", ["in_corso", "in_programma"])
+    .lte("inizio_at", new Date().toISOString())
+    .gte("inizio_at", new Date(Date.now() - 6 * 3600_000).toISOString())
+    .not("coppia_a_id", "is", null)
+    .not("coppia_b_id", "is", null)
+    .order("inizio_at", { ascending: false })
+    .limit(limite);
+  return (data as unknown as PartitaConCoppie[]) ?? [];
+}
+
+/** Ultimi risultati. */
+export async function ultimiRisultati(limite = 6): Promise<PartitaConCoppie[]> {
+  const supabase = await supabaseServer();
+  const { data } = await supabase.from("partite").select(SELECT_PARTITA).eq("stato", "conclusa").order("inizio_at", { ascending: false }).order("turno", { ascending: false }).order("ordine").limit(limite);
   return (data as unknown as PartitaConCoppie[]) ?? [];
 }
 

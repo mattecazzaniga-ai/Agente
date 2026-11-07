@@ -28,13 +28,13 @@ export default async function Invito({ params }: { params: Promise<{ locale: str
     );
   }
   return (
-    <div className="space-y-4 pt-2">
-      <div className="scheda space-y-2 text-center">
-        <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-menta-chiaro text-menta">
-          <IconaAmici className="h-9 w-9" />
-        </span>
-        <h1 className="text-2xl font-black tracking-tight">{t("leghe.invitoTitolo", { nome: lega.nome })}</h1>
-        <p className="text-sm text-nebbia">{lega.membri} 👤</p>
+    <div className="mx-auto max-w-md space-y-5 pt-2">
+      <div className="border-b border-linea pb-4">
+        <p className="font-display text-sm font-bold uppercase tracking-[.14em] text-lime">{t("leghe.titolo")}</p>
+        <h1 className="titolo-pagina mt-1">{t("leghe.invitoTitolo", { nome: lega.nome })}</h1>
+        <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-tenue">
+          <IconaAmici className="h-4 w-4" /> {lega.membri}
+        </p>
       </div>
       {user ? (
         <FormLeghe sito={await indirizzoSito()} codiceIniziale={codice} soloEntra />

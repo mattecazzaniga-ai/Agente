@@ -1,11 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import type { Coppia, Partita, PronosticoPartita as Pronostico } from "@/lib/tipi";
 import { bandiera, nomeCoppia, punteggio } from "@/lib/formato";
-import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
-import Tra from "./Tra";
 import { gameTotali, massimoPartita } from "@/lib/punti";
 import { regolePunti } from "@/lib/dati";
-import { IconaLucchetto, IconaOrologio, IconaSpunta } from "./Icone";
+import PronosticoPartita, { type LatoCoppia } from "./PronosticoPartita";
+import Tra from "./Tra";
+import Ora from "./Ora";
+import { IconaLucchetto } from "./Icone";
 
 export interface VotoMostrato {
   percentuale: number;
@@ -20,7 +21,7 @@ const lato = (c: Coppia): LatoCoppia => ({
   testa_di_serie: c.testa_di_serie,
 });
 
-/** Una partita: prima dell'inizio si sceglie chi vince; dopo si vedono risultato, voti e punti presi. */
+/** Una partita: prima dell'inizio si pronostica; poi tabellino, voti della community e punti presi. */
 export default async function SchedaPartita(props: {
   partita: Partita;
   a: Coppia | null;
@@ -35,32 +36,25 @@ export default async function SchedaPartita(props: {
 }) {
   const t = await getTranslations();
   const { partita: p, a, b, mio } = props;
-  const aperta = p.stato === "in_programma" && new Date(p.inizio_at).getTime() > Date.now() && a && b;
+  const mancano = new Date(p.inizio_at).getTime() - Date.now();
+  const aperta = p.stato === "in_programma" && mancano > 0 && a && b;
+  const imminente = aperta && mancano < 3 * 3600_000;
   const conclusa = p.stato === "conclusa";
-  const inCorso = p.stato === "in_corso" || (p.stato === "in_programma" && !aperta && a && b);
+  const live = !conclusa && !aperta && a && b && p.stato !== "annullata";
   const haVoti = Object.keys(props.voti).length > 0;
-  /** "Ricci/Neri 2-1 · game 11-10" (game dal lato A-B, come il risultato). */
-  const scelto = (m: Pronostico) => {
-    const c = m.vincitore_id === a?.id ? a : b;
-    const nome = c ? `${c.g1.cognome}/${c.g2.cognome}` : "";
-    const set = m.set_vincitore != null ? ` ${m.set_vincitore}-${m.set_perdente}` : "";
-    const game = m.game_previsti_a != null ? ` · ${t("partita.game")} ${m.game_previsti_a}-${m.game_previsti_b}` : "";
-    return `${nome}${set}${game}`;
-  };
   const regole = await regolePunti();
   const reali = conclusa && !p.ritiro && p.game_a && p.game_b ? gameTotali(p.game_a, p.game_b, p.set_per_vincere) : null;
   const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, massimo: massimoPartita(regole) });
 
   const stato = aperta ? (
-    <span className="chip bg-sole-chiaro text-inchiostro">
-      <IconaOrologio className="h-3.5 w-3.5" /> {t("partita.chiudeTra", { quando: "" })}
-      <Tra iso={p.inizio_at} />
+    <span className={`chip ${imminente ? "bg-lime text-notte" : "bg-lime/10 text-lime"}`}>
+      {t("partita.chiudeTra", { quando: "" })} <Tra iso={p.inizio_at} />
     </span>
   ) : conclusa ? (
-    <span className="chip bg-sabbia text-nebbia">{t("partita.conclusa")}</span>
-  ) : inCorso ? (
-    <span className="chip bg-corallo/15 text-corallo">
-      <span className="h-2 w-2 animate-pulse rounded-full bg-corallo" /> {t("stato.in_corso")}
+    <span className="chip">{t("partita.conclusa")}</span>
+  ) : live ? (
+    <span className="chip-live">
+      <span className="punto-live" /> Live
     </span>
   ) : (
     <span className="chip">{t("partita.inAttesa")}</span>
@@ -69,94 +63,131 @@ export default async function SchedaPartita(props: {
   const riga = (c: Coppia | null, quale: "a" | "b") => {
     const vinta = Boolean(c && p.vincitore_id === c.id);
     const giochi = quale === "a" ? p.game_a : p.game_b;
+    const altri = quale === "a" ? p.game_b : p.game_a;
     const voto = c ? props.voti[c.id] : undefined;
     const mia = Boolean(mio && c && mio.vincitore_id === c.id);
     return (
-      <div className={`relative overflow-hidden rounded-xl px-3 py-2 ${mia ? "bg-onda" : "bg-crema"}`}>
-        {haVoti && voto && <span className="absolute inset-y-0 left-0 bg-cielo/40" style={{ width: `${voto.percentuale}%` }} aria-hidden />}
-        <div className="relative flex items-center gap-2">
-          <span className={`min-w-0 flex-1 truncate ${vinta ? "font-extrabold" : conclusa ? "text-nebbia" : "font-semibold"}`}>
+      <div className="flex items-center gap-3 py-2">
+        <span className={`h-8 w-1 shrink-0 rounded-full ${vinta ? "bg-lime" : "bg-linea"}`} aria-hidden />
+        <div className="min-w-0 flex-1">
+          <p className={`truncate text-[16px] ${conclusa ? (vinta ? "font-bold" : "text-tenue") : "font-semibold"}`}>
             {c ? (
               <>
-                <span aria-hidden>{bandiera(c.g1.paese)}</span> {nomeCoppia(c)}
-                {c.testa_di_serie ? <span className="ml-1 text-xs font-medium text-nebbia">[{c.testa_di_serie}]</span> : null}
+                <span aria-hidden className="mr-1.5">
+                  {bandiera(c.g1.paese)}
+                </span>
+                {nomeCoppia(c)}
+                {c.testa_di_serie ? <span className="ml-1.5 font-display text-xs font-bold text-sabbia">{c.testa_di_serie}</span> : null}
+                {mia && <span className="ml-2 font-display text-[11px] font-bold uppercase tracking-wider text-lime">{t("partita.tuaScelta")}</span>}
               </>
             ) : (
-              <span className="text-nebbia">…</span>
+              <span className="text-tenue">{t("partita.inAttesa")}</span>
             )}
-          </span>
-          {mia && (
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-mare text-white" title={t("torneo.ilTuo")}>
-              <IconaSpunta className="h-3 w-3" />
-            </span>
+          </p>
+          {haVoti && voto && (
+            <div className="mt-1 flex items-center gap-2">
+              <span className="h-1 flex-1 overflow-hidden rounded-full bg-linea">
+                <span className="block h-full rounded-full bg-tenue" style={{ width: `${voto.percentuale}%` }} />
+              </span>
+              <span className="w-9 text-right font-display text-xs font-bold tabular-nums text-tenue">{voto.percentuale}%</span>
+            </div>
           )}
-          {haVoti && voto && <span className="text-xs font-bold tabular-nums text-nebbia">{voto.percentuale}%</span>}
-          {conclusa && giochi && !p.ritiro && <span className={`flex shrink-0 gap-2.5 font-mono tabular-nums ${vinta ? "font-extrabold" : "text-nebbia"}`}>{giochi.map((x, i) => <span key={i} className="w-5 text-right">{x}</span>)}</span>}
         </div>
+        {giochi && (
+          <span className="flex shrink-0 gap-3">
+            {giochi.map((x, i) => (
+              <span key={i} className={`cifre w-5 text-right text-[22px] leading-none ${x > (altri?.[i] ?? 0) ? "text-testo" : "text-tenue"}`}>
+                {x}
+              </span>
+            ))}
+          </span>
+        )}
       </div>
     );
   };
 
+  const vincitoreMio = mio ? (mio.vincitore_id === a?.id ? a : b) : null;
+
   return (
-    <article className="scheda space-y-3">
-      <header className="flex items-center gap-2 text-xs text-nebbia">
-        <span className="min-w-0 flex-1 truncate">{props.intestazione}</span>
+    <article className={`pannello overflow-hidden transition ${imminente ? "border-lime/40" : ""}`}>
+      <header className="flex items-center gap-2 border-b border-linea px-4 py-2.5">
+        <div className="min-w-0 flex-1 truncate font-display text-[13px] font-semibold uppercase tracking-wider text-tenue">
+          {props.intestazione}
+          <span className="mx-1.5 text-linea">|</span>
+          <Ora iso={p.inizio_at} />
+        </div>
         {stato}
       </header>
-      {aperta ? (
-        <PronosticoPartita
-          partitaId={p.id}
-          a={lato(a)}
-          b={lato(b)}
-          setPerVincere={p.set_per_vincere}
-          mio={mio}
-          collegato={props.collegato}
-          urlAccesso={props.urlAccesso}
-          sito={props.sito}
-          descrizione={props.descrizione}
-          inPalio={inPalio}
-        />
-      ) : (
-        <>
-          <div className="space-y-1.5">
-            {riga(a, "a")}
-            {riga(b, "b")}
+
+      <div className="p-4">
+        {aperta ? (
+          <PronosticoPartita
+            partitaId={p.id}
+            a={lato(a)}
+            b={lato(b)}
+            setPerVincere={p.set_per_vincere}
+            mio={mio}
+            collegato={props.collegato}
+            urlAccesso={props.urlAccesso}
+            sito={props.sito}
+            descrizione={props.descrizione}
+            inPalio={inPalio}
+          />
+        ) : (
+          <>
+            <div className="-my-2 divide-y divide-linea/60">
+              {riga(a, "a")}
+              {riga(b, "b")}
+            </div>
             {conclusa && p.ritiro && (
-              <p className="text-xs text-nebbia">
-                {punteggio({ ...p, ritiro: false })} ({t("partita.ritiro")})
+              <p className="mt-2 text-xs text-tenue">
+                {punteggio({ ...p, ritiro: false })} · {t("partita.ritiro")}
               </p>
             )}
-          </div>
-          {mio && (
-            <div className={`rounded-2xl px-3 py-2.5 text-sm ${mio.punti != null && mio.punti > 0 ? "festa bg-menta-chiaro" : "bg-crema"}`}>
-              <p className="flex items-start justify-between gap-2 font-bold">
-                <span className="min-w-0">
-                  <span className="block text-xs font-semibold text-nebbia">{t("torneo.ilTuo")}</span>
-                  <span className="block font-extrabold">{scelto(mio)}</span>
-                </span>
-                {mio.punti != null && <span className={`shrink-0 text-base font-black ${mio.punti > 0 ? "text-menta" : "text-nebbia"}`}>{mio.punti > 0 ? t("partita.punti", { punti: mio.punti }) : "0 pt"}</span>}
+            {reali && <p className="mt-2 font-display text-xs font-semibold uppercase tracking-wider text-tenue">{t("partita.gameReali", { a: reali[0], b: reali[1] })}</p>}
+
+            {mio && vincitoreMio && (
+              <div className={`mt-4 rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-lime/40 bg-lime/[.06]" : "border-linea bg-pannello-2"}`}>
+                <div className="flex items-center justify-between gap-3 px-3 py-2.5">
+                  <div className="min-w-0">
+                    <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
+                    <p className="truncate font-semibold">
+                      {vincitoreMio.g1.cognome}/{vincitoreMio.g2.cognome}
+                      {mio.set_vincitore != null && <span className="cifre ml-2">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
+                      {mio.game_previsti_a != null && (
+                        <span className="ml-2 text-tenue">
+                          {t("partita.game")} <span className="cifre text-testo">{`${mio.game_previsti_a}-${mio.game_previsti_b}`}</span>
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  {mio.punti != null && <span className={`cifre shrink-0 text-3xl leading-none ${mio.punti > 0 ? "text-lime" : "text-tenue"}`}>+{mio.punti}</span>}
+                </div>
+                {mio.punti != null && (
+                  <dl className="grid grid-cols-3 border-t border-linea text-center">
+                    {[
+                      [t("punti.vincitore"), mio.punti_vincitore ?? 0, ""],
+                      [t("punti.set"), mio.punti_set ?? 0, ""],
+                      [t("punti.game"), mio.punti_game ?? 0, mio.errore_game != null && mio.errore_game > 0 ? t("punti.errore", { n: mio.errore_game }) : mio.errore_game === 0 ? t("punti.esatti") : ""],
+                    ].map(([nome, punti, nota], i) => (
+                      <div key={i} className={`px-2 py-2 ${i > 0 ? "border-l border-linea" : ""}`}>
+                        <dt className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{nome}</dt>
+                        <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-lime" : "text-tenue"}`}>+{punti}</dd>
+                        {nota && <dd className="text-[11px] text-tenue">{nota}</dd>}
+                      </div>
+                    ))}
+                  </dl>
+                )}
+              </div>
+            )}
+            {!conclusa && (
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-tenue">
+                <IconaLucchetto className="h-3.5 w-3.5" /> {t("partita.chiusa")}
               </p>
-              {mio.punti != null && (
-                <p className="mt-1.5 flex flex-wrap gap-1.5 text-[11px] font-bold">
-                  {reali && <span className="chip bg-white text-inchiostro">{t("partita.gameReali", { a: reali[0], b: reali[1] })}</span>}
-                  <span className={`chip ${mio.punti_vincitore ? "bg-white text-menta" : "bg-white/60 text-nebbia"}`}>{t("punti.vincitore")} +{mio.punti_vincitore ?? 0}</span>
-                  <span className={`chip ${mio.punti_set ? "bg-white text-menta" : "bg-white/60 text-nebbia"}`}>{t("punti.set")} +{mio.punti_set ?? 0}</span>
-                  <span className={`chip ${mio.punti_game ? (mio.errore_game === 0 ? "bg-sole text-inchiostro" : "bg-white text-menta") : "bg-white/60 text-nebbia"}`}>
-                    {mio.errore_game === 0 ? "🎯 " : ""}
-                    {t("punti.game")} +{mio.punti_game ?? 0}
-                    {mio.errore_game != null && mio.errore_game > 0 ? ` (${t("punti.errore", { n: mio.errore_game })})` : ""}
-                  </span>
-                </p>
-              )}
-            </div>
-          )}
-          {!conclusa && (
-            <p className="flex items-center gap-1.5 text-xs text-nebbia">
-              <IconaLucchetto className="h-3.5 w-3.5" /> {t("partita.chiusa")}
-            </p>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
     </article>
   );
 }

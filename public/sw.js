@@ -1,6 +1,6 @@
 // Service worker minimo: l'app si installa sul telefono e, senza rete, mostra una pagina di cortesia.
 // Le pagine vanno sempre in rete (i dati dei pronostici devono essere aggiornati): niente cache dei dati.
-const CACHE = "beachpeck-v1";
+const CACHE = "beachpeck-v2";
 const STATICI = ["/offline.html", "/icone/icona-192.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {

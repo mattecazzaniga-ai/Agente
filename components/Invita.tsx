@@ -41,7 +41,7 @@ export default function Invita({ nome, codice, sito }: { nome: string; codice: s
             WhatsApp
           </a>
           <button type="button" className="bottone-secondario text-sm" onClick={copia}>
-            {copiato ? t("condividi.copiato") : "🔗"}
+            {copiato ? t("condividi.copiato") : t("condividi.copia")}
           </button>
         </div>
       )}

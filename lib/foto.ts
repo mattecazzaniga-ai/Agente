@@ -1,0 +1,43 @@
+// Fotografie reali di beach tennis da Wikimedia Commons, licenza CC BY-SA 4.0 (attribuzione obbligatoria:
+// autore, licenza e link alla fonte compaiono nel sito accanto alla foto o nei crediti).
+import calbucci from "@/foto/calbucci.jpg";
+import play from "@/foto/play.jpg";
+import marchezini from "@/foto/marchezini.jpg";
+
+export interface Foto {
+  src: typeof calbucci;
+  alt: string;
+  autore: string;
+  fonte: string;
+  licenza: "CC BY-SA 4.0";
+  urlLicenza: string;
+}
+
+const CC = "https://creativecommons.org/licenses/by-sa/4.0/";
+
+export const FOTO = {
+  partita: {
+    src: calbucci,
+    alt: "Alessandro Calbucci colpisce di dritto davanti alle tribune piene, Follow The Beach 2025",
+    autore: "Felipe.bzra",
+    fonte: "https://commons.wikimedia.org/wiki/File:Alessandro_Calbucci_Follow_The_Beach_2025.jpg",
+    licenza: "CC BY-SA 4.0",
+    urlLicenza: CC,
+  },
+  torneo: {
+    src: play,
+    alt: "Partita di doppio di beach tennis su un campo in sabbia, in pieno giorno",
+    autore: "Kashtanskaya",
+    fonte: "https://commons.wikimedia.org/wiki/File:Beach_Tennis_Play.jpg",
+    licenza: "CC BY-SA 4.0",
+    urlLicenza: CC,
+  },
+  giocatrice: {
+    src: marchezini,
+    alt: "Vitória Marchezini in salto per uno smash, Follow The Beach 2025",
+    autore: "Felipe.bzra",
+    fonte: "https://commons.wikimedia.org/wiki/File:Vitoria_Marchezini_Follow_The_Beach_2025.jpg",
+    licenza: "CC BY-SA 4.0",
+    urlLicenza: CC,
+  },
+} satisfies Record<string, Foto>;

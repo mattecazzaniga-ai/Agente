@@ -18,20 +18,20 @@ export default async function Cruscotto() {
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold">Cruscotto</h1>
       <div className="scheda space-y-2">
-        <p className="text-sm text-nebbia">Utenti attivi questa settimana</p>
+        <p className="text-sm text-tenue">Utenti attivi questa settimana</p>
         <p className="text-4xl font-extrabold">
-          {ora?.attivi ?? 0} <span className="text-lg font-semibold text-nebbia">/ {OBIETTIVO}</span>
+          {ora?.attivi ?? 0} <span className="text-lg font-semibold text-tenue">/ {OBIETTIVO}</span>
         </p>
-        <div className="h-3 overflow-hidden rounded-full bg-onda">
-          <div className="h-full bg-mare" style={{ width: `${perc}%` }} />
+        <div className="h-3 overflow-hidden rounded-full bg-pannello-2">
+          <div className="h-full bg-lime" style={{ width: `${perc}%` }} />
         </div>
-        <p className="text-xs text-nebbia">
+        <p className="text-xs text-tenue">
           Iscritti in totale: {utenti ?? 0} · Tornei non conclusi: {tornei ?? 0}
         </p>
       </div>
       <div className="scheda overflow-x-auto p-0">
         <table className="w-full text-sm">
-          <thead className="text-left text-xs text-nebbia">
+          <thead className="text-left text-xs text-tenue">
             <tr>
               <th className="p-3">Settimana</th>
               <th className="p-3 text-right">Attivi</th>
@@ -40,7 +40,7 @@ export default async function Cruscotto() {
               <th className="p-3 text-right">Pronostici</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-sabbia">
+          <tbody className="divide-y divide-linea">
             {righe.map((r) => (
               <tr key={r.settimana}>
                 <td className="p-3">{new Date(r.settimana).toLocaleDateString("it", { day: "numeric", month: "short", timeZone: "UTC" })}</td>
@@ -53,7 +53,7 @@ export default async function Cruscotto() {
           </tbody>
         </table>
       </div>
-      <p className="text-xs text-nebbia">
+      <p className="text-xs text-tenue">
         &quot;Tornati&quot; = attivi anche la settimana prima. Un utente è attivo se apre l&apos;app collegato almeno una volta nella settimana.
       </p>
       <div className="grid grid-cols-2 gap-2">

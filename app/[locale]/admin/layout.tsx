@@ -17,9 +17,10 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
   ];
   return (
     <div lang="it">
-      <nav className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4">
+      <p className="font-display text-sm font-bold uppercase tracking-[.14em] text-lime">Admin</p>
+      <nav className="-mx-4 mb-5 mt-2 flex gap-1 overflow-x-auto border-b border-linea px-4 sm:mx-0 sm:px-0">
         {voci.map(([href, nome]) => (
-          <Link key={href} href={href} className="shrink-0 rounded-full bg-sole px-3.5 py-1.5 text-sm font-bold text-inchiostro">
+          <Link key={href} href={href} className="shrink-0 px-3 pb-2.5 font-display text-[15px] font-bold uppercase tracking-wider text-tenue hover:text-testo">
             {nome}
           </Link>
         ))}

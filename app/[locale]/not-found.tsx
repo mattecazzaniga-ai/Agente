@@ -1,13 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
-export default async function NonTrovato() {
+export default async function NonTrovata() {
   const t = await getTranslations();
   return (
-    <div className="scheda mt-6 space-y-3 text-center">
-      <div className="text-5xl" aria-hidden>🏖️</div>
-      <p className="font-semibold">{t("errori.nonTrovato")}</p>
-      <Link href="/" className="bottone">
+    <div className="mx-auto max-w-md py-16 text-center">
+      <p className="cifre text-[96px] leading-none text-lime">404</p>
+      <p className="mt-3 text-lg text-tenue">{t("errori.nonTrovato")}</p>
+      <Link href="/" className="bottone mt-8">
         {t("nav.home")}
       </Link>
     </div>

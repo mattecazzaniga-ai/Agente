@@ -25,7 +25,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
     <div className="space-y-4">
       {google && (
         <>
-          <button type="button" onClick={conGoogle} className="bottone-secondario bg-white">
+          <button type="button" onClick={conGoogle} className="bottone-secondario bg-pannello-2">
             <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
               <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
               <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
@@ -34,14 +34,14 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
             </svg>
             {t("accedi.google")}
           </button>
-          <p className="text-center text-sm text-nebbia">{t("accedi.oppure")}</p>
+          <p className="text-center text-sm text-tenue">{t("accedi.oppure")}</p>
         </>
       )}
 
       {modo !== "link" && (
-        <div className="grid grid-cols-2 rounded-full bg-sabbia p-1 text-sm font-bold">
+        <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-notte p-1">
           {(["accedi", "registrati"] as const).map((m) => (
-            <button key={m} type="button" onClick={() => setModo(m)} className={`rounded-full py-2 transition ${modo === m ? "bg-white text-mare shadow-sm" : "text-nebbia"}`}>
+            <button key={m} type="button" onClick={() => setModo(m)} className={`rounded-md py-2 font-display text-[15px] font-bold uppercase tracking-wider transition ${modo === m ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}>
               {t(m === "accedi" ? "accedi.schedaAccedi" : "accedi.schedaRegistrati")}
             </button>
           ))}
@@ -62,7 +62,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
           </label>
           {accesso && !accesso.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${accesso.errore}`)}</p>}
           <button className="bottone" disabled={accessoInCorso}>{accessoInCorso ? "…" : t("accedi.entra")}</button>
-          <button type="button" onClick={() => setModo("link")} className="w-full text-sm text-nebbia underline">
+          <button type="button" onClick={() => setModo("link")} className="w-full text-sm text-tenue underline">
             {t("accedi.dimenticata")}
           </button>
         </form>
@@ -79,17 +79,17 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
           <label className="block">
             <span className="etichetta">{t("accedi.sceglPassword")}</span>
             <input name="password" type="password" autoComplete="new-password" minLength={6} required className="campo" />
-            <span className="mt-1 block text-xs text-nebbia">{t("accedi.passwordAiuto")}</span>
+            <span className="mt-1 block text-xs text-tenue">{t("accedi.passwordAiuto")}</span>
           </label>
           {registra && !registra.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${registra.errore}`)}</p>}
-          {registra?.ok && <p className="rounded-xl bg-onda p-3 text-sm">{t("accedi.confermaEmail")}</p>}
+          {registra?.ok && <p className="rounded-xl bg-pannello-2 p-3 text-sm">{t("accedi.confermaEmail")}</p>}
           <button className="bottone" disabled={registraInCorso}>{registraInCorso ? "…" : t("accedi.creaAccount")}</button>
         </form>
       )}
 
       {modo === "link" && (
         <div className="space-y-3">
-          <p className="text-sm text-nebbia">{t("accedi.spiegaLink")}</p>
+          <p className="text-sm text-tenue">{t("accedi.spiegaLink")}</p>
       {!email ? (
           <form action={(f) => { setCambia(false); inviaAzione(f); }} className="space-y-3">
             <input type="hidden" name="lingua" value={lingua} />
@@ -103,7 +103,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
           </form>
         ) : (
           <form action={verificaAzione} className="space-y-3">
-            <p className="rounded-xl bg-onda p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
+            <p className="rounded-xl bg-pannello-2 p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
             <input type="hidden" name="email" value={email} />
             <input type="hidden" name="lingua" value={lingua} />
             <input type="hidden" name="dopo" value={dopo} />
@@ -113,12 +113,12 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
             </label>
             {verifica && !verifica.ok && <p className="text-sm font-medium text-corallo">{t("accedi.codiceErrato")}</p>}
             <button className="bottone" disabled={verificaInCorso}>{verificaInCorso ? "…" : t("accedi.verifica")}</button>
-            <button type="button" onClick={() => setCambia(true)} className="w-full text-sm text-nebbia underline">
+            <button type="button" onClick={() => setCambia(true)} className="w-full text-sm text-tenue underline">
               {t("accedi.cambiaEmail")}
             </button>
           </form>
         )}
-          <button type="button" onClick={() => setModo("accedi")} className="w-full text-sm text-nebbia underline">
+          <button type="button" onClick={() => setModo("accedi")} className="w-full text-sm text-tenue underline">
             ← {t("accedi.tornaPassword")}
           </button>
         </div>

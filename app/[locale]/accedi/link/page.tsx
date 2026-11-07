@@ -37,7 +37,7 @@ export default function LinkEmail() {
           <a href={`/${lingua}/accedi`} className="bottone inline-block">{t("titolo")}</a>
         </>
       ) : (
-        <p className="text-nebbia">{t("entrando")}</p>
+        <p className="text-tenue">{t("entrando")}</p>
       )}
     </div>
   );

@@ -18,23 +18,29 @@
     "scegli": "Idioma"
   },
   "home": {
-    "titolo": "Adivina quién gana. Reta a tus amigos.",
-    "intro": "Pronósticos de los partidos de los torneos ITF de beach tennis. Cada mes un nuevo ranking.",
-    "inizia": "Empezar gratis",
+    "titolo": "Adivina quién gana. Gana a tus amigos.",
+    "intro": "Pronostica ganador, sets y juegos de los partidos ITF de beach tennis. Cada mes una nueva clasificación.",
+    "inizia": "Jugar ahora",
     "daPronosticare": "Para pronosticar",
-    "nessunaAperta": "No hay partidos abiertos ahora. ¡El próximo torneo llega pronto! 🌞",
+    "nessunaAperta": "Ningún partido abierto ahora: los pronósticos vuelven con la próxima ronda.",
     "prossimiTornei": "Próximos torneos",
     "ultimeNotizie": "Últimas noticias",
     "vediTutti": "Ver todos",
-    "ciao": "¡Hola, {nome}! 👋",
+    "ciao": "Hola {nome}",
     "ciaoSotto": "¿Quién gana hoy según tú?",
     "comeFunziona": "Cómo funciona",
     "passo1t": "Elige",
-    "passo1": "Toca la pareja que crees que gana.",
+    "passo1": "Elige la pareja ganadora, el resultado en sets y los juegos de cada pareja.",
     "passo2t": "Suma puntos",
-    "passo2": "Cuanto más valiente el pronóstico, más puntos ganas.",
+    "passo2": "Al final del partido sumas hasta 12 puntos: ganador, sets exactos y juegos, cuanto más cerca más puntos.",
     "passo3t": "Reta a tus amigos",
-    "passo3": "Crea una liga y sube en el ranking del mes."
+    "passo3": "Crea una liga privada y reta a tus amigos en la clasificación del mes.",
+    "occhiello": "Torneos ITF · Juego gratuito",
+    "posizione": "Posición · {mese}",
+    "daFare": "Por pronosticar",
+    "inCorso": "En juego",
+    "ultimiRisultati": "Últimos resultados",
+    "classificaMese": "Clasificación · {mese}"
   },
   "accedi": {
     "titolo": "Entrar",
@@ -108,7 +114,7 @@
     "finalista": "Finalista (opcional)",
     "nessuno": "Ninguno",
     "salva": "Guardar pronóstico",
-    "salvato": "¡Hecho! Pronóstico guardado 🎉",
+    "salvato": "¡Hecho! Pronóstico guardado",
     "chiusoTorneo": "Pronósticos del campeón cerrados: el torneo ya empezó.",
     "chiudeIl": "Cierra {data}",
     "partite": "Partidos",
@@ -117,7 +123,9 @@
     "tuoiPunti": "Tus puntos: {punti}",
     "accediPerPronosticare": "Entra para pronosticar",
     "hannoScelto": "{percentuale}% · {punti} pts",
-    "ilTuo": "Tu pronóstico"
+    "ilTuo": "Tu pronóstico",
+    "tuoiPuntiBreve": "tus puntos",
+    "match": "Partido {n}"
   },
   "partita": {
     "chiVince": "¿Quién gana?",
@@ -125,7 +133,7 @@
     "game": "Juegos totales",
     "facoltativo": "opcional",
     "salva": "Guardar",
-    "salvato": "¡Hecho! 🎉",
+    "salvato": "Pronóstico guardado",
     "chiusa": "Pronósticos cerrados",
     "inAttesa": "Esperando a las parejas",
     "ritiro": "retiro",
@@ -146,7 +154,19 @@
     "risultatoSet": "Resultado en sets de {nome}",
     "gameTotali": "Juegos totales de cada pareja",
     "notaSuperTieBreak": "El súper tie-break vale 1 juego para quien lo gana.",
-    "gameReali": "Juegos reales {a}-{b}"
+    "gameReali": "Juegos reales {a}-{b}",
+    "passoVincitore": "Quién gana",
+    "passoSet": "Resultado en sets",
+    "passoGame": "Juegos totales",
+    "riepilogo": "Tu pronóstico",
+    "vince": "Gana {nome}",
+    "conferma": "Confirmar pronóstico",
+    "aggiorna": "Actualizar pronóstico",
+    "salvataggio": "Guardando…",
+    "tuaScelta": "Tu elección",
+    "testaDiSerie": "Cabeza de serie {n}",
+    "meno": "Un juego menos",
+    "piu": "Un juego más"
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
@@ -161,7 +181,7 @@
     "lega": "Liga",
     "mese": "Mes",
     "punti": "Puntos",
-    "nessuno": "Todavía no hay puntos este mes: ¡el primer puesto está libre! 🏖️",
+    "nessuno": "Todavía no hay puntos este mes: ¡el primer puesto está libre!",
     "tu": "Tú",
     "sei": "Eres {posizione}º de {totale}",
     "senzaPunti": "Haz un pronóstico para entrar en el ranking.",
@@ -174,7 +194,12 @@
     "colSet": "Sets",
     "colGame": "Juegos",
     "legenda": "Pron. = pronósticos · Gan. = ganadores acertados · Sets = resultados en sets exactos · Juegos = juegos exactos. A igualdad de puntos cuentan sets exactos, luego ganadores, luego juegos exactos.",
-    "utente": "Jugador"
+    "utente": "Jugador",
+    "tuaPosizione": "Tu posición",
+    "giocatori": "Jugadores",
+    "distacco": "Te faltan {punti} puntos para superar a {nome}.",
+    "completa": "Clasificación completa",
+    "dalPrimo": "−{punti} pts"
   },
   "leghe": {
     "titolo": "Ligas entre amigos",
@@ -194,7 +219,8 @@
     "invitoNonTrovato": "Esta invitación no es válida.",
     "entraOra": "Entrar en la liga",
     "invitoTesto": "¡Juega conmigo a los pronósticos de beach tennis en Beach Peck! Entra en la liga «{nome}» con el código {codice}:",
-    "sottotitoloPagina": "Reta a tus amigos en una clasificación solo vuestra"
+    "sottotitoloPagina": "Reta a tus amigos en una clasificación solo vuestra",
+    "entraOCrea": "Únete o crea"
   },
   "notizie": {
     "titolo": "Noticias",
@@ -224,11 +250,14 @@
     "classifica": "Compartir posición",
     "testoPronostico": "Mi pronóstico en Beach Peck: {scelta}. ¿Y el tuyo?",
     "testoClassifica": "¡Soy {posizione}º en el ranking de {mese} en Beach Peck! Rétame:",
-    "copiato": "Enlace copiado"
+    "copiato": "Enlace copiado",
+    "copia": "Copiar enlace",
+    "scarica": "Descargar imagen"
   },
   "privacy": {
     "titolo": "Privacidad",
-    "testo": "Beach Peck guarda solo los datos necesarios para el juego: email (para el acceso), apodo, país, idioma, tus pronósticos, las ligas y los días en que usas la app (para saber cuántos usuarios activos hay). No vendemos ni compartimos datos y no usamos cookies de perfilado: solo cookies técnicas de acceso e idioma. Puedes eliminar la cuenta y todos los datos en cualquier momento desde el perfil."
+    "testo": "Beach Peck guarda solo los datos necesarios para el juego: email (para el acceso), apodo, país, idioma, tus pronósticos, las ligas y los días en que usas la app (para saber cuántos usuarios activos hay). No vendemos ni compartimos datos y no usamos cookies de perfilado: solo cookies técnicas de acceso e idioma. Puedes eliminar la cuenta y todos los datos en cualquier momento desde el perfil.",
+    "crediti": "Créditos fotográficos"
   },
   "errori": {
     "generico": "Algo salió mal. Inténtalo de nuevo.",
@@ -253,6 +282,13 @@
     "set": "Sets",
     "esatto": "Exacto",
     "game": "Juegos",
-    "errore": "error {n}"
+    "errore": "error {n}",
+    "esatti": "exactos"
+  },
+  "riga": {
+    "fine": "Fin.",
+    "rit": "Ret.",
+    "fatto": "Hecho",
+    "pronostica": "Jugar"
   }
 }

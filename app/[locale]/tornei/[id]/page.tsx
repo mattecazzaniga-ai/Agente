@@ -8,8 +8,11 @@ import { TURNI, type Coppia, type Genere } from "@/lib/tipi";
 import PronosticoTorneo from "@/components/PronosticoTorneo";
 import SchedaPartita, { type VotoMostrato } from "@/components/SchedaPartita";
 import Regole from "@/components/Regole";
-import Ora from "@/components/Ora";
-import { IconaCoppa, IconaIndietro } from "@/components/Icone";
+import { IconaIndietro } from "@/components/Icone";
+import Image from "next/image";
+import { FOTO } from "@/lib/foto";
+import CreditoFoto from "@/components/CreditoFoto";
+import Vuoto from "@/components/Vuoto";
 
 export const dynamic = "force-dynamic";
 
@@ -56,35 +59,49 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
 
   return (
     <div>
-      <Link href="/tornei" className="inline-flex items-center gap-1 text-sm font-bold text-mare">
+      <Link href="/tornei" className="inline-flex items-center gap-1 font-display text-sm font-bold uppercase tracking-wider text-tenue hover:text-testo">
         <IconaIndietro /> {t("tornei.titolo")}
       </Link>
-      <header className="eroe relative mt-3 overflow-hidden rounded-[28px] p-5 text-white shadow-[0_18px_40px_-20px_rgba(7,91,120,.8)]">
-        <span className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-sole/90" aria-hidden />
-        <span className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-sole/20" aria-hidden />
-        <div className="flex flex-wrap gap-1.5">
-          <span className={`chip relative ${torneo.stato === "in_corso" ? "bg-corallo text-white" : torneo.stato === "concluso" ? "bg-white/70 text-nebbia" : "bg-white text-mare-scuro"}`}>
-            {torneo.stato === "in_corso" && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />}
-            {t(`stato.${torneo.stato}`)}
-          </span>
-          <span className="chip relative bg-inchiostro text-white">
-            {torneo.circuito}
-            {torneo.categoria ? <span className="text-sole">{torneo.categoria}</span> : null}
-          </span>
+
+      <header className="relative -mx-4 mt-3 overflow-hidden border-y border-linea sm:mx-0 sm:rounded-xl sm:border">
+        <Image src={FOTO.torneo.src} alt={FOTO.torneo.alt} placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="h-56 w-full object-cover object-[50%_45%] sm:h-64" />
+        <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/75 to-notte/20" aria-hidden />
+        <CreditoFoto foto={FOTO.torneo} className="absolute right-3 top-2" />
+        <div className="absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="chip bg-testo text-notte">
+              {torneo.circuito}
+              {torneo.categoria ? ` ${torneo.categoria}` : ""}
+            </span>
+            {torneo.stato === "in_corso" ? (
+              <span className="chip-live bg-notte/70">
+                <span className="punto-live" /> {t("stato.in_corso")}
+              </span>
+            ) : (
+              <span className="chip bg-notte/70">{t(`stato.${torneo.stato}`)}</span>
+            )}
+          </div>
+          <h1 className="mt-2 font-display text-[38px] font-extrabold uppercase leading-[.95] tracking-tight sm:text-5xl">{torneo.nome}</h1>
+          <p className="mt-1.5 text-sm text-testo/80">
+            {bandiera(torneo.paese)} {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
+          </p>
         </div>
-        <h1 className="relative mt-3 text-[28px] font-black leading-tight tracking-tight">{torneo.nome}</h1>
-        <p className="relative mt-1 text-white/85">
-          {bandiera(torneo.paese)} {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
-        </p>
         {user && mieiPunti > 0 && (
-          <p className="festa relative mt-3 inline-flex items-center gap-2 rounded-full bg-sole px-4 py-1.5 text-sm font-black text-inchiostro">{t("torneo.tuoiPunti", { punti: mieiPunti })} 🎉</p>
+          <div className="festa absolute right-4 top-9 rounded-lg bg-lime px-3 py-1.5 text-center text-notte sm:right-6">
+            <p className="cifre text-2xl leading-none">+{mieiPunti}</p>
+            <p className="font-display text-[10px] font-bold uppercase tracking-wider">{t("torneo.tuoiPuntiBreve")}</p>
+          </div>
         )}
       </header>
 
       {tabelloni.length > 1 && (
-        <div className="mt-4 flex gap-1 rounded-full bg-sabbia p-1">
+        <div className="mt-4 grid grid-flow-col gap-1 rounded-lg border border-linea bg-pannello p-1">
           {tabelloni.map((x) => (
-            <Link key={x.id} href={`/tornei/${id}?tab=${x.genere}`} className={`flex-1 rounded-full py-2 text-center text-sm font-bold transition ${x.id === scelto?.id ? "bg-white text-mare shadow-sm" : "text-nebbia"}`}>
+            <Link
+              key={x.id}
+              href={`/tornei/${id}?tab=${x.genere}`}
+              className={`rounded-md py-2 text-center font-display text-[15px] font-bold uppercase tracking-wider transition ${x.id === scelto?.id ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}
+            >
               {t(`genere.${x.genere as Genere}`)}
             </Link>
           ))}
@@ -92,82 +109,85 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
       )}
 
       {!scelto ? (
-        <p className="scheda mt-4 text-sm text-nebbia">{t("torneo.nessunaCoppia")}</p>
+        <div className="mt-4">
+          <Vuoto testo={t("torneo.nessunaCoppia")} />
+        </div>
       ) : (
-        <>
-          <section className="scheda mt-4 space-y-4">
-            <h2 className="flex items-center gap-2.5 text-lg font-extrabold leading-tight">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-sole-chiaro">
-                <IconaCoppa className="h-6 w-6" />
-              </span>
-              {t("torneo.chiVinceTorneo", { genere: t(`genere.${scelto.genere}`).toLowerCase() })}
-            </h2>
-            <PronosticoTorneo
-              tabelloneId={scelto.id}
-              titolo={t(`genere.${scelto.genere}`)}
-              nomeTorneo={torneo.nome}
-              coppie={scelto.coppie.map((c) => ({ id: c.id, nome: `${bandiera(c.g1.paese)} ${nomeCoppiaLungo(c)}`, testa_di_serie: c.testa_di_serie }))}
-              mio={miei?.torneo.get(scelto.id) ?? null}
-              aperto={aperto}
-              chiusura={torneo.inizio_at}
-              collegato={Boolean(user)}
-              urlAccesso={urlAccesso(locale, ritorno)}
-              voti={voti.get(scelto.id) ?? {}}
-              sito={sito}
-            />
-          </section>
-
-          <h2 className="titolo-sezione">{t("torneo.partite")}</h2>
-          {scelto.partite.length === 0 && <p className="scheda text-sm text-nebbia">{t("torneo.nessunaPartita")}</p>}
-          {turni.length > 0 && (
-            <nav className="-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1" aria-label={t("torneo.partite")}>
-              {turni.map((tu) => {
-                const attivo = tu === turnoScelto;
-                const aperte = aperteIn(tu);
-                return (
-                  <Link
-                    key={tu}
-                    href={`/tornei/${id}?${new URLSearchParams({ ...(scelto ? { tab: scelto.genere } : {}), turno: tu })}`}
-                    scroll={false}
-                    className={`flex shrink-0 items-center gap-1.5 rounded-full border-2 px-4 py-1.5 text-sm font-bold transition ${attivo ? "border-mare bg-mare text-white" : "border-sabbia-scura bg-white text-inchiostro"}`}
-                  >
-                    {t(`turno.${tu}`)}
-                    {aperte > 0 && <span className={`grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-black ${attivo ? "bg-sole text-inchiostro" : "bg-sole-chiaro text-inchiostro"}`}>{aperte}</span>}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
-          {turnoScelto && (
-            <section key={turnoScelto} className="mb-6">
-              <div className="space-y-3">
+        <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8">
+          <div>
+            <h2 className="titolo-sezione">{t("torneo.partite")}</h2>
+            {scelto.partite.length === 0 && <Vuoto testo={t("torneo.nessunaPartita")} />}
+            {turni.length > 0 && (
+              <nav className="-mx-4 mb-4 flex gap-1 overflow-x-auto border-b border-linea px-4 sm:mx-0 sm:px-0" aria-label={t("torneo.partite")}>
+                {turni.map((tu) => {
+                  const attivo = tu === turnoScelto;
+                  const aperte = aperteIn(tu);
+                  return (
+                    <Link
+                      key={tu}
+                      href={`/tornei/${id}?${new URLSearchParams({ ...(scelto ? { tab: scelto.genere } : {}), turno: tu })}`}
+                      scroll={false}
+                      aria-current={attivo ? "page" : undefined}
+                      className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-2.5 pt-1 font-display text-[15px] font-bold uppercase tracking-wider transition ${
+                        attivo ? "text-testo after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-lime" : "text-tenue hover:text-testo"
+                      }`}
+                    >
+                      {t(`turno.${tu}`)}
+                      {aperte > 0 && <span className="cifre rounded bg-lime px-1.5 text-[12px] text-notte">{aperte}</span>}
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
+            {turnoScelto && (
+              <section key={turnoScelto} className="entra space-y-3">
                 {scelto.partite
                   .filter((p) => p.turno === turnoScelto && (p.coppia_a_id || p.coppia_b_id))
                   .sort((x, y) => Number(apribile(y)) - Number(apribile(x)) || x.ordine - y.ordine)
                   .map((p) => {
                     const coppia = (cid: string | null): Coppia | null => scelto.coppie.find((c) => c.id === cid) ?? null;
                     return (
-                      <SchedaPartita
-                        key={p.id}
-                        partita={p}
-                        a={coppia(p.coppia_a_id)}
-                        b={coppia(p.coppia_b_id)}
-                        mio={miei?.partita.get(p.id) ?? null}
-                        voti={voti.get(p.id) ?? {}}
-                        collegato={Boolean(user)}
-                        urlAccesso={urlAccesso(locale, ritorno)}
-                        sito={sito}
-                        descrizione={`${nomeCoppia(coppia(p.coppia_a_id))} vs ${nomeCoppia(coppia(p.coppia_b_id))} · ${torneo.nome}`}
-                        intestazione={<span className="font-semibold capitalize"><Ora iso={p.inizio_at} /></span>}
-                      />
+                      <div key={p.id} id={`p-${p.id}`} className="scroll-mt-20">
+                        <SchedaPartita
+                          partita={p}
+                          a={coppia(p.coppia_a_id)}
+                          b={coppia(p.coppia_b_id)}
+                          mio={miei?.partita.get(p.id) ?? null}
+                          voti={voti.get(p.id) ?? {}}
+                          collegato={Boolean(user)}
+                          urlAccesso={urlAccesso(locale, ritorno)}
+                          sito={sito}
+                          descrizione={`${nomeCoppia(coppia(p.coppia_a_id))} vs ${nomeCoppia(coppia(p.coppia_b_id))} · ${torneo.nome}`}
+                          intestazione={`${t(`turno.${p.turno}`)} · ${t("torneo.match", { n: p.ordine })}`}
+                        />
+                      </div>
                     );
                   })}
-              </div>
+              </section>
+            )}
+          </div>
+
+          <aside>
+            <h2 className="titolo-sezione">{t("torneo.chiVinceTorneo", { genere: t(`genere.${scelto.genere}`).toLowerCase() })}</h2>
+            <section className="pannello p-4">
+              <PronosticoTorneo
+                tabelloneId={scelto.id}
+                titolo={t(`genere.${scelto.genere}`)}
+                nomeTorneo={torneo.nome}
+                coppie={scelto.coppie.map((c) => ({ id: c.id, nome: `${bandiera(c.g1.paese)} ${nomeCoppiaLungo(c)}`, testa_di_serie: c.testa_di_serie }))}
+                mio={miei?.torneo.get(scelto.id) ?? null}
+                aperto={aperto}
+                chiusura={torneo.inizio_at}
+                collegato={Boolean(user)}
+                urlAccesso={urlAccesso(locale, ritorno)}
+                voti={voti.get(scelto.id) ?? {}}
+                sito={sito}
+              />
             </section>
-          )}
-        </>
+            <Regole />
+          </aside>
+        </div>
       )}
-      <Regole />
     </div>
   );
 }

@@ -27,12 +27,12 @@ export default async function AdminTorneo({ params }: { params: Promise<{ id: st
 
   return (
     <div className="space-y-4">
-      <Link href="/admin/tornei" className="text-sm font-semibold text-mare">
+      <Link href="/admin/tornei" className="text-sm font-semibold text-lime">
         ← Tornei
       </Link>
       <h1 className="text-xl font-extrabold">{torneo.nome}</h1>
       <p className="text-sm">
-        <Link href={`/tornei/${torneo.id}`} className="text-mare underline">
+        <Link href={`/tornei/${torneo.id}`} className="text-lime underline">
           Vedi la pagina pubblica
         </Link>
       </p>
@@ -77,7 +77,7 @@ export default async function AdminTorneo({ params }: { params: Promise<{ id: st
 function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
   const c = (id: string | null) => tb.coppie.find((x) => x.id === id) ?? null;
   return (
-    <section className="space-y-3 rounded-[var(--radius-scheda)] border-2 border-sabbia-scura p-3">
+    <section className="space-y-3 rounded-[var(--radius-scheda)] border-2 border-linea p-3">
       <div className="flex items-center gap-2">
         <h2 className="flex-1 text-lg font-bold">Tabellone {GENERE_IT[tb.genere]}</h2>
         <span className="chip">{tb.coppie.length} coppie</span>
@@ -85,7 +85,7 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
       </div>
 
       <Pannello titolo={<>📋 Importa entry list / tabellone</>} aperto={tb.coppie.length === 0}>
-        <p className="mt-2 text-xs text-nebbia">
+        <p className="mt-2 text-xs text-tenue">
           Incolla le coppie <b>nell&apos;ordine del tabellone</b> (dall&apos;alto in basso), una per riga. Scrivi BYE per un posto vuoto. Si creano giocatori (senza doppioni), coppie e
           partite del primo turno; chi ha il BYE passa al turno dopo. <b>Tabellone ITF:</b> apri «Draws &amp; Results» sul sito ITF, Seleziona tutto → Copia e incolla qui: vengono create tutte le partite con i risultati già giocati (l&apos;orario sotto vale per le partite ancora da giocare).
         </p>
@@ -111,7 +111,7 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
       </Pannello>
 
       <Pannello titolo={<>👥 Coppie ({tb.coppie.length})</>}>
-        <ul className="mt-2 divide-y divide-sabbia text-sm">
+        <ul className="mt-2 divide-y divide-linea text-sm">
           {tb.coppie.map((x) => (
             <li key={x.id} className="flex items-center gap-2 py-1.5">
               <span className="flex-1">
@@ -131,7 +131,7 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
 
       {TURNI.filter((t) => tb.partite.some((p) => p.turno === t)).map((t) => (
         <div key={t} className="space-y-2">
-          <h3 className="text-sm font-bold uppercase text-nebbia">{t}</h3>
+          <h3 className="text-sm font-bold uppercase text-tenue">{t}</h3>
           {tb.partite
             .filter((p) => p.turno === t)
             .map((p) => (
@@ -218,9 +218,9 @@ function SchedaRisultato({ p, a, b, coppie }: { p: Partita; a: Coppia | null; b:
       <div className="flex items-center gap-2 text-sm">
         <span className="chip">#{p.ordine}</span>
         <span className="min-w-0 flex-1 truncate font-semibold">
-          {nomeCoppia(a)} <span className="text-nebbia">vs</span> {nomeCoppia(b)}
+          {nomeCoppia(a)} <span className="text-tenue">vs</span> {nomeCoppia(b)}
         </span>
-        <span className="text-xs text-nebbia">{p.stato === "conclusa" ? punteggio(p) || "✓" : new Date(p.inizio_at).toLocaleString("it", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+        <span className="text-xs text-tenue">{p.stato === "conclusa" ? punteggio(p) || "✓" : new Date(p.inizio_at).toLocaleString("it", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
       </div>
       {pronta && (
         <FormAdmin azione={salvaRisultato} bottone="Salva risultato" className="space-y-2">
@@ -235,7 +235,7 @@ function SchedaRisultato({ p, a, b, coppie }: { p: Partita; a: Coppia | null; b:
             <input name="punteggio" defaultValue={punteggio({ ...p, ritiro: false })} placeholder={p.set_per_vincere === 2 ? "6-4 3-6 10-7" : "6-4"} className="campo font-mono" aria-label="Punteggio (dal lato della coppia A)" />
           </div>
           <details className="text-sm" open={p.ritiro}>
-            <summary className="cursor-pointer text-nebbia">Ritiro</summary>
+            <summary className="cursor-pointer text-tenue">Ritiro</summary>
             <div className="mt-2 space-y-2">
               <label className="flex items-center gap-2">
                 <input type="checkbox" name="ritiro" value="1" defaultChecked={p.ritiro} className="h-5 w-5" /> Vittoria per ritiro
@@ -250,7 +250,7 @@ function SchedaRisultato({ p, a, b, coppie }: { p: Partita; a: Coppia | null; b:
         </FormAdmin>
       )}
       <details className="text-sm">
-        <summary className="cursor-pointer text-nebbia">Modifica partita</summary>
+        <summary className="cursor-pointer text-tenue">Modifica partita</summary>
         <div className="mt-2 space-y-2">
           <FormAdmin azione={salvaPartita} bottone="Salva partita" secondario>
             <CampiPartita tabelloneId={p.tabellone_id} coppie={coppie} p={p} />

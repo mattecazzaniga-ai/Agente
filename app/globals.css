@@ -1,39 +1,67 @@
 @import "tailwindcss";
 
-/* Beach Peck: colori da spiaggia d'estate. Chiari, caldi, positivi. Pensato per il telefono. */
+/*
+ * Beach Peck — sistema grafico.
+ * Base blu notte, testo bianco caldo, un solo accento: il lime della pallina. Il corallo è riservato
+ * a ciò che è "in corso" e agli errori. Superfici piatte separate da linee sottili, niente ombre o bagliori.
+ * Titoli e numeri in Barlow Condensed, testi in Barlow.
+ */
 @theme {
-  --color-mare: #0a7ea4;        /* azione principale */
-  --color-mare-scuro: #075b78;
-  --color-onda: #e3f4fa;        /* sfondi azzurri leggeri */
-  --color-cielo: #bfe7f5;
-  --color-sabbia: #fbf1df;
-  --color-sabbia-scura: #ecdcbf;
-  --color-sole: #ffc83d;
-  --color-sole-chiaro: #fff3cc;
-  --color-corallo: #f2674f;
-  --color-menta: #1fa98a;       /* successo, punti */
-  --color-menta-chiaro: #dff5ee;
-  --color-inchiostro: #17323f;
-  --color-nebbia: #627886;
-  --color-crema: #fffaf2;
-  --radius-scheda: 22px;
-  --font-sans: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-notte: #0b1018;        /* sfondo */
+  --color-pannello: #121a26;     /* superfici */
+  --color-pannello-2: #1a2331;   /* superfici in rilievo, campi */
+  --color-linea: #263142;        /* separatori, bordi */
+  --color-testo: #f3eee3;        /* bianco caldo */
+  --color-tenue: #8d98aa;        /* testo secondario */
+  --color-lime: #d4f53c;         /* accento: azioni, punti, selezione */
+  --color-lime-scuro: #b7d81f;
+  --color-corallo: #ff5c39;      /* in corso, errori */
+  --color-sabbia: #e7d4ac;       /* dettagli (teste di serie) */
+
+  --font-sans: "Barlow", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
 }
 
-html { -webkit-text-size-adjust: 100%; }
-body { background: linear-gradient(180deg, #fff6e6 0, var(--color-crema) 420px) no-repeat, var(--color-crema); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; color-scheme: dark; }
+body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-highlight-color: transparent; }
+::selection { background: var(--color-lime); color: var(--color-notte); }
 
-@keyframes salta { 0% { transform: scale(.9); opacity: 0 } 60% { transform: scale(1.04); opacity: 1 } 100% { transform: scale(1) } }
+@keyframes entra { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+@keyframes conferma { 0% { transform: scale(.96); opacity: 0 } 60% { transform: scale(1.02); opacity: 1 } 100% { transform: none } }
+@keyframes pulsa { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
+
+@layer base {
+  :focus-visible { outline: 2px solid var(--color-lime); outline-offset: 2px; }
+}
 
 @layer components {
-  .scheda { @apply rounded-[var(--radius-scheda)] border border-sabbia-scura/50 bg-white p-4; box-shadow: 0 1px 0 rgba(23, 50, 63, .04), 0 8px 24px -12px rgba(23, 50, 63, .12); }
-  .bottone { @apply inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-mare px-6 text-base font-bold text-white transition active:scale-[.97] disabled:opacity-40; box-shadow: 0 6px 16px -8px rgba(10, 126, 164, .7); }
-  .bottone-sole { @apply inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-sole px-6 text-base font-bold text-inchiostro transition active:scale-[.97]; box-shadow: 0 6px 16px -8px rgba(200, 140, 0, .8); }
-  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-sabbia-scura bg-white px-5 font-bold text-inchiostro transition active:scale-[.97] disabled:opacity-40; }
-  .campo { @apply min-h-12 w-full rounded-2xl border-2 border-sabbia-scura/70 bg-white px-4 text-base outline-none transition focus:border-mare focus:ring-4 focus:ring-mare/15; }
-  .etichetta { @apply mb-1.5 block text-sm font-semibold text-nebbia; }
-  .chip { @apply inline-flex items-center gap-1 rounded-full bg-onda px-2.5 py-0.5 text-xs font-bold text-mare-scuro; }
-  .titolo-sezione { @apply mb-3 mt-8 text-xl font-extrabold tracking-tight; }
-  .festa { animation: salta .35s ease-out; }
-  .eroe { background: radial-gradient(120% 90% at 85% 0%, #ffd56b 0, rgba(255, 213, 107, 0) 45%), linear-gradient(160deg, #0b8fb8 0%, #0a7ea4 45%, #075b78 100%); }
+  /* Superfici */
+  .pannello { @apply rounded-xl border border-linea bg-pannello; }
+  .scheda { @apply rounded-xl border border-linea bg-pannello p-4; }
+
+  /* Azioni */
+  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-lime px-5 font-display text-[17px] font-bold uppercase tracking-wide text-notte transition hover:bg-lime-scuro active:scale-[.98] disabled:cursor-not-allowed disabled:bg-pannello-2 disabled:text-tenue; }
+  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-transparent px-5 font-display text-[17px] font-bold uppercase tracking-wide text-testo transition hover:border-tenue active:scale-[.98] disabled:opacity-40; }
+
+  /* Moduli */
+  .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-pannello-2 px-3.5 text-base text-testo outline-none transition placeholder:text-tenue/60 focus:border-lime; }
+  .etichetta { @apply mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-wider text-tenue; }
+
+  /* Etichette */
+  .chip, .chip-live { @apply inline-flex items-center gap-1 rounded-md bg-pannello-2 px-2 py-0.5 font-display text-[12px] font-bold uppercase tracking-wide text-tenue; }
+  .chip-live { @apply bg-corallo/15 text-corallo; }
+  .punto-live { @apply inline-block h-1.5 w-1.5 rounded-full bg-corallo; animation: pulsa 1.6s ease-in-out infinite; }
+
+  /* Tipografia */
+  .titolo-pagina { @apply font-display text-[34px] font-extrabold uppercase leading-none tracking-tight; }
+  .titolo-sezione { @apply mb-3 mt-8 flex items-center gap-2 font-display text-[15px] font-bold uppercase tracking-[.12em] text-tenue before:h-3.5 before:w-1 before:rounded-full before:bg-lime before:content-['']; }
+  .cifre { @apply font-display font-bold tabular-nums; }
+
+  /* Movimento: discreto e solo all'ingresso */
+  .entra { animation: entra .28s ease-out both; }
+  .festa { animation: conferma .32s ease-out both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
 }

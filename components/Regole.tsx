@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { IconaCoppa, IconaLucchetto, IconaPodio } from "./Icone";
+import { IconaCoppa, IconaLucchetto, IconaPiu, IconaPodio } from "./Icone";
 import { regolePunti } from "@/lib/dati";
 import { massimoPartita, scalaGame } from "@/lib/punti";
 
@@ -17,23 +17,23 @@ export default async function Regole() {
         scala: scala.map((p, e) => `${e}→${p}`).join(", "),
         oltre: scala.length - 1,
       }),
-      colore: "bg-onda text-mare",
+      colore: "bg-pannello-2 text-lime",
     },
-    { Icona: IconaCoppa, testo: t("torneo", { vincitore: r.torneo_vincitore, finalista: r.torneo_finalista }), colore: "bg-sole-chiaro text-inchiostro" },
-    { Icona: IconaLucchetto, testo: t("blocco"), colore: "bg-menta-chiaro text-menta" },
+    { Icona: IconaCoppa, testo: t("torneo", { vincitore: r.torneo_vincitore, finalista: r.torneo_finalista }), colore: "bg-lime/15 text-testo" },
+    { Icona: IconaLucchetto, testo: t("blocco"), colore: "bg-lime/10 text-lime" },
   ];
   return (
-    <details className="scheda group mt-8">
-      <summary className="flex cursor-pointer list-none items-center justify-between font-extrabold">
+    <details className="pannello group mt-6">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 font-display text-[15px] font-bold uppercase tracking-wider">
         {t("titolo")}
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-onda text-mare transition group-open:rotate-45">+</span>
+        <span className="text-lime transition group-open:rotate-45" aria-hidden>
+          <IconaPiu />
+        </span>
       </summary>
-      <ul className="mt-4 space-y-3">
-        {voci.map(({ Icona, testo, colore }) => (
-          <li key={testo} className="flex gap-3 text-sm leading-relaxed text-inchiostro/85">
-            <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${colore}`}>
-              <Icona className="h-5 w-5" />
-            </span>
+      <ul className="divide-y divide-linea border-t border-linea">
+        {voci.map(({ Icona, testo }) => (
+          <li key={testo} className="flex gap-3 px-4 py-3 text-sm leading-relaxed text-testo/85">
+            <Icona className="mt-0.5 h-5 w-5 shrink-0 text-lime" />
             <span>{testo}</span>
           </li>
         ))}

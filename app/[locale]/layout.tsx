@@ -10,7 +10,14 @@ import SceltaLingua from "@/components/SceltaLingua";
 import Avviso from "@/components/Avviso";
 import Attivita from "@/components/Attivita";
 import RegistraSW from "@/components/RegistraSW";
-import { Logo } from "@/components/Icone";
+import { Marchio } from "@/components/Icone";
+import "@fontsource/barlow/400.css";
+import "@fontsource/barlow/500.css";
+import "@fontsource/barlow/600.css";
+import "@fontsource/barlow/700.css";
+import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/barlow-condensed/700.css";
+import "@fontsource/barlow-condensed/800.css";
 import "../globals.css";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -21,12 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: `${t("app.slogan")}. ${t("avviso")}.`,
     manifest: "/manifest.webmanifest",
     icons: { icon: "/icone/icona-192.png", apple: "/icone/icona-180.png" },
-    appleWebApp: { capable: true, title: t("app.nome"), statusBarStyle: "default" },
+    appleWebApp: { capable: true, title: t("app.nome"), statusBarStyle: "black-translucent" },
     alternates: { languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])) },
   };
 }
 
-export const viewport: Viewport = { themeColor: "#fffaf2", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#0b1018", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -43,39 +50,45 @@ export default async function LayoutLingua({ children, params }: { children: Rea
     <html lang={locale}>
       <body className="min-h-dvh font-sans antialiased">
         <NextIntlClientProvider>
-          <header className="sticky top-0 z-20 border-b border-sabbia-scura/50 bg-crema/90 pt-[env(safe-area-inset-top)] backdrop-blur">
-            <div className="mx-auto flex max-w-xl items-center gap-2 px-4 py-2.5">
-              <Link href="/" className="flex items-center gap-2 text-xl font-black tracking-tight text-inchiostro">
-                <Logo className="h-8 w-8" />
-                <span>Beach <span className="text-mare">Peck</span></span>
+          <header className="sticky top-0 z-30 border-b border-linea bg-notte/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+            <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
+              <Link href="/" aria-label={t("app.nome")}>
+                <Marchio />
               </Link>
+              <Navigazione tipo="header" />
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />
                 {profilo?.is_admin && (
-                  <Link href="/admin" className="rounded-full bg-sole-chiaro px-3 py-1.5 text-sm font-bold text-inchiostro">
+                  <Link href="/admin" className="hidden h-9 items-center rounded-lg border border-linea px-3 font-display text-sm font-bold uppercase tracking-wide text-tenue hover:text-testo sm:inline-flex">
                     {t("nav.admin")}
                   </Link>
                 )}
                 {user ? (
-                  <Link href="/profilo" className="grid h-9 w-9 place-items-center rounded-full bg-sole text-sm font-black text-inchiostro" aria-label={t("nav.profilo")}>
-                    {(profilo?.nickname ?? "?").slice(0, 1).toUpperCase()}
+                  <Link
+                    href="/profilo"
+                    className="grid h-9 w-9 place-items-center rounded-lg bg-pannello-2 font-display text-base font-extrabold uppercase text-lime ring-1 ring-linea hover:ring-lime"
+                    aria-label={t("nav.profilo")}
+                  >
+                    {(profilo?.nickname ?? "?").slice(0, 1)}
                   </Link>
                 ) : (
-                  <Link href="/accedi" className="rounded-full bg-mare px-4 py-2 text-sm font-bold text-white">
+                  <Link href="/accedi" className="inline-flex h-9 items-center rounded-lg bg-lime px-4 font-display text-[15px] font-bold uppercase tracking-wide text-notte hover:bg-lime-scuro">
                     {t("nav.accedi")}
                   </Link>
                 )}
               </div>
             </div>
           </header>
-          <main className="mx-auto max-w-xl px-4 pb-28 pt-4">{children}</main>
-          <footer className="mx-auto max-w-xl px-4 pb-24 text-center">
-            <Avviso />
-            <Link href="/privacy" className="mt-1 inline-block text-xs text-nebbia underline">
-              {t("profilo.privacy")}
-            </Link>
+          <main className="mx-auto max-w-6xl px-4 pb-28 pt-5 md:pb-16">{children}</main>
+          <footer className="mx-auto max-w-6xl border-t border-linea px-4 pb-24 pt-5 md:pb-8">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Avviso />
+              <Link href="/privacy" className="text-xs text-tenue underline-offset-2 hover:underline">
+                {t("profilo.privacy")}
+              </Link>
+            </div>
           </footer>
-          <Navigazione />
+          <Navigazione tipo="barra" />
           <Attivita collegato={Boolean(user)} />
           <RegistraSW />
         </NextIntlClientProvider>

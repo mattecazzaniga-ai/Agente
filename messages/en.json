@@ -18,23 +18,29 @@
     "scegli": "Language"
   },
   "home": {
-    "titolo": "Guess who wins. Challenge your friends.",
-    "intro": "Predictions on ITF beach tennis tournament matches. A new leaderboard every month.",
-    "inizia": "Start for free",
+    "titolo": "Pick the winner. Beat your friends.",
+    "intro": "Predict winner, sets and games of ITF beach tennis matches. A new leaderboard every month.",
+    "inizia": "Play now",
     "daPronosticare": "Open for predictions",
-    "nessunaAperta": "No matches open right now. The next tournament is coming soon! 🌞",
+    "nessunaAperta": "No open matches right now: predictions reopen with the next round.",
     "prossimiTornei": "Upcoming tournaments",
     "ultimeNotizie": "Latest news",
     "vediTutti": "See all",
-    "ciao": "Hi {nome}! 👋",
+    "ciao": "Hi {nome}",
     "ciaoSotto": "Who wins today, in your opinion?",
     "comeFunziona": "How it works",
     "passo1t": "Pick",
-    "passo1": "Tap the team you think will win.",
+    "passo1": "Pick the winning pair, the set score and each pair's games.",
     "passo2t": "Score points",
-    "passo2": "The bolder the pick, the more points you get.",
+    "passo2": "After the match you get up to 12 points: winner, exact sets and games, the closer you are the more you score.",
     "passo3t": "Challenge friends",
-    "passo3": "Create a league and climb the monthly leaderboard."
+    "passo3": "Create a private league and challenge your friends on the monthly leaderboard.",
+    "occhiello": "ITF tournaments · Free game",
+    "posizione": "Rank · {mese}",
+    "daFare": "To predict",
+    "inCorso": "Live",
+    "ultimiRisultati": "Latest results",
+    "classificaMese": "Leaderboard · {mese}"
   },
   "accedi": {
     "titolo": "Sign in",
@@ -108,7 +114,7 @@
     "finalista": "Runner-up (optional)",
     "nessuno": "None",
     "salva": "Save prediction",
-    "salvato": "Done! Prediction saved 🎉",
+    "salvato": "Done! Prediction saved",
     "chiusoTorneo": "Winner predictions closed: the tournament has started.",
     "chiudeIl": "Closes {data}",
     "partite": "Matches",
@@ -117,7 +123,9 @@
     "tuoiPunti": "Your points: {punti}",
     "accediPerPronosticare": "Sign in to predict",
     "hannoScelto": "{percentuale}% · {punti} pts",
-    "ilTuo": "Your prediction"
+    "ilTuo": "Your prediction",
+    "tuoiPuntiBreve": "your points",
+    "match": "Match {n}"
   },
   "partita": {
     "chiVince": "Who wins?",
@@ -125,7 +133,7 @@
     "game": "Total games",
     "facoltativo": "optional",
     "salva": "Save",
-    "salvato": "Done! 🎉",
+    "salvato": "Prediction saved",
     "chiusa": "Predictions closed",
     "inAttesa": "Waiting for the teams",
     "ritiro": "retired",
@@ -146,7 +154,19 @@
     "risultatoSet": "Set score for {nome}",
     "gameTotali": "Total games for each pair",
     "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
-    "gameReali": "Actual games {a}-{b}"
+    "gameReali": "Actual games {a}-{b}",
+    "passoVincitore": "Who wins",
+    "passoSet": "Set score",
+    "passoGame": "Total games",
+    "riepilogo": "Your prediction",
+    "vince": "{nome} win",
+    "conferma": "Confirm prediction",
+    "aggiorna": "Update prediction",
+    "salvataggio": "Saving…",
+    "tuaScelta": "Your pick",
+    "testaDiSerie": "Seed {n}",
+    "meno": "One game less",
+    "piu": "One game more"
   },
   "regole": {
     "titolo": "How points work",
@@ -161,7 +181,7 @@
     "lega": "League",
     "mese": "Month",
     "punti": "Points",
-    "nessuno": "No points yet this month: first place is up for grabs! 🏖️",
+    "nessuno": "No points yet this month: first place is up for grabs!",
     "tu": "You",
     "sei": "You are {posizione} of {totale}",
     "senzaPunti": "Make a prediction to join the leaderboard.",
@@ -174,7 +194,12 @@
     "colSet": "Sets",
     "colGame": "Games",
     "legenda": "Picks = predictions · Win. = winners guessed · Sets = exact set scores · Games = exact games. Ties are broken by exact sets, then winners, then exact games.",
-    "utente": "Player"
+    "utente": "Player",
+    "tuaPosizione": "Your rank",
+    "giocatori": "Players",
+    "distacco": "You need {punti} points to overtake {nome}.",
+    "completa": "Full leaderboard",
+    "dalPrimo": "−{punti} pts"
   },
   "leghe": {
     "titolo": "Leagues with friends",
@@ -194,7 +219,8 @@
     "invitoNonTrovato": "This invite is not valid.",
     "entraOra": "Join the league",
     "invitoTesto": "Play beach tennis predictions with me on Beach Peck! Join the league “{nome}” with the code {codice}:",
-    "sottotitoloPagina": "Challenge your friends in your own leaderboard"
+    "sottotitoloPagina": "Challenge your friends in your own leaderboard",
+    "entraOCrea": "Join or create"
   },
   "notizie": {
     "titolo": "News",
@@ -224,11 +250,14 @@
     "classifica": "Share my rank",
     "testoPronostico": "My Beach Peck prediction: {scelta}. What's yours?",
     "testoClassifica": "I'm #{posizione} in the {mese} leaderboard on Beach Peck! Challenge me:",
-    "copiato": "Link copied"
+    "copiato": "Link copied",
+    "copia": "Copy link",
+    "scarica": "Download image"
   },
   "privacy": {
     "titolo": "Privacy",
-    "testo": "Beach Peck stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile."
+    "testo": "Beach Peck stores only the data the game needs: email (to sign in), nickname, country, language, your predictions, leagues and the days you use the app (to count active users). We don't sell or share data and we don't use profiling cookies: only technical cookies for sign-in and language. You can delete your account and all your data at any time from your profile.",
+    "crediti": "Photo credits"
   },
   "errori": {
     "generico": "Something went wrong. Please try again.",
@@ -253,6 +282,13 @@
     "set": "Sets",
     "esatto": "Exact",
     "game": "Games",
-    "errore": "off by {n}"
+    "errore": "off by {n}",
+    "esatti": "exact"
+  },
+  "riga": {
+    "fine": "FT",
+    "rit": "Ret.",
+    "fatto": "Done",
+    "pronostica": "Play"
   }
 }

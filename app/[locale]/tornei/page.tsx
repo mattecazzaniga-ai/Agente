@@ -45,26 +45,32 @@ export default async function Tornei({ params, searchParams }: { params: Promise
     const qs = u.toString();
     return `/tornei${qs ? `?${qs}` : ""}`;
   };
-  const pill = (attiva: boolean) => `shrink-0 rounded-full border-2 px-4 py-1.5 text-sm font-bold transition ${attiva ? "border-mare bg-mare text-white" : "border-sabbia-scura bg-white text-inchiostro"}`;
+  const pill = (attiva: boolean) =>
+    `shrink-0 rounded-md px-3 py-1.5 font-display text-[14px] font-bold uppercase tracking-wider transition ${attiva ? "bg-testo text-notte" : "text-tenue hover:text-testo"}`;
 
   return (
     <div>
-      <Intestazione emoji="🗓️" titolo={t("tornei.titolo")} sotto={t("tornei.sottotitoloPagina")} colore="bg-onda" />
-      <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
+      <Intestazione titolo={t("tornei.titolo")} sotto={t("tornei.sottotitoloPagina")} />
+      <div className="-mx-4 mt-4 flex gap-1 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
         {STATI.map((s) => (
           <Link key={s.chiave} href={link(s.valore, circuito)} className={pill(stato === s.valore)}>
             {t(`tornei.${s.chiave}`)}
           </Link>
         ))}
       </div>
-      <ul className="mt-4 space-y-3">
-        {tornei.length === 0 && <li><Vuoto emoji="📅" testo={t("tornei.nessuno")} /></li>}
-        {tornei.map((to) => (
-          <li key={to.id}>
-            <RigaTorneo torneo={to} scheda />
-          </li>
-        ))}
-      </ul>
+      {tornei.length === 0 ? (
+        <div className="mt-4">
+          <Vuoto testo={t("tornei.nessuno")} />
+        </div>
+      ) : (
+        <ul className="pannello mt-4 divide-y divide-linea overflow-hidden">
+          {tornei.map((to) => (
+            <li key={to.id}>
+              <RigaTorneo torneo={to} />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

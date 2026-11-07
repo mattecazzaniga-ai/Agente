@@ -1,36 +1,56 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { IconaAmici, IconaCasa, IconaCoppa, IconaNotizie, IconaPodio } from "./Icone";
+import { IconaAmici, IconaCalendario, IconaCasa, IconaNotizie, IconaPodio } from "./Icone";
 
 const VOCI = [
   { href: "/", chiave: "home", Icona: IconaCasa },
-  { href: "/tornei", chiave: "tornei", Icona: IconaCoppa },
+  { href: "/tornei", chiave: "tornei", Icona: IconaCalendario },
   { href: "/classifica", chiave: "classifica", Icona: IconaPodio },
   { href: "/leghe", chiave: "leghe", Icona: IconaAmici },
   { href: "/notizie", chiave: "notizie", Icona: IconaNotizie },
 ] as const;
 
-/** Barra in basso, comoda con il pollice. */
-export default function Navigazione() {
+/** Navigazione: barra in basso sul telefono (comoda col pollice), voci nell'header da tablet in su. */
+export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
   const t = useTranslations("nav");
   const percorso = usePathname();
+  const attiva = (href: string) => (href === "/" ? percorso === "/" : percorso.startsWith(href));
+
+  if (tipo === "header")
+    return (
+      <nav className="hidden h-full items-stretch md:flex" aria-label="Menu">
+        {VOCI.map(({ href, chiave }) => (
+          <Link
+            key={href}
+            href={href}
+            aria-current={attiva(href) ? "page" : undefined}
+            className={`relative flex items-center px-3 font-display text-[15px] font-bold uppercase tracking-wider transition ${
+              attiva(href) ? "text-testo after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-lime" : "text-tenue hover:text-testo"
+            }`}
+          >
+            {t(chiave)}
+          </Link>
+        ))}
+      </nav>
+    );
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 px-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
-      <ul className="mx-auto flex max-w-xl rounded-[26px] border border-white/70 bg-white/90 px-1 py-1 shadow-[0_12px_32px_-12px_rgba(23,50,63,.35)] backdrop-blur-md">
-        {VOCI.map(({ href, chiave, Icona }) => {
-          const attiva = href === "/" ? percorso === "/" : percorso.startsWith(href);
-          return (
-            <li key={href} className="flex-1">
-              <Link href={href} className={`flex flex-col items-center gap-1 py-2 text-[11px] font-bold transition ${attiva ? "text-mare" : "text-nebbia"}`} aria-current={attiva ? "page" : undefined}>
-                <span className={`grid h-8 w-14 place-items-center rounded-full transition ${attiva ? "bg-mare text-white shadow-[0_6px_14px_-6px_rgba(10,126,164,.9)]" : ""}`}>
-                  <Icona className="h-[22px] w-[22px]" />
-                </span>
-                {t(chiave)}
-              </Link>
-            </li>
-          );
-        })}
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-linea bg-notte/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" aria-label="Menu">
+      <ul className="mx-auto flex max-w-xl">
+        {VOCI.map(({ href, chiave, Icona }) => (
+          <li key={href} className="flex-1">
+            <Link
+              href={href}
+              aria-current={attiva(href) ? "page" : undefined}
+              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 font-display text-[11px] font-bold uppercase tracking-wider transition ${attiva(href) ? "text-lime" : "text-tenue"}`}
+            >
+              {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-lime" />}
+              <Icona className="h-[22px] w-[22px]" />
+              {t(chiave)}
+            </Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );

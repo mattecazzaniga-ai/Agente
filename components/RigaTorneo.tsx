@@ -4,41 +4,39 @@ import { bandiera, data } from "@/lib/formato";
 import type { Torneo } from "@/lib/tipi";
 import { IconaFreccia } from "./Icone";
 
-const COLORI_STATO = {
-  in_corso: "bg-corallo/15 text-corallo",
-  in_programma: "bg-onda text-mare-scuro",
-  concluso: "bg-sabbia text-nebbia",
-} as const;
-
-/** Torneo in elenco: la data come un foglietto del calendario, poi nome, luogo e stato. */
+/** Torneo in elenco: giorno e mese in grande, nome, luogo e date, categoria e stato. */
 export default async function RigaTorneo({ torneo: to, scheda = false }: { torneo: Torneo; scheda?: boolean }) {
   const [t, lingua] = await Promise.all([getTranslations(), getLocale()]);
   const giorno = new Date(`${to.data_inizio}T12:00:00Z`);
+  const live = to.stato === "in_corso";
   return (
-    <Link href={`/tornei/${to.id}`} className={`flex items-center gap-3 ${scheda ? "scheda" : "px-4 py-3"} transition active:bg-crema`}>
-      <span className={`flex w-12 shrink-0 flex-col items-center overflow-hidden rounded-xl border-2 ${to.stato === "in_corso" ? "border-corallo/40" : "border-sabbia-scura"} bg-white`}>
-        <span className={`w-full py-0.5 text-center text-[10px] font-black uppercase tracking-wide text-white ${to.stato === "in_corso" ? "bg-corallo" : "bg-mare"}`}>
+    <Link href={`/tornei/${to.id}`} className={`group flex items-center gap-4 px-4 py-3.5 transition hover:bg-pannello-2 ${scheda ? "pannello" : ""}`}>
+      <span className="w-11 shrink-0 text-center">
+        <span className="cifre block text-[28px] leading-none">{giorno.getUTCDate()}</span>
+        <span className="block font-display text-[12px] font-bold uppercase tracking-wider text-tenue">
           {new Intl.DateTimeFormat(lingua, { month: "short", timeZone: "UTC" }).format(giorno).replace(".", "")}
         </span>
-        <span className="py-0.5 text-xl font-black leading-tight">{giorno.getUTCDate()}</span>
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-extrabold">{to.nome}</span>
-        <span className="block truncate text-sm text-nebbia">
+      <span className="min-w-0 flex-1 border-l border-linea pl-4">
+        <span className="flex items-center gap-2">
+          <span className="chip bg-testo text-notte">
+            {to.circuito}
+            {to.categoria ? ` ${to.categoria}` : ""}
+          </span>
+          {live ? (
+            <span className="chip-live">
+              <span className="punto-live" /> {t("stato.in_corso")}
+            </span>
+          ) : to.stato === "concluso" ? (
+            <span className="chip">{t("stato.concluso")}</span>
+          ) : null}
+        </span>
+        <span className="mt-1 block truncate font-display text-[19px] font-bold uppercase leading-tight tracking-tight">{to.nome}</span>
+        <span className="block truncate text-sm text-tenue">
           {bandiera(to.paese)} {to.luogo} · {t("tornei.dal", { inizio: data(to.data_inizio, lingua), fine: data(to.data_fine, lingua) })}
         </span>
-        <span className="mt-1 flex flex-wrap gap-1.5">
-          <span className={`chip ${COLORI_STATO[to.stato]}`}>
-            {to.stato === "in_corso" && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-corallo" />}
-            {t(`stato.${to.stato}`)}
-          </span>
-          <span className="chip bg-inchiostro text-white">
-            {to.circuito}
-            {to.categoria ? <span className="text-sole">{to.categoria}</span> : null}
-          </span>
-        </span>
       </span>
-      <IconaFreccia className="h-5 w-5 shrink-0 text-nebbia" />
+      <IconaFreccia className="h-4 w-4 shrink-0 text-tenue transition group-hover:translate-x-0.5 group-hover:text-testo" />
     </Link>
   );
 }

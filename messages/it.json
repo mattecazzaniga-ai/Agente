@@ -18,23 +18,29 @@
     "scegli": "Lingua"
   },
   "home": {
-    "titolo": "Indovina chi vince. Sfida i tuoi amici.",
-    "intro": "Pronostici sulle partite dei tornei ITF di beach tennis. Ogni mese una nuova classifica.",
-    "inizia": "Inizia gratis",
+    "titolo": "Indovina chi vince. Batti i tuoi amici.",
+    "intro": "Pronostica vincitore, set e game delle partite ITF di beach tennis. Ogni mese una nuova classifica.",
+    "inizia": "Gioca ora",
     "daPronosticare": "Da pronosticare",
-    "nessunaAperta": "Nessuna partita aperta in questo momento. Il prossimo torneo arriva presto! 🌞",
+    "nessunaAperta": "Nessuna partita aperta in questo momento: i pronostici riaprono con il prossimo turno.",
     "prossimiTornei": "Prossimi tornei",
     "ultimeNotizie": "Ultime notizie",
     "vediTutti": "Vedi tutti",
-    "ciao": "Ciao {nome}! 👋",
+    "ciao": "Ciao {nome}",
     "ciaoSotto": "Chi vince oggi secondo te?",
     "comeFunziona": "Come funziona",
     "passo1t": "Scegli",
-    "passo1": "Tocca la coppia che secondo te vince.",
+    "passo1": "Scegli la coppia vincente, il risultato dei set e i game di ciascuna coppia.",
     "passo2t": "Fai punti",
-    "passo2": "Più il pronostico è coraggioso, più punti prendi.",
+    "passo2": "A fine partita prendi fino a 12 punti: vincitore, set esatti e game, più ti avvicini più punti.",
     "passo3t": "Sfida gli amici",
-    "passo3": "Crea una lega e scala la classifica del mese."
+    "passo3": "Crea una lega privata e sfida i tuoi amici nella classifica del mese.",
+    "occhiello": "Tornei ITF · Gioco gratuito",
+    "posizione": "Posizione · {mese}",
+    "daFare": "Da pronosticare",
+    "inCorso": "In corso",
+    "ultimiRisultati": "Ultimi risultati",
+    "classificaMese": "Classifica · {mese}"
   },
   "accedi": {
     "titolo": "Accedi",
@@ -108,7 +114,7 @@
     "finalista": "Finalista (facoltativo)",
     "nessuno": "Nessuno",
     "salva": "Salva il pronostico",
-    "salvato": "Fatto! Pronostico salvato 🎉",
+    "salvato": "Fatto! Pronostico salvato",
     "chiusoTorneo": "Pronostici sul vincitore chiusi: il torneo è iniziato.",
     "chiudeIl": "Si chiude {data}",
     "partite": "Partite",
@@ -117,7 +123,9 @@
     "tuoiPunti": "I tuoi punti: {punti}",
     "accediPerPronosticare": "Accedi per pronosticare",
     "hannoScelto": "{percentuale}% · {punti} pt",
-    "ilTuo": "Il tuo pronostico"
+    "ilTuo": "Il tuo pronostico",
+    "tuoiPuntiBreve": "i tuoi punti",
+    "match": "Partita {n}"
   },
   "partita": {
     "chiVince": "Chi vince?",
@@ -125,7 +133,7 @@
     "game": "Game totali",
     "facoltativo": "facoltativo",
     "salva": "Salva",
-    "salvato": "Fatto! 🎉",
+    "salvato": "Pronostico salvato",
     "chiusa": "Pronostici chiusi",
     "inAttesa": "In attesa delle coppie",
     "ritiro": "ritiro",
@@ -146,7 +154,19 @@
     "risultatoSet": "Risultato dei set di {nome}",
     "gameTotali": "Game totali di ciascuna coppia",
     "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
-    "gameReali": "Game reali {a}-{b}"
+    "gameReali": "Game reali {a}-{b}",
+    "passoVincitore": "Chi vince",
+    "passoSet": "Risultato dei set",
+    "passoGame": "Game totali",
+    "riepilogo": "Il tuo pronostico",
+    "vince": "Vince {nome}",
+    "conferma": "Conferma pronostico",
+    "aggiorna": "Aggiorna pronostico",
+    "salvataggio": "Salvataggio…",
+    "tuaScelta": "Tua scelta",
+    "testaDiSerie": "Testa di serie {n}",
+    "meno": "Un game in meno",
+    "piu": "Un game in più"
   },
   "regole": {
     "titolo": "Come si fanno i punti",
@@ -161,7 +181,7 @@
     "lega": "Lega",
     "mese": "Mese",
     "punti": "Punti",
-    "nessuno": "Ancora nessun punto questo mese: il primo posto è libero! 🏖️",
+    "nessuno": "Ancora nessun punto questo mese: il primo posto è libero!",
     "tu": "Tu",
     "sei": "Sei {posizione}° su {totale}",
     "senzaPunti": "Fai un pronostico per entrare in classifica.",
@@ -174,7 +194,12 @@
     "colSet": "Set",
     "colGame": "Game",
     "legenda": "Pron. = pronostici · Vinc. = vincitori indovinati · Set = risultati dei set esatti · Game = game esatti. A parità di punti contano set esatti, poi vincitori, poi game esatti.",
-    "utente": "Giocatore"
+    "utente": "Giocatore",
+    "tuaPosizione": "La tua posizione",
+    "giocatori": "Giocatori",
+    "distacco": "Ti mancano {punti} punti per superare {nome}.",
+    "completa": "Classifica completa",
+    "dalPrimo": "−{punti} pt"
   },
   "leghe": {
     "titolo": "Leghe tra amici",
@@ -194,7 +219,8 @@
     "invitoNonTrovato": "Questo invito non è valido.",
     "entraOra": "Entra nella lega",
     "invitoTesto": "Gioca con me ai pronostici di beach tennis su Beach Peck! Entra nella lega «{nome}» con il codice {codice}:",
-    "sottotitoloPagina": "Sfida i tuoi amici in una classifica tutta vostra"
+    "sottotitoloPagina": "Sfida i tuoi amici in una classifica tutta vostra",
+    "entraOCrea": "Entra o crea"
   },
   "notizie": {
     "titolo": "Notizie",
@@ -224,11 +250,14 @@
     "classifica": "Condividi la posizione",
     "testoPronostico": "Il mio pronostico su Beach Peck: {scelta}. E il tuo?",
     "testoClassifica": "Sono {posizione}° nella classifica di {mese} su Beach Peck! Sfidami:",
-    "copiato": "Link copiato"
+    "copiato": "Link copiato",
+    "copia": "Copia link",
+    "scarica": "Scarica immagine"
   },
   "privacy": {
     "titolo": "Privacy",
-    "testo": "Beach Peck salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo."
+    "testo": "Beach Peck salva solo i dati necessari al gioco: email (per l'accesso), nickname, Paese, lingua, i tuoi pronostici, le leghe e i giorni in cui usi l'app (per sapere quanti utenti attivi ci sono). Non vendiamo né condividiamo dati, non usiamo cookie di profilazione: solo i cookie tecnici di accesso e lingua. Puoi eliminare l'account e tutti i dati in qualsiasi momento dal profilo.",
+    "crediti": "Crediti fotografici"
   },
   "errori": {
     "generico": "Qualcosa non ha funzionato. Riprova.",
@@ -253,6 +282,13 @@
     "set": "Set",
     "esatto": "Esatto",
     "game": "Game",
-    "errore": "errore {n}"
+    "errore": "errore {n}",
+    "esatti": "esatti"
+  },
+  "riga": {
+    "fine": "Fin.",
+    "rit": "Rit.",
+    "fatto": "Fatto",
+    "pronostica": "Gioca"
   }
 }

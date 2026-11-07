@@ -34,7 +34,7 @@ export default async function AdminGiocatori({ searchParams }: { searchParams: P
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold">Giocatori</h1>
-      <p className="text-sm text-nebbia">Di solito si creano da soli con l&apos;importazione del tabellone. Qui si correggono nomi e Paesi.</p>
+      <p className="text-sm text-tenue">Di solito si creano da soli con l&apos;importazione del tabellone. Qui si correggono nomi e Paesi.</p>
       <Pannello titolo={<>+ Nuovo giocatore</>}>
         <div className="mt-3">
           <FormAdmin azione={salvaGiocatore} bottone="Aggiungi">
@@ -47,7 +47,7 @@ export default async function AdminGiocatori({ searchParams }: { searchParams: P
         <button className="bottone w-auto">Cerca</button>
       </form>
       <ul className="space-y-2">
-        {giocatori.length === 0 && <li className="scheda text-sm text-nebbia">Nessun giocatore.</li>}
+        {giocatori.length === 0 && <li className="scheda text-sm text-tenue">Nessun giocatore.</li>}
         {giocatori.map((g) => (
           <li key={g.id}>
             <details className="scheda">
