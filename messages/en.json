@@ -190,7 +190,7 @@
     "chiVince": "Who wins",
     "chiVinceTesto": "You guess which pair wins the match.",
     "comeFinisce": "Sets won",
-    "comeFinisceTesto": "You also guess how it ends in sets: 2-0 is worth {set20}, 2-1 is worth {set21} (2-0 is harder to nail). Counts only if you got the winner right.",
+    "comeFinisceTesto": "You also guess how it ends in sets: 2-0 is worth {set20}, 2-1 is worth {set21}. 2-1 is worth one less because the long tie-break gives you more points to win. Counts only if you got the winner right.",
     "ogniSet": "Games in each set",
     "ogniSetTesto": "For sets 1 and 2 we compare the games: exact +{s0}, 1 game off +{s1}, 2 games off +{s2}, more 0. They count even if you got the winner wrong.",
     "long": "Long tie-break",

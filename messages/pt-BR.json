@@ -190,7 +190,7 @@
     "chiVince": "Quem vence",
     "chiVinceTesto": "Você acerta qual dupla vence o jogo.",
     "comeFinisce": "Sets vencidos",
-    "comeFinisceTesto": "Acerta também como termina em sets: 2-0 vale {set20}, 2-1 vale {set21} (o 2-0 é mais difícil). Só conta se acertou quem vence.",
+    "comeFinisceTesto": "Acerta também como termina em sets: 2-0 vale {set20}, 2-1 vale {set21}. O 2-1 vale um a menos porque com o long tie-break você tem mais pontos para ganhar. Só conta se acertou quem vence.",
     "ogniSet": "Games de cada set",
     "ogniSetTesto": "No 1º e 2º set comparamos os games: exatos +{s0}, 1 game de diferença +{s1}, 2 games +{s2}, mais 0. Contam mesmo se errar o vencedor.",
     "long": "Long tie-break",

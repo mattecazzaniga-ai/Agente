@@ -190,7 +190,7 @@
     "chiVince": "Chi vince",
     "chiVinceTesto": "Indovini quale coppia vince la partita.",
     "comeFinisce": "Set vinti",
-    "comeFinisceTesto": "Indovini anche come finisce in set: 2-0 vale {set20}, 2-1 vale {set21} (2-0 è più difficile da azzeccare). Conta solo se hai indovinato chi vince.",
+    "comeFinisceTesto": "Indovini anche come finisce in set: 2-0 vale {set20}, 2-1 vale {set21}. Il 2-1 vale uno in meno perché con il long tie-break hai altri punti da prendere. Conta solo se hai indovinato chi vince.",
     "ogniSet": "Game di ogni set",
     "ogniSetTesto": "Per il 1° e il 2° set confrontiamo i game: esatti +{s0}, sbagliati di 1 game +{s1}, di 2 game +{s2}, di più 0. Contano anche se hai sbagliato chi vince.",
     "long": "Long tie-break",
