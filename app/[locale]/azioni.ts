@@ -170,7 +170,7 @@ export async function salvaPronosticoTorneo(_: Esito | null, form: FormData): Pr
   const finalista_id = uuidOpz(form.get("finalista_id"));
   if (!tabellone_id || !vincitore_id) return { ok: false, errore: "nonValido" };
   if (finalista_id && finalista_id === vincitore_id) return { ok: false, errore: "nonValido" };
-  const { data: esistente } = await supabase.from("pronostici_torneo").select("id").eq("tabellone_id", tabellone_id).maybeSingle();
+  const { data: esistente } = await supabase.from("pronostici_torneo").select("id").eq("utente_id", user.id).eq("tabellone_id", tabellone_id).maybeSingle();
   const { data, error } = esistente
     ? await supabase.from("pronostici_torneo").update({ vincitore_id, finalista_id }).eq("id", esistente.id).select("id").single()
     : await supabase.from("pronostici_torneo").insert({ tabellone_id, vincitore_id, finalista_id }).select("id").single();
@@ -195,7 +195,7 @@ export async function salvaPronosticoPartita(_: Esito | null, form: FormData): P
   const game_b = numeri(form.get("game_b"));
   if (!game_a || !game_b || game_a.length !== game_b.length) return { ok: false, errore: "risultato" };
   const campi = { vincitore_id, game_a, game_b, set_vincitore: null, set_perdente: null, game_previsti_a: null, game_previsti_b: null, totale_game: null };
-  const { data: esistente } = await supabase.from("pronostici_partita").select("id").eq("partita_id", partita_id).maybeSingle();
+  const { data: esistente } = await supabase.from("pronostici_partita").select("id").eq("utente_id", user.id).eq("partita_id", partita_id).maybeSingle();
   const { data, error } = esistente
     ? await supabase.from("pronostici_partita").update(campi).eq("id", esistente.id).select("id").single()
     : await supabase.from("pronostici_partita").insert({ partita_id, ...campi }).select("id").single();

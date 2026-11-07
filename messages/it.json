@@ -280,7 +280,15 @@
     "passwordSalvata": "Password salvata ✓",
     "sottotitoloPagina": "Nickname, Paese e password",
     "pannelloAdmin": "Pannello admin",
-    "pannelloAdminSotto": "Tornei, risultati, giocatori, notizie, premi e sponsor"
+    "pannelloAdminSotto": "Tornei, risultati, giocatori, notizie, premi e sponsor",
+    "puntiMese": "punti a {mese}",
+    "pronostici": "pronostici fatti",
+    "vincitoriPercentuale": "vincitori indovinati ({n} su {totale})",
+    "puntiTotali": "In tutto {punti} punti in {partite} partite concluse.",
+    "storico": "I tuoi pronostici",
+    "storicoVuoto": "Non hai ancora fatto pronostici.",
+    "storicoAiuto": "Tocca una partita per vedere voce per voce cosa avevi messo e quanti punti hai preso.",
+    "impostazioni": "Nickname e Paese"
   },
   "condividi": {
     "condividi": "Condividi",

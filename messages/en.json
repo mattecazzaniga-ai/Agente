@@ -280,7 +280,15 @@
     "passwordSalvata": "Password saved ✓",
     "sottotitoloPagina": "Nickname, country and password",
     "pannelloAdmin": "Admin panel",
-    "pannelloAdminSotto": "Tournaments, results, players, news, prizes and sponsors"
+    "pannelloAdminSotto": "Tournaments, results, players, news, prizes and sponsors",
+    "puntiMese": "points in {mese}",
+    "pronostici": "predictions made",
+    "vincitoriPercentuale": "winners guessed ({n} of {totale})",
+    "puntiTotali": "{punti} points in total over {partite} finished matches.",
+    "storico": "Your predictions",
+    "storicoVuoto": "You haven't made any predictions yet.",
+    "storicoAiuto": "Tap a match to see, part by part, what you picked and how many points you got.",
+    "impostazioni": "Nickname and country"
   },
   "condividi": {
     "condividi": "Share",

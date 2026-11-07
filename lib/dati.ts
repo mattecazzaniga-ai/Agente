@@ -51,11 +51,18 @@ const TURNI_ORDINE = ["R64", "R32", "R16", "QF", "SF", "F"];
 export const ordineTurno = (t: string) => TURNI_ORDINE.indexOf(t);
 
 /** I pronostici dell'utente collegato su questi tabelloni e partite. */
+const CAMPI_PRONOSTICO = "id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, game_a, game_b, game_previsti_a, game_previsti_b, punti_vincitore, punti_set, punti_game, punti_long, errore_game, punti";
+
 export async function mieiPronostici(tabelloni: string[], partite: string[]) {
   const supabase = await supabaseServer();
+  // sempre filtrati per utente: gli admin, per le regole del database, potrebbero leggere anche quelli degli altri
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const io = user?.id ?? "00000000-0000-0000-0000-000000000000";
   const [{ data: pt }, { data: pp }] = await Promise.all([
-    tabelloni.length ? supabase.from("pronostici_torneo").select("id, tabellone_id, vincitore_id, finalista_id, punti").in("tabellone_id", tabelloni) : Promise.resolve({ data: [] }),
-    partite.length ? supabase.from("pronostici_partita").select("id, partita_id, vincitore_id, set_vincitore, set_perdente, totale_game, game_a, game_b, game_previsti_a, game_previsti_b, punti_vincitore, punti_set, punti_game, punti_long, errore_game, punti").in("partita_id", partite) : Promise.resolve({ data: [] }),
+    tabelloni.length ? supabase.from("pronostici_torneo").select("id, tabellone_id, vincitore_id, finalista_id, punti").eq("utente_id", io).in("tabellone_id", tabelloni) : Promise.resolve({ data: [] }),
+    partite.length ? supabase.from("pronostici_partita").select(CAMPI_PRONOSTICO).eq("utente_id", io).in("partita_id", partite) : Promise.resolve({ data: [] }),
   ]);
   return {
     torneo: new Map(((pt as PronosticoTorneo[]) ?? []).map((p) => [p.tabellone_id, p])),
@@ -71,6 +78,20 @@ export interface PartitaConCoppie extends Partita {
 
 /** Partite aperte ai pronostici nei prossimi giorni (per la home). */
 const SELECT_PARTITA = `*, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(id, nome))`;
+
+/** Gli ultimi pronostici dell'utente, con la partita: per lo storico nel profilo. */
+export async function storicoPronostici(utenteId: string, limite = 40): Promise<{ partita: PartitaConCoppie; mio: PronosticoPartita }[]> {
+  const supabase = await supabaseServer();
+  const { data: pp } = await supabase.from("pronostici_partita").select(CAMPI_PRONOSTICO).eq("utente_id", utenteId).order("creato_at", { ascending: false }).limit(limite);
+  const miei = (pp as PronosticoPartita[]) ?? [];
+  if (!miei.length) return [];
+  const { data: pa } = await supabase.from("partite").select(SELECT_PARTITA).in("id", miei.map((m) => m.partita_id));
+  const partite = new Map(((pa as unknown as PartitaConCoppie[]) ?? []).map((p) => [p.id, p]));
+  return miei
+    .filter((m) => partite.has(m.partita_id))
+    .map((m) => ({ partita: partite.get(m.partita_id)!, mio: m }))
+    .sort((x, y) => y.partita.inizio_at.localeCompare(x.partita.inizio_at));
+}
 
 /** Partite su cui si può ancora pronosticare, dalla più vicina. */
 export async function partiteAperte(limite = 6): Promise<PartitaConCoppie[]> {

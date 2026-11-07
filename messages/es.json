@@ -280,7 +280,15 @@
     "passwordSalvata": "Contraseña guardada ✓",
     "sottotitoloPagina": "Apodo, país y contraseña",
     "pannelloAdmin": "Panel de administración",
-    "pannelloAdminSotto": "Torneos, resultados, jugadores, noticias, premios y patrocinadores"
+    "pannelloAdminSotto": "Torneos, resultados, jugadores, noticias, premios y patrocinadores",
+    "puntiMese": "puntos en {mese}",
+    "pronostici": "pronósticos hechos",
+    "vincitoriPercentuale": "ganadores acertados ({n} de {totale})",
+    "puntiTotali": "En total {punti} puntos en {partite} partidos terminados.",
+    "storico": "Tus pronósticos",
+    "storicoVuoto": "Todavía no has hecho pronósticos.",
+    "storicoAiuto": "Toca un partido para ver, parte por parte, qué pusiste y cuántos puntos sumaste.",
+    "impostazioni": "Nickname y país"
   },
   "condividi": {
     "condividi": "Compartir",
