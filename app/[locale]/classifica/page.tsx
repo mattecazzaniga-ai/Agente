@@ -170,7 +170,8 @@ export default async function Classifica({ params, searchParams }: { params: Pro
               {lista.map((r) => {
                 const sonoIo = r.utente_id === user?.id;
                 return (
-                  <li key={r.utente_id} className={`entra grid grid-cols-[2rem_1fr_3rem] items-center gap-2 px-3 py-2.5 text-sm tabular-nums sm:grid-cols-[2rem_1fr_3rem_3rem_3rem_3rem_3rem] ${sonoIo ? "bg-viola/10 shadow-[inset_3px_0_0_var(--color-viola)]" : ""}`}>
+                  <li key={r.utente_id} className="entra">
+                  <Link href={`/giocatore/${r.utente_id}`} className={`grid grid-cols-[2rem_1fr_3rem] items-center gap-2 px-3 py-2.5 text-sm tabular-nums transition hover:bg-sabbia-2 sm:grid-cols-[2rem_1fr_3rem_3rem_3rem_3rem_3rem] ${sonoIo ? "bg-viola/10 shadow-[inset_3px_0_0_var(--color-viola)]" : ""}`}>
                     <span className={`cifre text-lg ${r.posizione <= 3 ? "text-viola" : "text-tenue"}`}>{r.posizione}</span>
                     <span className="min-w-0">
                       <span className="block truncate font-semibold">
@@ -187,6 +188,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
                     <span className="hidden text-right sm:block">{r.vincitori}</span>
                     <span className="hidden text-right sm:block">{r.set_esatti}</span>
                     <span className="hidden text-right sm:block">{r.game_esatti}</span>
+                  </Link>
                   </li>
                 );
               })}
@@ -226,7 +228,7 @@ function Podio({ righe, io, tu, distacco, premi: inPalio, medaglie, titoloMedagl
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-2xl font-extrabold leading-tight tracking-tight">
-            {bandiera(primo.paese)} {primo.nickname}
+            <Link href={`/giocatore/${primo.utente_id}`} className="hover:text-viola">{bandiera(primo.paese)} {primo.nickname}</Link>
             <MedaglieMese m={medaglie.get(primo.utente_id)} titolo={titoloMedaglie} />
             {primo.utente_id === io && <span className="chip ml-2 bg-viola align-middle text-white">{tu}</span>}
           </p>
@@ -245,7 +247,7 @@ function Podio({ righe, io, tu, distacco, premi: inPalio, medaglie, titoloMedagl
           <span className="cifre w-[52px] text-center text-4xl leading-none text-tenue">{r.posizione}</span>
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">
-              {bandiera(r.paese)} {r.nickname}
+              <Link href={`/giocatore/${r.utente_id}`} className="hover:text-viola">{bandiera(r.paese)} {r.nickname}</Link>
               <MedaglieMese m={medaglie.get(r.utente_id)} titolo={titoloMedaglie} />
               {r.utente_id === io && <span className="chip ml-2 bg-viola text-white">{tu}</span>}
             </p>

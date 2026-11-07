@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import type { Medaglie, Trofeo } from "@/lib/trofei";
-import { IconaBersaglio, IconaCoppa, IconaFulmine, IconaFuoco, IconaGlobo, IconaMedaglia, IconaPallina, IconaPodio, IconaSpunta, IconaStella } from "./Icone";
+import { IconaBersaglio, IconaCoppa, IconaFulmine, IconaFuoco, IconaGlobo, IconaMedaglia, IconaPallina, IconaPiu, IconaPodio, IconaSpunta, IconaStella } from "./Icone";
 
 const ICONE = {
   esordio: IconaSpunta,
@@ -13,25 +13,51 @@ const ICONE = {
   giramondo: IconaGlobo,
   campione: IconaCoppa,
   podio: IconaPodio,
+  reTorneo: IconaCoppa,
+  podioTorneo: IconaPodio,
 } as const;
 
 // colori dei livelli: nessuno, bronzo, argento, oro (l'oro è il giallo del logo)
 const COLORI = ["bg-sabbia-2 text-tenue/50 ring-linea", "bg-[#f6e3d1] text-[#9a5a24] ring-[#d9965b]", "bg-[#eceef3] text-[#5a6274] ring-[#b8bfcc]", "bg-sole-chiaro text-[#8a5a12] ring-sole"];
 
-/** La bacheca dei trofei: sbloccati a colori, gli altri in grigio con quanto manca. */
-export async function Bacheca({ trofei }: { trofei: Trofeo[] }) {
+/**
+ * La bacheca dei trofei, chiusa: si vede il titolo, quanti ne hai e le icone di quelli presi.
+ * Toccandola si apre la griglia completa, con i bloccati in grigio e quanto manca.
+ */
+export async function Bacheca({ trofei, titolo, aperta = false }: { trofei: Trofeo[]; titolo: string; aperta?: boolean }) {
   const t = await getTranslations("trofei");
-  const presi = trofei.filter((x) => x.livello > 0).length;
+  const presi = trofei.filter((x) => x.livello > 0);
   const ordinati = [...trofei].sort((a, b) => b.livello - a.livello);
   return (
-    <section className="pannello overflow-hidden">
-      <div className="flex items-baseline justify-between border-b border-linea px-4 py-3">
-        <p className="text-sm text-tenue">{t("sbloccati", { n: presi, totale: trofei.length })}</p>
-        <div className="flex h-1.5 w-28 overflow-hidden rounded-full bg-linea">
-          <span className="block h-full rounded-full bg-viola" style={{ width: `${(presi / trofei.length) * 100}%` }} />
-        </div>
+    <details className="pannello group overflow-hidden" open={aperta}>
+      <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3.5 [&::-webkit-details-marker]:hidden">
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-xl font-bold leading-tight">{titolo}</span>
+          <span className="mt-0.5 block text-sm text-tenue">
+            {t("sbloccati", { n: presi.length, totale: trofei.length })}
+            <span className="group-open:hidden"> · {t("apriTutti").toLowerCase()}</span>
+          </span>
+        </span>
+        <span className="flex -space-x-2">
+          {presi.slice(0, 5).map((x) => {
+            const Icona = ICONE[x.id];
+            return (
+              <span key={x.id} className={`flex h-9 w-9 items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-carta ${COLORI[x.livello]}`}>
+                <Icona className="h-4.5 w-4.5" />
+              </span>
+            );
+          })}
+        </span>
+        <span className="text-viola transition group-open:rotate-45" aria-hidden>
+          <IconaPiu />
+        </span>
+      </summary>
+      <div className="flex items-center gap-3 border-t border-linea px-4 py-2.5">
+        <span className="flex h-1.5 flex-1 overflow-hidden rounded-full bg-linea">
+          <span className="block h-full rounded-full bg-viola" style={{ width: `${(presi.length / trofei.length) * 100}%` }} />
+        </span>
       </div>
-      <ul className="grid grid-cols-2 gap-px bg-linea sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-px border-t border-linea bg-linea sm:grid-cols-3">
         {ordinati.map((x) => {
           const Icona = ICONE[x.id];
           const avanzamento = x.prossima == null ? 1 : Math.min(1, x.valore / x.prossima);
@@ -60,7 +86,7 @@ export async function Bacheca({ trofei }: { trofei: Trofeo[] }) {
           );
         })}
       </ul>
-    </section>
+    </details>
   );
 }
 

@@ -460,6 +460,42 @@
     "podio": {
       "nome": "On the podium",
       "descr": "Months finished in the top three"
-    }
+    },
+    "reTorneo": {
+      "nome": "Tournament king",
+      "descr": "Tournaments finished 1st among predictors"
+    },
+    "podioTorneo": {
+      "nome": "Tournament podium",
+      "descr": "Tournaments finished in the top three"
+    },
+    "apriTutti": "Tap to see them all"
+  },
+  "giocatore": {
+    "giocatore": "Player",
+    "tuoPubblico": "Your profile, as others see it",
+    "dal": "On Beach Peck since {mese}",
+    "puntiTotali": "total points",
+    "migliorPosto": "best monthly finish",
+    "pronosticiChiusi": "predictions",
+    "vincitori": "winners guessed",
+    "trofei": "Trophies",
+    "mesi": "Month by month",
+    "nessunMese": "No points yet.",
+    "posto": "{posizione} of {totale}",
+    "tornei": "Tournaments",
+    "pronosticiN": "{n, plural, one {# prediction} other {# predictions}}",
+    "postoTorneo": "#{n} in the tournament",
+    "ultimi": "Latest predictions",
+    "nessunPronostico": "No predictions on closed matches yet.",
+    "privacy": "Only predictions on matches that have started are shown: open ones stay secret.",
+    "vediPubblico": "See your public profile"
+  },
+  "campioni": {
+    "titoloConcluso": "Tournament champions",
+    "sottoConcluso": "Best predictors, matches and draw winner included",
+    "titoloInCorso": "Best predictors in this tournament",
+    "sottoInCorso": "Live standings: when the tournament ends the top three become champions",
+    "tuaPosizione": "You're #{posizione} with {punti} points"
   }
 }

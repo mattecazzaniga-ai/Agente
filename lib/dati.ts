@@ -249,3 +249,52 @@ export async function podiMesiChiusi(quanti = 12): Promise<{ utente_id: string; 
   const risposte = await Promise.all(mesi.map((m) => supabase.rpc("classifica", { p_mese: m, p_limite: 3 })));
   return risposte.map((r) => ((r.data as { utente_id: string; posizione: number }[] | null) ?? []).filter((x) => x.posizione <= 3));
 }
+
+/** Classifica dei pronosticatori di un torneo (vuota se la funzione del database non c'è ancora). */
+export async function classificaTorneo(torneoId: string, limite = 100): Promise<RigaClassificaTorneo[]> {
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.rpc("classifica_torneo", { p_torneo: torneoId, p_limite: limite });
+  return error ? [] : ((data as RigaClassificaTorneo[]) ?? []);
+}
+export interface RigaClassificaTorneo {
+  posizione: number;
+  utente_id: string;
+  nickname: string;
+  paese: string | null;
+  punti: number;
+  pronostici: number;
+  vincitori: number;
+  set_esatti: number;
+  game_esatti: number;
+}
+
+/** I primi tre di ogni torneo concluso. */
+export async function podiTornei(): Promise<{ torneo_id: string; torneo_nome: string; data_fine: string; utente_id: string; posizione: number; punti: number }[]> {
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.rpc("podi_tornei");
+  return error ? [] : ((data as never[]) ?? []);
+}
+
+/** Scheda pubblica di un giocatore: profilo, mesi, pronostici sulle partite già chiuse. */
+export async function schedaGiocatore(utenteId: string) {
+  const supabase = await supabaseServer();
+  const [{ data: profilo }, mesi, pron] = await Promise.all([
+    supabase.from("profili").select("id, nickname, paese, creato_at").eq("id", utenteId).maybeSingle(),
+    supabase.rpc("storico_mensile", { p_utente: utenteId }),
+    supabase.rpc("pronostici_giocatore", { p_utente: utenteId, p_limite: 500 }),
+  ]);
+  if (!profilo) return null;
+  const miei = ((pron.error ? [] : pron.data) as PronosticoPartita[] | null) ?? [];
+  let voci: { partita: PartitaConCoppie; mio: PronosticoPartita }[] = [];
+  if (miei.length) {
+    const { data: pa } = await supabase.from("partite").select(SELECT_PARTITA).in("id", miei.map((m) => m.partita_id));
+    const partite = new Map(((pa as unknown as PartitaConCoppie[]) ?? []).map((p) => [p.id, p]));
+    voci = miei.filter((m) => partite.has(m.partita_id)).map((m) => ({ partita: partite.get(m.partita_id)!, mio: m }));
+    voci.sort((x, y) => y.partita.inizio_at.localeCompare(x.partita.inizio_at));
+  }
+  return {
+    profilo: profilo as { id: string; nickname: string; paese: string | null; creato_at: string },
+    mesi: ((mesi.error ? [] : mesi.data) as { mese: string; posizione: number; punti: number; partecipanti: number }[] | null) ?? [],
+    voci,
+  };
+}

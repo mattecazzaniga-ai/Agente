@@ -460,6 +460,42 @@
     "podio": {
       "nome": "Sul podio",
       "descr": "Mesi chiusi tra i primi tre"
-    }
+    },
+    "reTorneo": {
+      "nome": "Re del torneo",
+      "descr": "Tornei chiusi al 1° posto tra chi pronostica"
+    },
+    "podioTorneo": {
+      "nome": "Podio di torneo",
+      "descr": "Tornei chiusi tra i primi tre"
+    },
+    "apriTutti": "Tocca per vederli tutti"
+  },
+  "giocatore": {
+    "giocatore": "Giocatore",
+    "tuoPubblico": "Il tuo profilo, come lo vedono gli altri",
+    "dal": "Su Beach Peck da {mese}",
+    "puntiTotali": "punti in tutto",
+    "migliorPosto": "miglior posto in un mese",
+    "pronosticiChiusi": "pronostici",
+    "vincitori": "vincitori indovinati",
+    "trofei": "Trofei",
+    "mesi": "Mese per mese",
+    "nessunMese": "Ancora nessun punto.",
+    "posto": "{posizione}° su {totale}",
+    "tornei": "Tornei",
+    "pronosticiN": "{n, plural, one {# pronostico} other {# pronostici}}",
+    "postoTorneo": "{n}° nel torneo",
+    "ultimi": "Ultimi pronostici",
+    "nessunPronostico": "Ancora nessun pronostico su partite chiuse.",
+    "privacy": "Si vedono solo i pronostici delle partite già iniziate: quelli ancora aperti restano segreti.",
+    "vediPubblico": "Vedi il tuo profilo pubblico"
+  },
+  "campioni": {
+    "titoloConcluso": "I campioni del torneo",
+    "sottoConcluso": "Chi ha pronosticato meglio, partite e vincitore del tabellone",
+    "titoloInCorso": "Chi pronostica meglio questo torneo",
+    "sottoInCorso": "Classifica provvisoria: a fine torneo i primi tre diventano i campioni",
+    "tuaPosizione": "Tu sei {posizione}° con {punti} punti"
   }
 }

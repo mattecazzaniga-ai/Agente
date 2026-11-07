@@ -460,6 +460,42 @@
     "podio": {
       "nome": "No pódio",
       "descr": "Meses terminados entre os três primeiros"
-    }
+    },
+    "reTorneo": {
+      "nome": "Rei do torneio",
+      "descr": "Torneios terminados em 1º entre quem palpita"
+    },
+    "podioTorneo": {
+      "nome": "Pódio de torneio",
+      "descr": "Torneios terminados entre os três primeiros"
+    },
+    "apriTutti": "Toque para ver todos"
+  },
+  "giocatore": {
+    "giocatore": "Jogador",
+    "tuoPubblico": "Seu perfil, como os outros veem",
+    "dal": "No Beach Peck desde {mese}",
+    "puntiTotali": "pontos no total",
+    "migliorPosto": "melhor posição em um mês",
+    "pronosticiChiusi": "palpites",
+    "vincitori": "vencedores certos",
+    "trofei": "Troféus",
+    "mesi": "Mês a mês",
+    "nessunMese": "Ainda sem pontos.",
+    "posto": "{posizione}º de {totale}",
+    "tornei": "Torneios",
+    "pronosticiN": "{n, plural, one {# palpite} other {# palpites}}",
+    "postoTorneo": "{n}º no torneio",
+    "ultimi": "Últimos palpites",
+    "nessunPronostico": "Ainda sem palpites em jogos fechados.",
+    "privacy": "Só aparecem os palpites de jogos já iniciados: os abertos continuam secretos.",
+    "vediPubblico": "Ver seu perfil público"
+  },
+  "campioni": {
+    "titoloConcluso": "Os campeões do torneio",
+    "sottoConcluso": "Quem palpitou melhor, jogos e vencedor da chave",
+    "titoloInCorso": "Quem palpita melhor neste torneio",
+    "sottoInCorso": "Ranking provisório: no fim os três primeiros viram campeões",
+    "tuaPosizione": "Você é {posizione}º com {punti} pontos"
   }
 }

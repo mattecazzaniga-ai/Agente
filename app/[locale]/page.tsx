@@ -204,7 +204,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             ) : (
               <ol className="pannello divide-y divide-linea overflow-hidden">
                 {primi.map((r) => (
-                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-2.5 ${r.utente_id === user?.id ? "bg-viola/10" : ""}`}>
+                  <li key={r.utente_id}>
+                  <Link href={`/giocatore/${r.utente_id}`} className={`flex items-center gap-3 px-4 py-2.5 transition hover:bg-sabbia-2 ${r.utente_id === user?.id ? "bg-viola/10" : ""}`}>
                     <span className={`cifre w-6 text-lg ${r.posizione === 1 ? "text-viola" : "text-tenue"}`}>{r.posizione}</span>
                     <span className="min-w-0 flex-1 truncate font-semibold">
                       <span aria-hidden className="mr-1.5">
@@ -213,6 +214,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       {r.nickname}
                     </span>
                     <span className="cifre text-lg">{r.punti}</span>
+                  </Link>
                   </li>
                 ))}
               </ol>

@@ -367,5 +367,20 @@ insert into partite (tabellone_id, turno, ordine, coppia_a_id, coppia_b_id, iniz
 values ('30000000-0000-0000-0000-000000000009', 'QF', 1, '40000000-0000-0000-0000-000000000091', '40000000-0000-0000-0000-000000000092', now() + interval '1 day', 'conclusa', '{6}', '{2}');
 select prova.ok((select inizio_at from partite where tabellone_id = '30000000-0000-0000-0000-000000000009' and turno = 'QF') <= now(), 'conclusa non resta nel futuro');
 select prova.ok((select (inizio_at at time zone 'UTC')::date from partite where tabellone_id = '30000000-0000-0000-0000-000000000009' and turno = 'SF') <= current_date + 1, 'semifinale entro la fine del torneo');
+-- classifica del torneo, podi, scheda giocatore (solo pronostici di partite chiuse)
+set role anon;
+select prova.ok((select count(*) from classifica_torneo('20000000-0000-0000-0000-000000000001')) > 0, 'classifica del torneo leggibile da tutti');
+select prova.ok(not exists (select 1 from pronostici_giocatore('00000000-0000-0000-0000-000000000001') g join partite p on p.id = g.partita_id where p.stato = 'in_programma' and p.inizio_at > now()), 'i pronostici aperti degli altri restano segreti');
+select count(*) from podi_tornei();
+reset role;
+-- (come superuser: il confronto legge le tabelle protette)
+select prova.ok((select count(*) from storico_mensile((select utente_id from pronostici_partita where mese is not null and punti is not null limit 1))) >= 1, 'storico mensile');
+select prova.ok(not exists (
+  select 1 from classifica_torneo('20000000-0000-0000-0000-000000000001') c
+  where c.punti <> coalesce((select sum(pp.punti) from pronostici_partita pp join partite p on p.id = pp.partita_id join tabelloni tb on tb.id = p.tabellone_id
+                             where tb.torneo_id = '20000000-0000-0000-0000-000000000001' and pp.utente_id = c.utente_id), 0)
+                 + coalesce((select sum(pt.punti) from pronostici_torneo pt join tabelloni tb on tb.id = pt.tabellone_id
+                             where tb.torneo_id = '20000000-0000-0000-0000-000000000001' and pt.utente_id = c.utente_id), 0)
+), 'punti del torneo = somma dei suoi pronostici');
 \o
 \echo 'Tutti i test dello schema sono passati.'

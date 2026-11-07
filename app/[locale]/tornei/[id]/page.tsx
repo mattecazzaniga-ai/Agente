@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTorneo, mieiPronostici, sessione } from "@/lib/dati";
+import { caricaTorneo, classificaTorneo, mieiPronostici, sessione } from "@/lib/dati";
+import CampioniTorneo from "@/components/CampioniTorneo";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, coppiaLungaConBandiere, data, nomeCoppia } from "@/lib/formato";
 import { TURNI, type Coppia, type Genere } from "@/lib/tipi";
@@ -40,10 +41,12 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
   const turnoScelto =
     turni.find((tu) => tu === turno) ?? turni.find((tu) => aperteIn(tu) > 0) ?? [...turni].reverse().find((tu) => scelto?.partite.some((p) => p.turno === tu && p.stato !== "in_programma")) ?? turni[0];
 
-  const [miei, { data: votiRighe }] = await Promise.all([
+  const [miei, { data: votiRighe }, pronosticatori] = await Promise.all([
     user ? mieiPronostici(tabelloni.map((x) => x.id), tabelloni.flatMap((x) => x.partite.map((p) => p.id))) : Promise.resolve(null),
     supabase.rpc("voti_del_torneo", { p_torneo: id }),
+    classificaTorneo(id),
   ]);
+  const concluso = torneo.stato === "concluso";
   // rif (partita o tabellone) -> coppia -> percentuale e punti in palio
   const voti = new Map<string, Record<string, VotoMostrato>>();
   const righeVoti = (votiRighe as { rif: string; coppia_id: string; voti: number; percentuale: number; punti_in_palio: number }[]) ?? [];
@@ -93,6 +96,8 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
           </div>
         )}
       </header>
+
+      {concluso && <CampioniTorneo righe={pronosticatori} concluso io={user?.id} />}
 
       {tabelloni.length > 1 && (
         <div className="mt-4 grid grid-flow-col gap-1 rounded-lg border border-linea bg-carta p-1">
@@ -192,6 +197,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                 sito={sito}
               />
             </section>
+            {!concluso && <CampioniTorneo righe={pronosticatori} concluso={false} io={user?.id} />}
             <NumeriTorneo s={statisticheTorneo(scelto.partite, scelto.coppie)} />
             <Regole />
           </aside>

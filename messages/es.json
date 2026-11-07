@@ -460,6 +460,42 @@
     "podio": {
       "nome": "En el podio",
       "descr": "Meses terminados entre los tres primeros"
-    }
+    },
+    "reTorneo": {
+      "nome": "Rey del torneo",
+      "descr": "Torneos terminados 1.º entre quienes pronostican"
+    },
+    "podioTorneo": {
+      "nome": "Podio de torneo",
+      "descr": "Torneos terminados entre los tres primeros"
+    },
+    "apriTutti": "Toca para verlos todos"
+  },
+  "giocatore": {
+    "giocatore": "Jugador",
+    "tuoPubblico": "Tu perfil, como lo ven los demás",
+    "dal": "En Beach Peck desde {mese}",
+    "puntiTotali": "puntos en total",
+    "migliorPosto": "mejor puesto en un mes",
+    "pronosticiChiusi": "pronósticos",
+    "vincitori": "ganadores acertados",
+    "trofei": "Trofeos",
+    "mesi": "Mes a mes",
+    "nessunMese": "Todavía sin puntos.",
+    "posto": "{posizione}.º de {totale}",
+    "tornei": "Torneos",
+    "pronosticiN": "{n, plural, one {# pronóstico} other {# pronósticos}}",
+    "postoTorneo": "{n}.º en el torneo",
+    "ultimi": "Últimos pronósticos",
+    "nessunPronostico": "Todavía sin pronósticos en partidos cerrados.",
+    "privacy": "Solo se ven los pronósticos de partidos ya empezados: los abiertos siguen en secreto.",
+    "vediPubblico": "Ver tu perfil público"
+  },
+  "campioni": {
+    "titoloConcluso": "Los campeones del torneo",
+    "sottoConcluso": "Quien mejor pronosticó, partidos y ganador del cuadro",
+    "titoloInCorso": "Quién pronostica mejor este torneo",
+    "sottoInCorso": "Clasificación provisional: al final los tres primeros son los campeones",
+    "tuaPosizione": "Eres {posizione}.º con {punti} puntos"
   }
 }
