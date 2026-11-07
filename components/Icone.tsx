@@ -92,20 +92,20 @@ export const IconaMeno = ({ className = "h-4 w-4" }: P) => (
   </svg>
 );
 
-/** Marchio: pallina lime con la cucitura, su fondo scuro. */
+/** Marchio: pallina gialla con la cucitura. */
 export const Logo = ({ className = "h-8 w-8" }: P) => (
   <svg viewBox="0 0 32 32" className={className} aria-hidden>
-    <circle cx="16" cy="16" r="15" fill="#d4f53c" />
-    <path d="M4.2 9.5C10 12 10 20 4.2 22.5M27.8 9.5C22 12 22 20 27.8 22.5" fill="none" stroke="#0b1018" strokeWidth="2.6" strokeLinecap="round" />
+    <circle cx="16" cy="16" r="15" fill="#e8f24a" stroke="#13293a" strokeWidth="1.2" />
+    <path d="M4.2 9.5C10 12 10 20 4.2 22.5M27.8 9.5C22 12 22 20 27.8 22.5" fill="none" stroke="#13293a" strokeWidth="2.4" strokeLinecap="round" />
   </svg>
 );
 
 /** Logo completo: marchio + "BEACH PECK" in condensato. */
 export const Marchio = ({ className = "" }: P) => (
-  <span className={`inline-flex items-center gap-2 font-display text-[22px] font-extrabold uppercase leading-none tracking-tight ${className}`}>
+  <span className={`inline-flex items-center gap-2 font-display text-[22px] font-extrabold leading-none tracking-tight ${className}`}>
     <Logo className="h-7 w-7" />
     <span>
-      Beach <span className="text-lime">Peck</span>
+      Beach <span className="text-mare">Peck</span>
     </span>
   </span>
 );

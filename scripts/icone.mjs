@@ -26,9 +26,9 @@ function icona(lato, { maschera = false } = {}) {
   const raw = Buffer.alloc((lato * 4 + 1) * lato);
   const cx = lato / 2;
   const r = lato * (maschera ? 0.3 : 0.36);
-  const mare = [11, 16, 24]; // blu notte
-  const sole = [212, 245, 60]; // lime
-  const bianco = [11, 16, 24]; // cucitura scura
+  const mare = [10, 106, 147]; // blu mare
+  const sole = [232, 242, 74]; // pallina gialla
+  const bianco = [19, 41, 58]; // cucitura blu scuro
   for (let y = 0; y < lato; y++) {
     raw[y * (lato * 4 + 1)] = 0;
     for (let x = 0; x < lato; x++) {

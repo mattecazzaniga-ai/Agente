@@ -29,12 +29,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: `${t("app.slogan")}. ${t("avviso")}.`,
     manifest: "/manifest.webmanifest",
     icons: { icon: "/icone/icona-192.png", apple: "/icone/icona-180.png" },
-    appleWebApp: { capable: true, title: t("app.nome"), statusBarStyle: "black-translucent" },
+    appleWebApp: { capable: true, title: t("app.nome"), statusBarStyle: "default" },
     alternates: { languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])) },
   };
 }
 
-export const viewport: Viewport = { themeColor: "#0b1018", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#fbf6ec", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -51,7 +51,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
     <html lang={locale}>
       <body className="min-h-dvh font-sans antialiased">
         <NextIntlClientProvider>
-          <header className="sticky top-0 z-30 border-b border-linea bg-notte/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+          <header className="sticky top-0 z-30 border-b border-linea bg-sabbia/95 pt-[env(safe-area-inset-top)] backdrop-blur">
             <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
               <Link href="/" aria-label={t("app.nome")}>
                 <Marchio />
@@ -60,20 +60,20 @@ export default async function LayoutLingua({ children, params }: { children: Rea
               <div className="ml-auto flex items-center gap-2">
                 <SceltaLingua etichetta={t("lingua.scegli")} />
                 {profilo?.is_admin && (
-                  <Link href="/admin" className="hidden h-10 items-center rounded-lg border border-linea px-3 font-display text-sm font-bold uppercase tracking-wide text-tenue hover:text-testo sm:inline-flex">
+                  <Link href="/admin" className="hidden h-10 items-center rounded-lg border border-linea px-3 text-sm font-semibold text-tenue hover:text-inchiostro sm:inline-flex">
                     {t("nav.admin")}
                   </Link>
                 )}
                 {user ? (
                   <Link
                     href="/profilo"
-                    className="grid h-10 w-10 place-items-center rounded-lg bg-pannello-2 font-display text-base font-extrabold uppercase text-lime ring-1 ring-linea hover:ring-lime"
+                    className="grid h-10 w-10 place-items-center rounded-lg bg-sabbia-2 font-display text-base font-extrabold text-mare ring-1 ring-linea hover:ring-mare"
                     aria-label={t("nav.profilo")}
                   >
                     {(profilo?.nickname ?? "?").slice(0, 1)}
                   </Link>
                 ) : (
-                  <Link href="/accedi" className="inline-flex h-10 items-center rounded-lg bg-lime px-4 transition active:scale-95 font-display text-[15px] font-bold uppercase tracking-wide text-notte hover:bg-lime-scuro">
+                  <Link href="/accedi" className="inline-flex h-10 items-center rounded-lg bg-mare px-4 transition active:scale-95 text-[15px] font-semibold text-white hover:bg-mare-scuro">
                     {t("nav.accedi")}
                   </Link>
                 )}
@@ -84,7 +84,7 @@ export default async function LayoutLingua({ children, params }: { children: Rea
           <footer className="mx-auto max-w-6xl border-t border-linea px-4 pb-24 pt-5 md:pb-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Avviso />
-              <Link href="/privacy" className="inline-flex min-h-11 items-center text-xs text-tenue underline-offset-2 hover:text-testo hover:underline">
+              <Link href="/privacy" className="inline-flex min-h-11 items-center text-xs text-tenue underline-offset-2 hover:text-inchiostro hover:underline">
                 {t("profilo.privacy")}
               </Link>
             </div>

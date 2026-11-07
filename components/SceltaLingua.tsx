@@ -25,10 +25,10 @@ export default function SceltaLingua({ etichetta }: { etichetta: string }) {
             router.replace(percorso, { locale: nuova });
           });
         }}
-        className="h-10 appearance-none rounded-lg border border-linea bg-transparent pl-2.5 pr-6 font-display text-sm font-bold uppercase tracking-wide text-testo outline-none hover:border-tenue"
+        className="h-10 appearance-none rounded-lg border border-linea bg-transparent pl-2.5 pr-6 text-sm font-semibold text-inchiostro outline-none hover:border-tenue"
       >
         {routing.locales.map((l) => (
-          <option key={l} value={l} className="bg-pannello text-testo">
+          <option key={l} value={l} className="bg-carta text-inchiostro">
             {SIGLE[l]}
           </option>
         ))}

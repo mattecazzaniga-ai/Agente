@@ -6,10 +6,10 @@ export default function TestataFoto({ foto, titolo, sotto, posizione = "50% 40%"
   return (
     <header className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
       <Image src={foto.src} alt={foto.alt} placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-44 w-full object-cover sm:h-56" style={{ objectPosition: posizione }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/60 to-notte/5" aria-hidden />
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-6">
+      <div className="velo absolute inset-0" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 text-white sm:px-6">
         <h1 className="titolo-pagina">{titolo}</h1>
-        {sotto && <p className="mt-1.5 text-sm text-testo/80">{sotto}</p>}
+        {sotto && <p className="mt-1.5 text-sm text-white/85">{sotto}</p>}
       </div>
     </header>
   );

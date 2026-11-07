@@ -18,7 +18,7 @@ export default function CampiTorneo({ torneo }: { torneo?: Torneo }) {
         </label>
         <label className="block">
           <span className="etichetta">Paese (ISO)</span>
-          <input name="paese" maxLength={2} defaultValue={torneo?.paese ?? ""} placeholder="IT" className="campo uppercase" />
+          <input name="paese" maxLength={2} defaultValue={torneo?.paese ?? ""} placeholder="IT" className="campo" />
         </label>
       </div>
       <input type="hidden" name="circuito" value="ITF" />

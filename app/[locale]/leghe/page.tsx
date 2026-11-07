@@ -36,9 +36,9 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
         <div key={l.id} className="pannello space-y-3 p-4">
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-xl font-bold uppercase tracking-tight">{l.nome}</p>
+              <p className="truncate font-display text-xl font-bold tracking-tight">{l.nome}</p>
               <p className="flex items-center gap-2 text-sm text-tenue">
-                <span className="cifre tracking-[.2em] text-testo">{l.codice}</span>
+                <span className="cifre tracking-[.2em] text-inchiostro">{l.codice}</span>
                 <span className="inline-flex items-center gap-1">
                   <IconaAmici className="h-4 w-4" /> {l.membri}
                 </span>

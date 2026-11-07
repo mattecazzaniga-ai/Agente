@@ -15,7 +15,7 @@ export default function FormPassword() {
         <span className="mt-1 block text-xs text-tenue">{t("accedi.passwordAiuto")}</span>
       </label>
       {esito && !esito.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${esito.errore}`)}</p>}
-      {esito?.ok && <p className="festa text-sm font-bold text-lime">{t("profilo.passwordSalvata")}</p>}
+      {esito?.ok && <p className="festa text-sm font-bold text-mare">{t("profilo.passwordSalvata")}</p>}
       <button className="bottone-secondario" disabled={inCorso}>{inCorso ? "…" : t("profilo.passwordSalva")}</button>
     </form>
   );

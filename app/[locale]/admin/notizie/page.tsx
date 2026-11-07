@@ -24,7 +24,7 @@ function CampiNotizia({ n }: { n?: Notizia }) {
       </div>
       <p className="text-xs text-tenue">Titolo e riassunto vanno scritti con parole tue: mai copiare il testo della fonte. Basta una lingua; le altre mostrano quella disponibile.</p>
       {routing.locales.map((l) => (
-        <fieldset key={l} className="space-y-1 rounded-xl bg-pannello-2 p-2">
+        <fieldset key={l} className="space-y-1 rounded-xl bg-sabbia-2 p-2">
           <legend className="text-xs font-bold">{NOMI_LINGUE[l]}</legend>
           <input name={`titolo_${l}`} maxLength={120} defaultValue={tr(l)?.titolo} placeholder="Titolo" className="campo" />
           <CampoRiassunto nome={`riassunto_${l}`} valore={tr(l)?.riassunto} />
@@ -54,7 +54,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold">Notizie</h1>
-      {salvata && <p className="rounded-xl bg-pannello-2 p-3 text-sm font-medium text-lime">Notizia salvata.</p>}
+      {salvata && <p className="rounded-xl bg-sabbia-2 p-3 text-sm font-medium text-mare">Notizia salvata.</p>}
       <div className="scheda">
         <h2 className="mb-3 font-bold">{inModifica ? "Modifica notizia" : "+ Nuova notizia"}</h2>
         <FormAdmin key={inModifica?.id ?? "nuova"} azione={salvaNotizia} bottone={inModifica ? "Salva modifiche" : "Salva notizia"}>
@@ -62,7 +62,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
         </FormAdmin>
         {inModifica && (
           <div className="mt-3 flex items-center justify-between">
-            <Link href="/admin/notizie" className="text-sm text-lime underline">
+            <Link href="/admin/notizie" className="text-sm text-mare underline">
               Annulla
             </Link>
             <form action={eliminaNotizia}>
@@ -87,7 +87,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
                     {n.fonte_nome} · {n.notizie_traduzioni.map((x) => x.lingua).join(", ")}
                   </span>
                 </span>
-                <span className={`chip ${n.stato === "pubblicata" ? "" : "bg-pannello-2 text-tenue"}`}>{n.stato}</span>
+                <span className={`chip ${n.stato === "pubblicata" ? "" : "bg-sabbia-2 text-tenue"}`}>{n.stato}</span>
               </Link>
             </li>
           );

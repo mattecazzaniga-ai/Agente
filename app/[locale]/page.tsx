@@ -20,10 +20,10 @@ function Sezione({ titolo, link, testoLink, children, conteggio }: { titolo: str
       <div className="mb-3 mt-8 flex items-center justify-between">
         <h2 className="titolo-sezione my-0">
           {titolo}
-          {conteggio ? <span className="cifre rounded bg-pannello-2 px-1.5 text-[13px] text-testo">{conteggio}</span> : null}
+          {conteggio ? <span className="cifre rounded bg-sabbia-2 px-1.5 text-[13px] text-inchiostro">{conteggio}</span> : null}
         </h2>
         {link && (
-          <Link href={link} className="font-display text-[13px] font-bold uppercase tracking-wider text-lime hover:text-lime-scuro">
+          <Link href={link} className=" text-[13px] font-semibold text-mare hover:text-mare-scuro">
             {testoLink} →
           </Link>
         )}
@@ -71,36 +71,36 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <div>
       {/* Apertura: foto vera di una partita, messaggio breve, e subito la situazione dell'utente */}
       <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
-        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className={`foto-zoom w-full object-cover object-[60%_30%] ${user ? "h-56 sm:h-72" : "h-[440px] sm:h-[480px]"}`} />
-        <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/70 to-notte/10" aria-hidden />
-        <div className="absolute inset-x-0 bottom-0 px-4 pb-5 sm:px-6 sm:pb-6">
+        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className={`foto-zoom w-full object-cover object-[55%_60%] ${user ? "h-56 sm:h-72" : "h-[440px] sm:h-[480px]"}`} />
+        <div className="velo absolute inset-0" aria-hidden />
+        <div className="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6 sm:pb-6">
           {user ? (
             <>
-              <p className="font-display text-sm font-bold uppercase tracking-[.14em] text-lime">{t("home.ciao", { nome: profilo?.nickname ?? "" })}</p>
+              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-pallina" aria-hidden />{t("home.ciao", { nome: profilo?.nickname ?? "" })}</p>
               <div className="mt-2 flex flex-wrap items-end gap-x-8 gap-y-3">
                 <div>
                   <p className="cifre text-5xl leading-none">{io ? `${io.posizione}°` : "—"}</p>
-                  <p className="mt-1 font-display text-xs font-semibold uppercase tracking-wider text-tenue">{t("home.posizione", { mese: nomeMese(mese, locale) })}</p>
+                  <p className="mt-1 text-sm text-white/80">{t("home.posizione", { mese: nomeMese(mese, locale) })}</p>
                 </div>
                 <div>
                   <p className="cifre text-5xl leading-none">{io?.punti ?? 0}</p>
-                  <p className="mt-1 font-display text-xs font-semibold uppercase tracking-wider text-tenue">{t("classifica.punti")}</p>
+                  <p className="mt-1 text-sm text-white/80">{t("classifica.punti")}</p>
                 </div>
                 <div>
-                  <p className={`cifre text-5xl leading-none ${daFare ? "text-lime" : ""}`}>{daFare}</p>
-                  <p className="mt-1 font-display text-xs font-semibold uppercase tracking-wider text-tenue">{t("home.daFare")}</p>
+                  <p className={`cifre text-5xl leading-none ${daFare ? "text-pallina" : ""}`}>{daFare}</p>
+                  <p className="mt-1 text-sm text-white/80">{t("home.daFare")}</p>
                 </div>
               </div>
             </>
           ) : (
             <>
-              <p className="font-display text-sm font-bold uppercase tracking-[.14em] text-lime">{t("home.occhiello")}</p>
-              <h1 className="mt-2 max-w-[14ch] font-display text-[44px] font-extrabold uppercase leading-[.92] tracking-tight sm:text-6xl">{t("home.titolo")}</h1>
-              <p className="mt-3 max-w-md text-[15px] leading-snug text-testo/85">{t("home.intro")}</p>
+              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-pallina" aria-hidden />{t("home.occhiello")}</p>
+              <h1 className="mt-1.5 max-w-[16ch] font-display text-[42px] font-bold leading-[1] sm:text-6xl">{t("home.titolo")}</h1>
+              <p className="mt-3 max-w-md text-base leading-snug text-white/90">{t("home.intro")}</p>
               {inEvidenza && (
-                <Link href={link(inEvidenza)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-notte/70 px-3 text-sm ring-1 ring-linea backdrop-blur transition hover:ring-tenue">
-                  <span className="punto-live bg-lime" />
-                  <span className="cifre text-lg leading-none text-lime">{aperte.length}</span>
+                <Link href={link(inEvidenza)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-sm text-inchiostro shadow-sm transition hover:-translate-y-px">
+                  <span className="punto-live" />
+                  <span className="cifre text-lg leading-none text-mare">{aperte.length}</span>
                   <span>{t("home.aperteOra", { torneo: inEvidenza.tabellone.torneo.nome })}</span>
                 </Link>
               )}
@@ -108,7 +108,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <Link href="/accedi" className="bottone w-auto px-6">
                   {t("home.inizia")}
                 </Link>
-                <a href="#come-funziona" className="bottone-secondario w-auto border-testo/30 px-5">
+                <a href="#come-funziona" className="bottone-secondario w-auto border-white/50 bg-white/10 px-5 text-white backdrop-blur hover:border-white">
                   {t("home.comeFunziona")}
                 </a>
               </div>
@@ -136,7 +136,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     sito={sito}
                     descrizione={`${inEvidenza.tabellone.torneo.nome} · ${t(`turno.${inEvidenza.turno}`)}`}
                     intestazione={
-                      <Link href={link(inEvidenza)} className="hover:text-testo">
+                      <Link href={link(inEvidenza)} className="hover:text-inchiostro">
                         {inEvidenza.tabellone.torneo.nome} · {t(`turno.${inEvidenza.turno}`)}
                       </Link>
                     }
@@ -165,8 +165,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <ol className="pannello grid divide-y divide-linea sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                 {passi.map((testo, i) => (
                   <li key={i} className="flex gap-3 p-4 sm:block">
-                    <span className="cifre text-3xl leading-none text-lime">0{i + 1}</span>
-                    <p className="text-[15px] leading-snug text-testo/90 sm:mt-2">{testo}</p>
+                    <span className="cifre text-3xl leading-none text-mare">0{i + 1}</span>
+                    <p className="text-[15px] leading-snug text-inchiostro/90 sm:mt-2">{testo}</p>
                   </li>
                 ))}
               </ol>
@@ -181,8 +181,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             ) : (
               <ol className="pannello divide-y divide-linea overflow-hidden">
                 {primi.map((r) => (
-                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-2.5 ${r.utente_id === user?.id ? "bg-lime/10" : ""}`}>
-                    <span className={`cifre w-6 text-lg ${r.posizione === 1 ? "text-lime" : "text-tenue"}`}>{r.posizione}</span>
+                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-2.5 ${r.utente_id === user?.id ? "bg-mare/10" : ""}`}>
+                    <span className={`cifre w-6 text-lg ${r.posizione === 1 ? "text-mare" : "text-tenue"}`}>{r.posizione}</span>
                     <span className="min-w-0 flex-1 truncate font-semibold">
                       <span aria-hidden className="mr-1.5">
                         {bandiera(r.paese)}

@@ -15,7 +15,7 @@ export default async function Privacy({ params }: { params: Promise<{ locale: st
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <Intestazione titolo={t("privacy.titolo")} />
-      <p className="leading-relaxed text-testo/85">{t("privacy.testo")}</p>
+      <p className="leading-relaxed text-inchiostro/85">{t("privacy.testo")}</p>
       <Avviso grande />
       <section>
         <h2 className="titolo-sezione">{t("privacy.crediti")}</h2>

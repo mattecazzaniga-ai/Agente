@@ -12,7 +12,7 @@ function Campi({ g }: { g?: Giocatore }) {
       <div className="grid grid-cols-2 gap-2">
         <input name="nome" required maxLength={60} defaultValue={g?.nome} placeholder="Nome" aria-label="Nome" className="campo" />
         <input name="cognome" required maxLength={60} defaultValue={g?.cognome} placeholder="Cognome" aria-label="Cognome" className="campo" />
-        <input name="paese" maxLength={2} defaultValue={g?.paese ?? ""} placeholder="Paese (IT)" aria-label="Paese" className="campo uppercase" />
+        <input name="paese" maxLength={2} defaultValue={g?.paese ?? ""} placeholder="Paese (IT)" aria-label="Paese" className="campo" />
         <select name="sesso" defaultValue={g?.sesso ?? ""} aria-label="Sesso" className="campo">
           <option value="">—</option>
           <option value="M">M</option>

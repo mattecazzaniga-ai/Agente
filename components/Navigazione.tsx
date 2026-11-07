@@ -25,8 +25,8 @@ export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
             key={href}
             href={href}
             aria-current={attiva(href) ? "page" : undefined}
-            className={`relative flex items-center px-3 font-display text-[15px] font-bold uppercase tracking-wider transition ${
-              attiva(href) ? "text-testo after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-lime" : "text-tenue hover:text-testo"
+            className={`relative flex items-center px-3 text-[15px] font-semibold transition ${
+              attiva(href) ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-mare" : "text-tenue hover:text-inchiostro"
             }`}
           >
             {t(chiave)}
@@ -36,16 +36,16 @@ export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
     );
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-linea bg-notte/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" aria-label="Menu">
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-linea bg-sabbia/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" aria-label="Menu">
       <ul className="mx-auto flex max-w-xl">
         {VOCI.map(({ href, chiave, Icona }) => (
           <li key={href} className="flex-1">
             <Link
               href={href}
               aria-current={attiva(href) ? "page" : undefined}
-              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 font-display text-xs font-bold uppercase tracking-wider transition ${attiva(href) ? "text-lime" : "text-tenue"}`}
+              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 text-xs font-semibold transition ${attiva(href) ? "text-mare" : "text-tenue"}`}
             >
-              {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-lime" />}
+              {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-mare" />}
               <Icona className="h-[22px] w-[22px]" />
               {t(chiave)}
             </Link>

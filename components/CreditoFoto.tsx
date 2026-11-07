@@ -6,7 +6,7 @@ export default function CreditiFoto({ etichetta }: { etichetta: string }) {
   return (
     <p className="text-xs text-tenue">
       {etichetta}: {autori.join(", ")} / Wikimedia Commons,{" "}
-      <a href={FOTO.partita.urlLicenza} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-testo hover:underline">
+      <a href={FOTO.partita.urlLicenza} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-inchiostro hover:underline">
         CC BY-SA 4.0
       </a>
     </p>

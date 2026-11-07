@@ -1,13 +1,13 @@
 // Fotografie reali di beach tennis da Wikimedia Commons, licenza CC BY-SA 4.0 (attribuzione obbligatoria:
 // autore, licenza e link alla fonte compaiono nel sito accanto alla foto o nei crediti).
-import calbucci from "@/foto/calbucci.jpg";
+import spiaggia from "@/foto/spiaggia.jpg";
 import play from "@/foto/play.jpg";
 import marchezini from "@/foto/marchezini.jpg";
 import duello from "@/foto/duello.jpg";
 import squadre from "@/foto/squadre.jpg";
 
 export interface Foto {
-  src: typeof calbucci;
+  src: typeof spiaggia;
   alt: string;
   autore: string;
   fonte: string;
@@ -19,10 +19,10 @@ const CC = "https://creativecommons.org/licenses/by-sa/4.0/";
 
 export const FOTO = {
   partita: {
-    src: calbucci,
-    alt: "Alessandro Calbucci colpisce di dritto davanti alle tribune piene, Follow The Beach 2025",
-    autore: "Felipe.bzra",
-    fonte: "https://commons.wikimedia.org/wiki/File:Alessandro_Calbucci_Follow_The_Beach_2025.jpg",
+    src: spiaggia,
+    alt: "Due giocatori di beach tennis sulla riva a Ponta Negra, con il mare e la duna sullo sfondo",
+    autore: "Sashopotiguar",
+    fonte: "https://commons.wikimedia.org/wiki/File:Beach_T%C3%AAnis_em_Ponta_Negra.jpg",
     licenza: "CC BY-SA 4.0",
     urlLicenza: CC,
   },

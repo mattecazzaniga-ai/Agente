@@ -47,7 +47,7 @@ export default async function SchedaPartita(props: {
   const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, long: regole.long_vicino, massimo: massimoPartita(regole) });
 
   const stato = aperta ? (
-    <span className={`chip ${imminente ? "bg-lime text-notte" : "bg-lime/10 text-lime"}`}>
+    <span className={`chip ${imminente ? "bg-mare text-white" : "bg-mare/10 text-mare"}`}>
       {t("partita.chiudeTra", { quando: "" })} <Tra iso={p.inizio_at} />
     </span>
   ) : conclusa ? (
@@ -68,7 +68,7 @@ export default async function SchedaPartita(props: {
     const mia = Boolean(mio && c && mio.vincitore_id === c.id);
     return (
       <div className="flex items-center gap-3 py-2">
-        <span className={`h-8 w-1 shrink-0 rounded-full ${vinta ? "bg-lime" : "bg-linea"}`} aria-hidden />
+        <span className={`h-8 w-1 shrink-0 rounded-full ${vinta ? "bg-mare" : "bg-linea"}`} aria-hidden />
         <div className="min-w-0 flex-1">
           <p className={`truncate text-[16px] ${conclusa ? (vinta ? "font-bold" : "text-tenue") : "font-semibold"}`}>
             {c ? (
@@ -77,8 +77,8 @@ export default async function SchedaPartita(props: {
                   {bandiera(c.g1.paese)}
                 </span>
                 {nomeCoppia(c)}
-                {c.testa_di_serie ? <span className="ml-1.5 font-display text-xs font-bold text-sabbia">{c.testa_di_serie}</span> : null}
-                {mia && <span className="ml-2 font-display text-xs font-bold uppercase tracking-wider text-lime">{t("partita.tuaScelta")}</span>}
+                {c.testa_di_serie ? <span className="ml-1.5 text-xs font-semibold text-seme">{c.testa_di_serie}</span> : null}
+                {mia && <span className="ml-2 text-xs font-semibold text-mare">{t("partita.tuaScelta")}</span>}
               </>
             ) : (
               <span className="text-tenue">{t("partita.inAttesa")}</span>
@@ -89,14 +89,14 @@ export default async function SchedaPartita(props: {
               <span className="h-1 flex-1 overflow-hidden rounded-full bg-linea">
                 <span className="block h-full rounded-full bg-tenue" style={{ width: `${voto.percentuale}%` }} />
               </span>
-              <span className="w-9 text-right font-display text-xs font-bold tabular-nums text-tenue">{voto.percentuale}%</span>
+              <span className="w-9 text-right text-xs font-semibold tabular-nums text-tenue">{voto.percentuale}%</span>
             </div>
           )}
         </div>
         {giochi && (
           <span className="flex shrink-0 gap-3">
             {giochi.map((x, i) => (
-              <span key={i} className={`cifre w-5 text-right text-[22px] leading-none ${x > (altri?.[i] ?? 0) ? "text-testo" : "text-tenue"}`}>
+              <span key={i} className={`cifre w-5 text-right text-[22px] leading-none ${x > (altri?.[i] ?? 0) ? "text-inchiostro" : "text-tenue"}`}>
                 {x}
               </span>
             ))}
@@ -119,9 +119,9 @@ export default async function SchedaPartita(props: {
     : [];
 
   return (
-    <article className={`pannello overflow-hidden transition ${imminente ? "border-lime/40" : ""}`}>
+    <article className={`pannello overflow-hidden transition ${imminente ? "border-mare/40" : ""}`}>
       <header className="flex items-center gap-2 border-b border-linea px-4 py-2.5">
-        <div className="min-w-0 flex-1 truncate font-display text-[13px] font-semibold uppercase tracking-wider text-tenue">
+        <div className="min-w-0 flex-1 truncate text-[13px] font-semibold text-tenue">
           {props.intestazione}
           <span className="mx-1.5 text-linea">|</span>
           <Ora iso={p.inizio_at} />
@@ -154,16 +154,16 @@ export default async function SchedaPartita(props: {
                 {punteggio({ ...p, ritiro: false })} · {t("partita.ritiro")}
               </p>
             )}
-            {reali && <p className="mt-2 font-display text-xs font-semibold uppercase tracking-wider text-tenue">{t("partita.gameReali", { a: reali[0], b: reali[1] })}</p>}
+            {reali && <p className="mt-2 text-xs font-semibold text-tenue">{t("partita.gameReali", { a: reali[0], b: reali[1] })}</p>}
 
             {mio && vincitoreMio && (
-              <div className={`mt-4 rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-lime/40 bg-lime/[.06]" : "border-linea bg-pannello-2"}`}>
+              <div className={`mt-4 rounded-lg border ${mio.punti && mio.punti > 0 ? "festa border-mare/40 bg-mare/[.06]" : "border-linea bg-sabbia-2"}`}>
                 <div className="flex items-center justify-between gap-3 px-3 py-2.5">
                   <div className="min-w-0">
-                    <p className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
+                    <p className=" text-xs font-semibold text-tenue">{t("torneo.ilTuo")}</p>
                     <p className="truncate font-semibold">
                       {vincitoreMio.g1.cognome}/{vincitoreMio.g2.cognome}
-                      {mio.set_vincitore != null && <span className="cifre ml-2 text-lime">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
+                      {mio.set_vincitore != null && <span className="cifre ml-2 text-mare">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
                       {mio.game_a && mio.game_b && (
                         <span className="cifre ml-2">{mio.game_a.map((x, i) => (mio.vincitore_id === a?.id ? `${x}-${mio.game_b![i]}` : `${mio.game_b![i]}-${x}`)).join(" ")}</span>
                       )}
@@ -171,19 +171,19 @@ export default async function SchedaPartita(props: {
                     <p className="truncate text-sm">
                       {mio.game_previsti_a != null && (
                         <span className="text-tenue">
-                          {t("partita.game")} <span className="cifre text-testo">{`${mio.game_previsti_a}-${mio.game_previsti_b}`}</span>
+                          {t("partita.game")} <span className="cifre text-inchiostro">{`${mio.game_previsti_a}-${mio.game_previsti_b}`}</span>
                         </span>
                       )}
                     </p>
                   </div>
-                  {mio.punti != null && <span className={`cifre shrink-0 text-3xl leading-none ${mio.punti > 0 ? "text-lime" : "text-tenue"}`}>+{mio.punti}</span>}
+                  {mio.punti != null && <span className={`cifre shrink-0 text-3xl leading-none ${mio.punti > 0 ? "text-mare" : "text-tenue"}`}>+{mio.punti}</span>}
                 </div>
                 {mio.punti != null && (
                   <dl className={`grid border-t border-linea text-center ${colonne.length === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
                     {colonne.map(([nome, punti, nota], i) => (
                       <div key={i} className={`px-2 py-2 ${i > 0 ? "border-l border-linea" : ""}`}>
-                        <dt className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{nome}</dt>
-                        <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-lime" : "text-tenue"}`}>+{punti}</dd>
+                        <dt className=" text-xs font-semibold text-tenue">{nome}</dt>
+                        <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-mare" : "text-tenue"}`}>+{punti}</dd>
                         {nota && <dd className="text-xs text-tenue">{nota}</dd>}
                       </div>
                     ))}

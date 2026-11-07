@@ -27,12 +27,12 @@ export default async function AdminTorneo({ params }: { params: Promise<{ id: st
 
   return (
     <div className="space-y-4">
-      <Link href="/admin/tornei" className="text-sm font-semibold text-lime">
+      <Link href="/admin/tornei" className="text-sm font-semibold text-mare">
         ← Tornei
       </Link>
       <h1 className="text-xl font-extrabold">{torneo.nome}</h1>
       <p className="text-sm">
-        <Link href={`/tornei/${torneo.id}`} className="text-lime underline">
+        <Link href={`/tornei/${torneo.id}`} className="text-mare underline">
           Vedi la pagina pubblica
         </Link>
       </p>
@@ -131,7 +131,7 @@ function SezioneTabellone({ tb, inizio }: { tb: Tabellone; inizio: string }) {
 
       {TURNI.filter((t) => tb.partite.some((p) => p.turno === t)).map((t) => (
         <div key={t} className="space-y-2">
-          <h3 className="text-sm font-bold uppercase text-tenue">{t}</h3>
+          <h3 className="text-sm font-bold text-tenue">{t}</h3>
           {tb.partite
             .filter((p) => p.turno === t)
             .map((p) => (

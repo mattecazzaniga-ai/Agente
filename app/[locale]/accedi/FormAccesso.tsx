@@ -25,7 +25,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
     <div className="space-y-4">
       {google && (
         <>
-          <button type="button" onClick={conGoogle} className="bottone-secondario bg-pannello-2">
+          <button type="button" onClick={conGoogle} className="bottone-secondario bg-sabbia-2">
             <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
               <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
               <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
@@ -39,9 +39,9 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
       )}
 
       {modo !== "link" && (
-        <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-notte p-1">
+        <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-sabbia p-1">
           {(["accedi", "registrati"] as const).map((m) => (
-            <button key={m} type="button" onClick={() => setModo(m)} className={`rounded-md py-2 font-display text-[15px] font-bold uppercase tracking-wider transition ${modo === m ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}>
+            <button key={m} type="button" onClick={() => setModo(m)} className={`rounded-md py-2 text-[15px] font-semibold transition ${modo === m ? "bg-sabbia-2 text-inchiostro ring-1 ring-linea" : "text-tenue hover:text-inchiostro"}`}>
               {t(m === "accedi" ? "accedi.schedaAccedi" : "accedi.schedaRegistrati")}
             </button>
           ))}
@@ -82,7 +82,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
             <span className="mt-1 block text-xs text-tenue">{t("accedi.passwordAiuto")}</span>
           </label>
           {registra && !registra.ok && <p className="text-sm font-medium text-corallo">{t(`errori.${registra.errore}`)}</p>}
-          {registra?.ok && <p className="rounded-xl bg-pannello-2 p-3 text-sm">{t("accedi.confermaEmail")}</p>}
+          {registra?.ok && <p className="rounded-xl bg-sabbia-2 p-3 text-sm">{t("accedi.confermaEmail")}</p>}
           <button className="bottone" disabled={registraInCorso}>{registraInCorso ? "…" : t("accedi.creaAccount")}</button>
         </form>
       )}
@@ -103,7 +103,7 @@ export default function FormAccesso({ dopo, google }: { dopo: string; google: bo
           </form>
         ) : (
           <form action={verificaAzione} className="space-y-3">
-            <p className="rounded-xl bg-pannello-2 p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
+            <p className="rounded-xl bg-sabbia-2 p-3 text-sm">{t("accedi.codiceInviato", { email })}</p>
             <input type="hidden" name="email" value={email} />
             <input type="hidden" name="lingua" value={lingua} />
             <input type="hidden" name="dopo" value={dopo} />

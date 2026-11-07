@@ -1,37 +1,38 @@
 @import "tailwindcss";
 
 /*
- * Beach Peck — sistema grafico.
- * Base blu notte, testo bianco caldo, un solo accento: il lime della pallina. Il corallo è riservato
- * a ciò che è "in corso" e agli errori. Superfici piatte separate da linee sottili, niente ombre o bagliori.
- * Titoli e numeri in Barlow Condensed, testi in Barlow.
+ * Beach Peck — sistema grafico chiaro, da spiaggia.
+ * Sabbia per lo sfondo, bianco per le schede, blu mare per le azioni, giallo pallina come tocco,
+ * corallo solo per ciò che è "in corso". Testi in inchiostro blu scuro. Bordi sottili, poche ombre.
+ * Numeri e titoli in Barlow Condensed, testi in Barlow.
  */
 @theme {
-  --color-notte: #0b1018;        /* sfondo */
-  --color-pannello: #121a26;     /* superfici */
-  --color-pannello-2: #1a2331;   /* superfici in rilievo, campi */
-  --color-linea: #2a3547;        /* separatori, bordi */
-  --color-testo: #f3eee3;        /* bianco caldo */
-  --color-tenue: #8d98aa;        /* testo secondario */
-  --color-lime: #d4f53c;         /* accento: azioni, punti, selezione */
-  --color-lime-scuro: #b7d81f;
-  --color-corallo: #ff5c39;      /* in corso, errori */
-  --color-sabbia: #e7d4ac;       /* dettagli (teste di serie) */
+  --color-sabbia: #fbf6ec;       /* sfondo */
+  --color-carta: #ffffff;        /* schede */
+  --color-sabbia-2: #f3ebdb;     /* campi, riquadri interni */
+  --color-linea: #e5d9c3;        /* bordi, separatori */
+  --color-inchiostro: #13293a;   /* testo */
+  --color-tenue: #56656f;        /* testo secondario */
+  --color-mare: #0a6a93;         /* azioni, link, selezione */
+  --color-mare-scuro: #08577a;
+  --color-pallina: #e8f24a;      /* tocco di colore: la pallina */
+  --color-corallo: #c4422a;      /* in corso, errori */
+  --color-seme: #8a5a12;         /* teste di serie */
 
   --font-sans: "Barlow", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
 }
 
-html { -webkit-text-size-adjust: 100%; color-scheme: dark; }
-body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-highlight-color: transparent; }
-::selection { background: var(--color-lime); color: var(--color-notte); }
+html { -webkit-text-size-adjust: 100%; color-scheme: light; }
+body { background: var(--color-sabbia); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
+::selection { background: var(--color-pallina); color: var(--color-inchiostro); }
 
 @keyframes entra { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
 @keyframes conferma { 0% { transform: scale(.96); opacity: 0 } 60% { transform: scale(1.02); opacity: 1 } 100% { transform: none } }
 @keyframes pulsa { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
 
 @layer base {
-  :focus-visible { outline: 2px solid var(--color-lime); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--color-mare); outline-offset: 2px; }
   /* tutto ciò che si clicca lo dice al puntatore (Tailwind 4 non lo fa più sui bottoni) */
   button:not(:disabled), [role="button"], summary, select, label:has(input[type="radio"]) { cursor: pointer; }
   /* titoli senza parole isolate a capo */
@@ -40,30 +41,32 @@ body { background: var(--color-notte); color: var(--color-testo); -webkit-tap-hi
 
 @layer components {
   /* Superfici */
-  .pannello { @apply rounded-xl border border-linea bg-pannello; }
-  .scheda { @apply rounded-xl border border-linea bg-pannello p-4; }
+  .pannello { @apply rounded-xl border border-linea bg-carta; }
+  .scheda { @apply rounded-xl border border-linea bg-carta p-4; }
 
-  /* Azioni */
-  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-lime px-5 font-display text-[17px] font-bold uppercase tracking-wide text-notte transition duration-150 hover:-translate-y-px hover:bg-lime-scuro active:translate-y-0 active:scale-[.98] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-pannello-2 disabled:text-tenue; }
-  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-transparent px-5 font-display text-[17px] font-bold uppercase tracking-wide text-testo transition duration-150 hover:-translate-y-px hover:border-tenue active:translate-y-0 active:scale-[.98] disabled:opacity-40; }
+  /* Azioni: frasi normali, niente maiuscolo urlato */
+  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-mare px-5 text-base font-semibold text-white transition duration-150 hover:-translate-y-px hover:bg-mare-scuro active:translate-y-0 active:scale-[.98] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-sabbia-2 disabled:text-tenue; }
+  .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-carta px-5 text-base font-semibold text-inchiostro transition duration-150 hover:-translate-y-px hover:border-tenue/50 active:translate-y-0 active:scale-[.98] disabled:opacity-40; }
 
   /* Moduli */
-  .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-pannello-2 px-3.5 text-base text-testo outline-none transition placeholder:text-tenue/60 focus:border-lime; }
-  .etichetta { @apply mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-wider text-tenue; }
+  .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-carta px-3.5 text-base text-inchiostro outline-none transition placeholder:text-tenue/70 focus:border-mare focus:ring-2 focus:ring-mare/15; }
+  .etichetta { @apply mb-1.5 block text-sm font-semibold text-tenue; }
 
   /* Etichette */
-  .chip, .chip-live { @apply inline-flex items-center gap-1 rounded-md bg-pannello-2 px-2 py-0.5 font-display text-[12px] font-bold uppercase tracking-wide text-tenue; }
-  .chip-live { @apply bg-corallo/15 text-corallo; }
+  .chip, .chip-live { @apply inline-flex items-center gap-1 rounded-md bg-sabbia-2 px-2 py-0.5 text-xs font-semibold text-tenue; }
+  .chip-live { @apply bg-corallo/10 text-corallo; }
   .punto-live { @apply inline-block h-1.5 w-1.5 rounded-full bg-corallo; animation: pulsa 1.6s ease-in-out infinite; }
 
-  /* Schede cliccabili: si alzano di 2px e il bordo si accende */
-  .solleva { @apply transition duration-200 hover:-translate-y-0.5 hover:border-tenue/60 active:translate-y-0; }
+  /* Schede cliccabili: si alzano di 2px e il bordo si scurisce */
+  .solleva { @apply transition duration-200 hover:-translate-y-0.5 hover:border-tenue/40 hover:shadow-[0_6px_18px_-12px_rgba(19,41,58,.35)] active:translate-y-0; }
   /* Foto dentro una cornice: zoom leggero al passaggio */
   .foto-zoom { @apply transition-transform duration-700 ease-out group-hover:scale-[1.025]; }
+  /* Velo sulle foto: solo quanto basta per leggere il testo bianco */
+  .velo { background: linear-gradient(to top, rgba(10, 30, 44, .85) 0%, rgba(10, 30, 44, .55) 50%, rgba(10, 30, 44, .12) 100%); }
 
   /* Tipografia */
-  .titolo-pagina { @apply font-display text-[34px] font-extrabold uppercase leading-none tracking-tight; }
-  .titolo-sezione { @apply mb-3 mt-8 flex items-center gap-2 font-display text-[15px] font-bold uppercase tracking-[.12em] text-tenue before:h-3.5 before:w-1 before:rounded-full before:bg-lime before:content-['']; }
+  .titolo-pagina { @apply font-display text-[36px] font-bold leading-[1.05]; }
+  .titolo-sezione { @apply mb-3 mt-8 flex items-center gap-2 font-display text-[22px] font-bold leading-tight text-inchiostro; }
   .cifre { @apply font-display font-bold tabular-nums; }
 
   /* Movimento: discreto e solo all'ingresso */

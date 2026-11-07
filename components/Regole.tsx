@@ -19,23 +19,23 @@ export default async function Regole() {
         long: r.long_vicino,
         sogliaLong: r.long_errore_max,
       }),
-      colore: "bg-pannello-2 text-lime",
+      colore: "bg-sabbia-2 text-mare",
     },
-    { Icona: IconaCoppa, testo: t("torneo", { vincitore: r.torneo_vincitore, finalista: r.torneo_finalista }), colore: "bg-lime/15 text-testo" },
-    { Icona: IconaLucchetto, testo: t("blocco"), colore: "bg-lime/10 text-lime" },
+    { Icona: IconaCoppa, testo: t("torneo", { vincitore: r.torneo_vincitore, finalista: r.torneo_finalista }), colore: "bg-mare/15 text-inchiostro" },
+    { Icona: IconaLucchetto, testo: t("blocco"), colore: "bg-mare/10 text-mare" },
   ];
   return (
     <details className="pannello group mt-6">
-      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 font-display text-[15px] font-bold uppercase tracking-wider">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-[15px] font-semibold">
         {t("titolo")}
-        <span className="text-lime transition group-open:rotate-45" aria-hidden>
+        <span className="text-mare transition group-open:rotate-45" aria-hidden>
           <IconaPiu />
         </span>
       </summary>
       <ul className="divide-y divide-linea border-t border-linea">
         {voci.map(({ Icona, testo }) => (
-          <li key={testo} className="flex gap-3 px-4 py-3 text-sm leading-relaxed text-testo/85">
-            <Icona className="mt-0.5 h-5 w-5 shrink-0 text-lime" />
+          <li key={testo} className="flex gap-3 px-4 py-3 text-sm leading-relaxed text-inchiostro/85">
+            <Icona className="mt-0.5 h-5 w-5 shrink-0 text-mare" />
             <span>{testo}</span>
           </li>
         ))}

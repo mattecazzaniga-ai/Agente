@@ -89,8 +89,8 @@ export default function PronosticoPartita(props: {
   };
 
   const passo = (n: number, titolo: string, fatto: boolean) => (
-    <p className="mb-2 flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-wider text-tenue">
-      <span className={`cifre grid h-5 w-5 place-items-center rounded text-[12px] ${fatto ? "bg-lime text-notte" : "bg-pannello-2 text-tenue"}`}>{n}</span>
+    <p className="mb-2 flex items-center gap-2 text-[13px] font-semibold text-tenue">
+      <span className={`cifre grid h-5 w-5 place-items-center rounded text-[12px] ${fatto ? "bg-mare text-white" : "bg-sabbia-2 text-tenue"}`}>{n}</span>
       {titolo}
     </p>
   );
@@ -102,18 +102,18 @@ export default function PronosticoPartita(props: {
         <span className="text-xl leading-none" aria-hidden>
           {c.bandiere}
         </span>
-        <span className="mt-2 block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[0]}</span>
-        <span className="block font-display text-[19px] font-bold uppercase leading-[1.05] tracking-tight">{c.righe[1]}</span>
-        {c.testa_di_serie ? <span className={`mt-1.5 block font-display text-xs font-bold uppercase tracking-wider ${scelto ? "text-notte/70" : "text-sabbia"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
+        <span className="mt-2 block font-display text-[19px] font-bold leading-[1.05] tracking-tight">{c.righe[0]}</span>
+        <span className="block font-display text-[19px] font-bold leading-[1.05] tracking-tight">{c.righe[1]}</span>
+        {c.testa_di_serie ? <span className={`mt-1.5 block text-xs font-semibold ${scelto ? "text-white/70" : "text-seme"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
         {scelto && (
-          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded bg-notte text-lime">
+          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded bg-sabbia text-mare">
             <IconaSpunta className="h-3.5 w-3.5" />
           </span>
         )}
       </>
     );
     const classe = `relative flex min-h-[112px] flex-col items-center justify-center rounded-lg border px-2 py-3 text-center transition active:scale-[.98] ${
-      scelto ? "border-lime bg-lime text-notte" : "border-linea bg-pannello-2 text-testo hover:border-tenue"
+      scelto ? "border-mare bg-mare text-white" : "border-linea bg-sabbia-2 text-inchiostro hover:border-tenue"
     }`;
     if (!props.collegato)
       return (
@@ -128,10 +128,10 @@ export default function PronosticoPartita(props: {
     );
   };
 
-  const segmento = (attiva: boolean) => `cifre h-11 rounded-md text-xl transition ${attiva ? "bg-lime text-notte" : "text-tenue hover:text-testo"}`;
+  const segmento = (attiva: boolean) => `cifre h-11 rounded-md text-xl transition ${attiva ? "bg-mare text-white" : "text-tenue hover:text-inchiostro"}`;
   const chip = (attiva: boolean) =>
-    `cifre h-11 rounded-md border text-[17px] transition active:scale-95 ${attiva ? "border-lime bg-lime text-notte" : "border-linea bg-notte text-testo hover:border-tenue"}`;
-  const tasto = "grid h-11 w-11 place-items-center rounded-lg border border-linea bg-notte text-testo transition hover:border-tenue active:scale-90 disabled:opacity-30";
+    `cifre h-11 rounded-md border text-[17px] transition active:scale-95 ${attiva ? "border-mare bg-mare text-white" : "border-linea bg-sabbia text-inchiostro hover:border-tenue"}`;
+  const tasto = "grid h-11 w-11 place-items-center rounded-lg border border-linea bg-sabbia text-inchiostro transition hover:border-tenue active:scale-90 disabled:opacity-30";
 
   return (
     <form action={(f) => (setModificato(false), azione(f))} className="space-y-4">
@@ -145,7 +145,7 @@ export default function PronosticoPartita(props: {
         <div className="relative grid grid-cols-2 gap-2">
           {bottone(props.a)}
           {bottone(props.b)}
-          <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded bg-notte font-display text-[12px] font-bold text-tenue ring-1 ring-linea">VS</span>
+          <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded bg-sabbia text-[12px] font-semibold text-tenue ring-1 ring-linea">VS</span>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ export default function PronosticoPartita(props: {
           {props.setPerVincere === 2 && (
             <div>
               {passo(2, t("partita.passoSet"), true)}
-              <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-notte p-1">
+              <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-sabbia p-1">
                 {([0, 1] as const).map((p) => (
                   <button key={p} type="button" onClick={() => cambia(() => setPersi(p))} className={segmento(persi === p)} aria-pressed={persi === p}>
                     2-{p}
@@ -187,7 +187,7 @@ export default function PronosticoPartita(props: {
               return (
                 <div key={i}>
                   <p className="mb-1.5 text-sm">
-                    <span className="font-display font-bold uppercase tracking-wider">{numeroSet > 1 ? t("partita.setN", { n: i + 1 }) : t("partita.ilSet")}</span>
+                    <span className="font-display font-bold">{numeroSet > 1 ? t("partita.setN", { n: i + 1 }) : t("partita.ilSet")}</span>
                     <span className="text-tenue"> · {t("partita.loVince", { nome: vince.righe.join("/") })}</span>
                   </p>
                   <div className="grid grid-cols-4 gap-1.5">
@@ -205,9 +205,9 @@ export default function PronosticoPartita(props: {
             })}
 
             {treSet && (
-              <div className="rounded-lg border border-linea bg-pannello-2 p-3">
+              <div className="rounded-lg border border-linea bg-sabbia-2 p-3">
                 <p className="text-sm">
-                  <span className="font-display font-bold uppercase tracking-wider">{t("partita.long")}</span>
+                  <span className="font-display font-bold">{t("partita.long")}</span>
                   <span className="text-tenue"> · {t("partita.loVince", { nome: scelta.righe.join("/") })}</span>
                 </p>
                 <div className="mt-2 flex items-center justify-between gap-3">
@@ -217,7 +217,7 @@ export default function PronosticoPartita(props: {
                       <IconaMeno />
                     </button>
                     <span className="cifre w-[76px] text-center text-[28px] leading-none">
-                      <span className="text-lime">{puntiVincitoreLong(long)}</span>-{long}
+                      <span className="text-mare">{puntiVincitoreLong(long)}</span>-{long}
                     </span>
                     <button type="button" className={tasto} onClick={() => cambia(() => setLong((x) => Math.min(30, x + 1)))} disabled={long >= 30} aria-label={t("partita.piu")}>
                       <IconaPiu />
@@ -230,15 +230,15 @@ export default function PronosticoPartita(props: {
           </div>
 
           {/* Riepilogo: quello che verrà salvato */}
-          <div className="rounded-lg bg-notte px-3 py-2.5 ring-1 ring-linea">
-            <p className="font-display text-xs font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</p>
+          <div className="rounded-lg bg-sabbia px-3 py-2.5 ring-1 ring-linea">
+            <p className=" text-xs font-semibold text-tenue">{t("partita.riepilogo")}</p>
             <p className="font-semibold">
-              {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-lime">{formula}</span>
+              {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-mare">{formula}</span>
               <span className="cifre ml-2">{tutti.map(([v, p]) => `${v}-${p}`).join(" ")}</span>
             </p>
             <p className="text-sm text-tenue">
               {t("partita.gameCalcolati")}{" "}
-              <span className="cifre text-testo">
+              <span className="cifre text-inchiostro">
                 {props.a.righe[0]} {totA} - {totB} {props.b.righe[0]}
               </span>
             </p>
@@ -247,8 +247,8 @@ export default function PronosticoPartita(props: {
 
           {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
-            <div className="festa space-y-3 rounded-lg border border-lime/40 bg-lime/[.06] p-3">
-              <p className="flex items-center gap-2 font-display text-lg font-bold uppercase tracking-wide text-lime">
+            <div className="festa space-y-3 rounded-lg border border-mare/40 bg-mare/[.06] p-3">
+              <p className="flex items-center gap-2 font-display text-lg font-bold text-mare">
                 <IconaSpunta className="h-5 w-5" /> {t("partita.salvato")}
               </p>
               <p className="text-xs text-tenue">{t("partita.puoiCambiare")}</p>
@@ -263,7 +263,7 @@ export default function PronosticoPartita(props: {
             </div>
           ) : completoSalvato && !modificato && !esito ? (
             <p className="flex items-center gap-2 rounded-lg border border-linea px-3 py-2.5 text-sm">
-              <IconaSpunta className="h-4 w-4 text-lime" />
+              <IconaSpunta className="h-4 w-4 text-mare" />
               <span className="font-semibold">{t("torneo.ilTuo")}</span>
               <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
             </p>

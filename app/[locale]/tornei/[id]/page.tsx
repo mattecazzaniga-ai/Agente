@@ -58,47 +58,47 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
 
   return (
     <div>
-      <Link href="/tornei" className="inline-flex items-center gap-1 font-display text-sm font-bold uppercase tracking-wider text-tenue hover:text-testo">
+      <Link href="/tornei" className="inline-flex items-center gap-1 text-sm font-semibold text-tenue hover:text-inchiostro">
         <IconaIndietro /> {t("tornei.titolo")}
       </Link>
 
       <header className="group relative -mx-4 mt-3 overflow-hidden border-y border-linea sm:mx-0 sm:rounded-xl sm:border">
         <Image src={FOTO.torneo.src} alt={FOTO.torneo.alt} placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[50%_45%] sm:h-64" />
-        <div className="absolute inset-0 bg-gradient-to-t from-notte via-notte/75 to-notte/20" aria-hidden />
-        <div className="absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-6">
+        <div className="velo absolute inset-0" aria-hidden />
+        <div className="absolute inset-x-0 bottom-0 px-4 pb-4 text-white sm:px-6">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="chip bg-testo text-notte">
+            <span className="chip bg-pallina text-inchiostro">
               {torneo.circuito}
               {torneo.categoria ? ` ${torneo.categoria}` : ""}
             </span>
             {torneo.stato === "in_corso" ? (
-              <span className="chip-live bg-notte/70">
+              <span className="chip-live bg-white text-corallo">
                 <span className="punto-live" /> {t("stato.in_corso")}
               </span>
             ) : (
-              <span className="chip bg-notte/70">{t(`stato.${torneo.stato}`)}</span>
+              <span className="chip bg-white text-inchiostro">{t(`stato.${torneo.stato}`)}</span>
             )}
           </div>
-          <h1 className="mt-2 font-display text-[38px] font-extrabold uppercase leading-[.95] tracking-tight sm:text-5xl">{torneo.nome}</h1>
-          <p className="mt-1.5 text-sm text-testo/80">
+          <h1 className="mt-2 font-display text-[38px] font-bold leading-[1] sm:text-5xl">{torneo.nome}</h1>
+          <p className="mt-1.5 text-sm text-white/85">
             {bandiera(torneo.paese)} {torneo.luogo} · {t("tornei.dal", { inizio: data(torneo.data_inizio, locale), fine: data(torneo.data_fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}
           </p>
         </div>
         {user && mieiPunti > 0 && (
-          <div className="festa absolute right-4 top-9 rounded-lg bg-lime px-3 py-1.5 text-center text-notte sm:right-6">
+          <div className="festa absolute right-4 top-9 rounded-lg bg-mare px-3 py-1.5 text-center text-white sm:right-6">
             <p className="cifre text-2xl leading-none">+{mieiPunti}</p>
-            <p className="font-display text-xs font-bold uppercase tracking-wider">{t("torneo.tuoiPuntiBreve")}</p>
+            <p className="text-xs font-semibold">{t("torneo.tuoiPuntiBreve")}</p>
           </div>
         )}
       </header>
 
       {tabelloni.length > 1 && (
-        <div className="mt-4 grid grid-flow-col gap-1 rounded-lg border border-linea bg-pannello p-1">
+        <div className="mt-4 grid grid-flow-col gap-1 rounded-lg border border-linea bg-carta p-1">
           {tabelloni.map((x) => (
             <Link
               key={x.id}
               href={`/tornei/${id}?tab=${x.genere}`}
-              className={`min-h-11 rounded-md py-2.5 text-center font-display text-[15px] font-bold uppercase tracking-wider transition ${x.id === scelto?.id ? "bg-pannello-2 text-testo ring-1 ring-linea" : "text-tenue hover:text-testo"}`}
+              className={`min-h-11 rounded-md py-2.5 text-center text-[15px] font-semibold transition ${x.id === scelto?.id ? "bg-sabbia-2 text-inchiostro ring-1 ring-linea" : "text-tenue hover:text-inchiostro"}`}
             >
               {t(`genere.${x.genere as Genere}`)}
             </Link>
@@ -126,12 +126,12 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                       href={`/tornei/${id}?${new URLSearchParams({ ...(scelto ? { tab: scelto.genere } : {}), turno: tu })}`}
                       scroll={false}
                       aria-current={attivo ? "page" : undefined}
-                      className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-3 pt-2 font-display text-[15px] font-bold uppercase tracking-wider transition ${
-                        attivo ? "text-testo after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-lime" : "text-tenue hover:text-testo"
+                      className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-3 pt-2 text-[15px] font-semibold transition ${
+                        attivo ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-mare" : "text-tenue hover:text-inchiostro"
                       }`}
                     >
                       {t(`turno.${tu}`)}
-                      {aperte > 0 && <span className="cifre rounded bg-lime px-1.5 text-[12px] text-notte">{aperte}</span>}
+                      {aperte > 0 && <span className="cifre rounded bg-mare px-1.5 text-[12px] text-white">{aperte}</span>}
                     </Link>
                   );
                 })}
