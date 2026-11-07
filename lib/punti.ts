@@ -83,5 +83,11 @@ export const puntiVincitoreLong = (perdente: number) => Math.max(10, perdente + 
 
 export function tiebreakValido(a: number, b: number): boolean {
   const [hi, lo] = [Math.max(a, b), Math.min(a, b)];
-  return hi >= 10 && hi - lo >= 2 && (hi === 10 || hi - lo === 2);
+  return lo >= 0 && hi <= 50 && hi >= 10 && hi - lo >= 2 && (hi === 10 || hi - lo === 2);
+}
+
+/** Un set finito: 6-0…6-4, 7-5, 7-6 (come set_valido nel database). */
+export function setValido(a: number, b: number): boolean {
+  const [hi, lo] = [Math.max(a, b), Math.min(a, b)];
+  return lo >= 0 && ((hi === 6 && lo <= 4) || (hi === 7 && (lo === 5 || lo === 6)));
 }

@@ -193,7 +193,7 @@ set role authenticated;
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4,10}', '{4,6,9}')$$, 'long tie-break non valido');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4,8}', '{4,6,10}')$$, 'non corrisponde');
 select prova.errore($$insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4}', '{4,6}')$$, 'non corrisponde');
-select prova.ok(tiebreak_valido(10, 8) and tiebreak_valido(12, 10) and not tiebreak_valido(12, 8) and not tiebreak_valido(10, 9), 'long tie-break valido');
+select prova.ok(tiebreak_valido(10, 8) and tiebreak_valido(12, 10) and tiebreak_valido(50, 48) and not tiebreak_valido(51, 49) and not tiebreak_valido(12, 8) and not tiebreak_valido(10, 9), 'long tie-break valido, fino a 50');
 insert into pronostici_partita (partita_id, vincitore_id, game_a, game_b) values ('50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', '{6,4,10}', '{4,6,8}');
 select prova.ok((select set_vincitore = 2 and set_perdente = 1 and game_previsti_a = 11 and game_previsti_b = 10 from pronostici_partita where partita_id = '50000000-0000-0000-0000-000000000003'), 'set e game ricavati dal pronostico set per set');
 reset role;

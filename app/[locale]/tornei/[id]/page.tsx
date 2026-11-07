@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { caricaTorneo, mieiPronostici, sessione } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
-import { bandiera, data, nomeCoppia, nomeCoppiaLungo } from "@/lib/formato";
+import { bandiera, coppiaLungaConBandiere, data, nomeCoppia } from "@/lib/formato";
 import { TURNI, type Coppia, type Genere } from "@/lib/tipi";
 import PronosticoTorneo from "@/components/PronosticoTorneo";
 import SchedaPartita, { type VotoMostrato } from "@/components/SchedaPartita";
@@ -172,7 +172,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                 tabelloneId={scelto.id}
                 titolo={t(`genere.${scelto.genere}`)}
                 nomeTorneo={torneo.nome}
-                coppie={scelto.coppie.map((c) => ({ id: c.id, nome: `${bandiera(c.g1.paese)} ${nomeCoppiaLungo(c)}`, testa_di_serie: c.testa_di_serie }))}
+                coppie={scelto.coppie.map((c) => ({ id: c.id, nome: coppiaLungaConBandiere(c), testa_di_serie: c.testa_di_serie }))}
                 mio={miei?.torneo.get(scelto.id) ?? null}
                 aperto={aperto}
                 chiusura={torneo.inizio_at}

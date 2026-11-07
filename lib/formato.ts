@@ -19,6 +19,18 @@ export function bandiera(paese?: string | null): string {
   return String.fromCodePoint(...[...paese].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 }
 
+/** "🇧🇷 Ballerini / 🇧🇷 Yuji": ogni giocatore con la sua bandiera. */
+export function coppiaConBandiere(c?: Coppia | null): string {
+  if (!c) return "—";
+  return `${bandiera(c.g1.paese)} ${c.g1.cognome} / ${bandiera(c.g2.paese)} ${c.g2.cognome}`;
+}
+
+/** "🇧🇷 Renzo Testa – 🇧🇷 Leonardo Branco" */
+export function coppiaLungaConBandiere(c?: Coppia | null): string {
+  if (!c) return "—";
+  return `${bandiera(c.g1.paese)} ${c.g1.nome} ${c.g1.cognome} – ${bandiera(c.g2.paese)} ${c.g2.nome} ${c.g2.cognome}`;
+}
+
 export function nomePaese(paese: string | null | undefined, lingua: string): string {
   if (!paese) return "";
   try {

@@ -17,7 +17,7 @@ const lato = (c: Coppia): LatoCoppia => ({
   id: c.id,
   nome: nomeCoppia(c),
   righe: [c.g1.cognome, c.g2.cognome],
-  bandiere: c.g1.paese === c.g2.paese ? bandiera(c.g1.paese) : `${bandiera(c.g1.paese)}${bandiera(c.g2.paese)}`,
+  bandiere: [bandiera(c.g1.paese), bandiera(c.g2.paese)],
   testa_di_serie: c.testa_di_serie,
 });
 
@@ -73,10 +73,9 @@ export default async function SchedaPartita(props: {
           <p className={`truncate text-[16px] ${conclusa ? (vinta ? "font-bold" : "text-tenue") : "font-semibold"}`}>
             {c ? (
               <>
-                <span aria-hidden className="mr-1.5">
-                  {bandiera(c.g1.paese)}
-                </span>
-                {nomeCoppia(c)}
+                <span aria-hidden className="mr-1">{bandiera(c.g1.paese)}</span>
+                {c.g1.cognome} / <span aria-hidden className="mr-1">{bandiera(c.g2.paese)}</span>
+                {c.g2.cognome}
                 {c.testa_di_serie ? <span className="ml-1.5 text-xs font-semibold text-seme">{c.testa_di_serie}</span> : null}
                 {mia && <span className="ml-2 text-xs font-semibold text-mare">{t("partita.tuaScelta")}</span>}
               </>

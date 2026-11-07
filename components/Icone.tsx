@@ -81,6 +81,16 @@ export const IconaInfo = ({ className = "h-4 w-4" }: P) => (
     <path d="M12 11v6M12 7.5v.5" />
   </svg>
 );
+export const IconaSu = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} strokeWidth={2.5} className={className}>
+    <path d="M6 15l6-6 6 6" />
+  </svg>
+);
+export const IconaGiu = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} strokeWidth={2.5} className={className}>
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
 export const IconaPiu = ({ className = "h-4 w-4" }: P) => (
   <svg {...base} className={className}>
     <path d="M12 5v14M5 12h14" />

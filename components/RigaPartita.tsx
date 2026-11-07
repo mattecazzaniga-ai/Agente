@@ -46,10 +46,9 @@ export default async function RigaPartita({
         <span className={`min-w-0 flex-1 truncate text-[15px] ${finita ? (vinta ? "font-bold text-inchiostro" : "text-tenue") : "font-semibold text-inchiostro"}`}>
           {c ? (
             <>
-              <span aria-hidden className="mr-1.5">
-                {bandiera(c.g1.paese)}
-              </span>
-              {c.g1.cognome} / {c.g2.cognome}
+              <span aria-hidden className="mr-1">{bandiera(c.g1.paese)}</span>
+              {c.g1.cognome} / <span aria-hidden className="mr-1">{bandiera(c.g2.paese)}</span>
+              {c.g2.cognome}
               {c.testa_di_serie ? <span className="ml-1.5 text-xs font-semibold text-seme">{c.testa_di_serie}</span> : null}
             </>
           ) : (
