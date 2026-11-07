@@ -173,8 +173,8 @@
     "salvataggio": "Salvando…",
     "tuaScelta": "Sua escolha",
     "testaDiSerie": "Cabeça de chave {n}",
-    "meno": "Um game a menos",
-    "piu": "Um game a mais",
+    "meno": "Um ponto a menos",
+    "piu": "Um ponto a mais",
     "passoPunteggio": "O placar, set a set",
     "perdeIl": "{nome} perde o",
     "loVince": "vence {nome}",
@@ -189,7 +189,13 @@
     "vinceAltra": "Com esse placar vence {nome}: mude os números ou a dupla escolhida.",
     "completaPunteggio": "Complete o placar",
     "piuDi": "Mais um para {nome}, {set}",
-    "menoDi": "Menos um para {nome}, {set}"
+    "menoDi": "Menos um para {nome}, {set}",
+    "vinceIlSet": "{nome} vence o {set}",
+    "vinceLong": "Long tie-break, vence {nome}",
+    "oltre10": "Além de 10 (11-9, 12-10…)",
+    "manca": "Falta o {cosa}",
+    "daInserire": "a preencher",
+    "quantiPunti": "Quantos pontos se ganha?"
   },
   "regole": {
     "titolo": "Como funcionam os pontos",

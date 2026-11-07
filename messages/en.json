@@ -173,8 +173,8 @@
     "salvataggio": "Saving…",
     "tuaScelta": "Your pick",
     "testaDiSerie": "Seed {n}",
-    "meno": "One game less",
-    "piu": "One game more",
+    "meno": "One point less",
+    "piu": "One point more",
     "passoPunteggio": "The score, set by set",
     "perdeIl": "{nome} lose the",
     "loVince": "won by {nome}",
@@ -189,7 +189,13 @@
     "vinceAltra": "With this score {nome} win: change the numbers or your pick.",
     "completaPunteggio": "Complete the score",
     "piuDi": "One more for {nome}, {set}",
-    "menoDi": "One less for {nome}, {set}"
+    "menoDi": "One less for {nome}, {set}",
+    "vinceIlSet": "{nome} wins {set}",
+    "vinceLong": "Long tie-break, won by {nome}",
+    "oltre10": "Beyond 10 (11-9, 12-10…)",
+    "manca": "Missing: {cosa}",
+    "daInserire": "to fill in",
+    "quantiPunti": "How many points?"
   },
   "regole": {
     "titolo": "How points work",

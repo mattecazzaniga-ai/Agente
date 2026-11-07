@@ -51,7 +51,7 @@ export async function cartolina({
         <div style={{ display: "flex", padding: "64px 72px 0" }}>
           <div style={{ display: "flex", background: CREMA, borderRadius: 28, padding: "14px 22px", boxShadow: "0 18px 40px rgba(0,0,0,.35)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element -- immagine generata con next/og */}
-            <img src={logoUrl} width={420} height={248} alt="" />
+            <img src={logoUrl} width={380} height={244} alt="" />
           </div>
         </div>
 

@@ -173,8 +173,8 @@
     "salvataggio": "Guardando…",
     "tuaScelta": "Tu elección",
     "testaDiSerie": "Cabeza de serie {n}",
-    "meno": "Un juego menos",
-    "piu": "Un juego más",
+    "meno": "Un punto menos",
+    "piu": "Un punto más",
     "passoPunteggio": "El resultado, set por set",
     "perdeIl": "{nome} pierde el",
     "loVince": "lo gana {nome}",
@@ -189,7 +189,13 @@
     "vinceAltra": "Con este resultado gana {nome}: cambia los números o la pareja elegida.",
     "completaPunteggio": "Completa el resultado",
     "piuDi": "Uno más para {nome}, {set}",
-    "menoDi": "Uno menos para {nome}, {set}"
+    "menoDi": "Uno menos para {nome}, {set}",
+    "vinceIlSet": "Gana {nome} el {set}",
+    "vinceLong": "Long tie-break, lo gana {nome}",
+    "oltre10": "Más allá de 10 (11-9, 12-10…)",
+    "manca": "Falta el {cosa}",
+    "daInserire": "por completar",
+    "quantiPunti": "¿Cuántos puntos se ganan?"
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",

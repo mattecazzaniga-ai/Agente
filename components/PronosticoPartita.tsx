@@ -2,9 +2,9 @@
 import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { salvaPronosticoPartita, type Esito } from "@/app/[locale]/azioni";
-import { gameTotali, setValido, tiebreakValido } from "@/lib/punti";
+import { setValido, tiebreakValido } from "@/lib/punti";
 import Condividi from "./Condividi";
-import { IconaGiu, IconaInfo, IconaSpunta, IconaSu } from "./Icone";
+import { IconaMeno, IconaPiu, IconaSpunta } from "./Icone";
 
 export interface LatoCoppia {
   id: string;
@@ -15,14 +15,20 @@ export interface LatoCoppia {
 }
 
 type Mio = { id: string; vincitore_id: string; game_a: number[] | null; game_b: number[] | null } | null;
+/** Una casella del tabellone: game (o punti del long) della coppia A e della coppia B, null se non ancora scelta. */
+type Valore = [number, number] | null;
 
-const MAX_SET = 7;
+// Gli unici risultati possibili di un set, dal lato di chi lo vince
+const SET_POSSIBILI: [number, number][] = [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [7, 5], [7, 6]];
+// Long tie-break a 10: i più comuni con un tocco, oltre il 10 con + e −
+const LONG_POSSIBILI: [number, number][] = Array.from({ length: 9 }, (_, i) => [10, i] as [number, number]);
 const MAX_LONG = 50;
 
 /**
- * Pronostico su una partita, come un tabellone: si sceglie chi vince e si scrive il punteggio di ogni set
- * con le frecce, partendo da 0-0. Se i set finiscono uno pari si gioca il long tie-break (a 10, 2 punti
- * di scarto, fino a 50). Risultato in set e game totali (long = 1 game) si ricavano dai numeri.
+ * Pronostico su una partita. Prima si sceglie chi vince, poi il punteggio di ogni set toccando uno dei
+ * risultati possibili (6-0…7-6): così non si può scrivere un punteggio che non esiste. Il long tie-break
+ * compare solo se i set finiscono 1-1, e lo vince chi vince la partita. La logica dei punti non cambia:
+ * si salvano i game set per set, come prima.
  */
 export default function PronosticoPartita(props: {
   partitaId: string;
@@ -40,11 +46,17 @@ export default function PronosticoPartita(props: {
   const lingua = useLocale();
   const [esito, azione, inCorso] = useActionState<Esito | null, FormData>(salvaPronosticoPartita, null);
   const numeroSet = props.setPerVincere === 2 ? 2 : 1;
-  const colonne = props.setPerVincere === 2 ? 3 : 1; // 1° set, 2° set, long
-  const iniziale = (g: number[] | null | undefined) => Array.from({ length: colonne }, (_, i) => g?.[i] ?? 0);
+  const colonne = numeroSet === 2 ? 3 : 1; // 1° set, 2° set, long
+
+  const iniziali = (): Valore[] =>
+    Array.from({ length: colonne }, (_, i) => {
+      const x = props.mio?.game_a?.[i];
+      const y = props.mio?.game_b?.[i];
+      return x != null && y != null ? [x, y] : null;
+    });
   const [vincitore, setVincitore] = useState(props.mio?.vincitore_id ?? "");
-  const [ga, setGa] = useState<number[]>(iniziale(props.mio?.game_a));
-  const [gb, setGb] = useState<number[]>(iniziale(props.mio?.game_b));
+  const [valori, setValori] = useState<Valore[]>(iniziali);
+  const [attiva, setAttiva] = useState(0); // colonna che si sta compilando
   const [modificato, setModificato] = useState(false);
   const salvato = esito?.ok && !modificato;
   const idSalvato = esito?.ok ? esito.dati?.id : props.mio?.id;
@@ -53,62 +65,91 @@ export default function PronosticoPartita(props: {
   const scelta = vincitore === props.a.id ? props.a : vincitore === props.b.id ? props.b : null;
   const daA = vincitore === props.a.id;
 
-  // Controlli, nell'ordine in cui l'utente compila
-  const setOk = Array.from({ length: numeroSet }, (_, i) => setValido(ga[i], gb[i]));
-  const vintiA = Array.from({ length: numeroSet }, (_, i) => ga[i] > gb[i]).filter(Boolean).length;
-  const pari = numeroSet === 2 && setOk.every(Boolean) && vintiA === 1;
-  const longOk = !pari || tiebreakValido(ga[2], gb[2]);
-  const vinceA = pari ? ga[2] > gb[2] : vintiA === numeroSet;
-  const tuttoValido = setOk.every(Boolean) && longOk;
-  const coerente = tuttoValido && Boolean(scelta) && vinceA === daA;
-  const toccato = (i: number) => ga[i] + gb[i] > 0;
-  const primoSetSbagliato = setOk.findIndex((ok) => !ok);
-  let errore = "";
-  if (primoSetSbagliato >= 0 && toccato(primoSetSbagliato)) errore = t("partita.setNonValido", { n: primoSetSbagliato + 1 });
-  else if (pari && !longOk && toccato(2)) errore = t("partita.longNonValido");
-  else if (tuttoValido && scelta && vinceA !== daA) errore = t("partita.vinceAltra", { nome: (daA ? props.b : props.a).righe.join("/") });
-
+  // Stato del tabellone
+  const set = valori.slice(0, numeroSet);
+  const setFatti = set.every((v) => v && setValido(v[0], v[1]));
+  const vintiA = set.filter((v) => v && v[0] > v[1]).length;
+  const pari = numeroSet === 2 && setFatti && vintiA === 1;
+  const long = pari ? valori[2] : null;
+  const longFatto = !pari || Boolean(long && tiebreakValido(long[0], long[1]));
+  const completo = Boolean(scelta) && setFatti && longFatto;
   const usati = pari ? 3 : numeroSet;
-  const gameA = ga.slice(0, usati);
-  const gameB = gb.slice(0, usati);
-  const [totA, totB] = gameTotali(gameA, gameB, props.setPerVincere);
+  const gameA = valori.slice(0, usati).map((v) => v?.[0] ?? 0);
+  const gameB = valori.slice(0, usati).map((v) => v?.[1] ?? 0);
+  const vinceA = pari ? (long ? long[0] > long[1] : daA) : vintiA === numeroSet;
+  const coerente = completo && vinceA === daA;
   const punteggio = gameA.map((x, i) => (daA ? `${x}-${gameB[i]}` : `${gameB[i]}-${x}`)).join(" ");
+  const visibili = pari ? 3 : numeroSet;
 
-  const cambia = (lato: "a" | "b", i: number, delta: number) => {
-    const max = i === 2 ? MAX_LONG : MAX_SET;
-    (lato === "a" ? setGa : setGb)((g) => g.map((x, j) => (j === i ? Math.min(max, Math.max(0, x + delta)) : x)));
+  const titoli = numeroSet === 2 ? [t("partita.setN", { n: 1 }), t("partita.setN", { n: 2 }), t("partita.longBreve")] : [t("partita.ilSet")];
+  const mancante = !scelta ? null : set.findIndex((v) => !v) >= 0 ? set.findIndex((v) => !v) : pari && !longFatto ? 2 : null;
+  const colonnaAttiva = attiva < visibili ? attiva : (mancante ?? 0);
+
+  /** Dopo ogni scelta: il vincitore segue i set (2-0 o 1-0), il long resta a chi vince, si passa al prossimo vuoto. */
+  const aggiorna = (nuovi: Valore[], nuovoVincitore = vincitore) => {
+    const s = nuovi.slice(0, numeroSet);
+    const fatti = s.every(Boolean);
+    const vA = s.filter((v) => v && v[0] > v[1]).length;
+    let v = nuovoVincitore;
+    if (fatti && vA === numeroSet) v = props.a.id;
+    else if (fatti && vA === 0) v = props.b.id;
+    // il long lo vince sempre chi vince la partita: se cambia il vincitore si gira il punteggio
+    if (numeroSet === 2 && nuovi[2]) {
+      const [x, y] = nuovi[2];
+      const vinceLongA = x > y;
+      if (vinceLongA !== (v === props.a.id)) nuovi = nuovi.map((c, i) => (i === 2 ? [y, x] : c));
+    }
+    setValori(nuovi);
+    setVincitore(v);
     setModificato(true);
+    const pareggio = numeroSet === 2 && fatti && vA === 1;
+    const prossimo = nuovi.findIndex((c, i) => i < numeroSet && !c);
+    if (prossimo >= 0) setAttiva(prossimo);
+    else if (pareggio && !nuovi[2]) setAttiva(2);
   };
 
+  // Se si cambia vincitore dopo aver messo un 2-0 (o 1-0) per l'altra coppia, si girano i set: stessi punteggi, a parti invertite.
+  const scegliVincitore = (id: string) => {
+    const s = valori.slice(0, numeroSet);
+    const vA = s.filter((v) => v && v[0] > v[1]).length;
+    const tuttiAltra = s.every(Boolean) && (id === props.a.id ? vA === 0 : vA === numeroSet);
+    aggiorna(tuttiAltra ? valori.map((v, i) => (i < numeroSet && v ? ([v[1], v[0]] as [number, number]) : v)) : valori, id);
+  };
+  const scegliSet = (i: number, valore: [number, number]) => aggiorna(valori.map((c, j) => (j === i ? valore : c)));
+  const scegliLong = (vincente: number, perdente: number) => aggiorna(valori.map((c, j) => (j === 2 ? (daA ? [vincente, perdente] : [perdente, vincente]) : c)));
+
   const passo = (n: number, titolo: string, fatto: boolean) => (
-    <p className="mb-2 flex items-center gap-2 text-[15px] font-semibold text-inchiostro">
-      <span className={`cifre grid h-6 w-6 place-items-center rounded-full text-sm ${fatto ? "bg-viola text-white" : "bg-sabbia-2 text-tenue"}`}>{n}</span>
+    <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-inchiostro">
+      <span className={`cifre grid h-5 w-5 place-items-center rounded-full text-xs ${fatto ? "bg-viola text-white" : "bg-sabbia-2 text-tenue"}`}>{n}</span>
       {titolo}
     </p>
   );
 
+  const nomeBreve = (c: LatoCoppia) => `${c.righe[0]}/${c.righe[1]}`;
+
+  /** Bottone di una coppia: compatto, i due giocatori uno sotto l'altro. */
   const bottone = (c: LatoCoppia) => {
     const scelto = vincitore === c.id;
     const contenuto = (
       <>
-        {[0, 1].map((k) => (
-          <span key={k} className="block font-display text-[19px] font-bold leading-[1.15]">
-            <span aria-hidden className="mr-1 font-sans text-base">
-              {c.bandiere[k]}
+        <span className="min-w-0 flex-1">
+          {[0, 1].map((k) => (
+            <span key={k} className="block break-words text-[14px] font-semibold leading-tight">
+              <span aria-hidden className="mr-1">
+                {c.bandiere[k]}
+              </span>
+              {c.righe[k]}
             </span>
-            {c.righe[k]}
-          </span>
-        ))}
-        {c.testa_di_serie ? <span className={`mt-1.5 block text-xs font-semibold ${scelto ? "text-white/80" : "text-seme"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
-        {scelto && (
-          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-white text-viola">
-            <IconaSpunta className="h-3.5 w-3.5" />
-          </span>
-        )}
+          ))}
+          {c.testa_di_serie ? <span className={`block text-[11px] font-semibold ${scelto ? "text-white/80" : "text-seme"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
+        </span>
+        <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${scelto ? "bg-white text-viola" : "ring-1 ring-linea"}`} aria-hidden>
+          {scelto && <IconaSpunta className="h-3.5 w-3.5" />}
+        </span>
       </>
     );
-    const classe = `relative flex min-h-[104px] flex-col items-center justify-center rounded-xl border px-2 py-3 text-center transition active:scale-[.98] ${
-      scelto ? "border-viola bg-viola text-white" : "border-linea bg-sabbia-2 text-inchiostro hover:border-tenue/50"
+    const classe = `flex min-h-[60px] items-center gap-2 rounded-lg border px-3 py-2 text-left transition active:scale-[.98] ${
+      scelto ? "border-viola bg-viola text-white" : "border-linea bg-carta text-inchiostro hover:border-tenue/50"
     }`;
     if (!props.collegato)
       return (
@@ -117,40 +158,112 @@ export default function PronosticoPartita(props: {
         </a>
       );
     return (
-      <button type="button" onClick={() => (setVincitore(c.id), setModificato(true))} aria-pressed={scelto} className={classe}>
+      <button type="button" onClick={() => scegliVincitore(c.id)} aria-pressed={scelto} className={classe}>
         {contenuto}
       </button>
     );
   };
 
-  /** Una casella del tabellone: freccia su, numero, freccia giù. */
-  const casella = (lato: "a" | "b", i: number, nome: string, colonna: string) => {
-    const valore = (lato === "a" ? ga : gb)[i];
-    const max = i === 2 ? MAX_LONG : MAX_SET;
-    const freccia = "grid h-9 w-full place-items-center rounded-md text-tenue transition hover:bg-sabbia-2 hover:text-viola active:scale-90 disabled:opacity-25";
+  /** Casella del tabellone (44 px): il numero, oppure tratteggiata se manca. Toccandola si compila quel set. */
+  const casella = (i: number, lato: 0 | 1) => {
+    const v = valori[i];
+    const n = v?.[lato];
+    const vince = v ? (lato === 0 ? v[0] > v[1] : v[1] > v[0]) : false;
+    const selezionata = colonnaAttiva === i;
     return (
-      <div className="flex flex-col items-center rounded-lg border border-linea bg-carta">
-        <button type="button" className={freccia} onClick={() => cambia(lato, i, 1)} disabled={valore >= max} aria-label={t("partita.piuDi", { nome, set: colonna })}>
-          <IconaSu />
-        </button>
-        <span className="cifre py-0.5 text-[26px] leading-none" aria-live="polite">
-          {valore}
-        </span>
-        <button type="button" className={freccia} onClick={() => cambia(lato, i, -1)} disabled={valore <= 0} aria-label={t("partita.menoDi", { nome, set: colonna })}>
-          <IconaGiu />
-        </button>
+      <button
+        type="button"
+        onClick={() => setAttiva(i)}
+        aria-label={`${titoli[i]}: ${v ? `${v[0]}-${v[1]}` : t("partita.daInserire")}`}
+        className={`cifre grid h-11 w-11 place-items-center rounded-md text-[22px] leading-none transition ${
+          v ? (vince ? "bg-inchiostro text-white" : "bg-carta text-inchiostro ring-1 ring-linea") : "border-2 border-dashed border-tenue/35 text-tenue/50"
+        } ${selezionata ? "ring-2 ring-viola ring-offset-1 ring-offset-sabbia-2" : ""}`}
+      >
+        {n ?? "–"}
+      </button>
+    );
+  };
+
+  const chip = (testo: string, attivo: boolean, onClick: () => void, etichetta: string) => (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={attivo}
+      aria-label={etichetta}
+      className={`cifre h-10 w-full rounded-md text-[17px] leading-none transition active:scale-95 ${attivo ? "bg-viola text-white" : "bg-carta text-inchiostro ring-1 ring-linea hover:ring-viola/50"}`}
+    >
+      {testo}
+    </button>
+  );
+
+  /** Scelta del risultato per la colonna attiva: per un set, chi lo vince e come; per il long, il punteggio. */
+  const selettore = () => {
+    if (colonnaAttiva < numeroSet) {
+      const v = valori[colonnaAttiva];
+      return (
+        <div className="space-y-2.5">
+          {[props.a, props.b].map((c, lato) => (
+            <div key={c.id}>
+              <p className="mb-1 truncate text-xs font-semibold text-tenue">{t("partita.vinceIlSet", { nome: nomeBreve(c), set: titoli[colonnaAttiva].toLowerCase() })}</p>
+              <div className="grid grid-cols-7 gap-1">
+                {SET_POSSIBILI.map(([w, l]) => {
+                  const valore: [number, number] = lato === 0 ? [w, l] : [l, w];
+                  const preso = Boolean(v && v[0] === valore[0] && v[1] === valore[1]);
+                  return <div key={`${w}-${l}`}>{chip(`${w}-${l}`, preso, () => scegliSet(colonnaAttiva, valore), `${nomeBreve(c)} ${w}-${l}, ${titoli[colonnaAttiva]}`)}</div>;
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    // long: lo vince chi vince la partita
+    const v = valori[2];
+    const [vincente, perdente] = v ? (daA ? v : [v[1], v[0]]) : [0, 0];
+    const oltre = vincente > 10;
+    return (
+      <div>
+        <p className="mb-1 truncate text-xs font-semibold text-tenue">{t("partita.vinceLong", { nome: scelta ? nomeBreve(scelta) : "" })}</p>
+        <div className="grid grid-cols-5 gap-1 sm:grid-cols-10">
+          {LONG_POSSIBILI.map(([w, l]) => (
+            <div key={l}>{chip(`${w}-${l}`, Boolean(v) && vincente === w && perdente === l, () => scegliLong(w, l), `${t("partita.longBreve")} ${w}-${l}`)}</div>
+          ))}
+          <button
+            type="button"
+            onClick={() => scegliLong(oltre ? vincente : 11, oltre ? perdente : 9)}
+            aria-pressed={oltre}
+            aria-label={t("partita.oltre10")}
+            title={t("partita.oltre10")}
+            className={`cifre h-10 rounded-md text-[17px] leading-none transition active:scale-95 ${oltre ? "bg-viola text-white" : "bg-carta text-inchiostro ring-1 ring-linea"}`}
+          >
+            11-9+
+          </button>
+        </div>
+        {oltre && (
+          <div className="mt-2 flex items-center justify-center gap-3">
+            <button type="button" onClick={() => scegliLong(vincente - 1, perdente - 1)} disabled={vincente <= 11} aria-label={t("partita.meno")} className="grid h-10 w-10 place-items-center rounded-full bg-carta ring-1 ring-linea disabled:opacity-30">
+              <IconaMeno className="h-4 w-4" />
+            </button>
+            <span className="cifre w-20 text-center text-2xl">{`${vincente}-${perdente}`}</span>
+            <button type="button" onClick={() => scegliLong(vincente + 1, perdente + 1)} disabled={vincente >= MAX_LONG} aria-label={t("partita.piu")} className="grid h-10 w-10 place-items-center rounded-full bg-carta ring-1 ring-linea disabled:opacity-30">
+              <IconaPiu className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     );
   };
 
-  const titoli = props.setPerVincere === 2 ? [t("partita.setN", { n: 1 }), t("partita.setN", { n: 2 }), t("partita.longBreve")] : [t("partita.ilSet")];
-  // La colonna del long resta visibile anche se un set è momentaneamente sbagliato (es. 7-3):
-  // basta che i due set abbiano vincitori diversi, oppure che nel long ci sia già un numero.
-  const divisi = numeroSet === 2 && ga[0] !== gb[0] && ga[1] !== gb[1] && ga[0] > gb[0] !== ga[1] > gb[1];
-  const visibili = numeroSet === 2 && (divisi || ga[2] + gb[2] > 0) ? colonne : numeroSet;
+  const testoBottone = inCorso
+    ? t("partita.salvataggio")
+    : mancante != null
+      ? t("partita.manca", { cosa: titoli[mancante].toLowerCase() })
+      : completoSalvato
+        ? t("partita.aggiorna")
+        : t("partita.conferma");
 
   return (
-    <form action={(f) => (setModificato(false), azione(f))} className="space-y-4">
+    <form action={(f) => (setModificato(false), azione(f))} className="space-y-3">
       <input type="hidden" name="partita_id" value={props.partitaId} />
       <input type="hidden" name="vincitore_id" value={vincitore} />
       <input type="hidden" name="game_a" value={coerente ? gameA.join(",") : ""} />
@@ -158,10 +271,9 @@ export default function PronosticoPartita(props: {
 
       <div>
         {props.collegato && passo(1, t("partita.passoVincitore"), Boolean(scelta))}
-        <div className="relative grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {bottone(props.a)}
           {bottone(props.b)}
-          <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-carta text-xs font-semibold text-tenue ring-1 ring-linea">vs</span>
         </div>
       </div>
 
@@ -172,20 +284,21 @@ export default function PronosticoPartita(props: {
       ) : !scelta ? (
         <p className="text-center text-sm text-tenue">{t("partita.tocca")}</p>
       ) : (
-        <div className="entra space-y-4">
+        <div className="entra space-y-3">
           <div>
             {passo(2, t("partita.passoPunteggio"), coerente)}
-            <div className="rounded-xl border border-linea bg-sabbia-2/60 p-2.5">
-              <div className="grid items-center gap-x-2 gap-y-2" style={{ gridTemplateColumns: `minmax(0,1fr) repeat(${visibili}, 60px)` }}>
+            <div className="overflow-hidden rounded-xl border border-linea bg-sabbia-2/60">
+              {/* tabellone: nomi a sinistra, una colonna da 44 px per set */}
+              <div className="grid items-center gap-x-1.5 gap-y-1.5 p-2.5" style={{ gridTemplateColumns: `minmax(0,1fr) repeat(${visibili}, 44px)` }}>
                 <span />
                 {titoli.slice(0, visibili).map((x, i) => (
-                  <span key={i} className={`text-center text-xs font-semibold ${i === 2 ? "text-viola" : "text-tenue"}`}>
+                  <span key={i} className={`text-center text-[11px] font-semibold uppercase tracking-wide ${colonnaAttiva === i ? "text-viola" : "text-tenue"}`}>
                     {x}
                   </span>
                 ))}
-                {[props.a, props.b].map((c, r) => (
+                {[props.a, props.b].map((c, lato) => (
                   <div key={c.id} className="contents">
-                    <span className={`min-w-0 text-sm leading-tight ${c.id === vincitore ? "font-bold" : "font-medium"}`}>
+                    <span className={`min-w-0 text-[13px] leading-tight ${c.id === vincitore ? "font-bold text-inchiostro" : "font-medium text-tenue"}`}>
                       {[0, 1].map((k) => (
                         <span key={k} className="block truncate">
                           <span aria-hidden>{c.bandiere[k]}</span> {c.righe[k]}
@@ -193,43 +306,30 @@ export default function PronosticoPartita(props: {
                       ))}
                     </span>
                     {Array.from({ length: visibili }, (_, i) => (
-                      <div key={i}>{casella(r === 0 ? "a" : "b", i, c.righe.join("/"), titoli[i])}</div>
+                      <div key={i} className="grid place-items-center">
+                        {casella(i, lato as 0 | 1)}
+                      </div>
                     ))}
                   </div>
                 ))}
               </div>
+              <div className="border-t border-linea bg-carta/70 p-2.5">{selettore()}</div>
             </div>
-            {errore && (
-              <p role="alert" className="mt-2 flex items-start gap-2 rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">
-                <IconaInfo className="mt-0.5 h-4 w-4 shrink-0" />
-                {errore}
-              </p>
-            )}
-            <p className="mt-2 text-xs leading-relaxed text-tenue">{visibili === 3 ? t("partita.notaLong") : t("partita.notaSet")}</p>
           </div>
 
-          {/* Riepilogo: quello che verrà salvato */}
           {coerente && (
-            <div className="rounded-xl bg-carta px-3 py-2.5 ring-1 ring-linea">
-              <p className="text-xs font-semibold text-tenue">{t("partita.riepilogo")}</p>
-              <p className="font-semibold">
-                {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-viola">{numeroSet === 1 ? "1-0" : `2-${pari ? 1 : 0}`}</span>
-                <span className="cifre ml-2">{punteggio}</span>
-              </p>
-              <p className="text-sm text-tenue">
-                {t("partita.gameCalcolati")}{" "}
-                <span className="cifre text-inchiostro">
-                  {props.a.righe[0]} {totA} - {totB} {props.b.righe[0]}
-                </span>
-              </p>
-            </div>
+            <p className="flex flex-wrap items-baseline gap-x-2 rounded-lg bg-carta px-3 py-2 text-sm ring-1 ring-linea">
+              <span className="text-xs font-semibold text-tenue">{t("partita.riepilogo")}</span>
+              <span className="font-semibold">{nomeBreve(scelta)}</span>
+              <span className="cifre text-viola">{numeroSet === 1 ? "1-0" : `2-${pari ? 1 : 0}`}</span>
+              <span className="cifre">{punteggio}</span>
+            </p>
           )}
-          <p className="text-xs leading-relaxed text-tenue">{props.inPalio}</p>
 
           {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
             <div className="festa space-y-3 rounded-xl border border-viola/30 bg-viola/[.06] p-3">
-              <p className="flex items-center gap-2 text-lg font-semibold text-viola">
+              <p className="flex items-center gap-2 font-semibold text-viola">
                 <IconaSpunta className="h-5 w-5" /> {t("partita.salvato")}
               </p>
               <p className="text-xs text-tenue">{t("partita.puoiCambiare")}</p>
@@ -250,9 +350,13 @@ export default function PronosticoPartita(props: {
             </p>
           ) : (
             <button className="bottone" disabled={inCorso || !coerente}>
-              {inCorso ? t("partita.salvataggio") : !coerente ? t("partita.completaPunteggio") : completoSalvato ? t("partita.aggiorna") : t("partita.conferma")}
+              {testoBottone}
             </button>
           )}
+          <details className="text-xs text-tenue">
+            <summary className="cursor-pointer font-semibold">{t("partita.quantiPunti")}</summary>
+            <p className="mt-1 leading-relaxed">{props.inPalio}</p>
+          </details>
         </div>
       )}
     </form>

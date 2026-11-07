@@ -173,8 +173,8 @@
     "salvataggio": "Salvataggio…",
     "tuaScelta": "Tua scelta",
     "testaDiSerie": "Testa di serie {n}",
-    "meno": "Un game in meno",
-    "piu": "Un game in più",
+    "meno": "Un punto in meno",
+    "piu": "Un punto in più",
     "passoPunteggio": "Il punteggio, set per set",
     "perdeIl": "{nome} perde il",
     "loVince": "lo vince {nome}",
@@ -189,7 +189,13 @@
     "vinceAltra": "Con questo punteggio vince {nome}: cambia i numeri o la coppia scelta.",
     "completaPunteggio": "Completa il punteggio",
     "piuDi": "Un game in più a {nome}, {set}",
-    "menoDi": "Un game in meno a {nome}, {set}"
+    "menoDi": "Un game in meno a {nome}, {set}",
+    "vinceIlSet": "Vince {nome} il {set}",
+    "vinceLong": "Long tie-break, lo vince {nome}",
+    "oltre10": "Oltre il 10 (11-9, 12-10…)",
+    "manca": "Manca il {cosa}",
+    "daInserire": "da inserire",
+    "quantiPunti": "Quanti punti si fanno?"
   },
   "regole": {
     "titolo": "Come si fanno i punti",

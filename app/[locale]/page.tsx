@@ -76,27 +76,27 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {!user && (
         /* Apertura per chi arriva: il logo in grande sul crema, la promessa, e la spiaggia accanto */
         <section className="relative -mx-4 -mt-5 overflow-hidden border-b border-linea bg-carta sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border md:grid md:grid-cols-[1.05fr_1fr]">
-          <div className="relative px-5 pb-6 pt-5 sm:px-8 sm:pb-8">
+          <div className="relative px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-6">
             <span className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-sole/20 blur-2xl" aria-hidden />
-            <Marchio className="relative h-auto w-full max-w-[230px] sm:max-w-[340px]" />
-            <h1 className="relative mt-3 max-w-[18ch] font-display text-[38px] font-bold leading-[1.02] text-inchiostro sm:text-5xl">{t("home.titolo")}</h1>
-            <p className="relative mt-3 max-w-md text-base leading-snug text-tenue">{t("home.intro")}</p>
+            <Marchio className="relative h-auto w-full max-w-[150px] sm:max-w-[300px]" />
+            <h1 className="relative mt-2 max-w-[20ch] font-display text-[30px] font-bold leading-[1.02] text-inchiostro sm:mt-3 sm:text-5xl">{t("home.titolo")}</h1>
+            <p className="relative mt-2 max-w-md text-[15px] leading-snug text-tenue sm:mt-3 sm:text-base">{t("home.intro")}</p>
             {inEvidenza && (
-              <Link href={link(inEvidenza)} className="relative mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-sole-chiaro px-3.5 text-sm font-semibold text-inchiostro ring-1 ring-sole/50 transition hover:-translate-y-px">
+              <Link href={link(inEvidenza)} className="relative mt-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-sole-chiaro px-3.5 text-sm font-semibold text-inchiostro ring-1 ring-sole/50 transition hover:-translate-y-px">
                 <span className="punto-live" />
                 <span className="cifre text-lg leading-none text-viola">{aperte.length}</span>
                 <span>{t("home.aperteOra", { torneo: inEvidenza.tabellone.torneo.nome })}</span>
               </Link>
             )}
-            <div className="relative mt-5 flex flex-wrap gap-3">
+            <div className="relative mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-5">
               <Link href="/accedi" className="bottone w-auto px-6">
                 {t("home.inizia")}
               </Link>
-              <a href="#come-funziona" className="bottone-secondario w-auto px-5">
+              <a href="#come-funziona" className="text-sm font-semibold text-viola hover:text-viola-scuro">
                 {t("home.comeFunziona")}
               </a>
             </div>
-            <ul className="relative mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold text-inchiostro/80">
+            <ul className="relative mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] font-semibold text-inchiostro/80 sm:mt-4 sm:text-sm">
               {[t("home.puntoGratis"), t("home.puntoNoScommesse"), t("home.puntoAmici")].map((x) => (
                 <li key={x} className="flex items-center gap-1.5">
                   <IconaSpunta className="h-4 w-4 text-viola" />
@@ -105,7 +105,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               ))}
             </ul>
           </div>
-          <div className="group relative h-56 overflow-hidden md:h-auto">
+          <div className="group relative hidden overflow-hidden md:block">
             <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" fill sizes="(min-width: 768px) 540px, 100vw" className="foto-zoom object-cover object-[50%_38%]" />
           </div>
         </section>
@@ -114,7 +114,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* Apertura per chi gioca: la spiaggia, il saluto e subito la situazione */}
       {user && (
       <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border">
-        <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[50%_38%] sm:h-72" />
+        <Image src={FOTO.duello.src} alt={FOTO.duello.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-40 w-full object-cover object-[50%_38%] sm:h-56" />
         <div className="velo absolute inset-0" aria-hidden />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6 sm:pb-6">
           {user ? (
