@@ -177,7 +177,7 @@
     "gameCalcolati": "Games totais:",
     "longBreve": "Long",
     "notaSet": "Use as setas para os games de cada set (6-0…6-4, 7-5, 7-6). Se os sets empatarem, aparece o long tie-break.",
-    "setNonValido": "O {n}º set não é um placar possível: 6-0…6-4, 7-5 ou 7-6.",
+    "setNonValido": "O {n}º set não pode terminar assim: vence-se 6-0…6-4, ou 7-5 ou 7-6.",
     "longNonValido": "O long se vence em 10 com 2 pontos de vantagem (passando de 10, exatamente 2).",
     "vinceAltra": "Com esse placar vence {nome}: mude os números ou a dupla escolhida.",
     "completaPunteggio": "Complete o placar",

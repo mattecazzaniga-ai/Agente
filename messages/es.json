@@ -177,7 +177,7 @@
     "gameCalcolati": "Juegos totales:",
     "longBreve": "Long",
     "notaSet": "Usa las flechas para los juegos de cada set (6-0…6-4, 7-5, 7-6). Si los sets quedan empatados aparece el long tie-break.",
-    "setNonValido": "El {n}.º set no es un resultado posible: 6-0…6-4, 7-5 o 7-6.",
+    "setNonValido": "El {n}.º set no puede terminar así: se gana 6-0…6-4, o 7-5 o 7-6.",
     "longNonValido": "El long se gana a 10 con 2 puntos de ventaja (pasado el 10, exactamente 2).",
     "vinceAltra": "Con este resultado gana {nome}: cambia los números o la pareja elegida.",
     "completaPunteggio": "Completa el resultado",

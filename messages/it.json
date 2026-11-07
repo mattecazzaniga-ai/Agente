@@ -177,7 +177,7 @@
     "gameCalcolati": "Game totali:",
     "longBreve": "Long",
     "notaSet": "Usa le frecce per i game di ogni set (6-0…6-4, 7-5, 7-6). Se finisce un set pari compare il long tie-break.",
-    "setNonValido": "Il {n}° set non è un punteggio possibile: 6-0…6-4, 7-5 o 7-6.",
+    "setNonValido": "Il {n}° set così non può finire: si vince 6-0…6-4, oppure 7-5 o 7-6.",
     "longNonValido": "Il long si vince a 10 con 2 punti di scarto (oltre il 10, esattamente 2).",
     "vinceAltra": "Con questo punteggio vince {nome}: cambia i numeri o la coppia scelta.",
     "completaPunteggio": "Completa il punteggio",

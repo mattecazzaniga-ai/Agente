@@ -177,7 +177,7 @@
     "gameCalcolati": "Total games:",
     "longBreve": "Long",
     "notaSet": "Use the arrows for each set's games (6-0…6-4, 7-5, 7-6). If the sets are split, the long tie-break appears.",
-    "setNonValido": "Set {n} isn't a possible score: 6-0…6-4, 7-5 or 7-6.",
+    "setNonValido": "Set {n} can't end like that: it's 6-0…6-4, or 7-5 or 7-6.",
     "longNonValido": "The long is won at 10 with a 2-point lead (past 10, exactly 2).",
     "vinceAltra": "With this score {nome} win: change the numbers or your pick.",
     "completaPunteggio": "Complete the score",

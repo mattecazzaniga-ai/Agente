@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { salvaPronosticoPartita, type Esito } from "@/app/[locale]/azioni";
 import { gameTotali, setValido, tiebreakValido } from "@/lib/punti";
 import Condividi from "./Condividi";
-import { IconaGiu, IconaSpunta, IconaSu } from "./Icone";
+import { IconaGiu, IconaInfo, IconaSpunta, IconaSu } from "./Icone";
 
 export interface LatoCoppia {
   id: string;
@@ -144,7 +144,10 @@ export default function PronosticoPartita(props: {
   };
 
   const titoli = props.setPerVincere === 2 ? [t("partita.setN", { n: 1 }), t("partita.setN", { n: 2 }), t("partita.longBreve")] : [t("partita.ilSet")];
-  const visibili = pari ? colonne : numeroSet;
+  // La colonna del long resta visibile anche se un set è momentaneamente sbagliato (es. 7-3):
+  // basta che i due set abbiano vincitori diversi, oppure che nel long ci sia già un numero.
+  const divisi = numeroSet === 2 && ga[0] !== gb[0] && ga[1] !== gb[1] && ga[0] > gb[0] !== ga[1] > gb[1];
+  const visibili = numeroSet === 2 && (divisi || ga[2] + gb[2] > 0) ? colonne : numeroSet;
 
   return (
     <form action={(f) => (setModificato(false), azione(f))} className="space-y-4">
@@ -196,8 +199,13 @@ export default function PronosticoPartita(props: {
                 ))}
               </div>
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-tenue">{pari ? t("partita.notaLong") : t("partita.notaSet")}</p>
-            {errore && <p className="mt-1.5 text-sm font-semibold text-corallo">{errore}</p>}
+            {errore && (
+              <p role="alert" className="mt-2 flex items-start gap-2 rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">
+                <IconaInfo className="mt-0.5 h-4 w-4 shrink-0" />
+                {errore}
+              </p>
+            )}
+            <p className="mt-2 text-xs leading-relaxed text-tenue">{visibili === 3 ? t("partita.notaLong") : t("partita.notaSet")}</p>
           </div>
 
           {/* Riepilogo: quello che verrà salvato */}
