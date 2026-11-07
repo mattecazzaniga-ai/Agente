@@ -379,5 +379,37 @@
     "giorniOre": "{g}d {h}h",
     "oreMinuti": "{h}h {m}m",
     "minuti": "{m} min"
+  },
+  "statistiche": {
+    "cammino": "Road so far",
+    "primoTurno": "First match here",
+    "ritiro": "ret.",
+    "turnoBreve": {
+      "R64": "R1",
+      "R32": "R32",
+      "R16": "R16",
+      "QF": "QF",
+      "SF": "SF",
+      "F": "F"
+    },
+    "titoloTorneo": "Tournament numbers",
+    "giocate": "matches played",
+    "dueZero": "ended 2-0",
+    "alLong": "went to the long",
+    "gameMedi": "games per match (2 sets)",
+    "longPiuLungo": "Longest long tie-break:",
+    "sorprese": "Upsets",
+    "testa": "Seed {n}",
+    "battutaDa": "knocked out by",
+    "ritiri": "{n, plural, one {# match ended by retirement} other {# matches ended by retirement}}",
+    "tueTitolo": "Your stats",
+    "media": "average points per match",
+    "serie": "winners guessed in a row",
+    "serieMigliore": "record: {n} in a row",
+    "setEsatti": "sets with exact games",
+    "longEsatti": "exact longs",
+    "setVinti": "sets won guessed",
+    "migliore": "Your best match",
+    "nessunaValutata": "Stats show up when the matches you predicted are over."
   }
 }

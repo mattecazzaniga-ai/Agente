@@ -12,6 +12,8 @@ import { IconaIndietro } from "@/components/Icone";
 import Image from "next/image";
 import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
+import { Cammino, NumeriTorneo } from "@/components/Statistiche";
+import { cammino, statisticheTorneo } from "@/lib/statistiche";
 
 export const dynamic = "force-dynamic";
 
@@ -157,6 +159,14 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                           sito={sito}
                           descrizione={`${nomeCoppia(coppia(p.coppia_a_id))} vs ${nomeCoppia(coppia(p.coppia_b_id))} · ${torneo.nome}`}
                           intestazione={`${t(`turno.${p.turno}`)} · ${t("torneo.match", { n: p.ordine })}`}
+                          cammino={
+                            <Cammino
+                              a={coppia(p.coppia_a_id)}
+                              b={coppia(p.coppia_b_id)}
+                              tappeA={cammino(scelto.partite, scelto.coppie, p.coppia_a_id, p.turno)}
+                              tappeB={cammino(scelto.partite, scelto.coppie, p.coppia_b_id, p.turno)}
+                            />
+                          }
                         />
                       </div>
                     );
@@ -182,6 +192,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                 sito={sito}
               />
             </section>
+            <NumeriTorneo s={statisticheTorneo(scelto.partite, scelto.coppie)} />
             <Regole />
           </aside>
         </div>

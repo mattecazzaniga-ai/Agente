@@ -379,5 +379,37 @@
     "giorniOre": "{g} d {h} h",
     "oreMinuti": "{h} h {m} min",
     "minuti": "{m} min"
+  },
+  "statistiche": {
+    "cammino": "O caminho no torneio",
+    "primoTurno": "Primeiro jogo aqui",
+    "ritiro": "desist.",
+    "turnoBreve": {
+      "R64": "1ªR",
+      "R32": "16ª",
+      "R16": "Oit",
+      "QF": "QF",
+      "SF": "SF",
+      "F": "F"
+    },
+    "titoloTorneo": "Os números do torneio",
+    "giocate": "jogos disputados",
+    "dueZero": "terminaram 2-0",
+    "alLong": "foram ao long",
+    "gameMedi": "games por jogo (2 sets)",
+    "longPiuLungo": "O long mais longo:",
+    "sorprese": "As zebras",
+    "testa": "Cab. {n}",
+    "battutaDa": "eliminada por",
+    "ritiri": "{n, plural, one {# jogo terminado por desistência} other {# jogos terminados por desistência}}",
+    "tueTitolo": "Suas estatísticas",
+    "media": "pontos de média por jogo",
+    "serie": "vencedores certos seguidos",
+    "serieMigliore": "recorde: {n} seguidos",
+    "setEsatti": "sets com games exatos",
+    "longEsatti": "longs exatos",
+    "setVinti": "sets vencidos certos",
+    "migliore": "Seu melhor jogo",
+    "nessunaValutata": "As estatísticas aparecem quando terminam os jogos que você palpitou."
   }
 }

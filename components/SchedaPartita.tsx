@@ -33,6 +33,7 @@ export default async function SchedaPartita(props: {
   sito: string;
   descrizione: string;
   intestazione?: React.ReactNode;
+  cammino?: React.ReactNode; // il cammino delle due coppie nel torneo (solo prima della fine)
 }) {
   const t = await getTranslations();
   const { partita: p, a, b, mio } = props;
@@ -131,6 +132,7 @@ export default async function SchedaPartita(props: {
         </div>
         {stato}
       </header>
+      {!conclusa && props.cammino}
 
       <div className="p-4">
         {aperta ? (

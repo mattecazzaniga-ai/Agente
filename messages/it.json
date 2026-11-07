@@ -379,5 +379,37 @@
     "giorniOre": "{g} g {h} h",
     "oreMinuti": "{h} h {m} min",
     "minuti": "{m} min"
+  },
+  "statistiche": {
+    "cammino": "Il cammino nel torneo",
+    "primoTurno": "Primo turno qui",
+    "ritiro": "rit.",
+    "turnoBreve": {
+      "R64": "1°T",
+      "R32": "16°",
+      "R16": "8°",
+      "QF": "QF",
+      "SF": "SF",
+      "F": "F"
+    },
+    "titoloTorneo": "I numeri del torneo",
+    "giocate": "partite giocate",
+    "dueZero": "finite 2-0",
+    "alLong": "finite al long",
+    "gameMedi": "game a partita (2 set)",
+    "longPiuLungo": "Il long più lungo:",
+    "sorprese": "Le sorprese",
+    "testa": "TdS {n}",
+    "battutaDa": "eliminata da",
+    "ritiri": "{n, plural, one {# partita finita per ritiro} other {# partite finite per ritiro}}",
+    "tueTitolo": "Le tue statistiche",
+    "media": "punti di media a partita",
+    "serie": "vincitori indovinati di fila",
+    "serieMigliore": "record: {n} di fila",
+    "setEsatti": "set con i game esatti",
+    "longEsatti": "long esatti",
+    "setVinti": "set vinti indovinati",
+    "migliore": "La tua partita migliore",
+    "nessunaValutata": "Le statistiche arrivano quando finiscono le partite che hai pronosticato."
   }
 }
