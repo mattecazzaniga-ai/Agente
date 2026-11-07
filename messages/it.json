@@ -150,7 +150,7 @@
     "lovince": "lo vince {nome}",
     "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
     "completa": "Completa il risultato",
-    "inPalio": "In palio fino a {massimo} punti: vincitore {vincitore} · set {set} · game esatti {game}",
+    "inPalio": "In palio fino a {massimo} punti: vincitore {vincitore} · set {set} · game esatti {game} · long vicino {long}",
     "risultatoSet": "Risultato dei set di {nome}",
     "gameTotali": "Game totali di ciascuna coppia",
     "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
@@ -166,11 +166,18 @@
     "tuaScelta": "Tua scelta",
     "testaDiSerie": "Testa di serie {n}",
     "meno": "Un game in meno",
-    "piu": "Un game in più"
+    "piu": "Un game in più",
+    "passoPunteggio": "Punteggio set per set",
+    "perdeIl": "{nome} perde il",
+    "loVince": "lo vince {nome}",
+    "long": "Long tie-break a 10",
+    "puntiDi": "Punti di {nome}",
+    "notaLong": "Chi vince il long arriva a 10 con 2 punti di scarto; se si va oltre, vince di 2. Vale 1 game nei game totali.",
+    "gameCalcolati": "Game totali:"
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita, massimo {massimo} punti. Scegli chi vince, il risultato dei set (2-0 o 2-1) e i game totali di ciascuna coppia: il super tie-break vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto +{set}. Game: si somma l'errore sulle due coppie (es. previsto 6-10, reale 7-10 = errore 1) e prendi {scala} punti (errore→punti); oltre {oltre} niente.",
+    "partita": "Partita, massimo {massimo} punti. Scegli chi vince e il punteggio del 1° e del 2° set; se finisce 2-1 anche il long tie-break a 10. Il long vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto (2-0 o 2-1) +{set}. Game totali: si somma l'errore sulle due coppie e prendi {scala} punti (errore→punti); oltre {oltre} niente. Long tie-break: se lo sbagli di {sogliaLong} punti o meno in totale +{long}.",
     "torneo": "Torneo: vincitore {vincitore} punti, finalista {finalista}, pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
@@ -283,7 +290,8 @@
     "esatto": "Esatto",
     "game": "Game",
     "errore": "errore {n}",
-    "esatti": "esatti"
+    "esatti": "esatti",
+    "long": "Long"
   },
   "riga": {
     "fine": "Fin.",

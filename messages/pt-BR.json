@@ -150,7 +150,7 @@
     "lovince": "vence {nome}",
     "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
     "completa": "Complete o placar",
-    "inPalio": "Até {massimo} pontos: vencedor {vincitore} · sets {set} · games exatos {game}",
+    "inPalio": "Até {massimo} pontos: vencedor {vincitore} · sets {set} · games exatos {game} · long próximo {long}",
     "risultatoSet": "Placar em sets de {nome}",
     "gameTotali": "Games totais de cada dupla",
     "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
@@ -166,11 +166,18 @@
     "tuaScelta": "Sua escolha",
     "testaDiSerie": "Cabeça de chave {n}",
     "meno": "Um game a menos",
-    "piu": "Um game a mais"
+    "piu": "Um game a mais",
+    "passoPunteggio": "Placar set a set",
+    "perdeIl": "{nome} perde o",
+    "loVince": "vence {nome}",
+    "long": "Long tie-break a 10",
+    "puntiDi": "Pontos de {nome}",
+    "notaLong": "Quem vence o long chega a 10 com 2 pontos de vantagem; se passar disso, vence por 2. Vale 1 game nos games totais.",
+    "gameCalcolati": "Games totais:"
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence, o placar em sets (2-0 ou 2-1) e os games totais de cada dupla: o super tie-break vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato +{set}. Games: soma-se o erro das duas duplas (ex. previsto 6-10, real 7-10 = erro 1) e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada.",
+    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence e o placar do 1º e do 2º set; se terminar 2-1, também o long tie-break a 10. O long vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato (2-0 ou 2-1) +{set}. Games totais: soma-se o erro das duas duplas e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada. Long tie-break: se errar por {sogliaLong} pontos ou menos no total +{long}.",
     "torneo": "Torneio: vencedor {vincitore} pontos, finalista {finalista}, ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
@@ -283,7 +290,8 @@
     "esatto": "Exato",
     "game": "Games",
     "errore": "erro {n}",
-    "esatti": "exatos"
+    "esatti": "exatos",
+    "long": "Long"
   },
   "riga": {
     "fine": "Fim",

@@ -150,7 +150,7 @@
     "lovince": "lo gana {nome}",
     "superTieBreak": "El tercer set (súper tie-break) lo gana {nome}.",
     "completa": "Completa el resultado",
-    "inPalio": "Hasta {massimo} puntos: ganador {vincitore} · sets {set} · juegos exactos {game}",
+    "inPalio": "Hasta {massimo} puntos: ganador {vincitore} · sets {set} · juegos exactos {game} · long cercano {long}",
     "risultatoSet": "Resultado en sets de {nome}",
     "gameTotali": "Juegos totales de cada pareja",
     "notaSuperTieBreak": "El súper tie-break vale 1 juego para quien lo gana.",
@@ -166,11 +166,18 @@
     "tuaScelta": "Tu elección",
     "testaDiSerie": "Cabeza de serie {n}",
     "meno": "Un juego menos",
-    "piu": "Un juego más"
+    "piu": "Un juego más",
+    "passoPunteggio": "Resultado set por set",
+    "perdeIl": "{nome} pierde el",
+    "loVince": "lo gana {nome}",
+    "long": "Long tie-break a 10",
+    "puntiDi": "Puntos de {nome}",
+    "notaLong": "Quien gana el long llega a 10 con 2 puntos de ventaja; si se pasa, gana por 2. Vale 1 juego en los juegos totales.",
+    "gameCalcolati": "Juegos totales:"
   },
   "regole": {
     "titolo": "Cómo se ganan puntos",
-    "partita": "Partido, máximo {massimo} puntos. Elige quién gana, el resultado en sets (2-0 o 2-1) y los juegos totales de cada pareja: el súper tie-break vale 1 juego para quien lo gana. Ganador acertado +{vincitore}. Resultado en sets exacto +{set}. Juegos: se suma el error de las dos parejas (ej. previsto 6-10, real 7-10 = error 1) y sumas {scala} puntos (error→puntos); más allá de {oltre}, nada.",
+    "partita": "Partido, máximo {massimo} puntos. Elige quién gana y el resultado del 1.º y 2.º set; si termina 2-1 también el long tie-break a 10. El long vale 1 juego para quien lo gana. Ganador acertado +{vincitore}. Resultado en sets exacto (2-0 o 2-1) +{set}. Juegos totales: se suma el error de las dos parejas y sumas {scala} puntos (error→puntos); más allá de {oltre}, nada. Long tie-break: si fallas por {sogliaLong} puntos o menos en total +{long}.",
     "torneo": "Torneo: ganador {vincitore} puntos, finalista {finalista}, ponderados según cuántos los eligieron (de la mitad a dos veces y media).",
     "blocco": "Los pronósticos cierran al inicio del partido o del torneo. Los porcentajes de votos se ven solo después del cierre."
   },
@@ -283,7 +290,8 @@
     "esatto": "Exacto",
     "game": "Juegos",
     "errore": "error {n}",
-    "esatti": "exactos"
+    "esatti": "exactos",
+    "long": "Long"
   },
   "riga": {
     "fine": "Fin.",

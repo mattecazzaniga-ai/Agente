@@ -36,7 +36,7 @@ export async function GET(req: Request) {
   const { data } = await supabase
     .from("pronostici_partita")
     .select(
-      `set_vincitore, set_perdente, game_previsti_a, game_previsti_b, vincitore_id, vincitore:coppie!pronostici_partita_vincitore_id_fkey(${SELECT_COPPIA}), partita:partite(turno, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(nome)))`,
+      `set_vincitore, set_perdente, game_a, game_b, game_previsti_a, game_previsti_b, vincitore_id, vincitore:coppie!pronostici_partita_vincitore_id_fkey(${SELECT_COPPIA}), partita:partite(turno, coppia_a:coppie!partite_coppia_a_id_fkey(${SELECT_COPPIA}), coppia_b:coppie!partite_coppia_b_id_fkey(${SELECT_COPPIA}), tabellone:tabelloni(genere, torneo:tornei(nome)))`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -44,15 +44,19 @@ export async function GET(req: Request) {
   const d = data as unknown as {
     set_vincitore: number | null;
     set_perdente: number | null;
+    game_a: number[] | null;
+    game_b: number[] | null;
     game_previsti_a: number | null;
     game_previsti_b: number | null;
     vincitore_id: string;
     vincitore: Coppia;
     partita: { turno: string; coppia_a: Coppia; coppia_b: Coppia; tabellone: { genere: string; torneo: { nome: string } } };
   };
-  // risultato dei set e game previsti, es. "2-1 · Game 11-10"
+  // risultato set per set dal lato del vincitore scelto (es. "2-1 · 6-4 4-6 10-8 · Game 11-10")
+  const daA = d.vincitore_id === d.partita.coppia_a.id;
   const extra = [
-    d.set_vincitore != null ? `${t("partita.set")} ${d.set_vincitore}-${d.set_perdente}` : "",
+    d.set_vincitore != null ? `${d.set_vincitore}-${d.set_perdente}` : "",
+    d.game_a && d.game_b ? d.game_a.map((x, i) => (daA ? `${x}-${d.game_b![i]}` : `${d.game_b![i]}-${x}`)).join(" ") : "",
     d.game_previsti_a != null ? `${t("partita.game")} ${d.game_previsti_a}-${d.game_previsti_b}` : "",
   ].filter(Boolean).join(" · ");
   return cartolina({

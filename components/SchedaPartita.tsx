@@ -44,7 +44,7 @@ export default async function SchedaPartita(props: {
   const haVoti = Object.keys(props.voti).length > 0;
   const regole = await regolePunti();
   const reali = conclusa && !p.ritiro && p.game_a && p.game_b ? gameTotali(p.game_a, p.game_b, p.set_per_vincere) : null;
-  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, massimo: massimoPartita(regole) });
+  const inPalio = t("partita.inPalio", { vincitore: regole.vincitore, set: regole.set_esatti, game: regole.game_errore_0, long: regole.long_vicino, massimo: massimoPartita(regole) });
 
   const stato = aperta ? (
     <span className={`chip ${imminente ? "bg-lime text-notte" : "bg-lime/10 text-lime"}`}>
@@ -107,6 +107,16 @@ export default async function SchedaPartita(props: {
   };
 
   const vincitoreMio = mio ? (mio.vincitore_id === a?.id ? a : b) : null;
+  // colonne del dettaglio punti; il long compare se la partita è andata al long o lo avevi previsto
+  const conLong = Boolean(mio && ((p.game_a?.length ?? 0) === 3 || (mio.game_a?.length ?? 0) === 3));
+  const colonne: [string, number, string][] = mio
+    ? [
+        [t("punti.vincitore"), mio.punti_vincitore ?? 0, ""],
+        [t("punti.set"), mio.punti_set ?? 0, ""],
+        [t("punti.game"), mio.punti_game ?? 0, mio.errore_game != null && mio.errore_game > 0 ? t("punti.errore", { n: mio.errore_game }) : mio.errore_game === 0 ? t("punti.esatti") : ""],
+        ...(conLong ? [[t("punti.long"), mio.punti_long ?? 0, ""] as [string, number, string]] : []),
+      ]
+    : [];
 
   return (
     <article className={`pannello overflow-hidden transition ${imminente ? "border-lime/40" : ""}`}>
@@ -153,9 +163,14 @@ export default async function SchedaPartita(props: {
                     <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("torneo.ilTuo")}</p>
                     <p className="truncate font-semibold">
                       {vincitoreMio.g1.cognome}/{vincitoreMio.g2.cognome}
-                      {mio.set_vincitore != null && <span className="cifre ml-2">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
+                      {mio.set_vincitore != null && <span className="cifre ml-2 text-lime">{`${mio.set_vincitore}-${mio.set_perdente}`}</span>}
+                      {mio.game_a && mio.game_b && (
+                        <span className="cifre ml-2">{mio.game_a.map((x, i) => (mio.vincitore_id === a?.id ? `${x}-${mio.game_b![i]}` : `${mio.game_b![i]}-${x}`)).join(" ")}</span>
+                      )}
+                    </p>
+                    <p className="truncate text-sm">
                       {mio.game_previsti_a != null && (
-                        <span className="ml-2 text-tenue">
+                        <span className="text-tenue">
                           {t("partita.game")} <span className="cifre text-testo">{`${mio.game_previsti_a}-${mio.game_previsti_b}`}</span>
                         </span>
                       )}
@@ -164,12 +179,8 @@ export default async function SchedaPartita(props: {
                   {mio.punti != null && <span className={`cifre shrink-0 text-3xl leading-none ${mio.punti > 0 ? "text-lime" : "text-tenue"}`}>+{mio.punti}</span>}
                 </div>
                 {mio.punti != null && (
-                  <dl className="grid grid-cols-3 border-t border-linea text-center">
-                    {[
-                      [t("punti.vincitore"), mio.punti_vincitore ?? 0, ""],
-                      [t("punti.set"), mio.punti_set ?? 0, ""],
-                      [t("punti.game"), mio.punti_game ?? 0, mio.errore_game != null && mio.errore_game > 0 ? t("punti.errore", { n: mio.errore_game }) : mio.errore_game === 0 ? t("punti.esatti") : ""],
-                    ].map(([nome, punti, nota], i) => (
+                  <dl className={`grid border-t border-linea text-center ${colonne.length === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
+                    {colonne.map(([nome, punti, nota], i) => (
                       <div key={i} className={`px-2 py-2 ${i > 0 ? "border-l border-linea" : ""}`}>
                         <dt className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{nome}</dt>
                         <dd className={`cifre text-lg ${Number(punti) > 0 ? "text-lime" : "text-tenue"}`}>+{punti}</dd>

@@ -150,7 +150,7 @@
     "lovince": "won by {nome}",
     "superTieBreak": "The third set (super tie-break) goes to {nome}.",
     "completa": "Complete the score",
-    "inPalio": "Up to {massimo} points: winner {vincitore} · sets {set} · exact games {game}",
+    "inPalio": "Up to {massimo} points: winner {vincitore} · sets {set} · exact games {game} · close long {long}",
     "risultatoSet": "Set score for {nome}",
     "gameTotali": "Total games for each pair",
     "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
@@ -166,11 +166,18 @@
     "tuaScelta": "Your pick",
     "testaDiSerie": "Seed {n}",
     "meno": "One game less",
-    "piu": "One game more"
+    "piu": "One game more",
+    "passoPunteggio": "Score set by set",
+    "perdeIl": "{nome} lose the",
+    "loVince": "won by {nome}",
+    "long": "Long tie-break to 10",
+    "puntiDi": "{nome} points",
+    "notaLong": "The long winner reaches 10 with a 2-point lead; beyond that they win by 2. It counts as 1 game in total games.",
+    "gameCalcolati": "Total games:"
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match, up to {massimo} points. Pick the winner, the set score (2-0 or 2-1) and the total games of each pair: the super tie-break counts as 1 game for whoever wins it. Right winner +{vincitore}. Exact set score +{set}. Games: the errors on both pairs are added up (e.g. predicted 6-10, actual 7-10 = error 1) and you get {scala} points (error→points); beyond {oltre}, nothing.",
+    "partita": "Match, up to {massimo} points. Pick the winner and the score of the 1st and 2nd set; if it ends 2-1, also the long tie-break to 10. The long counts as 1 game for its winner. Right winner +{vincitore}. Exact set score (2-0 or 2-1) +{set}. Total games: the errors on both pairs are added up and you get {scala} points (error→points); beyond {oltre}, nothing. Long tie-break: if you're off by {sogliaLong} points or less in total +{long}.",
     "torneo": "Tournament: winner {vincitore} points, finalist {finalista}, weighted by how many picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
@@ -283,7 +290,8 @@
     "esatto": "Exact",
     "game": "Games",
     "errore": "off by {n}",
-    "esatti": "exact"
+    "esatti": "exact",
+    "long": "Long"
   },
   "riga": {
     "fine": "FT",

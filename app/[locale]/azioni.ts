@@ -26,7 +26,7 @@ function chiaveErrore(messaggio: string): string {
   if (m.includes("profili_nickname_unico") || m.includes("duplicate")) return "duplicato";
   if (m.includes("check")) return "nonValido";
   if (m.includes("codice lega non valido")) return "codiceLega";
-  if (m.includes("non possibili")) return "gameImpossibili";
+  if (m.includes("non possibili") || m.includes("non valido") || m.includes("non corrisponde") || m.includes("ogni set")) return "risultato";
   if (m.includes("risultato dei set")) return "risultato";
   return "generico";
 }
@@ -188,15 +188,13 @@ export async function salvaPronosticoPartita(_: Esito | null, form: FormData): P
   const partita_id = uuidOpz(form.get("partita_id"));
   const vincitore_id = uuidOpz(form.get("vincitore_id"));
   if (!partita_id || !vincitore_id) return { ok: false, errore: "nonValido" };
-  // Regolamento: vincitore + risultato dei set ("2-0", "2-1", "1-0") + game totali previsti di A e di B.
-  // La coerenza tra set e game la controlla anche il database.
-  const setTesto = testo(form.get("set"));
-  const numero = (x: FormDataEntryValue | null) => (/^\d{1,2}$/.test(testo(x)) ? Number(testo(x)) : null);
-  const game_previsti_a = numero(form.get("game_previsti_a"));
-  const game_previsti_b = numero(form.get("game_previsti_b"));
-  if (!/^[12]-[01]$/.test(setTesto) || game_previsti_a === null || game_previsti_b === null) return { ok: false, errore: "risultato" };
-  const [set_vincitore, set_perdente] = setTesto.split("-").map(Number);
-  const campi = { vincitore_id, set_vincitore, set_perdente, game_previsti_a, game_previsti_b, game_a: null, game_b: null, totale_game: null };
+  // Pronostico set per set: 1° e 2° set e, se 2-1, il long tie-break, dal lato delle coppie A e B
+  // (es. "6,4,10" e "4,6,8"). Risultato dei set e game totali li ricava il database.
+  const numeri = (x: FormDataEntryValue | null) => (/^\d{1,2}(,\d{1,2}){0,2}$/.test(testo(x)) ? testo(x).split(",").map(Number) : null);
+  const game_a = numeri(form.get("game_a"));
+  const game_b = numeri(form.get("game_b"));
+  if (!game_a || !game_b || game_a.length !== game_b.length) return { ok: false, errore: "risultato" };
+  const campi = { vincitore_id, game_a, game_b, set_vincitore: null, set_perdente: null, game_previsti_a: null, game_previsti_b: null, totale_game: null };
   const { data: esistente } = await supabase.from("pronostici_partita").select("id").eq("partita_id", partita_id).maybeSingle();
   const { data, error } = esistente
     ? await supabase.from("pronostici_partita").update(campi).eq("id", esistente.id).select("id").single()

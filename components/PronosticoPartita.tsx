@@ -2,7 +2,7 @@
 import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { salvaPronosticoPartita, type Esito } from "@/app/[locale]/azioni";
-import { gameIniziali, gamePossibili, limitiGame } from "@/lib/punti";
+import { gameTotali, puntiVincitoreLong, SET_VINTI } from "@/lib/punti";
 import Condividi from "./Condividi";
 import { IconaMeno, IconaPiu, IconaSpunta } from "./Icone";
 
@@ -14,11 +14,32 @@ export interface LatoCoppia {
   testa_di_serie: number | null;
 }
 
-type Mio = { id: string; vincitore_id: string; set_vincitore: number | null; set_perdente: number | null; game_previsti_a: number | null; game_previsti_b: number | null } | null;
+type Mio = { id: string; vincitore_id: string; set_perdente: number | null; game_a: number[] | null; game_b: number[] | null; game_previsti_a: number | null } | null;
+/** Un set dal lato di chi vince la partita: [game suoi, game avversari]. */
+type Set2 = [number, number];
+
+const INIZIO_SET: Set2 = [6, 4];
+const LONG_PERDENTE = 8;
+
+/** Dal pronostico salvato (lato A/B) allo stato della scheda, dal lato del vincitore scelto. */
+function daSalvato(mio: Mio, idA: string) {
+  if (!mio?.game_a || !mio.game_b) return null;
+  const daA = mio.vincitore_id === idA;
+  const set = mio.game_a.map((x, i): Set2 => (daA ? [x, mio.game_b![i]] : [mio.game_b![i], x]));
+  const persoIl = set.slice(0, 2).findIndex(([v, p]) => v < p);
+  // lo stato tiene ogni set dal lato di chi lo vince: un set perso si gira
+  const normale = (s: Set2): Set2 => (s[0] < s[1] ? [s[1], s[0]] : s);
+  return {
+    persi: (persoIl >= 0 ? 1 : 0) as 0 | 1,
+    persoIl: (persoIl === 0 ? 0 : 1) as 0 | 1,
+    set: [normale(set[0]), normale(set[1] ?? INIZIO_SET)] as [Set2, Set2],
+    long: set[2] ? set[2][1] : LONG_PERDENTE,
+  };
+}
 
 /**
- * Pronostico su una partita (regolamento): chi vince, risultato dei set (2-0 / 2-1) e game totali di
- * ciascuna coppia, con il super tie-break che vale 1 game. I game devono essere possibili con quel risultato.
+ * Pronostico su una partita: chi vince, il punteggio del 1° e del 2° set e, se finisce 2-1, il long
+ * tie-break a 10. Il risultato dei set e i game totali (super tie-break = 1 game) si ricavano da qui.
  */
 export default function PronosticoPartita(props: {
   partitaId: string;
@@ -35,48 +56,35 @@ export default function PronosticoPartita(props: {
   const t = useTranslations();
   const lingua = useLocale();
   const [esito, azione, inCorso] = useActionState<Esito | null, FormData>(salvaPronosticoPartita, null);
-  const completoSalvato = props.mio?.game_previsti_a != null;
+  const salvatoPrima = daSalvato(props.mio, props.a.id);
   const [vincitore, setVincitore] = useState(props.mio?.vincitore_id ?? "");
-  const [persi, setPersi] = useState<0 | 1>(props.mio?.set_perdente === 1 ? 1 : 0);
-  const [game, setGame] = useState<Record<string, number>>(() => {
-    if (completoSalvato) return { [props.a.id]: props.mio!.game_previsti_a!, [props.b.id]: props.mio!.game_previsti_b! };
-    if (!props.mio) return {};
-    // pronostico vecchio senza game: si parte da un punteggio tipico
-    const [v, p] = gameIniziali(props.setPerVincere === 2 ? 2 : 1, props.mio.set_perdente === 1 ? 1 : 0);
-    const altra = props.mio.vincitore_id === props.a.id ? props.b.id : props.a.id;
-    return { [props.mio.vincitore_id]: v, [altra]: p };
-  });
+  const [persi, setPersi] = useState<0 | 1>(salvatoPrima?.persi ?? (props.mio?.set_perdente === 1 ? 1 : 0));
+  const [persoIl, setPersoIl] = useState<0 | 1>(salvatoPrima?.persoIl ?? 1);
+  const [set, setSet] = useState<[Set2, Set2]>(salvatoPrima?.set ?? [INIZIO_SET, [6, 3]]);
+  const [long, setLong] = useState(salvatoPrima?.long ?? LONG_PERDENTE);
   const [modificato, setModificato] = useState(false);
   const salvato = esito?.ok && !modificato;
   const idSalvato = esito?.ok ? esito.dati?.id : props.mio?.id;
+  const completoSalvato = Boolean(salvatoPrima);
 
   const scelta = vincitore === props.a.id ? props.a : vincitore === props.b.id ? props.b : null;
   const altra = scelta === props.a ? props.b : props.a;
-  const vinti = props.setPerVincere === 2 ? 2 : 1;
-  const formula = `${vinti}-${props.setPerVincere === 2 ? persi : 0}`;
-  const limiti = limitiGame(vinti, props.setPerVincere === 2 ? persi : 0);
-  const gv = scelta ? game[scelta.id] : undefined;
-  const gp = scelta ? game[altra.id] : undefined;
-  const possibile = gv !== undefined && gp !== undefined && gamePossibili(vinti, props.setPerVincere === 2 ? persi : 0, gv, gp);
+  const treSet = props.setPerVincere === 2 && persi === 1;
+  const numeroSet = props.setPerVincere === 2 ? 2 : 1;
+  /** Il set i lo perde il vincitore della partita? (solo nel 2-1) */
+  const perso = (i: number) => treSet && persoIl === i;
 
-  /** Quando cambiano vincitore o risultato dei set, si riparte da un punteggio tipico e possibile. */
-  const riparti = (idVincitore: string, nuoviPersi: 0 | 1) => {
-    const [v, p] = gameIniziali(vinti, props.setPerVincere === 2 ? nuoviPersi : 0);
-    const idAltra = idVincitore === props.a.id ? props.b.id : props.a.id;
-    setGame({ [idVincitore]: v, [idAltra]: p });
-  };
-  const scegli = (id: string) => {
-    if (id !== vincitore) riparti(id, persi);
-    setVincitore(id);
-    setModificato(true);
-  };
-  const scegliSet = (p: 0 | 1) => {
-    setPersi(p);
-    if (vincitore) riparti(vincitore, p);
-    setModificato(true);
-  };
-  const cambiaGame = (id: string, delta: number, [min, max]: readonly [number, number]) => {
-    setGame((g) => ({ ...g, [id]: Math.min(max, Math.max(min, (g[id] ?? min) + delta)) }));
+  // Set dal lato del vincitore della partita, girati se quel set lo perde
+  const setDalVincitore = set.slice(0, numeroSet).map((s, i): Set2 => (perso(i) ? [s[1], s[0]] : s));
+  const tutti: Set2[] = treSet ? [...setDalVincitore, [puntiVincitoreLong(long), long]] : setDalVincitore;
+  const daA = vincitore === props.a.id;
+  const gameA = tutti.map(([v, p]) => (daA ? v : p));
+  const gameB = tutti.map(([v, p]) => (daA ? p : v));
+  const [totA, totB] = gameTotali(gameA, gameB, props.setPerVincere);
+  const formula = numeroSet === 1 ? "1-0" : `2-${treSet ? 1 : 0}`;
+
+  const cambia = (f: () => void) => {
+    f();
     setModificato(true);
   };
 
@@ -114,46 +122,23 @@ export default function PronosticoPartita(props: {
         </a>
       );
     return (
-      <button type="button" onClick={() => scegli(c.id)} aria-pressed={scelto} className={classe}>
+      <button type="button" onClick={() => cambia(() => setVincitore(c.id))} aria-pressed={scelto} className={classe}>
         {contenuto}
       </button>
     );
   };
 
-  const contatore = (c: LatoCoppia, lim: readonly [number, number]) => {
-    const valore = game[c.id] ?? lim[0];
-    const tasto = "grid h-11 w-11 place-items-center rounded-lg border border-linea bg-notte text-testo transition hover:border-tenue active:scale-90 disabled:opacity-30";
-    return (
-      <div className="flex items-center justify-between gap-3 py-2">
-        <span className="min-w-0 truncate font-semibold">
-          <span aria-hidden className="mr-1.5">
-            {c.bandiere}
-          </span>
-          {c.righe.join(" / ")}
-        </span>
-        <span className="flex shrink-0 items-center gap-1.5">
-          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, -1, lim)} disabled={valore <= lim[0]} aria-label={t("partita.meno")}>
-            <IconaMeno />
-          </button>
-          <span className="cifre w-10 text-center text-[28px] leading-none">{valore}</span>
-          <button type="button" className={tasto} onClick={() => cambiaGame(c.id, 1, lim)} disabled={valore >= lim[1]} aria-label={t("partita.piu")}>
-            <IconaPiu />
-          </button>
-        </span>
-      </div>
-    );
-  };
-
-  const segmento = (attiva: boolean) =>
-    `cifre h-11 rounded-md text-xl transition ${attiva ? "bg-lime text-notte" : "text-tenue hover:text-testo"}`;
+  const segmento = (attiva: boolean) => `cifre h-11 rounded-md text-xl transition ${attiva ? "bg-lime text-notte" : "text-tenue hover:text-testo"}`;
+  const chip = (attiva: boolean) =>
+    `cifre h-11 rounded-md border text-[17px] transition active:scale-95 ${attiva ? "border-lime bg-lime text-notte" : "border-linea bg-notte text-testo hover:border-tenue"}`;
+  const tasto = "grid h-11 w-11 place-items-center rounded-lg border border-linea bg-notte text-testo transition hover:border-tenue active:scale-90 disabled:opacity-30";
 
   return (
     <form action={(f) => (setModificato(false), azione(f))} className="space-y-4">
       <input type="hidden" name="partita_id" value={props.partitaId} />
       <input type="hidden" name="vincitore_id" value={vincitore} />
-      <input type="hidden" name="set" value={scelta ? formula : ""} />
-      <input type="hidden" name="game_previsti_a" value={possibile ? game[props.a.id] : ""} />
-      <input type="hidden" name="game_previsti_b" value={possibile ? game[props.b.id] : ""} />
+      <input type="hidden" name="game_a" value={scelta ? gameA.join(",") : ""} />
+      <input type="hidden" name="game_b" value={scelta ? gameB.join(",") : ""} />
 
       <div>
         {props.collegato && passo(1, t("partita.passoVincitore"), Boolean(scelta))}
@@ -177,36 +162,84 @@ export default function PronosticoPartita(props: {
               {passo(2, t("partita.passoSet"), true)}
               <div className="grid grid-cols-2 gap-1 rounded-lg border border-linea bg-notte p-1">
                 {([0, 1] as const).map((p) => (
-                  <button key={p} type="button" onClick={() => scegliSet(p)} className={segmento(persi === p)} aria-pressed={persi === p}>
+                  <button key={p} type="button" onClick={() => cambia(() => setPersi(p))} className={segmento(persi === p)} aria-pressed={persi === p}>
                     2-{p}
                   </button>
                 ))}
               </div>
+              {treSet && (
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="text-tenue">{t("partita.perdeIl", { nome: scelta.righe.join("/") })}</span>
+                  {([0, 1] as const).map((i) => (
+                    <button key={i} type="button" onClick={() => cambia(() => setPersoIl(i))} aria-pressed={persoIl === i} className={`${chip(persoIl === i)} h-9 px-3 text-[15px]`}>
+                      {t("partita.setN", { n: i + 1 })}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
-          <div>
-            {passo(props.setPerVincere === 2 ? 3 : 2, t("partita.passoGame"), possibile)}
-            <div className="divide-y divide-linea rounded-lg border border-linea bg-pannello-2 px-3">
-              {[props.a, props.b].map((c) => (
-                <div key={c.id}>{contatore(c, c.id === scelta.id ? limiti.vincitore : limiti.perdente)}</div>
-              ))}
-            </div>
-            {props.setPerVincere === 2 && <p className="mt-1.5 text-xs text-tenue">{t("partita.notaSuperTieBreak")}</p>}
-            {!possibile && <p className="mt-1.5 text-sm font-semibold text-corallo">{t("errori.gameImpossibili")}</p>}
+
+          <div className="space-y-3">
+            {passo(props.setPerVincere === 2 ? 3 : 2, t("partita.passoPunteggio"), true)}
+            {Array.from({ length: numeroSet }, (_, i) => {
+              const vince = perso(i) ? altra : scelta;
+              return (
+                <div key={i}>
+                  <p className="mb-1.5 text-sm">
+                    <span className="font-display font-bold uppercase tracking-wider">{numeroSet > 1 ? t("partita.setN", { n: i + 1 }) : t("partita.ilSet")}</span>
+                    <span className="text-tenue"> · {t("partita.loVince", { nome: vince.righe.join("/") })}</span>
+                  </p>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {SET_VINTI.map(([v, p]) => {
+                      const attivo = set[i][0] === v && set[i][1] === p;
+                      return (
+                        <button key={`${v}-${p}`} type="button" onClick={() => cambia(() => setSet((s) => (i === 0 ? [[v, p], s[1]] : [s[0], [v, p]])))} aria-pressed={attivo} className={chip(attivo)}>
+                          {perso(i) ? `${p}-${v}` : `${v}-${p}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {treSet && (
+              <div className="rounded-lg border border-linea bg-pannello-2 p-3">
+                <p className="text-sm">
+                  <span className="font-display font-bold uppercase tracking-wider">{t("partita.long")}</span>
+                  <span className="text-tenue"> · {t("partita.loVince", { nome: scelta.righe.join("/") })}</span>
+                </p>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <span className="min-w-0 text-sm text-tenue">{t("partita.puntiDi", { nome: altra.righe.join("/") })}</span>
+                  <span className="flex shrink-0 items-center gap-1.5">
+                    <button type="button" className={tasto} onClick={() => cambia(() => setLong((x) => Math.max(0, x - 1)))} disabled={long <= 0} aria-label={t("partita.meno")}>
+                      <IconaMeno />
+                    </button>
+                    <span className="cifre w-[76px] text-center text-[28px] leading-none">
+                      <span className="text-lime">{puntiVincitoreLong(long)}</span>-{long}
+                    </span>
+                    <button type="button" className={tasto} onClick={() => cambia(() => setLong((x) => Math.min(30, x + 1)))} disabled={long >= 30} aria-label={t("partita.piu")}>
+                      <IconaPiu />
+                    </button>
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-tenue">{t("partita.notaLong")}</p>
+              </div>
+            )}
           </div>
 
-          {/* Riepilogo: quello che verrà salvato, in una riga */}
-          <div className="flex items-center justify-between gap-3 rounded-lg bg-notte px-3 py-2.5 ring-1 ring-linea">
-            <p className="min-w-0 text-sm">
-              <span className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</span>
-              <span className="block truncate font-semibold">
-                {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-lime">{formula}</span>
-                {possibile && (
-                  <>
-                    {" "}
-                    · {t("partita.game")} <span className="cifre">{`${game[props.a.id]}-${game[props.b.id]}`}</span>
-                  </>
-                )}
+          {/* Riepilogo: quello che verrà salvato */}
+          <div className="rounded-lg bg-notte px-3 py-2.5 ring-1 ring-linea">
+            <p className="font-display text-[11px] font-bold uppercase tracking-wider text-tenue">{t("partita.riepilogo")}</p>
+            <p className="font-semibold">
+              {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-lime">{formula}</span>
+              <span className="cifre ml-2">{tutti.map(([v, p]) => `${v}-${p}`).join(" ")}</span>
+            </p>
+            <p className="text-sm text-tenue">
+              {t("partita.gameCalcolati")}{" "}
+              <span className="cifre text-testo">
+                {props.a.righe[0]} {totA} - {totB} {props.b.righe[0]}
               </span>
             </p>
           </div>
@@ -222,7 +255,7 @@ export default function PronosticoPartita(props: {
               {idSalvato && (
                 <Condividi
                   immagine={`/api/immagine/pronostico?tipo=partita&id=${idSalvato}&lingua=${lingua}`}
-                  testo={t("condividi.testoPronostico", { scelta: `${scelta.nome} ${formula} · game ${game[props.a.id]}-${game[props.b.id]} (${props.descrizione})` })}
+                  testo={t("condividi.testoPronostico", { scelta: `${scelta.nome} ${tutti.map(([v, p]) => `${v}-${p}`).join(" ")} (${props.descrizione})` })}
                   url={`${props.sito}/${lingua}`}
                   etichetta={t("condividi.pronostico")}
                 />
@@ -235,7 +268,7 @@ export default function PronosticoPartita(props: {
               <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
             </p>
           ) : (
-            <button className="bottone" disabled={inCorso || !possibile}>
+            <button className="bottone" disabled={inCorso}>
               {inCorso ? t("partita.salvataggio") : completoSalvato ? t("partita.aggiorna") : t("partita.conferma")}
             </button>
           )}

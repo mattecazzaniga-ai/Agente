@@ -96,6 +96,7 @@ export interface PronosticoPartita {
   punti_vincitore: number | null; // dettaglio dei punti, dopo la partita
   punti_set: number | null;
   punti_game: number | null;
+  punti_long: number | null;
   errore_game: number | null;
   punti: number | null;
 }

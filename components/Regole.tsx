@@ -16,6 +16,8 @@ export default async function Regole() {
         set: r.set_esatti,
         scala: scala.map((p, e) => `${e}→${p}`).join(", "),
         oltre: scala.length - 1,
+        long: r.long_vicino,
+        sogliaLong: r.long_errore_max,
       }),
       colore: "bg-pannello-2 text-lime",
     },

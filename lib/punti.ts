@@ -12,12 +12,14 @@ export const REGOLE_PREDEFINITE: Regole = {
   game_errore_2: 3,
   game_errore_3: 2,
   game_errore_4: 1,
+  long_vicino: 2,
+  long_errore_max: 2,
   torneo_vincitore: 10,
   torneo_finalista: 5,
 };
 
-/** Punti massimi di una partita: vincitore + set + game esatti. */
-export const massimoPartita = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + (r.game_errore_0 ?? 0);
+/** Punti massimi di una partita: vincitore + set + game esatti + long tie-break. */
+export const massimoPartita = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + (r.game_errore_0 ?? 0) + (r.long_vicino ?? 0);
 
 /** Punti dei game per errore complessivo (0, 1, 2…), fino al primo errore che non dà più punti. */
 export function scalaGame(r: Regole): number[] {
@@ -27,6 +29,7 @@ export function scalaGame(r: Regole): number[] {
 }
 
 /** Punteggi possibili di un set vinto, dal lato di chi lo vince. */
+export const SET_VINTI: [number, number][] = [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [7, 5], [7, 6]];
 const SET: [number, number][] = [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [7, 5], [7, 6]];
 
 /** Game totali possibili (vincitore, perdente) per un risultato in set: 2-0, 2-1 o set unico 1-0. */
@@ -73,4 +76,12 @@ export function gameTotali(a: number[], b: number[], setPerVincere: number): [nu
     }
   });
   return [ga, gb];
+}
+
+/** Long tie-break: chi vince arriva a 10 con 2 di scarto; oltre il 10 vince con esattamente 2 punti di scarto. */
+export const puntiVincitoreLong = (perdente: number) => Math.max(10, perdente + 2);
+
+export function tiebreakValido(a: number, b: number): boolean {
+  const [hi, lo] = [Math.max(a, b), Math.min(a, b)];
+  return hi >= 10 && hi - lo >= 2 && (hi === 10 || hi - lo === 2);
 }
