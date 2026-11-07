@@ -56,7 +56,7 @@ export default function PronosticoTorneo(props: {
                 </p>
               )}
             </div>
-            {props.mio.punti != null && <span className={`cifre text-3xl leading-none ${props.mio.punti > 0 ? "text-mare" : "text-tenue"}`}>+{props.mio.punti}</span>}
+            {props.mio.punti != null && <span className={`cifre text-3xl leading-none ${props.mio.punti > 0 ? "text-viola" : "text-tenue"}`}>+{props.mio.punti}</span>}
           </div>
         )}
         {haVoti && (
@@ -96,12 +96,12 @@ export default function PronosticoTorneo(props: {
             const scelto = vincitore === c.id;
             const contenuto = (
               <>
-                <span className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${scelto ? "border-sabbia bg-sabbia text-mare" : "border-linea"}`}>{scelto && <IconaSpunta className="h-3 w-3" />}</span>
+                <span className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${scelto ? "border-sabbia bg-sabbia text-viola" : "border-linea"}`}>{scelto && <IconaSpunta className="h-3 w-3" />}</span>
                 <span className="min-w-0 flex-1 truncate text-sm font-semibold">{c.nome}</span>
                 {c.testa_di_serie && <span className={` text-xs font-semibold ${scelto ? "text-white/70" : "text-seme"}`}>{c.testa_di_serie}</span>}
               </>
             );
-            const classe = `flex min-h-12 w-full items-center gap-3 px-3 text-left transition ${scelto ? "bg-mare text-white" : "bg-sabbia-2 hover:bg-linea/60"}`;
+            const classe = `flex min-h-12 w-full items-center gap-3 px-3 text-left transition ${scelto ? "bg-viola text-white" : "bg-sabbia-2 hover:bg-linea/60"}`;
             return props.collegato ? (
               <label key={c.id} className={`${classe} cursor-pointer`}>
                 <input
@@ -152,8 +152,8 @@ export default function PronosticoTorneo(props: {
           </label>
           {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
-            <div className="festa space-y-3 rounded-lg border border-mare/40 bg-mare/[.06] p-3">
-              <p className="flex items-center gap-2 font-display text-lg font-bold text-mare"><IconaSpunta className="h-5 w-5" /> {t("torneo.salvato")}</p>
+            <div className="festa space-y-3 rounded-lg border border-viola/40 bg-viola/[.06] p-3">
+              <p className="flex items-center gap-2 font-display text-lg font-bold text-viola"><IconaSpunta className="h-5 w-5" /> {t("torneo.salvato")}</p>
               {idSalvato && (
                 <Condividi
                   immagine={`/api/immagine/pronostico?tipo=torneo&id=${idSalvato}&lingua=${lingua}`}
@@ -165,7 +165,7 @@ export default function PronosticoTorneo(props: {
             </div>
           ) : props.mio && !modificato && !esito ? (
             <p className="flex items-center gap-2 rounded-lg border border-linea px-3 py-2.5 text-sm">
-              <IconaSpunta className="h-4 w-4 text-mare" /> <span className="font-semibold">{t("torneo.ilTuo")}</span> <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
+              <IconaSpunta className="h-4 w-4 text-viola" /> <span className="font-semibold">{t("torneo.ilTuo")}</span> <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
             </p>
           ) : (
             <button className="bottone" disabled={inCorso || !vincitore}>

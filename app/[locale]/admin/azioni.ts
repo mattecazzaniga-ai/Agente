@@ -444,3 +444,68 @@ export async function eliminaNotizia(form: FormData) {
   aggiorna();
   redirect("/it/admin/notizie");
 }
+
+// ---------------------------------------------------------------------------
+// Premi della classifica e sponsor
+// ---------------------------------------------------------------------------
+
+/** Premi 1°, 2° e 3°: un campo vuoto toglie il premio. */
+export async function salvaPremi(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
+  const supabase = await admin();
+  for (const posizione of [1, 2, 3]) {
+    const descrizione = testo(form.get(`premio_${posizione}`)).slice(0, 120);
+    const { error } = descrizione
+      ? await supabase.from("premi").upsert({ posizione, descrizione, aggiornato_at: new Date().toISOString() })
+      : await supabase.from("premi").delete().eq("posizione", posizione);
+    if (error) return ko(`Premio ${posizione}: ${error.message}`);
+  }
+  aggiorna();
+  return ok("Premi salvati.");
+}
+
+const TIPI_LOGO: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/svg+xml": "svg" };
+
+/** Nuovo sponsor: nome, link facoltativo e logo (file caricato oppure indirizzo di un'immagine). */
+export async function salvaSponsor(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
+  const supabase = await admin();
+  const nome = testo(form.get("nome"));
+  const link = testo(form.get("link"));
+  const ordine = Number(testo(form.get("ordine"))) || 0;
+  if (!nome) return ko("Scrivi il nome dello sponsor.");
+  if (link && !/^https?:\/\//.test(link)) return ko("Il link deve iniziare con https://");
+  let logo_url = testo(form.get("logo_url"));
+  const file = form.get("logo");
+  if (file instanceof File && file.size > 0) {
+    const ext = TIPI_LOGO[file.type];
+    if (!ext) return ko("Il logo deve essere PNG, JPG, WebP o SVG.");
+    if (file.size > 2 * 1024 * 1024) return ko("Il logo è troppo grande (massimo 2 MB).");
+    const percorso = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("sponsor").upload(percorso, file, { contentType: file.type, upsert: false });
+    if (error) return ko(`Caricamento del logo: ${error.message}`);
+    logo_url = supabase.storage.from("sponsor").getPublicUrl(percorso).data.publicUrl;
+  }
+  if (!/^https?:\/\//.test(logo_url)) return ko("Carica il logo o incolla l'indirizzo dell'immagine.");
+  const { error } = await supabase.from("sponsor").insert({ nome, link: link || null, logo_url, ordine });
+  if (error) return ko(`Errore: ${error.message}`);
+  aggiorna();
+  return ok(`Sponsor "${nome}" aggiunto.`);
+}
+
+export async function attivaSponsor(form: FormData) {
+  const supabase = await admin();
+  const id = uuid(form.get("id"));
+  if (id) await supabase.from("sponsor").update({ attivo: form.get("attivo") === "1" }).eq("id", id);
+  aggiorna();
+}
+
+export async function eliminaSponsor(form: FormData) {
+  const supabase = await admin();
+  const id = uuid(form.get("id"));
+  if (!id) return;
+  const { data } = await supabase.from("sponsor").select("logo_url").eq("id", id).single();
+  await supabase.from("sponsor").delete().eq("id", id);
+  // se il logo era nella cartella degli sponsor, si cancella anche il file
+  const percorso = data?.logo_url?.split("/storage/v1/object/public/sponsor/")[1];
+  if (percorso) await supabase.storage.from("sponsor").remove([percorso]);
+  aggiorna();
+}

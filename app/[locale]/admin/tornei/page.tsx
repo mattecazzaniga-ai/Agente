@@ -30,7 +30,7 @@ export default async function AdminTornei() {
                   {t.data_inizio} · {t.circuito} · {t.stato.replace("_", " ")}
                 </span>
               </span>
-              <span className="text-mare">›</span>
+              <span className="text-viola">›</span>
             </Link>
           </li>
         ))}

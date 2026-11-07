@@ -44,8 +44,8 @@ export default function FormLeghe({ sito, codiceIniziale = "", soloEntra = false
           {creando ? t("partita.salvataggio") : t("leghe.creaBtn")}
         </button>
         {creata?.ok && creata.dati?.codice && (
-          <div className="festa space-y-2 rounded-lg border border-mare/40 bg-mare/[.06] p-3 text-center">
-            <p className="cifre text-3xl tracking-[.3em] text-mare">{creata.dati.codice}</p>
+          <div className="festa space-y-2 rounded-lg border border-viola/40 bg-viola/[.06] p-3 text-center">
+            <p className="cifre text-3xl tracking-[.3em] text-viola">{creata.dati.codice}</p>
             <Invita nome={creata.dati.nome ?? ""} codice={creata.dati.codice} sito={sito} />
           </div>
         )}

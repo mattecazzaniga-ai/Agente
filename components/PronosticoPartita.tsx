@@ -82,7 +82,7 @@ export default function PronosticoPartita(props: {
 
   const passo = (n: number, titolo: string, fatto: boolean) => (
     <p className="mb-2 flex items-center gap-2 text-[15px] font-semibold text-inchiostro">
-      <span className={`cifre grid h-6 w-6 place-items-center rounded-full text-sm ${fatto ? "bg-mare text-white" : "bg-sabbia-2 text-tenue"}`}>{n}</span>
+      <span className={`cifre grid h-6 w-6 place-items-center rounded-full text-sm ${fatto ? "bg-viola text-white" : "bg-sabbia-2 text-tenue"}`}>{n}</span>
       {titolo}
     </p>
   );
@@ -101,14 +101,14 @@ export default function PronosticoPartita(props: {
         ))}
         {c.testa_di_serie ? <span className={`mt-1.5 block text-xs font-semibold ${scelto ? "text-white/80" : "text-seme"}`}>{t("partita.testaDiSerie", { n: c.testa_di_serie })}</span> : null}
         {scelto && (
-          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-white text-mare">
+          <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-white text-viola">
             <IconaSpunta className="h-3.5 w-3.5" />
           </span>
         )}
       </>
     );
     const classe = `relative flex min-h-[104px] flex-col items-center justify-center rounded-xl border px-2 py-3 text-center transition active:scale-[.98] ${
-      scelto ? "border-mare bg-mare text-white" : "border-linea bg-sabbia-2 text-inchiostro hover:border-tenue/50"
+      scelto ? "border-viola bg-viola text-white" : "border-linea bg-sabbia-2 text-inchiostro hover:border-tenue/50"
     }`;
     if (!props.collegato)
       return (
@@ -127,7 +127,7 @@ export default function PronosticoPartita(props: {
   const casella = (lato: "a" | "b", i: number, nome: string, colonna: string) => {
     const valore = (lato === "a" ? ga : gb)[i];
     const max = i === 2 ? MAX_LONG : MAX_SET;
-    const freccia = "grid h-9 w-full place-items-center rounded-md text-tenue transition hover:bg-sabbia-2 hover:text-mare active:scale-90 disabled:opacity-25";
+    const freccia = "grid h-9 w-full place-items-center rounded-md text-tenue transition hover:bg-sabbia-2 hover:text-viola active:scale-90 disabled:opacity-25";
     return (
       <div className="flex flex-col items-center rounded-lg border border-linea bg-carta">
         <button type="button" className={freccia} onClick={() => cambia(lato, i, 1)} disabled={valore >= max} aria-label={t("partita.piuDi", { nome, set: colonna })}>
@@ -179,7 +179,7 @@ export default function PronosticoPartita(props: {
               <div className="grid items-center gap-x-2 gap-y-2" style={{ gridTemplateColumns: `minmax(0,1fr) repeat(${visibili}, 60px)` }}>
                 <span />
                 {titoli.slice(0, visibili).map((x, i) => (
-                  <span key={i} className={`text-center text-xs font-semibold ${i === 2 ? "text-mare" : "text-tenue"}`}>
+                  <span key={i} className={`text-center text-xs font-semibold ${i === 2 ? "text-viola" : "text-tenue"}`}>
                     {x}
                   </span>
                 ))}
@@ -213,7 +213,7 @@ export default function PronosticoPartita(props: {
             <div className="rounded-xl bg-carta px-3 py-2.5 ring-1 ring-linea">
               <p className="text-xs font-semibold text-tenue">{t("partita.riepilogo")}</p>
               <p className="font-semibold">
-                {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-mare">{numeroSet === 1 ? "1-0" : `2-${pari ? 1 : 0}`}</span>
+                {t("partita.vince", { nome: scelta.righe.join("/") })} <span className="cifre text-viola">{numeroSet === 1 ? "1-0" : `2-${pari ? 1 : 0}`}</span>
                 <span className="cifre ml-2">{punteggio}</span>
               </p>
               <p className="text-sm text-tenue">
@@ -228,8 +228,8 @@ export default function PronosticoPartita(props: {
 
           {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
-            <div className="festa space-y-3 rounded-xl border border-mare/30 bg-mare/[.06] p-3">
-              <p className="flex items-center gap-2 text-lg font-semibold text-mare">
+            <div className="festa space-y-3 rounded-xl border border-viola/30 bg-viola/[.06] p-3">
+              <p className="flex items-center gap-2 text-lg font-semibold text-viola">
                 <IconaSpunta className="h-5 w-5" /> {t("partita.salvato")}
               </p>
               <p className="text-xs text-tenue">{t("partita.puoiCambiare")}</p>
@@ -244,7 +244,7 @@ export default function PronosticoPartita(props: {
             </div>
           ) : completoSalvato && !modificato && !esito ? (
             <p className="flex items-center gap-2 rounded-lg border border-linea px-3 py-2.5 text-sm">
-              <IconaSpunta className="h-4 w-4 text-mare" />
+              <IconaSpunta className="h-4 w-4 text-viola" />
               <span className="font-semibold">{t("torneo.ilTuo")}</span>
               <span className="text-tenue">· {t("partita.puoiCambiare")}</span>
             </p>

@@ -36,7 +36,7 @@ export default function FormProfilo({ nickname, paese, dopo, testoBottone }: { n
       {esito && !esito.ok && (
         <p className="text-sm font-medium text-corallo">{esito.errore === "duplicato" ? t("benvenuto.nicknameUsato") : esito.errore === "nonValido" ? t("benvenuto.nicknameNonValido") : t("errori.generico")}</p>
       )}
-      {esito?.ok && <p className="text-sm font-medium text-mare">{t("profilo.salvato")}</p>}
+      {esito?.ok && <p className="text-sm font-medium text-viola">{t("profilo.salvato")}</p>}
       <button className="bottone" disabled={inCorso}>{inCorso ? "…" : testoBottone}</button>
     </form>
   );

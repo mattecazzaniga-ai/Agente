@@ -166,3 +166,24 @@ export const regolePunti = cache(async (): Promise<Regole> => {
   const { data } = await supabase.from("regole_punti").select("chiave, punti");
   return { ...REGOLE_PREDEFINITE, ...Object.fromEntries((data ?? []).map((r) => [r.chiave as string, r.punti as number])) };
 });
+
+/** Premi della classifica del mese: posizione → descrizione. */
+export async function premi(): Promise<Record<number, string>> {
+  const supabase = await supabaseServer();
+  const { data } = await supabase.from("premi").select("posizione, descrizione");
+  return Object.fromEntries((data ?? []).map((p) => [p.posizione as number, p.descrizione as string]));
+}
+
+export interface Sponsor {
+  id: string;
+  nome: string;
+  link: string | null;
+  logo_url: string;
+}
+
+/** Sponsor visibili, nell'ordine scelto dall'admin. */
+export async function sponsorAttivi(): Promise<Sponsor[]> {
+  const supabase = await supabaseServer();
+  const { data } = await supabase.from("sponsor").select("id, nome, link, logo_url").eq("attivo", true).order("ordine").order("creato_at");
+  return (data as Sponsor[]) ?? [];
+}

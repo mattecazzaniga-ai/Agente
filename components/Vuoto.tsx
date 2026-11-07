@@ -7,7 +7,7 @@ export default function Vuoto({ testo, azione, link, icona }: { testo: string; a
       {icona && <span className="text-tenue">{icona}</span>}
       <p className="max-w-[30ch] text-[15px] leading-snug text-tenue">{testo}</p>
       {azione && link && (
-        <Link href={link} className=" text-sm font-semibold text-mare">
+        <Link href={link} className=" text-sm font-semibold text-viola">
           {azione} →
         </Link>
       )}

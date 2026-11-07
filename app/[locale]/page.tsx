@@ -11,6 +11,7 @@ import RigaPartita from "@/components/RigaPartita";
 import SchedaNotizia from "@/components/SchedaNotizia";
 import RigaTorneo from "@/components/RigaTorneo";
 import Vuoto from "@/components/Vuoto";
+import { Marchio } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ function Sezione({ titolo, link, testoLink, children, conteggio }: { titolo: str
           {conteggio ? <span className="cifre rounded bg-sabbia-2 px-1.5 text-[13px] text-inchiostro">{conteggio}</span> : null}
         </h2>
         {link && (
-          <Link href={link} className=" text-[13px] font-semibold text-mare hover:text-mare-scuro">
+          <Link href={link} className=" text-[13px] font-semibold text-viola hover:text-viola-scuro">
             {testoLink} →
           </Link>
         )}
@@ -69,14 +70,45 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <div>
-      {/* Apertura: foto vera di una partita, messaggio breve, e subito la situazione dell'utente */}
-      <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
-        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className={`foto-zoom w-full object-cover object-[55%_60%] ${user ? "h-56 sm:h-72" : "h-[440px] sm:h-[480px]"}`} />
+      {!user && (
+        /* Apertura per chi arriva: il logo in grande sul crema, la promessa, e la spiaggia accanto */
+        <section className="relative -mx-4 -mt-5 overflow-hidden border-b border-linea bg-carta sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border md:grid md:grid-cols-[1.05fr_1fr]">
+          <div className="relative px-5 pb-6 pt-5 sm:px-8 sm:pb-8">
+            <span className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-sole/20 blur-2xl" aria-hidden />
+            <Marchio className="relative h-auto w-full max-w-[340px]" />
+            <h1 className="relative mt-3 max-w-[18ch] font-display text-[38px] font-bold leading-[1.02] text-inchiostro sm:text-5xl">{t("home.titolo")}</h1>
+            <p className="relative mt-3 max-w-md text-base leading-snug text-tenue">{t("home.intro")}</p>
+            {inEvidenza && (
+              <Link href={link(inEvidenza)} className="relative mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-sole-chiaro px-3.5 text-sm font-semibold text-inchiostro ring-1 ring-sole/50 transition hover:-translate-y-px">
+                <span className="punto-live" />
+                <span className="cifre text-lg leading-none text-viola">{aperte.length}</span>
+                <span>{t("home.aperteOra", { torneo: inEvidenza.tabellone.torneo.nome })}</span>
+              </Link>
+            )}
+            <div className="relative mt-5 flex flex-wrap gap-3">
+              <Link href="/accedi" className="bottone w-auto px-6">
+                {t("home.inizia")}
+              </Link>
+              <a href="#come-funziona" className="bottone-secondario w-auto px-5">
+                {t("home.comeFunziona")}
+              </a>
+            </div>
+          </div>
+          <div className="group relative h-56 overflow-hidden md:h-auto">
+            <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" fill sizes="(min-width: 768px) 540px, 100vw" className="foto-zoom object-cover object-[55%_60%]" />
+          </div>
+        </section>
+      )}
+
+      {/* Apertura per chi gioca: la spiaggia, il saluto e subito la situazione */}
+      {user && (
+      <section className="group relative -mx-4 -mt-5 overflow-hidden border-b border-linea sm:mx-0 sm:mt-0 sm:rounded-2xl sm:border">
+        <Image src={FOTO.partita.src} alt={FOTO.partita.alt} priority placeholder="blur" sizes="(min-width: 1152px) 1120px, 100vw" className="foto-zoom h-56 w-full object-cover object-[55%_60%] sm:h-72" />
         <div className="velo absolute inset-0" aria-hidden />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6 sm:pb-6">
           {user ? (
             <>
-              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-pallina" aria-hidden />{t("home.ciao", { nome: profilo?.nickname ?? "" })}</p>
+              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-sole" aria-hidden />{t("home.ciao", { nome: profilo?.nickname ?? "" })}</p>
               <div className="mt-2 flex flex-wrap items-end gap-x-8 gap-y-3">
                 <div>
                   <p className="cifre text-5xl leading-none">{io ? `${io.posizione}°` : "—"}</p>
@@ -87,35 +119,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                   <p className="mt-1 text-sm text-white/80">{t("classifica.punti")}</p>
                 </div>
                 <div>
-                  <p className={`cifre text-5xl leading-none ${daFare ? "text-pallina" : ""}`}>{daFare}</p>
+                  <p className={`cifre text-5xl leading-none ${daFare ? "text-sole" : ""}`}>{daFare}</p>
                   <p className="mt-1 text-sm text-white/80">{t("home.daFare")}</p>
                 </div>
               </div>
             </>
-          ) : (
-            <>
-              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-pallina" aria-hidden />{t("home.occhiello")}</p>
-              <h1 className="mt-1.5 max-w-[16ch] font-display text-[42px] font-bold leading-[1] sm:text-6xl">{t("home.titolo")}</h1>
-              <p className="mt-3 max-w-md text-base leading-snug text-white/90">{t("home.intro")}</p>
-              {inEvidenza && (
-                <Link href={link(inEvidenza)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-white px-3 text-sm text-inchiostro shadow-sm transition hover:-translate-y-px">
-                  <span className="punto-live" />
-                  <span className="cifre text-lg leading-none text-mare">{aperte.length}</span>
-                  <span>{t("home.aperteOra", { torneo: inEvidenza.tabellone.torneo.nome })}</span>
-                </Link>
-              )}
-              <div className="mt-4 flex gap-3">
-                <Link href="/accedi" className="bottone w-auto px-6">
-                  {t("home.inizia")}
-                </Link>
-                <a href="#come-funziona" className="bottone-secondario w-auto border-white/50 bg-white/10 px-5 text-white backdrop-blur hover:border-white">
-                  {t("home.comeFunziona")}
-                </a>
-              </div>
-            </>
-          )}
+          ) : null}
         </div>
       </section>
+      )}
 
       <div className="md:grid md:grid-cols-[minmax(0,1fr)_340px] md:gap-8">
         <div>
@@ -165,7 +177,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <ol className="pannello grid divide-y divide-linea sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                 {passi.map((testo, i) => (
                   <li key={i} className="flex gap-3 p-4 sm:block">
-                    <span className="cifre text-3xl leading-none text-mare">0{i + 1}</span>
+                    <span className="cifre text-3xl leading-none text-viola">0{i + 1}</span>
                     <p className="text-[15px] leading-snug text-inchiostro/90 sm:mt-2">{testo}</p>
                   </li>
                 ))}
@@ -181,8 +193,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             ) : (
               <ol className="pannello divide-y divide-linea overflow-hidden">
                 {primi.map((r) => (
-                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-2.5 ${r.utente_id === user?.id ? "bg-mare/10" : ""}`}>
-                    <span className={`cifre w-6 text-lg ${r.posizione === 1 ? "text-mare" : "text-tenue"}`}>{r.posizione}</span>
+                  <li key={r.utente_id} className={`flex items-center gap-3 px-4 py-2.5 ${r.utente_id === user?.id ? "bg-viola/10" : ""}`}>
+                    <span className={`cifre w-6 text-lg ${r.posizione === 1 ? "text-viola" : "text-tenue"}`}>{r.posizione}</span>
                     <span className="min-w-0 flex-1 truncate font-semibold">
                       <span aria-hidden className="mr-1.5">
                         {bandiera(r.paese)}

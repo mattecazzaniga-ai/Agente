@@ -1,3 +1,6 @@
+import Image from "next/image";
+import logoBeachPeck from "@/assets/brand/logo.png";
+
 // Icone disegnate a tratto (niente emoji nell'interfaccia principale): stesse dimensioni, colore dal testo.
 type P = { className?: string };
 const base = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, viewBox: "0 0 24 24", "aria-hidden": true };
@@ -91,6 +94,12 @@ export const IconaGiu = ({ className = "h-5 w-5" }: P) => (
     <path d="M6 9l6 6 6-6" />
   </svg>
 );
+export const IconaIngranaggio = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+  </svg>
+);
 export const IconaPiu = ({ className = "h-4 w-4" }: P) => (
   <svg {...base} className={className}>
     <path d="M12 5v14M5 12h14" />
@@ -110,12 +119,7 @@ export const Logo = ({ className = "h-8 w-8" }: P) => (
   </svg>
 );
 
-/** Logo completo: marchio + "BEACH PECK" in condensato. */
-export const Marchio = ({ className = "" }: P) => (
-  <span className={`inline-flex items-center gap-2 font-display text-[22px] font-extrabold leading-none tracking-tight ${className}`}>
-    <Logo className="h-7 w-7" />
-    <span>
-      Beach <span className="text-mare">Peck</span>
-    </span>
-  </span>
+/** Logo Beach Peck (immagine ufficiale), alto quanto serve: si adatta in larghezza. */
+export const Marchio = ({ className = "h-11", priority = true }: P & { priority?: boolean }) => (
+  <Image src={logoBeachPeck} alt="Beach Peck" priority={priority} sizes="160px" className={`w-auto ${className}`} />
 );

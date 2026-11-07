@@ -26,7 +26,7 @@ export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
             href={href}
             aria-current={attiva(href) ? "page" : undefined}
             className={`relative flex items-center px-3 text-[15px] font-semibold transition ${
-              attiva(href) ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-mare" : "text-tenue hover:text-inchiostro"
+              attiva(href) ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-viola" : "text-tenue hover:text-inchiostro"
             }`}
           >
             {t(chiave)}
@@ -43,9 +43,9 @@ export default function Navigazione({ tipo }: { tipo: "barra" | "header" }) {
             <Link
               href={href}
               aria-current={attiva(href) ? "page" : undefined}
-              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 text-xs font-semibold transition ${attiva(href) ? "text-mare" : "text-tenue"}`}
+              className={`relative flex flex-col items-center gap-1 pb-2 pt-2.5 text-xs font-semibold transition ${attiva(href) ? "text-viola" : "text-tenue"}`}
             >
-              {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-mare" />}
+              {attiva(href) && <span className="absolute inset-x-5 top-0 h-0.5 rounded-b bg-viola" />}
               <Icona className="h-[22px] w-[22px]" />
               {t(chiave)}
             </Link>

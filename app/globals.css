@@ -1,21 +1,22 @@
 @import "tailwindcss";
 
 /*
- * Beach Peck — sistema grafico chiaro, da spiaggia.
- * Sabbia per lo sfondo, bianco per le schede, blu mare per le azioni, giallo pallina come tocco,
- * corallo solo per ciò che è "in corso". Testi in inchiostro blu scuro. Bordi sottili, poche ombre.
+ * Beach Peck — i colori del logo.
+ * Crema per lo sfondo, bianco per le schede, indaco notte per i testi, viola per le azioni,
+ * giallo tramonto come accento (sole, pallina, premi). Corallo solo per ciò che è "in corso".
  * Numeri e titoli in Barlow Condensed, testi in Barlow.
  */
 @theme {
-  --color-sabbia: #fbf6ec;       /* sfondo */
+  --color-sabbia: #fcfaf5;       /* sfondo crema, come il fondo del logo */
   --color-carta: #ffffff;        /* schede */
-  --color-sabbia-2: #f3ebdb;     /* campi, riquadri interni */
-  --color-linea: #e5d9c3;        /* bordi, separatori */
-  --color-inchiostro: #13293a;   /* testo */
-  --color-tenue: #56656f;        /* testo secondario */
-  --color-mare: #0a6a93;         /* azioni, link, selezione */
-  --color-mare-scuro: #08577a;
-  --color-pallina: #e8f24a;      /* tocco di colore: la pallina */
+  --color-sabbia-2: #f3eee4;     /* campi, riquadri interni */
+  --color-linea: #e6dfd1;        /* bordi, separatori */
+  --color-inchiostro: #16103a;   /* testo: l'indaco del logo */
+  --color-tenue: #5a5574;        /* testo secondario */
+  --color-viola: #5b2bc0;        /* azioni, link, selezione: il viola di "PECK" */
+  --color-viola-scuro: #4a20a3;
+  --color-sole: #f5b731;         /* accento: il sole e la pallina */
+  --color-sole-chiaro: #fdf0cc;
   --color-corallo: #c4422a;      /* in corso, errori */
   --color-seme: #8a5a12;         /* teste di serie */
 
@@ -25,14 +26,15 @@
 
 html { -webkit-text-size-adjust: 100%; color-scheme: light; }
 body { background: var(--color-sabbia); color: var(--color-inchiostro); -webkit-tap-highlight-color: transparent; }
-::selection { background: var(--color-pallina); color: var(--color-inchiostro); }
+::selection { background: var(--color-sole); color: var(--color-inchiostro); }
 
 @keyframes entra { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
 @keyframes conferma { 0% { transform: scale(.96); opacity: 0 } 60% { transform: scale(1.02); opacity: 1 } 100% { transform: none } }
+@keyframes scorri { from { transform: translateX(0) } to { transform: translateX(-50%) } }
 @keyframes pulsa { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
 
 @layer base {
-  :focus-visible { outline: 2px solid var(--color-mare); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--color-viola); outline-offset: 2px; }
   /* tutto ciò che si clicca lo dice al puntatore (Tailwind 4 non lo fa più sui bottoni) */
   button:not(:disabled), [role="button"], summary, select, label:has(input[type="radio"]) { cursor: pointer; }
   /* titoli senza parole isolate a capo */
@@ -45,11 +47,11 @@ body { background: var(--color-sabbia); color: var(--color-inchiostro); -webkit-
   .scheda { @apply rounded-xl border border-linea bg-carta p-4; }
 
   /* Azioni: frasi normali, niente maiuscolo urlato */
-  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-mare px-5 text-base font-semibold text-white transition duration-150 hover:-translate-y-px hover:bg-mare-scuro active:translate-y-0 active:scale-[.98] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-sabbia-2 disabled:text-tenue; }
+  .bottone, .bottone-sole { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-viola px-5 text-base font-semibold text-white transition duration-150 hover:-translate-y-px hover:bg-viola-scuro active:translate-y-0 active:scale-[.98] disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-sabbia-2 disabled:text-tenue; }
   .bottone-secondario { @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-linea bg-carta px-5 text-base font-semibold text-inchiostro transition duration-150 hover:-translate-y-px hover:border-tenue/50 active:translate-y-0 active:scale-[.98] disabled:opacity-40; }
 
   /* Moduli */
-  .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-carta px-3.5 text-base text-inchiostro outline-none transition placeholder:text-tenue/70 focus:border-mare focus:ring-2 focus:ring-mare/15; }
+  .campo { @apply min-h-12 w-full rounded-lg border border-linea bg-carta px-3.5 text-base text-inchiostro outline-none transition placeholder:text-tenue/70 focus:border-viola focus:ring-2 focus:ring-viola/15; }
   .etichetta { @apply mb-1.5 block text-sm font-semibold text-tenue; }
 
   /* Etichette */
@@ -62,7 +64,7 @@ body { background: var(--color-sabbia); color: var(--color-inchiostro); -webkit-
   /* Foto dentro una cornice: zoom leggero al passaggio */
   .foto-zoom { @apply transition-transform duration-700 ease-out group-hover:scale-[1.025]; }
   /* Velo sulle foto: solo quanto basta per leggere il testo bianco */
-  .velo { background: linear-gradient(to top, rgba(10, 30, 44, .85) 0%, rgba(10, 30, 44, .55) 50%, rgba(10, 30, 44, .12) 100%); }
+  .velo { background: linear-gradient(to top, rgba(22, 16, 58, .85) 0%, rgba(22, 16, 58, .55) 50%, rgba(22, 16, 58, .12) 100%); }
 
   /* Tipografia */
   .titolo-pagina { @apply font-display text-[36px] font-bold leading-[1.05]; }
@@ -74,6 +76,13 @@ body { background: var(--color-sabbia); color: var(--color-inchiostro); -webkit-
   .festa { animation: conferma .32s ease-out both; }
 }
 
+/* Fascia sponsor: scorre in continuo, si ferma sotto il dito o il mouse */
+.fascia-sponsor { mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.fascia-sponsor-nastro { animation: scorri 38s linear infinite; }
+.fascia-sponsor:hover .fascia-sponsor-nastro, .fascia-sponsor:focus-within .fascia-sponsor-nastro { animation-play-state: paused; }
+
 @media (prefers-reduced-motion: reduce) {
+  .fascia-sponsor-nastro { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+  .fascia-sponsor-nastro > [aria-hidden="true"] { display: none; }
   *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
 }

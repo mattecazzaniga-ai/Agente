@@ -6,20 +6,22 @@ export type Regole = Record<string, number>;
 
 export const REGOLE_PREDEFINITE: Regole = {
   vincitore: 3,
-  set_esatti: 4,
-  game_errore_0: 5,
-  game_errore_1: 4,
-  game_errore_2: 3,
-  game_errore_3: 2,
-  game_errore_4: 1,
-  esatto: 2,
-  quasi_esatto: 1,
+  set_esatti: 4, // risultato in set giusto quando finisce 2-1 (o set unico)
+  set_esatti_2_0: 5, // quando finisce 2-0: un punto in più
+  set_errore_0: 3,
+  set_errore_1: 2,
+  set_errore_2: 1,
+  long_errore_0: 3,
+  long_errore_1: 2,
+  long_errore_2: 1,
   torneo_vincitore: 10,
   torneo_finalista: 5,
 };
 
-/** Punti massimi di una partita: vincitore + set + game esatti + punteggio esatto. */
-export const massimoPartita = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + (r.game_errore_0 ?? 0) + (r.esatto ?? 0);
+/** Punti massimi: con un 2-0 (vincitore + risultato 2-0 + due set esatti) e con un 2-1 (+ il long esatto). */
+export const massimo20 = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti_2_0 ?? 0) + 2 * (r.set_errore_0 ?? 0);
+export const massimo21 = (r: Regole) => (r.vincitore ?? 0) + (r.set_esatti ?? 0) + 2 * (r.set_errore_0 ?? 0) + (r.long_errore_0 ?? 0);
+export const massimoPartita = (r: Regole) => Math.max(massimo20(r), massimo21(r));
 
 /** Punti dei game per errore complessivo (0, 1, 2…), fino al primo errore che non dà più punti. */
 export function scalaGame(r: Regole): number[] {

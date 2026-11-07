@@ -6,7 +6,7 @@ export default async function Avviso({ grande = false }: { grande?: boolean }) {
   const t = await getTranslations();
   return grande ? (
     <p className="flex items-center gap-2 text-sm text-tenue">
-      <IconaInfo className="h-4 w-4 shrink-0 text-mare" />
+      <IconaInfo className="h-4 w-4 shrink-0 text-viola" />
       {t("avviso")}
     </p>
   ) : (

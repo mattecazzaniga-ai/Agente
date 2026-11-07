@@ -27,12 +27,12 @@ export default async function AdminTorneo({ params }: { params: Promise<{ id: st
 
   return (
     <div className="space-y-4">
-      <Link href="/admin/tornei" className="text-sm font-semibold text-mare">
+      <Link href="/admin/tornei" className="text-sm font-semibold text-viola">
         ← Tornei
       </Link>
       <h1 className="text-xl font-extrabold">{torneo.nome}</h1>
       <p className="text-sm">
-        <Link href={`/tornei/${torneo.id}`} className="text-mare underline">
+        <Link href={`/tornei/${torneo.id}`} className="text-viola underline">
           Vedi la pagina pubblica
         </Link>
       </p>

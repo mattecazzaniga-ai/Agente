@@ -151,7 +151,7 @@
     "lovince": "won by {nome}",
     "superTieBreak": "The third set (super tie-break) goes to {nome}.",
     "completa": "Complete the score",
-    "inPalio": "Up to {massimo} points: {vincitore} for the winner, {set} for the sets, up to {game} for games, and +{esatto} if the score is exact (off by just one: +{quasi}).",
+    "inPalio": "Up to {massimo} points: {vincitore} for the winner, {set20} for a correct 2-0 ({set21} for 2-1), and up to {set} for each set and for the long if you nail it.",
     "risultatoSet": "Set score for {nome}",
     "gameTotali": "Total games for each pair",
     "notaSuperTieBreak": "The super tie-break counts as 1 game for whoever wins it.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "How points work",
-    "partita": "Match, up to {massimo} points. Pick the winner and write each set's score; if the sets are split, also the long tie-break, which counts as 1 game for its winner. Right winner +{vincitore}. Exact set score (2-0 or 2-1) +{set}. Total games: errors on both pairs are added up and you get {scala} points (error→points); beyond {oltre}, nothing. Exact score (every set and the long) +{esatto}; off by just one (a game or a point) +{quasi}.",
+    "partita": "Match, up to {massimo} points. Pick the winner and write each set's score; if the sets are split, also the long tie-break. Right winner +{vincitore}. Right set result: 2-0 +{set20}, 2-1 +{set21}. Each set: exact games +{s0}, one game off +{s1}, two games +{s2}. Long tie-break: exact points +{l0}, one point off +{l1}, two points +{l2}.",
     "torneo": "Tournament: winner {vincitore} points, finalist {finalista}, weighted by how many picked them (from half to two and a half times).",
     "blocco": "Predictions close when the match or tournament starts. Vote percentages are shown only after closing."
   },
@@ -216,7 +216,8 @@
     "distacco": "You need {punti} points to pass {nome}.",
     "completa": "Full leaderboard",
     "dalPrimo": "−{punti} pts",
-    "vaiAPronosticare": "Make your first prediction"
+    "vaiAPronosticare": "Make your first prediction",
+    "inPalio": "Prizes this month"
   },
   "leghe": {
     "titolo": "Leagues",
@@ -259,7 +260,9 @@
     "passwordNuova": "New password",
     "passwordSalva": "Save password",
     "passwordSalvata": "Password saved ✓",
-    "sottotitoloPagina": "Nickname, country and password"
+    "sottotitoloPagina": "Nickname, country and password",
+    "pannelloAdmin": "Admin panel",
+    "pannelloAdminSotto": "Tournaments, results, players, news, prizes and sponsors"
   },
   "condividi": {
     "condividi": "Share",
@@ -269,7 +272,12 @@
     "testoClassifica": "I'm #{posizione} in the {mese} leaderboard on Beach Peck! Challenge me:",
     "copiato": "Link copied",
     "copia": "Copy link",
-    "scarica": "Download image"
+    "scarica": "Download image",
+    "etichettaPronostico": "My prediction",
+    "etichettaTorneo": "Tournament winner",
+    "invito": "Who do you say?",
+    "sfidami": "Can you beat me?",
+    "puntiSu": "{punti} points · out of {totale} players"
   },
   "privacy": {
     "titolo": "Privacy",
@@ -304,12 +312,17 @@
     "esatti": "exact",
     "long": "Long",
     "esattoBonus": "Exact",
-    "quasi": "close"
+    "quasi": "close",
+    "risultato": "Result",
+    "puntiSet": "Sets"
   },
   "riga": {
     "fine": "FT",
     "rit": "Ret.",
     "fatto": "Done",
     "pronostica": "Predict"
+  },
+  "sponsor": {
+    "titolo": "Our sponsors"
   }
 }

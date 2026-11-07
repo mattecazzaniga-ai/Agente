@@ -46,7 +46,7 @@ export default async function Tornei({ params, searchParams }: { params: Promise
     return `/tornei${qs ? `?${qs}` : ""}`;
   };
   const pill = (attiva: boolean) =>
-    `inline-flex min-h-11 shrink-0 items-center rounded-md px-3 text-[15px] font-semibold transition ${attiva ? "bg-mare text-white" : "text-tenue hover:text-inchiostro"}`;
+    `inline-flex min-h-11 shrink-0 items-center rounded-md px-3 text-[15px] font-semibold transition ${attiva ? "bg-viola text-white" : "text-tenue hover:text-inchiostro"}`;
 
   return (
     <div>

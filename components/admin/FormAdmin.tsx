@@ -23,7 +23,7 @@ export default function FormAdmin({
       <button className={secondario ? "bottone-secondario" : "bottone"} disabled={inCorso}>
         {inCorso ? "…" : bottone}
       </button>
-      {esito && <p className={`whitespace-pre-line text-sm font-medium ${esito.ok ? "text-mare" : "text-corallo"}`}>{esito.messaggio}</p>}
+      {esito && <p className={`whitespace-pre-line text-sm font-medium ${esito.ok ? "text-viola" : "text-corallo"}`}>{esito.messaggio}</p>}
     </form>
   );
 }

@@ -23,7 +23,7 @@ export default async function Cruscotto() {
           {ora?.attivi ?? 0} <span className="text-lg font-semibold text-tenue">/ {OBIETTIVO}</span>
         </p>
         <div className="h-3 overflow-hidden rounded-full bg-sabbia-2">
-          <div className="h-full bg-mare" style={{ width: `${perc}%` }} />
+          <div className="h-full bg-viola" style={{ width: `${perc}%` }} />
         </div>
         <p className="text-xs text-tenue">
           Iscritti in totale: {utenti ?? 0} · Tornei non conclusi: {tornei ?? 0}

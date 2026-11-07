@@ -30,7 +30,7 @@ export default async function Invito({ params }: { params: Promise<{ locale: str
   return (
     <div className="mx-auto max-w-md space-y-5 pt-2">
       <div className="border-b border-linea pb-4">
-        <p className=" text-sm font-semibold tracking-[.14em] text-mare">{t("leghe.titolo")}</p>
+        <p className=" text-sm font-semibold tracking-[.14em] text-viola">{t("leghe.titolo")}</p>
         <h1 className="titolo-pagina mt-1">{t("leghe.invitoTitolo", { nome: lega.nome })}</h1>
         <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-tenue">
           <IconaAmici className="h-4 w-4" /> {lega.membri}

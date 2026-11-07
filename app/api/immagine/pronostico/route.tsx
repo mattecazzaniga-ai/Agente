@@ -4,9 +4,11 @@ import { SELECT_COPPIA } from "@/lib/dati";
 import { nomeCoppia } from "@/lib/formato";
 import type { Coppia } from "@/lib/tipi";
 import { cartolina, linguaValida } from "@/lib/cartolina";
+import { indirizzoSito } from "@/lib/sito";
 
 // Immagine di un pronostico. La RLS fa vedere solo i propri: chi non è il proprietario riceve 404.
 export async function GET(req: Request) {
+  const sitoBreve = (await indirizzoSito()).replace(/^https?:\/\//, "");
   const u = new URL(req.url);
   const id = u.searchParams.get("id") ?? "";
   const tipo = u.searchParams.get("tipo");
@@ -24,11 +26,12 @@ export async function GET(req: Request) {
     if (!data) return new Response("Not found", { status: 404 });
     const d = data as unknown as { vincitore: Coppia; finalista: Coppia | null; tabellone: { genere: string; torneo: { nome: string } } };
     return cartolina({
-      etichetta: t("torneo.vincitore"),
+      etichetta: t("condividi.etichettaTorneo"),
       titolo: nomeCoppia(d.vincitore),
       riga: `${d.tabellone.torneo.nome} · ${t(`genere.${d.tabellone.genere}`)}`,
       dettaglio: d.finalista ? `${t("torneo.finalista").split(" (")[0]}: ${nomeCoppia(d.finalista)}` : undefined,
-      piede: t("condividi.testoPronostico", { scelta: nomeCoppia(d.vincitore) }),
+      piede: t("condividi.invito"),
+      sito: sitoBreve,
       avviso: t("avviso"),
     });
   }
@@ -52,19 +55,18 @@ export async function GET(req: Request) {
     vincitore: Coppia;
     partita: { turno: string; coppia_a: Coppia; coppia_b: Coppia; tabellone: { genere: string; torneo: { nome: string } } };
   };
-  // risultato set per set dal lato del vincitore scelto (es. "2-1 · 6-4 4-6 10-8 · Game 11-10")
+  // punteggio set per set dal lato del vincitore scelto, es. "6-4 3-6 10-8"
   const daA = d.vincitore_id === d.partita.coppia_a.id;
-  const extra = [
-    d.set_vincitore != null ? `${d.set_vincitore}-${d.set_perdente}` : "",
-    d.game_a && d.game_b ? d.game_a.map((x, i) => (daA ? `${x}-${d.game_b![i]}` : `${d.game_b![i]}-${x}`)).join(" ") : "",
-    d.game_previsti_a != null ? `${t("partita.game")} ${d.game_previsti_a}-${d.game_previsti_b}` : "",
-  ].filter(Boolean).join(" · ");
+  const punteggio = d.game_a && d.game_b ? d.game_a.map((x, i) => (daA ? `${x}-${d.game_b![i]}` : `${d.game_b![i]}-${x}`)).join("  ") : d.set_vincitore != null ? `${d.set_vincitore}-${d.set_perdente}` : undefined;
+  const avversari = daA ? d.partita.coppia_b : d.partita.coppia_a;
   return cartolina({
-    etichetta: t("partita.chiVince"),
+    etichetta: t("condividi.etichettaPronostico"),
     titolo: nomeCoppia(d.vincitore),
-    riga: `${nomeCoppia(d.partita.coppia_a)} vs ${nomeCoppia(d.partita.coppia_b)}`,
-    dettaglio: [`${d.partita.tabellone.torneo.nome} · ${t(`turno.${d.partita.turno}`)}`, extra].filter(Boolean).join(" · "),
-    piede: t("condividi.testoPronostico", { scelta: nomeCoppia(d.vincitore) }),
+    grande: punteggio,
+    riga: `vs ${nomeCoppia(avversari)}`,
+    dettaglio: `${d.partita.tabellone.torneo.nome} · ${t(`turno.${d.partita.turno}`)}`,
+    piede: t("condividi.invito"),
+    sito: sitoBreve,
     avviso: t("avviso"),
   });
 }

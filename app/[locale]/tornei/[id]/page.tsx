@@ -67,7 +67,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
         <div className="velo absolute inset-0" aria-hidden />
         <div className="absolute inset-x-0 bottom-0 px-4 pb-4 text-white sm:px-6">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="chip bg-pallina text-inchiostro">
+            <span className="chip bg-sole text-inchiostro">
               {torneo.circuito}
               {torneo.categoria ? ` ${torneo.categoria}` : ""}
             </span>
@@ -85,7 +85,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
           </p>
         </div>
         {user && mieiPunti > 0 && (
-          <div className="festa absolute right-4 top-9 rounded-lg bg-mare px-3 py-1.5 text-center text-white sm:right-6">
+          <div className="festa absolute right-4 top-9 rounded-lg bg-viola px-3 py-1.5 text-center text-white sm:right-6">
             <p className="cifre text-2xl leading-none">+{mieiPunti}</p>
             <p className="text-xs font-semibold">{t("torneo.tuoiPuntiBreve")}</p>
           </div>
@@ -127,11 +127,11 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
                       scroll={false}
                       aria-current={attivo ? "page" : undefined}
                       className={`relative flex shrink-0 items-center gap-1.5 px-3 pb-3 pt-2 text-[15px] font-semibold transition ${
-                        attivo ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-mare" : "text-tenue hover:text-inchiostro"
+                        attivo ? "text-inchiostro after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-viola" : "text-tenue hover:text-inchiostro"
                       }`}
                     >
                       {t(`turno.${tu}`)}
-                      {aperte > 0 && <span className="cifre rounded bg-mare px-1.5 text-[12px] text-white">{aperte}</span>}
+                      {aperte > 0 && <span className="cifre rounded bg-viola px-1.5 text-[12px] text-white">{aperte}</span>}
                     </Link>
                   );
                 })}

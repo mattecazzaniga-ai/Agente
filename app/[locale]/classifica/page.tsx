@@ -1,9 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { IconaCoppa } from "@/components/Icone";
 import TestataFoto from "@/components/TestataFoto";
 import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
-import { mieLeghe, sessione } from "@/lib/dati";
+import { mieLeghe, premi, sessione } from "@/lib/dati";
 import { indirizzoSito } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese, ultimiMesi } from "@/lib/formato";
 import type { RigaClassifica } from "@/lib/tipi";
@@ -27,7 +28,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
   const mesi = ultimiMesi(6);
   const mese = mesi.includes(sp.mese ?? "") ? sp.mese! : meseIso();
   const ambito: Ambito = sp.ambito === "paese" || sp.ambito === "lega" ? sp.ambito : "globale";
-  const [{ supabase, user, profilo }, sito] = await Promise.all([sessione(), indirizzoSito()]);
+  const [{ supabase, user, profilo }, sito, inPalio] = await Promise.all([sessione(), indirizzoSito(), premi()]);
   const leghe = user ? await mieLeghe() : [];
   const lega = ambito === "lega" ? (leghe.find((l) => l.id === sp.lega) ?? leghe[0]) : undefined;
 
@@ -68,6 +69,22 @@ export default async function Classifica({ params, searchParams }: { params: Pro
         </Link>
       </div>
 
+      {Object.keys(inPalio).length > 0 && (
+        <section className="mt-4 overflow-hidden rounded-2xl border border-sole/60 bg-sole-chiaro">
+          <h2 className="flex items-center gap-2 px-4 pt-3 font-display text-xl font-bold">
+            <IconaCoppa className="h-5 w-5 text-viola" /> {t("classifica.inPalio")}
+          </h2>
+          <ol className="grid gap-2 p-3 sm:grid-cols-3">
+            {[1, 2, 3].filter((n) => inPalio[n]).map((n) => (
+              <li key={n} className="flex items-center gap-3 rounded-xl bg-carta p-3 ring-1 ring-linea">
+                <span className={`cifre grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl ${MEDAGLIE[n]}`}>{n}°</span>
+                <span className="text-sm font-semibold leading-snug">{inPalio[n]}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
       <div className="mt-4 flex gap-2 [&>label]:min-w-0 [&>label]:flex-1">
         <SelettoreMese etichetta={t("classifica.mese")} mesi={mesi.map((m) => ({ valore: m, nome: nomeMese(m, locale) }))} attuale={mese} />
         {ambito === "lega" && leghe.length > 0 && (
@@ -78,7 +95,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       {ambito === "paese" && !profilo?.paese && (
         <p className="scheda mt-4 text-sm">
           {t("classifica.paeseMancante")}{" "}
-          <Link href={user ? "/profilo" : "/accedi"} className="font-semibold text-mare underline">
+          <Link href={user ? "/profilo" : "/accedi"} className="font-semibold text-viola underline">
             {t(user ? "nav.profilo" : "nav.accedi")}
           </Link>
         </p>
@@ -86,7 +103,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       {ambito === "lega" && !lega && (
         <p className="scheda mt-4 text-sm">
           {t("classifica.nessunaLega")}{" "}
-          <Link href={user ? "/leghe" : "/accedi"} className="font-semibold text-mare underline">
+          <Link href={user ? "/leghe" : "/accedi"} className="font-semibold text-viola underline">
             {t(user ? "leghe.titolo" : "nav.accedi")}
           </Link>
         </p>
@@ -104,7 +121,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
                 </p>
               </div>
               <div className="pb-1">
-                <p className="cifre text-3xl leading-none text-mare">{io.punti}</p>
+                <p className="cifre text-3xl leading-none text-viola">{io.punti}</p>
                 <p className=" text-[12px] font-semibold text-tenue">{t("classifica.punti")}</p>
               </div>
               <div className="pb-1">
@@ -132,7 +149,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
       {puoMostrare && lista.length === 0 && <div className="mt-4"><Vuoto testo={t("classifica.nessuno")} azione={t("classifica.vaiAPronosticare")} link="/tornei" /></div>}
       {puoMostrare && lista.length > 0 && (
         <>
-          <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} />
+          <Podio righe={lista.slice(0, 3)} io={user?.id} tu={t("classifica.tu")} distacco={(n) => t("classifica.dalPrimo", { punti: n })} premi={inPalio} />
           <h2 className="titolo-sezione">{t("classifica.completa")}</h2>
           <div className="pannello overflow-hidden">
             <div className="grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 border-b border-linea bg-sabbia-2 px-3 py-2 text-xs font-semibold text-tenue">
@@ -148,11 +165,11 @@ export default async function Classifica({ params, searchParams }: { params: Pro
               {lista.map((r) => {
                 const sonoIo = r.utente_id === user?.id;
                 return (
-                  <li key={r.utente_id} className={`entra grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 px-3 py-2.5 text-sm tabular-nums ${sonoIo ? "bg-mare/10 shadow-[inset_3px_0_0_var(--color-lime)]" : ""}`}>
+                  <li key={r.utente_id} className={`entra grid grid-cols-[1.75rem_1fr_2.75rem_2.25rem_2.25rem_2rem_2.5rem] items-center gap-1 px-3 py-2.5 text-sm tabular-nums ${sonoIo ? "bg-viola/10 shadow-[inset_3px_0_0_var(--color-lime)]" : ""}`}>
                     <span className="cifre text-base text-tenue">{r.posizione}</span>
                     <span className="min-w-0 truncate font-semibold">
                       <span aria-hidden>{bandiera(r.paese)}</span> {r.nickname}
-                      {sonoIo && <span className="chip ml-1 bg-mare text-white">{t("classifica.tu")}</span>}
+                      {sonoIo && <span className="chip ml-1 bg-viola text-white">{t("classifica.tu")}</span>}
                     </span>
                     <span className="cifre text-right text-lg">{r.punti}</span>
                     <span className="text-right text-tenue">{r.pronostici}</span>
@@ -175,24 +192,27 @@ export default async function Classifica({ params, searchParams }: { params: Pro
  * I primi tre come un tabellone del distacco: il leader in grande, poi gli inseguitori con una barra
  * proporzionale ai suoi punti e quanti punti mancano per raggiungerlo.
  */
-function Podio({ righe, io, tu, distacco }: { righe: RigaClassifica[]; io?: string; tu: string; distacco: (n: number) => string }) {
+const MEDAGLIE: Record<number, string> = { 1: "bg-sole text-inchiostro", 2: "bg-[#c9cfdb] text-inchiostro", 3: "bg-[#d9965b] text-white" };
+
+function Podio({ righe, io, tu, distacco, premi: inPalio }: { righe: RigaClassifica[]; io?: string; tu: string; distacco: (n: number) => string; premi: Record<number, string> }) {
   const [primo, ...altri] = righe;
   if (!primo) return null;
   const max = Math.max(1, primo.punti);
   return (
     <section className="pannello mt-6 overflow-hidden">
       <div className="relative flex items-center gap-4 border-b border-linea p-4">
-        <span className="cifre text-[88px] leading-[.8] text-mare" aria-hidden>
+        <span className="cifre text-[88px] leading-[.8] text-viola" aria-hidden>
           1
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-2xl font-extrabold leading-tight tracking-tight">
             {bandiera(primo.paese)} {primo.nickname}
-            {primo.utente_id === io && <span className="chip ml-2 bg-mare align-middle text-white">{tu}</span>}
+            {primo.utente_id === io && <span className="chip ml-2 bg-viola align-middle text-white">{tu}</span>}
           </p>
           <p className="text-sm text-tenue">
             {primo.vincitori} V · {primo.set_esatti} Set · {primo.game_esatti} Game
           </p>
+          {inPalio[1] && <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-sole-chiaro px-2 py-0.5 text-xs font-semibold text-inchiostro"><IconaCoppa className="h-3.5 w-3.5 text-viola" /> {inPalio[1]}</p>}
         </div>
         <p className="cifre text-right text-5xl leading-none">
           {primo.punti}
@@ -205,8 +225,9 @@ function Podio({ righe, io, tu, distacco }: { righe: RigaClassifica[]; io?: stri
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">
               {bandiera(r.paese)} {r.nickname}
-              {r.utente_id === io && <span className="chip ml-2 bg-mare text-white">{tu}</span>}
+              {r.utente_id === io && <span className="chip ml-2 bg-viola text-white">{tu}</span>}
             </p>
+            {inPalio[r.posizione] && <p className="text-xs font-semibold text-seme">{inPalio[r.posizione]}</p>}
             <div className="mt-1.5 flex items-center gap-2">
               <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-linea">
                 <span className="block h-full rounded-full bg-inchiostro/70" style={{ width: `${(r.punti / max) * 100}%` }} />

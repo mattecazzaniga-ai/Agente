@@ -151,7 +151,7 @@
     "lovince": "lo vince {nome}",
     "superTieBreak": "Il terzo set (super tie-break) lo vince {nome}.",
     "completa": "Completa il risultato",
-    "inPalio": "Fino a {massimo} punti: {vincitore} per il vincitore, {set} per i set, fino a {game} per i game, e se il punteggio è esatto +{esatto} (sbagli di uno solo: +{quasi}).",
+    "inPalio": "Fino a {massimo} punti: {vincitore} per il vincitore, {set20} per un 2-0 giusto ({set21} per un 2-1), e per ogni set e per il long fino a {set} se ci prendi.",
     "risultatoSet": "Risultato dei set di {nome}",
     "gameTotali": "Game totali di ciascuna coppia",
     "notaSuperTieBreak": "Il super tie-break vale 1 game per chi lo vince.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Come si fanno i punti",
-    "partita": "Partita, massimo {massimo} punti. Scegli chi vince e scrivi il punteggio di ogni set; se finisce un set pari anche il long tie-break, che nei game vale 1 game per chi lo vince. Vincitore giusto +{vincitore}. Risultato dei set esatto (2-0 o 2-1) +{set}. Game totali: si somma l'errore sulle due coppie e prendi {scala} punti (errore→punti); oltre {oltre} niente. Punteggio esatto (tutti i set e il long) +{esatto}; sbagliato di uno solo (un game o un punto) +{quasi}.",
+    "partita": "Partita, fino a {massimo} punti. Scegli chi vince e scrivi il punteggio di ogni set; se finisce un set pari anche il long tie-break. Vincitore giusto +{vincitore}. Risultato in set giusto: 2-0 +{set20}, 2-1 +{set21}. Ogni set: game esatti +{s0}, un game di differenza +{s1}, due game +{s2}. Long tie-break: punti esatti +{l0}, un punto di differenza +{l1}, due punti +{l2}.",
     "torneo": "Torneo: vincitore {vincitore} punti, finalista {finalista}, pesati su quanti li avevano scelti (da metà al doppio e mezzo).",
     "blocco": "I pronostici si chiudono all'inizio della partita o del torneo. Le percentuali di voto si vedono solo dopo la chiusura."
   },
@@ -216,7 +216,8 @@
     "distacco": "Ti mancano {punti} punti per passare {nome}.",
     "completa": "Classifica completa",
     "dalPrimo": "−{punti} pt",
-    "vaiAPronosticare": "Fai il primo pronostico"
+    "vaiAPronosticare": "Fai il primo pronostico",
+    "inPalio": "In palio questo mese"
   },
   "leghe": {
     "titolo": "Leghe",
@@ -259,7 +260,9 @@
     "passwordNuova": "Nuova password",
     "passwordSalva": "Salva password",
     "passwordSalvata": "Password salvata ✓",
-    "sottotitoloPagina": "Nickname, Paese e password"
+    "sottotitoloPagina": "Nickname, Paese e password",
+    "pannelloAdmin": "Pannello admin",
+    "pannelloAdminSotto": "Tornei, risultati, giocatori, notizie, premi e sponsor"
   },
   "condividi": {
     "condividi": "Condividi",
@@ -269,7 +272,12 @@
     "testoClassifica": "Sono {posizione}° nella classifica di {mese} su Beach Peck! Sfidami:",
     "copiato": "Link copiato",
     "copia": "Copia link",
-    "scarica": "Scarica immagine"
+    "scarica": "Scarica immagine",
+    "etichettaPronostico": "Il mio pronostico",
+    "etichettaTorneo": "Vince il torneo",
+    "invito": "E tu chi dici?",
+    "sfidami": "Riesci a battermi?",
+    "puntiSu": "{punti} punti · su {totale} giocatori"
   },
   "privacy": {
     "titolo": "Privacy",
@@ -304,12 +312,17 @@
     "esatti": "esatti",
     "long": "Long",
     "esattoBonus": "Esatto",
-    "quasi": "quasi"
+    "quasi": "quasi",
+    "risultato": "Risultato",
+    "puntiSet": "Set"
   },
   "riga": {
     "fine": "Fin.",
     "rit": "Rit.",
     "fatto": "Fatto",
     "pronostica": "Pronostica"
+  },
+  "sponsor": {
+    "titolo": "I nostri sponsor"
   }
 }

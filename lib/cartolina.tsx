@@ -2,35 +2,76 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-// Immagine quadrata da condividere (WhatsApp, storie Instagram), con la stessa identità del sito:
-// fondo sabbia, testo blu scuro, blu mare e pallina gialla, Barlow Condensed letto dal disco (nessuna chiamata di rete).
+// Immagine quadrata da condividere (WhatsApp, storie Instagram) nello stile del logo: notte indaco,
+// sole giallo-arancio, viola. Logo e font si leggono dal disco: nessuna chiamata di rete.
 export const LATO = 1080;
 
-const font = (peso: number) => readFile(join(process.cwd(), "assets/font", `barlow-condensed-latin-${peso}-normal.woff`));
+const SOLE = "#f5b731";
+const VIOLA = "#5b2bc0";
+const NOTTE = "#16103a";
+const CREMA = "#fcfaf5";
 
-export async function cartolina({ etichetta, titolo, riga, dettaglio, piede, avviso }: { etichetta: string; titolo: string; riga?: string; dettaglio?: string; piede: string; avviso: string }) {
-  const [f600, f800] = await Promise.all([font(600), font(800)]);
+const file = (nome: string) => readFile(join(process.cwd(), "assets", nome));
+
+export async function cartolina({
+  etichetta,
+  titolo,
+  grande,
+  riga,
+  dettaglio,
+  piede,
+  sito,
+  avviso,
+}: {
+  etichetta: string; // es. "Il mio pronostico"
+  titolo: string; // es. la coppia scelta o il nickname
+  grande?: string; // il numero da mostrare enorme: punteggio o posizione
+  riga?: string;
+  dettaglio?: string;
+  piede: string; // invito a giocare
+  sito: string; // indirizzo da mostrare
+  avviso: string;
+}) {
+  const [f600, f800, logo] = await Promise.all([
+    file("font/barlow-condensed-latin-600-normal.woff"),
+    file("font/barlow-condensed-latin-800-normal.woff"),
+    file("brand/logo-640.png"),
+  ]);
+  const logoUrl = `data:image/png;base64,${logo.toString("base64")}`;
+  const lungo = titolo.length > 22;
+
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#fbf6ec", color: "#13293a", padding: 80, fontFamily: "Barlow Condensed" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div style={{ width: 60, height: 60, borderRadius: 30, background: "#e8f24a", border: "3px solid #13293a", display: "flex" }} />
-          <div style={{ fontSize: 60, fontWeight: 800, display: "flex" }}>
-            Beach<span style={{ color: "#0a6a93", marginLeft: 14 }}>Peck</span>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: NOTTE, color: "#ffffff", fontFamily: "Barlow Condensed", position: "relative" }}>
+        {/* il sole del logo, grande e tagliato dal bordo */}
+        <div style={{ position: "absolute", right: -170, top: -190, width: 640, height: 640, borderRadius: 320, background: `linear-gradient(200deg, #ffd45c 0%, ${SOLE} 45%, #ef8f2c 100%)`, display: "flex" }} />
+        {/* scia viola come la traiettoria della pallina */}
+        <div style={{ position: "absolute", left: -120, bottom: 150, width: 900, height: 120, borderRadius: 60, background: `linear-gradient(90deg, rgba(91,43,192,0) 0%, rgba(91,43,192,.55) 100%)`, transform: "rotate(-12deg)", display: "flex" }} />
+
+        <div style={{ display: "flex", padding: "64px 72px 0" }}>
+          <div style={{ display: "flex", background: CREMA, borderRadius: 28, padding: "14px 22px", boxShadow: "0 18px 40px rgba(0,0,0,.35)" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- immagine generata con next/og */}
+            <img src={logoUrl} width={420} height={248} alt="" />
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", gap: 24 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 40, color: "#56656f", fontWeight: 600 }}>
-            <div style={{ width: 10, height: 44, borderRadius: 5, background: "#0a6a93", display: "flex" }} />
+
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", padding: "0 72px", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 40, fontWeight: 600, color: SOLE, textTransform: "uppercase", letterSpacing: 4 }}>
+            <div style={{ width: 18, height: 18, borderRadius: 9, background: SOLE, display: "flex" }} />
             {etichetta}
           </div>
-          <div style={{ fontSize: titolo.length > 26 ? 96 : 128, fontWeight: 800, lineHeight: 1 }}>{titolo}</div>
-          {riga && <div style={{ fontSize: 46, fontWeight: 600, color: "#13293a", opacity: 0.85 }}>{riga}</div>}
-          {dettaglio && <div style={{ fontSize: 40, fontWeight: 600, color: "#0a6a93" }}>{dettaglio}</div>}
+          <div style={{ fontSize: lungo ? 92 : 118, fontWeight: 800, lineHeight: 0.98, textTransform: "uppercase", display: "flex" }}>{titolo}</div>
+          {grande && <div style={{ fontSize: grande.length > 12 ? 120 : 170, fontWeight: 800, lineHeight: 1, color: SOLE, display: "flex", letterSpacing: 2 }}>{grande}</div>}
+          {riga && <div style={{ fontSize: 46, fontWeight: 600, color: "rgba(255,255,255,.9)", display: "flex" }}>{riga}</div>}
+          {dettaglio && <div style={{ fontSize: 38, fontWeight: 600, color: "#c9b8ff", display: "flex" }}>{dettaglio}</div>}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, borderTop: "2px solid #e5d9c3", paddingTop: 32 }}>
-          <div style={{ fontSize: 40, fontWeight: 600, display: "flex" }}>{piede}</div>
-          <div style={{ fontSize: 28, fontWeight: 600, color: "#56656f" }}>{avviso}</div>
+
+        <div style={{ display: "flex", flexDirection: "column", background: VIOLA, padding: "34px 72px 30px", gap: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 48, fontWeight: 800, display: "flex" }}>{piede}</div>
+            <div style={{ fontSize: 36, fontWeight: 600, color: SOLE, display: "flex" }}>{sito}</div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 600, color: "rgba(255,255,255,.75)", display: "flex" }}>{avviso}</div>
         </div>
       </div>
     ),

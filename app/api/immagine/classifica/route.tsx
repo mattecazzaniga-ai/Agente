@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { meseIso, nomeMese } from "@/lib/formato";
+import { indirizzoSito } from "@/lib/sito";
 import { cartolina, linguaValida } from "@/lib/cartolina";
 
 // Immagine con la propria posizione in classifica (mese, ambito, lega).
@@ -24,10 +25,12 @@ export async function GET(req: Request) {
   const nomeAmbito = ambito === "lega" ? (lega?.nome ?? t("classifica.lega")) : ambito === "paese" ? t("classifica.paese") : t("classifica.globale");
   return cartolina({
     etichetta: `${t("classifica.titolo")} · ${nomeMese(mese, lingua)}`,
-    titolo: `#${io.posizione}`,
-    riga: `${profilo?.nickname ?? ""} · ${io.punti} ${t("classifica.punti").toLowerCase()}`,
-    dettaglio: `${nomeAmbito} · ${t("classifica.sei", { posizione: io.posizione, totale: io.partecipanti })}`,
-    piede: t("condividi.testoClassifica", { posizione: io.posizione, mese: nomeMese(mese, lingua) }),
+    titolo: profilo?.nickname ?? "",
+    grande: `${io.posizione}°`,
+    riga: t("condividi.puntiSu", { punti: io.punti, totale: io.partecipanti }),
+    dettaglio: nomeAmbito,
+    piede: t("condividi.sfidami"),
+    sito: (await indirizzoSito()).replace(/^https?:\/\//, ""),
     avviso: t("avviso"),
   });
 }

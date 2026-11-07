@@ -151,7 +151,7 @@
     "lovince": "vence {nome}",
     "superTieBreak": "O terceiro set (super tie-break) fica com {nome}.",
     "completa": "Complete o placar",
-    "inPalio": "Até {massimo} pontos: {vincitore} pelo vencedor, {set} pelos sets, até {game} pelos games, e +{esatto} se o placar for exato (errou por um só: +{quasi}).",
+    "inPalio": "Até {massimo} pontos: {vincitore} pelo vencedor, {set20} por um 2-0 certo ({set21} por um 2-1), e até {set} por cada set e pelo long se acertar.",
     "risultatoSet": "Placar em sets de {nome}",
     "gameTotali": "Games totais de cada dupla",
     "notaSuperTieBreak": "O super tie-break vale 1 game para quem vence.",
@@ -186,7 +186,7 @@
   },
   "regole": {
     "titolo": "Como funcionam os pontos",
-    "partita": "Jogo, máximo {massimo} pontos. Escolha quem vence e escreva o placar de cada set; se empatarem, também o long tie-break, que nos games vale 1 game para quem vence. Vencedor certo +{vincitore}. Placar em sets exato (2-0 ou 2-1) +{set}. Games totais: soma-se o erro das duas duplas e você ganha {scala} pontos (erro→pontos); acima de {oltre}, nada. Placar exato (todos os sets e o long) +{esatto}; errado por um só (um game ou um ponto) +{quasi}.",
+    "partita": "Jogo, até {massimo} pontos. Escolha quem vence e escreva o placar de cada set; se empatarem, também o long tie-break. Vencedor certo +{vincitore}. Resultado em sets certo: 2-0 +{set20}, 2-1 +{set21}. Cada set: games exatos +{s0}, um game de diferença +{s1}, dois games +{s2}. Long tie-break: pontos exatos +{l0}, um ponto de diferença +{l1}, dois pontos +{l2}.",
     "torneo": "Torneio: vencedor {vincitore} pontos, finalista {finalista}, ponderados por quantos escolheram (de metade a duas vezes e meia).",
     "blocco": "Os palpites fecham no início do jogo ou do torneio. As porcentagens de votos aparecem só depois do fechamento."
   },
@@ -216,7 +216,8 @@
     "distacco": "Faltam {punti} pontos para passar {nome}.",
     "completa": "Ranking completo",
     "dalPrimo": "−{punti} pts",
-    "vaiAPronosticare": "Faça seu primeiro palpite"
+    "vaiAPronosticare": "Faça seu primeiro palpite",
+    "inPalio": "Prêmios deste mês"
   },
   "leghe": {
     "titolo": "Ligas",
@@ -259,7 +260,9 @@
     "passwordNuova": "Nova senha",
     "passwordSalva": "Salvar senha",
     "passwordSalvata": "Senha salva ✓",
-    "sottotitoloPagina": "Apelido, país e senha"
+    "sottotitoloPagina": "Apelido, país e senha",
+    "pannelloAdmin": "Painel de admin",
+    "pannelloAdminSotto": "Torneios, resultados, jogadores, notícias, prêmios e patrocinadores"
   },
   "condividi": {
     "condividi": "Compartilhar",
@@ -269,7 +272,12 @@
     "testoClassifica": "Estou em {posizione}º no ranking de {mese} no Beach Peck! Me desafie:",
     "copiato": "Link copiado",
     "copia": "Copiar link",
-    "scarica": "Baixar imagem"
+    "scarica": "Baixar imagem",
+    "etichettaPronostico": "Meu palpite",
+    "etichettaTorneo": "Vence o torneio",
+    "invito": "E você, quem diz?",
+    "sfidami": "Consegue me vencer?",
+    "puntiSu": "{punti} pontos · entre {totale} jogadores"
   },
   "privacy": {
     "titolo": "Privacidade",
@@ -304,12 +312,17 @@
     "esatti": "exatos",
     "long": "Long",
     "esattoBonus": "Exato",
-    "quasi": "quase"
+    "quasi": "quase",
+    "risultato": "Resultado",
+    "puntiSet": "Sets"
   },
   "riga": {
     "fine": "Fim",
     "rit": "Abd.",
     "fatto": "Feito",
     "pronostica": "Palpitar"
+  },
+  "sponsor": {
+    "titolo": "Nossos patrocinadores"
   }
 }

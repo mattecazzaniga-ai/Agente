@@ -96,17 +96,17 @@ export default async function RigaPartita({
       <div className={`flex shrink-0 items-center justify-end ${stato === "aperta" ? "w-auto" : finita && mio?.punti != null ? "w-11" : "w-4"}`}>
         {stato === "aperta" ? (
           mio ? (
-            <span className="flex items-center gap-1 text-[12px] font-semibold text-mare">
+            <span className="flex items-center gap-1 text-[12px] font-semibold text-viola">
               <IconaSpunta className="h-3.5 w-3.5" /> {t("riga.fatto")}
             </span>
           ) : (
-            <span className="flex items-center gap-0.5 text-sm font-semibold text-mare">
+            <span className="flex items-center gap-0.5 text-sm font-semibold text-viola">
               {t("riga.pronostica")}
               <IconaFreccia className="h-4 w-4 transition group-hover:translate-x-0.5" />
             </span>
           )
         ) : finita && mio?.punti != null ? (
-          <span className={`cifre text-xl ${mio.punti > 0 ? "text-mare" : "text-tenue"}`}>+{mio.punti}</span>
+          <span className={`cifre text-xl ${mio.punti > 0 ? "text-viola" : "text-tenue"}`}>+{mio.punti}</span>
         ) : (
           <IconaFreccia className="h-4 w-4 text-tenue transition group-hover:translate-x-0.5 group-hover:text-inchiostro" />
         )}

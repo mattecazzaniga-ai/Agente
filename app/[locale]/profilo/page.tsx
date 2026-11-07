@@ -25,6 +25,15 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <Intestazione titolo={profilo.nickname} sotto={user.email ?? ""} />
+      {profilo.is_admin && (
+        <Link href="/admin" className="pannello solleva mt-4 flex items-center justify-between gap-3 p-4">
+          <span>
+            <span className="block font-semibold">{t("profilo.pannelloAdmin")}</span>
+            <span className="block text-sm text-tenue">{t("profilo.pannelloAdminSotto")}</span>
+          </span>
+          <span className="bottone w-auto px-4">{t("nav.admin")}</span>
+        </Link>
+      )}
       <h2 className="titolo-sezione">{t("profilo.titolo")}</h2>
       <div className="scheda">
         <FormProfilo nickname={profilo.nickname} paese={profilo.paese} testoBottone={t("profilo.salva")} />

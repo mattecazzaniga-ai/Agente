@@ -54,7 +54,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold">Notizie</h1>
-      {salvata && <p className="rounded-xl bg-sabbia-2 p-3 text-sm font-medium text-mare">Notizia salvata.</p>}
+      {salvata && <p className="rounded-xl bg-sabbia-2 p-3 text-sm font-medium text-viola">Notizia salvata.</p>}
       <div className="scheda">
         <h2 className="mb-3 font-bold">{inModifica ? "Modifica notizia" : "+ Nuova notizia"}</h2>
         <FormAdmin key={inModifica?.id ?? "nuova"} azione={salvaNotizia} bottone={inModifica ? "Salva modifiche" : "Salva notizia"}>
@@ -62,7 +62,7 @@ export default async function AdminNotizie({ searchParams }: { searchParams: Pro
         </FormAdmin>
         {inModifica && (
           <div className="mt-3 flex items-center justify-between">
-            <Link href="/admin/notizie" className="text-sm text-mare underline">
+            <Link href="/admin/notizie" className="text-sm text-viola underline">
               Annulla
             </Link>
             <form action={eliminaNotizia}>

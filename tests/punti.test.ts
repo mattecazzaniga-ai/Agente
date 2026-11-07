@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { puntiVincitoreLong, setValido, tiebreakValido, combinazioniGame, gamePossibili, gameTotali, limitiGame, massimoPartita, REGOLE_PREDEFINITE, scalaGame } from "@/lib/punti";
+import { puntiVincitoreLong, setValido, tiebreakValido, combinazioniGame, gamePossibili, gameTotali, limitiGame, massimo20, massimo21, massimoPartita, REGOLE_PREDEFINITE } from "@/lib/punti";
 
 describe("regolamento", () => {
   it("long tie-break", () => {
@@ -19,9 +19,10 @@ describe("regolamento", () => {
     expect(setValido(7, 3)).toBe(false);
     expect(setValido(0, 0)).toBe(false);
   });
-  it("massimo 14 punti e scala dei game 5-4-3-2-1", () => {
-    expect(massimoPartita(REGOLE_PREDEFINITE)).toBe(14);
-    expect(scalaGame(REGOLE_PREDEFINITE)).toEqual([5, 4, 3, 2, 1]);
+  it("massimo 14 punti con un 2-0 e 16 con un 2-1", () => {
+    expect(massimo20(REGOLE_PREDEFINITE)).toBe(14);
+    expect(massimo21(REGOLE_PREDEFINITE)).toBe(16);
+    expect(massimoPartita(REGOLE_PREDEFINITE)).toBe(16);
   });
   it("super tie-break = 1 game a chi lo vince", () => {
     expect(gameTotali([6, 3, 10], [4, 6, 7], 2)).toEqual([10, 10]);
