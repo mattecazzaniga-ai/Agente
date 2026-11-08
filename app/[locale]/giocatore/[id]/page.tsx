@@ -1,14 +1,15 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { podiMesiChiusi, podiTornei, schedaGiocatore, sessione, type PartitaConCoppie } from "@/lib/dati";
+import { podiMesiChiusi, podiTornei, schedaGiocatore, serieUtente, sessione, type PartitaConCoppie } from "@/lib/dati";
+import { giorno } from "@/lib/serie";
 import { bandiera, nomeMese } from "@/lib/formato";
 import { calcolaTrofei, medagliePerUtente } from "@/lib/trofei";
 import { statistichePersonali } from "@/lib/statistiche";
 import { Bacheca, MedaglieMese } from "@/components/Trofei";
 import RigaPartita from "@/components/RigaPartita";
 import Vuoto from "@/components/Vuoto";
-import { IconaIndietro } from "@/components/Icone";
+import { IconaFuoco, IconaIndietro } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,8 @@ export default async function Giocatore({ params }: { params: Promise<{ locale: 
   const nessuna = { oro: 0, argento: 0, bronzo: 0 };
   const medMesi = medagliePerUtente(podi).get(id) ?? nessuna;
   const medTornei = medagliePerUtente([podiT]).get(id) ?? nessuna;
-  const trofei = calcolaTrofei(voci, medMesi, medTornei);
+  const serie = await serieUtente(id, voci.map((v) => giorno(v.partita.inizio_at)));
+  const trofei = calcolaTrofei(voci, medMesi, medTornei, serie.migliore);
   const st = statistichePersonali(voci);
   const puntiTotali = mesi.reduce((x, m) => x + Number(m.punti), 0);
   const migliorPosto = mesi.length ? Math.min(...mesi.map((m) => Number(m.posizione))) : null;
@@ -68,6 +70,11 @@ export default async function Giocatore({ params }: { params: Promise<{ locale: 
           {profilo.nickname}
           <MedaglieMese m={medMesi} titolo={t("trofei.medaglie")} />
         </h1>
+        {serie.attuale > 0 && (
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-sole px-2.5 py-1 text-sm font-semibold text-inchiostro">
+            <IconaFuoco className="h-4 w-4" /> {t("serie.etichetta", { n: serie.attuale })}
+          </p>
+        )}
         <p className="mt-2 text-sm text-white/75">{t("giocatore.dal", { mese: nomeMese(profilo.creato_at.slice(0, 7) + "-01", locale) })}</p>
       </header>
 

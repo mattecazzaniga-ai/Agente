@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTornei, diarioRecente, situazioneTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
+import { caricaTornei, serieUtente, diarioRecente, situazioneTornei, regolePunti, mieiPronostici, notiziePubblicate, partiteAperte, partiteInCorso, sessione, ultimiRisultati, type PartitaConCoppie } from "@/lib/dati";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, meseIso, nomeMese } from "@/lib/formato";
 import { FOTO } from "@/lib/foto";
@@ -13,7 +13,7 @@ import SchedaNotizia from "@/components/SchedaNotizia";
 import Diario from "@/components/Diario";
 import RigaTorneo from "@/components/RigaTorneo";
 import Vuoto from "@/components/Vuoto";
-import { IconaSpunta, Marchio } from "@/components/Icone";
+import { IconaFuoco, IconaSpunta, Marchio } from "@/components/Icone";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +58,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     user ? supabase.rpc("mia_posizione", { p_mese: mese }) : Promise.resolve({ data: null }),
     user ? mieiPronostici([], [...aperte, ...live, ...risultati].map((p) => p.id)) : Promise.resolve(null),
   ]);
+  const serie = user ? await serieUtente(user.id).catch(() => null) : null;
   const primi = (classifica as RigaClassifica[] | null) ?? [];
   const io = (mia as { posizione: number; punti: number; partecipanti: number }[] | null)?.[0];
   const tornei = [...inCorso, ...prossimi].slice(0, 4);
@@ -121,7 +122,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6 sm:pb-6">
           {user ? (
             <>
-              <p className="flex items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-sole" aria-hidden />{t("home.ciao", { nome: profilo?.nickname ?? "" })}</p>
+              <p className="flex flex-wrap items-center gap-2 text-base font-semibold text-white"><span className="h-2.5 w-2.5 rounded-full bg-sole" aria-hidden />{t("home.ciao", { nome: profilo?.nickname ?? "" })}
+                {serie && serie.attuale > 0 && (
+                  <Link href="/profilo#serie" className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm ${serie.inPericolo ? "bg-white/15 text-white" : "bg-sole text-inchiostro"}`}>
+                    <IconaFuoco className={`h-4 w-4 ${serie.inPericolo ? "animate-pulse" : ""}`} /> {t("serie.etichetta", { n: serie.attuale })}
+                  </Link>
+                )}
+              </p>
               <div className="mt-2 flex flex-wrap items-end gap-x-8 gap-y-3">
                 <div>
                   <p className="cifre text-5xl leading-none">{io ? `${io.posizione}°` : "—"}</p>

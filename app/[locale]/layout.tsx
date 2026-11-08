@@ -4,7 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
-import { sessione } from "@/lib/dati";
+import { serieUtente, sessione } from "@/lib/dati";
 import { avvisiUtente } from "@/lib/notifiche";
 import { cookies } from "next/headers";
 import Navigazione from "@/components/Navigazione";
@@ -12,7 +12,7 @@ import SceltaLingua from "@/components/SceltaLingua";
 import Avviso from "@/components/Avviso";
 import Attivita from "@/components/Attivita";
 import RegistraSW from "@/components/RegistraSW";
-import { IconaCampanella, IconaIngranaggio, Marchio } from "@/components/Icone";
+import { IconaCampanella, IconaFuoco, IconaIngranaggio, Marchio } from "@/components/Icone";
 import CreditiFoto from "@/components/CreditoFoto";
 import FasciaSponsor from "@/components/FasciaSponsor";
 import "@fontsource/barlow/400.css";
@@ -51,8 +51,10 @@ export default async function LayoutLingua({ children, params }: { children: Rea
   const { user, profilo } = await sessione();
   // numerino sulla campanella: partite in scadenza da pronosticare + novità dopo l'ultima visita agli avvisi
   let nuovi = 0;
+  let serie: Awaited<ReturnType<typeof serieUtente>> | null = null;
   if (user) {
-    const [avvisi, biscotti] = await Promise.all([avvisiUtente(user.id).catch(() => []), cookies()]);
+    const [avvisi, biscotti, s] = await Promise.all([avvisiUtente(user.id).catch(() => []), cookies(), serieUtente(user.id).catch(() => null)]);
+    serie = s;
     const visti = biscotti.get("avvisi_visti")?.value ?? "";
     nuovi = avvisi.filter((a) => a.tipo === "scadenza" || a.quando > visti).length;
   }
@@ -74,6 +76,19 @@ export default async function LayoutLingua({ children, params }: { children: Rea
                     <IconaIngranaggio className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("nav.admin")}</span>
                     <span className="sr-only sm:hidden">{t("nav.admin")}</span>
+                  </Link>
+                )}
+                {user && serie && (
+                  <Link
+                    href="/profilo#serie"
+                    aria-label={t("serie.etichetta", { n: serie.attuale })}
+                    title={serie.inPericolo ? t("serie.pericolo") : t("serie.etichetta", { n: serie.attuale })}
+                    className={`inline-flex h-10 items-center gap-1 rounded-lg border px-2 ${
+                      serie.attuale === 0 ? "border-linea bg-carta text-tenue" : serie.inPericolo ? "border-dashed border-[#e8590c]/60 bg-carta text-[#e8590c]" : "border-[#f5b731] bg-sole-chiaro text-[#c2410c]"
+                    }`}
+                  >
+                    <IconaFuoco className={`h-5 w-5 ${serie.inPericolo ? "animate-pulse" : ""}`} />
+                    <span className="cifre text-lg leading-none">{serie.attuale}</span>
                   </Link>
                 )}
                 {user && (

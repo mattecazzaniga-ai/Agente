@@ -1,11 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import type { Medaglie, Trofeo } from "@/lib/trofei";
-import { IconaBersaglio, IconaCoppa, IconaFulmine, IconaFuoco, IconaGlobo, IconaMedaglia, IconaPallina, IconaPiu, IconaPodio, IconaSpunta, IconaStella } from "./Icone";
+import { IconaBersaglio, IconaCoppa, IconaFulmine, IconaFuoco, IconaGlobo, IconaMedaglia, IconaPallina, IconaPiu, IconaPodio, IconaSpunta, IconaStella, IconaSu } from "./Icone";
 
 const ICONE = {
   esordio: IconaSpunta,
   fedelissimo: IconaPallina,
-  serie: IconaFuoco,
+  serie: IconaSu,
   occhio: IconaBersaglio,
   long: IconaStella,
   perfetta: IconaMedaglia,
@@ -15,6 +15,7 @@ const ICONE = {
   podio: IconaPodio,
   reTorneo: IconaCoppa,
   podioTorneo: IconaPodio,
+  fuoco: IconaFuoco,
 } as const;
 
 // colori dei livelli: nessuno, bronzo, argento, oro (l'oro è il giallo del logo)

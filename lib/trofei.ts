@@ -3,7 +3,7 @@
 import type { Coppia, Partita, PronosticoPartita } from "./tipi";
 
 export type Livello = 0 | 1 | 2 | 3; // 0 = non ancora, 1 bronzo, 2 argento, 3 oro
-export type IdTrofeo = "esordio" | "fedelissimo" | "serie" | "occhio" | "long" | "perfetta" | "fiuto" | "giramondo" | "campione" | "podio" | "reTorneo" | "podioTorneo";
+export type IdTrofeo = "esordio" | "fedelissimo" | "serie" | "occhio" | "long" | "perfetta" | "fiuto" | "giramondo" | "campione" | "podio" | "reTorneo" | "podioTorneo" | "fuoco";
 
 export interface Trofeo {
   id: IdTrofeo;
@@ -26,6 +26,7 @@ const SOGLIE: Record<IdTrofeo, [number, number, number]> = {
   podio: [1, 3, 6],
   reTorneo: [1, 3, 10],
   podioTorneo: [1, 5, 15],
+  fuoco: [3, 7, 15],
 };
 
 type Voce = {
@@ -61,7 +62,7 @@ export function ePerfetta(p: Voce["partita"], mio: PronosticoPartita): boolean {
   return p.game_a.every((x, i) => x === mio.game_a![i] && p.game_b![i] === mio.game_b![i]);
 }
 
-export function calcolaTrofei(voci: Voce[], medaglie: Medaglie, tornei: Medaglie = { oro: 0, argento: 0, bronzo: 0 }): Trofeo[] {
+export function calcolaTrofei(voci: Voce[], medaglie: Medaglie, tornei: Medaglie = { oro: 0, argento: 0, bronzo: 0 }, serieMigliore = 0): Trofeo[] {
   const valutate = voci.filter((x) => x.mio.punti != null).sort((x, y) => x.partita.inizio_at.localeCompare(y.partita.inizio_at));
   let serie = 0;
   let serieMax = 0;
@@ -87,6 +88,7 @@ export function calcolaTrofei(voci: Voce[], medaglie: Medaglie, tornei: Medaglie
     podio: medaglie.oro + medaglie.argento + medaglie.bronzo,
     reTorneo: tornei.oro,
     podioTorneo: tornei.oro + tornei.argento + tornei.bronzo,
+    fuoco: serieMigliore,
   };
   return (Object.keys(SOGLIE) as IdTrofeo[]).map((id) => {
     const soglie = SOGLIE[id];

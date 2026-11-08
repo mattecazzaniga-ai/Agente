@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import Intestazione from "@/components/Intestazione";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { mieLeghe, podiMesiChiusi, podiTornei, sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
+import { mieLeghe, serieUtente, podiMesiChiusi, podiTornei, sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
 import Condividi from "@/components/Condividi";
 import { indirizzoSito } from "@/lib/sito";
-import { IconaAmici } from "@/components/Icone";
+import { IconaAmici, IconaFuoco } from "@/components/Icone";
 import { calcolaTrofei, medagliePerUtente } from "@/lib/trofei";
 import { Bacheca } from "@/components/Trofei";
 import { meseIso, nomeMese } from "@/lib/formato";
@@ -32,9 +32,9 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   if (!user || !profilo) redirect(urlAccesso(locale, `/${locale}/profilo`));
   const t = await getTranslations();
   const mese = meseIso();
-  const [storico, { data: mia }, podi, podiT, leghe, sito, { data: iscritto }] = await Promise.all([storicoPronostici(user.id, 500), supabase.rpc("mia_posizione", { p_mese: mese }), podiMesiChiusi(), podiTornei(), mieLeghe(), indirizzoSito(), supabase.from("profili").select("creato_at").eq("id", user.id).single()]);
+  const [storico, { data: mia }, podi, podiT, leghe, sito, { data: iscritto }, serie] = await Promise.all([storicoPronostici(user.id, 500), supabase.rpc("mia_posizione", { p_mese: mese }), podiMesiChiusi(), podiTornei(), mieLeghe(), indirizzoSito(), supabase.from("profili").select("creato_at").eq("id", user.id).single(), serieUtente(user.id)]);
   const nessuna = { oro: 0, argento: 0, bronzo: 0 };
-  const trofei = calcolaTrofei(storico, medagliePerUtente(podi).get(user.id) ?? nessuna, medagliePerUtente([podiT]).get(user.id) ?? nessuna);
+  const trofei = calcolaTrofei(storico, medagliePerUtente(podi).get(user.id) ?? nessuna, medagliePerUtente([podiT]).get(user.id) ?? nessuna, serie.migliore);
   const io = (mia as { posizione: number; punti: number; partecipanti: number }[] | null)?.[0];
   // statistiche solo sui pronostici già valutati (partite concluse)
   const valutati = storico.filter((x) => x.mio.punti != null);
@@ -61,6 +61,25 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
         ))}
       </dl>
       {valutati.length > 0 && <p className="px-1 text-xs text-tenue">{t("profilo.puntiTotali", { punti: puntiTotali, partite: valutati.length })}</p>}
+
+      <section id="serie" className={`scroll-mt-20 overflow-hidden rounded-xl border ${serie.attuale > 0 && !serie.inPericolo ? "border-[#f5b731] bg-sole-chiaro" : "border-linea bg-carta"}`}>
+        <div className="flex items-center gap-4 p-4">
+          <span className={`grid h-16 w-16 shrink-0 place-items-center rounded-full ${serie.attuale === 0 ? "bg-sabbia-2 text-tenue" : serie.inPericolo ? "bg-carta text-[#e8590c] ring-2 ring-dashed ring-[#e8590c]/50" : "bg-[#f5b731] text-[#9a3412]"}`}>
+            <IconaFuoco className={`h-9 w-9 ${serie.inPericolo ? "animate-pulse" : ""}`} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-tenue">{t("serie.titolo")}</p>
+            <p className="font-display text-3xl font-bold leading-none">
+              <span className="cifre">{serie.attuale}</span> <span className="text-lg">{t("serie.giornate", { n: serie.attuale })}</span>
+            </p>
+            <p className="mt-0.5 text-xs text-tenue">{t("serie.record", { n: serie.migliore })}</p>
+          </div>
+        </div>
+        <p className={`border-t px-4 py-2.5 text-sm ${serie.inPericolo ? "border-[#e8590c]/20 bg-[#e8590c]/10 font-semibold text-[#9a3412]" : "border-linea/70 text-inchiostro/80"}`}>
+          {serie.inPericolo ? t("serie.inPericolo") : serie.attuale > 0 ? t("serie.attiva") : t("serie.spenta")}
+        </p>
+        <p className="px-4 pb-3 text-xs text-tenue">{t("serie.nota")}</p>
+      </section>
 
       <div className="pt-4">
         <Bacheca trofei={trofei} titolo={t("profilo.trofei")} />

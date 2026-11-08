@@ -526,7 +526,11 @@
       "nome": "Tournament podium",
       "descr": "Tournaments finished in the top three"
     },
-    "apriTutti": "Tap to see them all"
+    "apriTutti": "Tap to see them all",
+    "fuoco": {
+      "nome": "On fire",
+      "descr": "Match days in a row with a prediction"
+    }
   },
   "giocatore": {
     "giocatore": "Player",
@@ -592,5 +596,17 @@
     "lega": "{nome} joined {lega}",
     "nessuno": "No alerts for now.",
     "nota": "Alerts cover the last 3 days and matches closing within 24 hours."
+  },
+  "serie": {
+    "etichetta": "Streak: {n, plural, one {# match day} other {# match days}} in a row",
+    "pericolo": "You haven't predicted today yet: your streak is at risk",
+    "titolo": "Your streak",
+    "sotto": "Match days in a row with at least one prediction",
+    "record": "Best: {n}",
+    "attiva": "Fire's on: come back on the next match day to grow it.",
+    "inPericolo": "There are matches today and you haven't predicted yet: do it before they close or the streak goes out.",
+    "spenta": "Predict at least one match per match day to light the fire.",
+    "nota": "Days without matches don't count: the streak stays alive between tournaments.",
+    "giornate": "{n, plural, one {day} other {days}}"
   }
 }

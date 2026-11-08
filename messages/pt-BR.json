@@ -526,7 +526,11 @@
       "nome": "Pódio de torneio",
       "descr": "Torneios terminados entre os três primeiros"
     },
-    "apriTutti": "Toque para ver todos"
+    "apriTutti": "Toque para ver todos",
+    "fuoco": {
+      "nome": "Pegando fogo",
+      "descr": "Dias de jogo seguidos com um palpite"
+    }
   },
   "giocatore": {
     "giocatore": "Jogador",
@@ -592,5 +596,17 @@
     "lega": "{nome} entrou em {lega}",
     "nessuno": "Nenhum aviso por enquanto.",
     "nota": "Os avisos cobrem os últimos 3 dias e os jogos que fecham em 24 horas."
+  },
+  "serie": {
+    "etichetta": "Sequência: {n, plural, one {# rodada} other {# rodadas}} seguidas",
+    "pericolo": "Hoje você ainda não palpitou: sua sequência está em perigo",
+    "titolo": "Sua sequência",
+    "sotto": "Dias de jogo seguidos com pelo menos um palpite",
+    "record": "Recorde: {n}",
+    "attiva": "Fogo aceso: volte no próximo dia de jogo para aumentar.",
+    "inPericolo": "Hoje tem jogos e você ainda não palpitou: faça antes que fechem ou a sequência apaga.",
+    "spenta": "Palpite pelo menos um jogo por dia de jogo e acenda o fogo.",
+    "nota": "Dias sem jogos não contam: entre um torneio e outro a sequência continua acesa.",
+    "giornate": "{n, plural, one {dia} other {dias}}"
   }
 }

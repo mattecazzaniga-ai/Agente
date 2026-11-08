@@ -360,3 +360,25 @@ export async function diarioRecente(limite = 12) {
     .sort((x, y) => y.quando.localeCompare(x.quando))
     .slice(0, limite);
 }
+
+/** La serie (fuoco) di un giocatore: giornate di gara consecutive con almeno un pronostico. */
+export async function serieUtente(utenteId: string, giorniDati?: string[]) {
+  const { calcolaSerie, giorno } = await import("./serie");
+  const supabase = await supabaseServer();
+  const adesso = new Date();
+  const oggi = giorno(adesso);
+  const fineOggi = new Date(adesso.getTime() + 36 * 3600_000).toISOString(); // largo: poi si filtra per giorno italiano
+  const [{ data: partite }, { data: miei }] = await Promise.all([
+    supabase.from("partite").select("inizio_at, stato").neq("stato", "annullata").not("coppia_a_id", "is", null).not("coppia_b_id", "is", null).lte("inizio_at", fineOggi).limit(5000),
+    giorniDati ? Promise.resolve({ data: [] }) : supabase.from("pronostici_partita").select("partita:partite(inizio_at)").eq("utente_id", utenteId).limit(5000),
+  ]);
+  const elenco = (partite as { inizio_at: string; stato: string }[] | null) ?? [];
+  const apertaOggi = elenco.some((p) => p.stato === "in_programma" && new Date(p.inizio_at) > adesso && giorno(p.inizio_at) === oggi);
+  const giorniMiei = giorniDati ?? ((miei as unknown as { partita: { inizio_at: string } | null }[] | null) ?? []).filter((x) => x.partita).map((x) => giorno(x.partita!.inizio_at));
+  return calcolaSerie(
+    elenco.map((p) => giorno(p.inizio_at)),
+    giorniMiei,
+    oggi,
+    apertaOggi,
+  );
+}

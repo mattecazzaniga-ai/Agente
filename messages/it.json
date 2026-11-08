@@ -526,7 +526,11 @@
       "nome": "Podio di torneo",
       "descr": "Tornei chiusi tra i primi tre"
     },
-    "apriTutti": "Tocca per vederli tutti"
+    "apriTutti": "Tocca per vederli tutti",
+    "fuoco": {
+      "nome": "Fuoco acceso",
+      "descr": "Giornate di gara di fila con un pronostico"
+    }
   },
   "giocatore": {
     "giocatore": "Giocatore",
@@ -592,5 +596,17 @@
     "lega": "{nome} è entrato in {lega}",
     "nessuno": "Nessun avviso per ora.",
     "nota": "Gli avvisi coprono gli ultimi 3 giorni e le partite che chiudono entro 24 ore."
+  },
+  "serie": {
+    "etichetta": "Serie: {n, plural, one {# giornata} other {# giornate}} di fila",
+    "pericolo": "Oggi non hai ancora pronosticato: la serie è in pericolo",
+    "titolo": "La tua serie",
+    "sotto": "Giornate di gara di fila in cui hai pronosticato almeno una partita",
+    "record": "Record: {n}",
+    "attiva": "Fuoco acceso: torna alla prossima giornata di gara per farlo crescere.",
+    "inPericolo": "Oggi ci sono partite e non hai ancora pronosticato: fallo prima che chiudano o la serie si spegne.",
+    "spenta": "Pronostica almeno una partita per giornata di gara e accendi il fuoco.",
+    "nota": "I giorni senza partite non contano: tra un torneo e l'altro la serie resta accesa.",
+    "giornate": "{n, plural, one {giornata} other {giornate}}"
   }
 }

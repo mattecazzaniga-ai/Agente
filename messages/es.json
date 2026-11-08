@@ -526,7 +526,11 @@
       "nome": "Podio de torneo",
       "descr": "Torneos terminados entre los tres primeros"
     },
-    "apriTutti": "Toca para verlos todos"
+    "apriTutti": "Toca para verlos todos",
+    "fuoco": {
+      "nome": "En llamas",
+      "descr": "Jornadas seguidas con un pronóstico"
+    }
   },
   "giocatore": {
     "giocatore": "Jugador",
@@ -592,5 +596,17 @@
     "lega": "{nome} entró en {lega}",
     "nessuno": "Ningún aviso por ahora.",
     "nota": "Los avisos cubren los últimos 3 días y los partidos que cierran en 24 horas."
+  },
+  "serie": {
+    "etichetta": "Racha: {n, plural, one {# jornada} other {# jornadas}} seguidas",
+    "pericolo": "Hoy todavía no has pronosticado: tu racha está en peligro",
+    "titolo": "Tu racha",
+    "sotto": "Jornadas de juego seguidas con al menos un pronóstico",
+    "record": "Récord: {n}",
+    "attiva": "Fuego encendido: vuelve en la próxima jornada para hacerlo crecer.",
+    "inPericolo": "Hoy hay partidos y todavía no has pronosticado: hazlo antes de que cierren o la racha se apaga.",
+    "spenta": "Pronostica al menos un partido por jornada y enciende el fuego.",
+    "nota": "Los días sin partidos no cuentan: entre torneos la racha sigue encendida.",
+    "giornate": "{n, plural, one {jornada} other {jornadas}}"
   }
 }
