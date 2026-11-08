@@ -259,7 +259,10 @@
     "stagione": "Stagione {anno}",
     "tuaSfida": "La tua sfida",
     "inTesta": "Sei in testa: difendi il primo posto.",
-    "colPrecisione": "Prec."
+    "colPrecisione": "Prec.",
+    "stagioneFinisce": "Finisce tra",
+    "stagioneInizia": "Inizia tra",
+    "vediStagione": "Vedi stagione"
   },
   "leghe": {
     "titolo": "Leghe",

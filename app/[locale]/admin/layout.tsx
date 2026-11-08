@@ -14,7 +14,7 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
     ["/admin/tornei", "Tornei"],
     ["/admin/giocatori", "Giocatori"],
     ["/admin/notizie", "Notizie"],
-    ["/admin/premi-sponsor", "Premi e sponsor"],
+    ["/admin/premi-sponsor", "Premi, sponsor e stagioni"],
   ];
   return (
     <div lang="it">

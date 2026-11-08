@@ -654,3 +654,36 @@ export async function aggiornaTabelloneItf(_: EsitoAdmin, form: FormData): Promi
       (avvisi.length ? `\n\nDa controllare:\n${avvisi.join("\n")}` : ""),
   );
 }
+
+// ---------------------------------------------------------------------------
+// Stagioni: nome, inizio e fine (la classifica di stagione e il conto alla rovescia le usano)
+// ---------------------------------------------------------------------------
+const giornoValido = (x: FormDataEntryValue | null) => (/^\d{4}-\d{2}-\d{2}$/.test(testo(x)) ? testo(x) : null);
+
+export async function salvaStagione(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
+  const supabase = await admin();
+  const id = uuid(form.get("id"));
+  const nome = testo(form.get("nome")).slice(0, 40);
+  const inizio = giornoValido(form.get("inizio"));
+  const fine = giornoValido(form.get("fine"));
+  if (nome.length < 2) return ko("Dai un nome alla stagione.");
+  if (!inizio || !fine) return ko("Indica le date di inizio e fine.");
+  if (fine < inizio) return ko("La fine deve venire dopo l'inizio.");
+  // niente stagioni sovrapposte: altrimenti non si sa quale sia "in corso"
+  const { data: altre } = await supabase.from("stagioni").select("id, nome, inizio, fine").lte("inizio", fine).gte("fine", inizio);
+  const sovrapposta = ((altre as { id: string; nome: string }[]) ?? []).find((s) => s.id !== id);
+  if (sovrapposta) return ko(`Le date si sovrappongono a «${sovrapposta.nome}»: accorcia quella o scegli altre date.`);
+  const riga = { nome, inizio, fine };
+  const { error } = id ? await supabase.from("stagioni").update(riga).eq("id", id) : await supabase.from("stagioni").insert(riga);
+  if (error) return ko(`Errore: ${error.message}`);
+  aggiorna();
+  const giorni = Math.round((new Date(fine).getTime() - new Date(inizio).getTime()) / 86400000) + 1;
+  return ok(`${id ? "Stagione aggiornata" : "Stagione creata"}: ${giorni} giorni.`);
+}
+
+export async function eliminaStagione(form: FormData) {
+  const supabase = await admin();
+  const id = uuid(form.get("id"));
+  if (id) await supabase.from("stagioni").delete().eq("id", id);
+  aggiorna();
+}

@@ -1,14 +1,16 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { IconaCoppa } from "@/components/Icone";
+import { IconaCoppa, IconaOrologio } from "@/components/Icone";
 import TestataFoto from "@/components/TestataFoto";
 import { FOTO } from "@/lib/foto";
 import Vuoto from "@/components/Vuoto";
 import { Link } from "@/i18n/navigation";
-import { mieLeghe, podiMesiChiusi, premi, sessione } from "@/lib/dati";
+import { mieLeghe, podiMesiChiusi, premi, sessione, stagioni } from "@/lib/dati";
+import { giorno } from "@/lib/serie";
+import Tra from "@/components/Tra";
 import { medagliePerUtente, type Medaglie } from "@/lib/trofei";
 import { MedaglieMese } from "@/components/Trofei";
 import { indirizzoSito } from "@/lib/sito";
-import { bandiera, meseIso, nomeMese, ultimiMesi } from "@/lib/formato";
+import { bandiera, data, istanteRoma, meseIso, nomeMese, stagioneAttuale, ultimiMesi } from "@/lib/formato";
 import type { RigaClassifica } from "@/lib/tipi";
 import Condividi from "@/components/Condividi";
 import SelettoreMese from "@/components/SelettoreMese";
@@ -28,11 +30,15 @@ export default async function Classifica({ params, searchParams }: { params: Pro
   const sp = await searchParams;
   const t = await getTranslations();
   const mesi = ultimiMesi(6);
-  const anno = new Date().getUTCFullYear();
-  const stagione = sp.mese === "stagione"; // tutti i mesi dell'anno
-  const mese = stagione ? "stagione" : mesi.includes(sp.mese ?? "") ? sp.mese! : meseIso();
   const ambito: Ambito = sp.ambito === "paese" || sp.ambito === "lega" ? sp.ambito : "globale";
-  const [{ supabase, user, profilo }, sito, inPalio, podi] = await Promise.all([sessione(), indirizzoSito(), premi(), podiMesiChiusi()]);
+  const [{ supabase, user, profilo }, sito, inPalio, podi, elencoStagioni] = await Promise.all([sessione(), indirizzoSito(), premi(), podiMesiChiusi(), stagioni()]);
+  const oggi = giorno(new Date());
+  const attuale = stagioneAttuale(elencoStagioni, oggi);
+  // periodo: un mese, oppure una stagione ("s-<id>"; "stagione" = quella in corso)
+  const stagioneScelta =
+    sp.mese === "stagione" ? (attuale?.stagione ?? elencoStagioni[0]) : sp.mese?.startsWith("s-") ? elencoStagioni.find((x) => `s-${x.id}` === sp.mese) : undefined;
+  const stagione = Boolean(stagioneScelta);
+  const mese = stagioneScelta ? `s-${stagioneScelta.id}` : mesi.includes(sp.mese ?? "") ? sp.mese! : meseIso();
   const medaglie = medagliePerUtente(podi);
   const titoloMedaglie = t("trofei.medaglie");
   const leghe = user ? await mieLeghe() : [];
@@ -45,7 +51,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
   let io: { posizione: number; punti: number; partecipanti: number } | undefined;
   if (puoMostrare && stagione) {
     // stagione: classifica sull'anno intero (stessi conti e spareggi), la mia riga si cerca nell'elenco
-    const { data } = await supabase.rpc("classifica_periodo", { p_dal: `${anno}-01-01`, p_al: `${anno}-12-31`, ...filtro, p_limite: 1000 });
+    const { data } = await supabase.rpc("classifica_periodo", { p_dal: stagioneScelta!.inizio, p_al: stagioneScelta!.fine, ...filtro, p_limite: 1000 });
     const tutte = (data as RigaClassifica[] | null) ?? [];
     lista = tutte.slice(0, 100);
     const mia = user ? tutte.find((r) => r.utente_id === user.id) : undefined;
@@ -69,7 +75,7 @@ export default async function Classifica({ params, searchParams }: { params: Pro
   const tab = (a: Ambito) =>
     `flex min-h-11 items-center justify-center rounded-md text-[15px] font-semibold transition ${ambito === a ? "bg-sabbia-2 text-inchiostro ring-1 ring-linea" : "text-tenue hover:text-inchiostro"}`;
   const nomeAmbito = ambito === "lega" ? lega?.nome : ambito === "paese" ? `${bandiera(profilo?.paese)} ${t("classifica.paese")}` : t("classifica.globale");
-  const etichettaPeriodo = stagione ? t("classifica.stagione", { anno }) : nomeMese(mese, locale);
+  const etichettaPeriodo = stagioneScelta ? stagioneScelta.nome : nomeMese(mese, locale);
   const immagine = `/api/immagine/classifica?${new URLSearchParams({ mese, ambito, lingua: locale, ...(lega ? { lega: lega.id } : {}) })}`;
 
   return (
@@ -103,8 +109,31 @@ export default async function Classifica({ params, searchParams }: { params: Pro
         </section>
       )}
 
+      {attuale && (
+        <section className="mt-4 flex items-center gap-3 rounded-xl bg-inchiostro px-4 py-3 text-white">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sole text-inchiostro">
+            <IconaOrologio className="h-5 w-5" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-semibold uppercase tracking-wider text-sole">{attuale.stagione.nome}</p>
+            <p className="font-display text-xl font-bold leading-tight">
+              {attuale.stato === "in_corso" ? t("classifica.stagioneFinisce") : t("classifica.stagioneInizia")}{" "}
+              <span className="cifre text-sole">
+                <Tra iso={attuale.stato === "in_corso" ? istanteRoma(attuale.stagione.fine, true) : istanteRoma(attuale.stagione.inizio, false)} />
+              </span>
+            </p>
+            <p className="text-xs text-white/70">{t("tornei.dal", { inizio: data(attuale.stagione.inizio, locale), fine: data(attuale.stagione.fine, locale, { day: "numeric", month: "short", year: "numeric" }) })}</p>
+          </div>
+          {attuale.stato === "in_corso" && !stagione && (
+            <Link href={href(ambito, { mese: `s-${attuale.stagione.id}`, ...(lega ? { lega: lega.id } : {}) })} className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/20">
+              {t("classifica.vediStagione")}
+            </Link>
+          )}
+        </section>
+      )}
+
       <div className="mt-4 flex gap-2 [&>label]:min-w-0 [&>label]:flex-1">
-        <SelettoreMese etichetta={t("classifica.periodo")} mesi={[...mesi.map((m) => ({ valore: m, nome: nomeMese(m, locale) })), { valore: "stagione", nome: t("classifica.stagione", { anno })}]} attuale={mese} />
+        <SelettoreMese etichetta={t("classifica.periodo")} mesi={[...mesi.map((m) => ({ valore: m, nome: nomeMese(m, locale) })), ...elencoStagioni.map((x) => ({ valore: `s-${x.id}`, nome: x.nome }))]} attuale={mese} />
         {ambito === "lega" && leghe.length > 0 && (
           <SelettoreMese etichetta={t("classifica.scegliLega")} nome="lega" mesi={leghe.map((l) => ({ valore: l.id, nome: l.nome }))} attuale={lega?.id ?? ""} />
         )}

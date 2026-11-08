@@ -395,8 +395,11 @@ select prova.ok((select count(*) from notizie_traduzioni where notizia_id::text 
 select prova.ok((select count(*) from classifica_periodo('2000-01-01', '2100-01-01')) >= 1, 'classifica di stagione');
 reset role;
 select prova.ok((select sum(punti) from classifica_periodo('2000-01-01', '2100-01-01')) =
-  (select coalesce(sum(punti), 0) from pronostici_partita where punti is not null and mese is not null)
-  + (select coalesce(sum(punti), 0) from pronostici_torneo where punti is not null and mese is not null), 'la stagione somma tutti i punti');
+  (select coalesce(sum(punti), 0) from pronostici_partita where punti is not null)
+  + (select coalesce(sum(punti), 0) from pronostici_torneo where punti is not null), 'la stagione somma tutti i punti');
+select prova.ok(coalesce((select sum(punti) from classifica_periodo('1990-01-01', '1990-12-31')), 0) = 0, 'fuori dalle date non conta nulla');
+-- stagioni: le legge chiunque, le scrive solo l'admin
+select prova.ok((select count(*) from stagioni) >= 1, 'c''è una stagione iniziale');
 -- gestione della lega: solo chi la crea toglie membri, rinomina ed elimina
 select prova.come('00000000-0000-0000-0000-000000000001');
 set role authenticated;
@@ -418,5 +421,12 @@ select prova.ok((select count(*) from leghe_membri lm join leghe l on l.id = lm.
 select elimina_lega((select id from leghe where nome = 'Lega rinominata'));
 reset role;
 select prova.ok(not exists (select 1 from leghe where nome = 'Lega rinominata'), 'lega eliminata');
+set role anon;
+select prova.ok((select count(*) from stagioni) >= 1, 'stagioni leggibili da tutti');
+reset role;
+select prova.come('00000000-0000-0000-0000-000000000002');
+set role authenticated;
+select prova.errore($$insert into stagioni (nome, inizio, fine) values ('Furba', current_date, current_date)$$, 'row-level security');
+reset role;
 \o
 \echo 'Tutti i test dello schema sono passati.'

@@ -259,7 +259,10 @@
     "stagione": "{anno} season",
     "tuaSfida": "Your challenge",
     "inTesta": "You're on top: defend first place.",
-    "colPrecisione": "Acc."
+    "colPrecisione": "Acc.",
+    "stagioneFinisce": "Ends in",
+    "stagioneInizia": "Starts in",
+    "vediStagione": "See season"
   },
   "leghe": {
     "titolo": "Leagues",

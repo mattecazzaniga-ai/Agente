@@ -24,3 +24,19 @@ describe("serie di giornate", () => {
     expect(giorno("2026-11-07T23:30:00Z")).toBe("2026-11-08");
   });
 });
+
+import { istanteRoma, stagioneAttuale } from "@/lib/formato";
+describe("stagioni", () => {
+  it("fine giornata in ora italiana, inverno ed estate", () => {
+    expect(istanteRoma("2026-12-31", true)).toBe("2026-12-31T22:59:59.000Z");
+    expect(istanteRoma("2026-07-31", true)).toBe("2026-07-31T21:59:59.000Z");
+  });
+  it("stagione in corso o prossima", () => {
+    const el = [{ inizio: "2027-01-01", fine: "2027-03-31" }, { inizio: "2026-11-01", fine: "2026-12-31" }];
+    expect(stagioneAttuale(el, "2026-11-08")).toMatchObject({ stato: "in_corso", stagione: el[1] });
+    expect(stagioneAttuale(el, "2026-12-31")?.stato).toBe("in_corso");
+    expect(stagioneAttuale(el, "2027-01-01")?.stagione).toBe(el[0]);
+    expect(stagioneAttuale([el[0]], "2026-11-08")?.stato).toBe("prossima");
+    expect(stagioneAttuale([el[1]], "2027-05-01")).toBeNull();
+  });
+});

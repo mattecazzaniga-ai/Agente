@@ -71,3 +71,22 @@ export function ultimiMesi(n = 6, oggi = new Date()): string[] {
   for (let i = 0; i < n; i++) out.push(meseIso(new Date(Date.UTC(oggi.getUTCFullYear(), oggi.getUTCMonth() - i, 1))));
   return out;
 }
+
+/** Istante in cui finisce (23:59:59, ora italiana) o inizia (00:00) un giorno YYYY-MM-DD. */
+export function istanteRoma(giorno: string, fine: boolean): string {
+  const [a, m, d] = giorno.split("-").map(Number);
+  const ore = fine ? [23, 59, 59] : [0, 0, 0];
+  const utc = Date.UTC(a, m - 1, d, ore[0], ore[1], ore[2]);
+  // differenza tra l'ora italiana e UTC in quel giorno (1 h d'inverno, 2 h d'estate)
+  const parti = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Rome", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date(Date.UTC(a, m - 1, d, 12)));
+  const scarto = Number(parti.find((p) => p.type === "hour")?.value ?? 13) - 12;
+  return new Date(utc - scarto * 3600_000).toISOString();
+}
+
+/** La stagione in corso (oggi tra inizio e fine), oppure la prossima che deve iniziare. */
+export function stagioneAttuale<T extends { inizio: string; fine: string }>(elenco: T[], oggi: string): { stagione: T; stato: "in_corso" | "prossima" } | null {
+  const inCorso = elenco.find((s) => s.inizio <= oggi && oggi <= s.fine);
+  if (inCorso) return { stagione: inCorso, stato: "in_corso" };
+  const prossima = [...elenco].filter((s) => s.inizio > oggi).sort((x, y) => x.inizio.localeCompare(y.inizio))[0];
+  return prossima ? { stagione: prossima, stato: "prossima" } : null;
+}

@@ -259,7 +259,10 @@
     "stagione": "Temporada {anno}",
     "tuaSfida": "Seu desafio",
     "inTesta": "Você lidera: defenda o primeiro lugar.",
-    "colPrecisione": "Prec."
+    "colPrecisione": "Prec.",
+    "stagioneFinisce": "Termina em",
+    "stagioneInizia": "Começa em",
+    "vediStagione": "Ver temporada"
   },
   "leghe": {
     "titolo": "Ligas",

@@ -382,3 +382,17 @@ export async function serieUtente(utenteId: string, giorniDati?: string[]) {
     apertaOggi,
   );
 }
+
+export interface Stagione {
+  id: string;
+  nome: string;
+  inizio: string; // YYYY-MM-DD
+  fine: string;
+}
+
+/** Le stagioni decise dall'admin, dalla più recente. */
+export async function stagioni(): Promise<Stagione[]> {
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.from("stagioni").select("id, nome, inizio, fine").order("inizio", { ascending: false });
+  return error ? [] : ((data as Stagione[]) ?? []);
+}
