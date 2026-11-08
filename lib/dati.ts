@@ -350,13 +350,18 @@ export async function schedaGiocatore(utenteId: string) {
 }
 
 /** Il diario dei tornei in corso e degli ultimi conclusi, generato dai risultati. */
+/**
+ * Solo i fatti che fanno notizia: chi ha vinto un torneo (una notizia per tabellone, a torneo finito).
+ * Niente cronaca partita per partita: quella resta nella pagina del torneo.
+ */
 export async function diarioRecente(limite = 12) {
   const { diarioTorneo } = await import("./diario");
-  const [inCorso, conclusi] = await Promise.all([caricaTornei("in_corso", 3), caricaTornei("concluso", 2)]);
+  const [inCorso, conclusi] = await Promise.all([caricaTornei("in_corso", 3), caricaTornei("concluso", 6)]);
   const tornei = await Promise.all([...inCorso, ...conclusi].map((t) => caricaTorneo(t.id)));
   return tornei
     .filter((x): x is NonNullable<typeof x> => Boolean(x))
     .flatMap((x) => diarioTorneo(x.torneo, x.tabelloni))
+    .filter((v) => v.tipo === "campioni")
     .sort((x, y) => y.quando.localeCompare(x.quando))
     .slice(0, limite);
 }

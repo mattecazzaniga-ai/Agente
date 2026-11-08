@@ -563,8 +563,8 @@
     "tuaPosizione": "Eres {posizione}.º con {punti} puntos"
   },
   "diario": {
-    "titolo": "Desde las pistas",
-    "sotto": "Hechos de los cuadros ITF, actualizados con los resultados",
+    "titolo": "Palmarés",
+    "sotto": "Quién ganó los torneos ITF, de los cuadros oficiales",
     "tipo": {
       "campioni": "Campeones",
       "turno": "Cuadro",

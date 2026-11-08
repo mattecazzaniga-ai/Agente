@@ -563,8 +563,8 @@
     "tuaPosizione": "You're #{posizione} with {punti} points"
   },
   "diario": {
-    "titolo": "From the courts",
-    "sotto": "Facts from the ITF draws, updated with the results",
+    "titolo": "Roll of honour",
+    "sotto": "Who won the ITF tournaments, from the official draws",
     "tipo": {
       "campioni": "Champions",
       "turno": "Draw",

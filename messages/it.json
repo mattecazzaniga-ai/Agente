@@ -563,8 +563,8 @@
     "tuaPosizione": "Tu sei {posizione}° con {punti} punti"
   },
   "diario": {
-    "titolo": "Dai campi",
-    "sotto": "Fatti presi dai tabelloni ITF, aggiornati con i risultati",
+    "titolo": "Albo d'oro",
+    "sotto": "Chi ha vinto i tornei ITF, dai tabelloni ufficiali",
     "tipo": {
       "campioni": "Campioni",
       "turno": "Tabellone",
