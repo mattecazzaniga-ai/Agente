@@ -268,7 +268,23 @@
     "entraOCrea": "Entra o crea",
     "nessunPunto": "Nessun punto a {mese} in questa lega: il primo posto è libero.",
     "tuSei": "Tu sei {posizione}° su {totale}",
-    "inTesta": "sei in testa, difendi il primo posto"
+    "inTesta": "sei in testa, difendi il primo posto",
+    "lega": "Lega",
+    "membriN": "{n, plural, one {# membro} other {# membri}}",
+    "membri": "membri",
+    "pronosticiMese": "pronostici a {mese}",
+    "puntiMese": "punti della lega",
+    "classificaMese": "Classifica di {mese}",
+    "capo": "creatore",
+    "rimuovi": "Togli dalla lega",
+    "rimuoviConferma": "Togliere {nome} dalla lega?",
+    "mesiPassati": "Mesi passati della lega",
+    "impostazioni": "Gestisci la lega",
+    "elimina": "Elimina la lega",
+    "eliminaConferma": "Eliminare la lega per tutti? Non si può annullare.",
+    "esciConferma": "Uscire dalla lega?",
+    "apri": "Apri",
+    "codiceBreve": "Codice"
   },
   "notizie": {
     "titolo": "Notizie",
@@ -276,7 +292,19 @@
     "leggi": "Leggi l'articolo originale",
     "nessuna": "Ancora nessuna notizia.",
     "inLingua": "in {lingua}",
-    "sottotitoloPagina": "Le ultime dal beach tennis"
+    "sottotitoloPagina": "Le ultime dal beach tennis",
+    "leggiArticolo": "Leggi l'articolo",
+    "cerca": "Cerca nelle notizie",
+    "cercaBtn": "Cerca",
+    "categorie": "Categorie",
+    "risultati": "{n, plural, one {# notizia} other {# notizie}}",
+    "ultime": "Ultime notizie",
+    "nessunRisultato": "Nessuna notizia trovata.",
+    "tutte": "Tutte le notizie",
+    "fonteLabel": "Fonte:",
+    "torneoCollegato": "Torneo collegato",
+    "vaiTorneo": "Pronostica",
+    "correlati": "Leggi anche"
   },
   "profilo": {
     "titolo": "Il tuo profilo",
@@ -526,5 +554,13 @@
     "contro": "contro {coppia}",
     "curate": "Dal mondo del beach tennis",
     "fonteDati": "Le notizie «Dai campi» si basano solo sui risultati dei tabelloni ITF."
+  },
+  "categorie": {
+    "itf": "News ITF",
+    "risultati": "Risultati",
+    "giocatori": "Giocatori",
+    "ranking": "Ranking",
+    "curiosita": "Curiosità",
+    "beachpeck": "Beach Peck"
   }
 }

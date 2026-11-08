@@ -234,3 +234,29 @@ export async function esciLega(form: FormData) {
   if (lega) await supabase.rpc("esci_lega", { p_lega: lega });
   revalidatePath("/[locale]/leghe", "page");
 }
+
+// Gestione della lega (solo chi l'ha creata: lo controlla il database)
+export async function rinominaLega(form: FormData) {
+  const lega = uuidOpz(form.get("lega"));
+  const nome = String(form.get("nome") ?? "").trim().slice(0, 40);
+  const supabase = await supabaseServer();
+  if (lega && nome.length >= 3) await supabase.rpc("rinomina_lega", { p_lega: lega, p_nome: nome });
+  revalidatePath("/[locale]/leghe", "layout");
+}
+
+export async function rimuoviMembro(form: FormData) {
+  const lega = uuidOpz(form.get("lega"));
+  const utente = uuidOpz(form.get("utente"));
+  const supabase = await supabaseServer();
+  if (lega && utente) await supabase.rpc("rimuovi_membro", { p_lega: lega, p_utente: utente });
+  revalidatePath("/[locale]/leghe", "layout");
+}
+
+export async function eliminaLega(form: FormData) {
+  const lega = uuidOpz(form.get("lega"));
+  const lingua = String(form.get("lingua") ?? "it");
+  const supabase = await supabaseServer();
+  if (lega) await supabase.rpc("elimina_lega", { p_lega: lega });
+  revalidatePath("/[locale]/leghe", "layout");
+  redirect(`/${["it", "en", "es", "pt-BR"].includes(lingua) ? lingua : "it"}/leghe`);
+}

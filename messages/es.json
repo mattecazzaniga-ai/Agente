@@ -268,7 +268,23 @@
     "entraOCrea": "Únete o crea",
     "nessunPunto": "Ningún punto en {mese} en esta liga: el primer puesto está libre.",
     "tuSei": "Eres {posizione}.º de {totale}",
-    "inTesta": "vas primero, defiende el liderato"
+    "inTesta": "vas primero, defiende el liderato",
+    "lega": "Liga",
+    "membriN": "{n, plural, one {# miembro} other {# miembros}}",
+    "membri": "miembros",
+    "pronosticiMese": "pronósticos en {mese}",
+    "puntiMese": "puntos de la liga",
+    "classificaMese": "Clasificación de {mese}",
+    "capo": "creador",
+    "rimuovi": "Quitar de la liga",
+    "rimuoviConferma": "¿Quitar a {nome} de la liga?",
+    "mesiPassati": "Meses pasados de la liga",
+    "impostazioni": "Gestionar la liga",
+    "elimina": "Eliminar la liga",
+    "eliminaConferma": "¿Eliminar la liga para todos? No se puede deshacer.",
+    "esciConferma": "¿Salir de la liga?",
+    "apri": "Abrir",
+    "codiceBreve": "Código"
   },
   "notizie": {
     "titolo": "Noticias",
@@ -276,7 +292,19 @@
     "leggi": "Leer el artículo original",
     "nessuna": "Todavía no hay noticias.",
     "inLingua": "en {lingua}",
-    "sottotitoloPagina": "Lo último del beach tennis"
+    "sottotitoloPagina": "Lo último del beach tennis",
+    "leggiArticolo": "Leer el artículo",
+    "cerca": "Buscar en las noticias",
+    "cercaBtn": "Buscar",
+    "categorie": "Categorías",
+    "risultati": "{n, plural, one {# noticia} other {# noticias}}",
+    "ultime": "Últimas noticias",
+    "nessunRisultato": "No se encontraron noticias.",
+    "tutte": "Todas las noticias",
+    "fonteLabel": "Fuente:",
+    "torneoCollegato": "Torneo relacionado",
+    "vaiTorneo": "Pronosticar",
+    "correlati": "Lee también"
   },
   "profilo": {
     "titolo": "Tu perfil",
@@ -526,5 +554,13 @@
     "contro": "contra {coppia}",
     "curate": "Del mundo del beach tennis",
     "fonteDati": "Las noticias «Desde las pistas» se basan solo en los resultados de los cuadros ITF."
+  },
+  "categorie": {
+    "itf": "Noticias ITF",
+    "risultati": "Resultados",
+    "giocatori": "Jugadores",
+    "ranking": "Ranking",
+    "curiosita": "Curiosidades",
+    "beachpeck": "Beach Peck"
   }
 }

@@ -47,7 +47,9 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
         <div key={l.id} className="pannello space-y-3 p-4">
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-xl font-bold tracking-tight">{l.nome}</p>
+              <Link href={`/leghe/${l.codice}`} className="block truncate font-display text-xl font-bold tracking-tight hover:text-viola">
+                {l.nome}
+              </Link>
               <p className="flex items-center gap-2 text-sm text-tenue">
                 <span className="cifre tracking-[.2em] text-inchiostro">{l.codice}</span>
                 <span className="inline-flex items-center gap-1">
@@ -55,8 +57,8 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
                 </span>
               </p>
             </div>
-            <Link href={`/classifica?ambito=lega&lega=${l.id}`} className="chip py-1.5">
-              <IconaPodio className="h-4 w-4" /> {t("leghe.classifica")}
+            <Link href={`/leghe/${l.codice}`} className="chip py-1.5">
+              <IconaPodio className="h-4 w-4" /> {t("leghe.apri")}
             </Link>
           </div>
           {(() => {
@@ -86,10 +88,12 @@ export default async function Leghe({ params }: { params: Promise<{ locale: stri
             );
           })()}
           <Invita nome={l.nome} codice={l.codice} sito={sito} />
-          <form action={esciLega}>
-            <input type="hidden" name="lega" value={l.id} />
-            <button className="text-xs text-tenue underline-offset-2 hover:text-corallo hover:underline">{t("leghe.esci")}</button>
-          </form>
+          {l.creata_da !== user.id && (
+            <form action={esciLega}>
+              <input type="hidden" name="lega" value={l.id} />
+              <button className="text-xs text-tenue underline-offset-2 hover:text-corallo hover:underline">{t("leghe.esci")}</button>
+            </form>
+          )}
         </div>
       ))}
       </div>

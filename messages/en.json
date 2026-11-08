@@ -268,7 +268,23 @@
     "entraOCrea": "Join or create",
     "nessunPunto": "No points in {mese} in this league yet: first place is up for grabs.",
     "tuSei": "You're #{posizione} of {totale}",
-    "inTesta": "you're leading, defend first place"
+    "inTesta": "you're leading, defend first place",
+    "lega": "League",
+    "membriN": "{n, plural, one {# member} other {# members}}",
+    "membri": "members",
+    "pronosticiMese": "predictions in {mese}",
+    "puntiMese": "league points",
+    "classificaMese": "{mese} standings",
+    "capo": "creator",
+    "rimuovi": "Remove from league",
+    "rimuoviConferma": "Remove {nome} from the league?",
+    "mesiPassati": "League's past months",
+    "impostazioni": "Manage the league",
+    "elimina": "Delete the league",
+    "eliminaConferma": "Delete the league for everyone? This can't be undone.",
+    "esciConferma": "Leave the league?",
+    "apri": "Open",
+    "codiceBreve": "Code"
   },
   "notizie": {
     "titolo": "News",
@@ -276,7 +292,19 @@
     "leggi": "Read the original article",
     "nessuna": "No news yet.",
     "inLingua": "in {lingua}",
-    "sottotitoloPagina": "The latest from beach tennis"
+    "sottotitoloPagina": "The latest from beach tennis",
+    "leggiArticolo": "Read the article",
+    "cerca": "Search news",
+    "cercaBtn": "Search",
+    "categorie": "Categories",
+    "risultati": "{n, plural, one {# story} other {# stories}}",
+    "ultime": "Latest news",
+    "nessunRisultato": "No news found.",
+    "tutte": "All news",
+    "fonteLabel": "Source:",
+    "torneoCollegato": "Related tournament",
+    "vaiTorneo": "Predict",
+    "correlati": "Read also"
   },
   "profilo": {
     "titolo": "Your profile",
@@ -526,5 +554,13 @@
     "contro": "against {coppia}",
     "curate": "From the beach tennis world",
     "fonteDati": "«From the courts» stories are based only on ITF draw results."
+  },
+  "categorie": {
+    "itf": "ITF news",
+    "risultati": "Results",
+    "giocatori": "Players",
+    "ranking": "Rankings",
+    "curiosita": "Trivia",
+    "beachpeck": "Beach Peck"
   }
 }

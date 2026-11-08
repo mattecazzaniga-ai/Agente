@@ -168,11 +168,20 @@ export interface NotiziaMostrata {
   id: string;
   titolo: string;
   riassunto: string;
+  corpo: string | null;
   lingua: string;
   altraLingua: boolean;
-  fonte_nome: string;
-  url_originale: string;
+  fonte_nome: string | null;
+  url_originale: string | null;
   pubblicata_at: string | null;
+  categoria: Notizia["categoria"];
+  immagine_url: string | null;
+  credito_immagine: string | null;
+  autore: string | null;
+  in_evidenza: boolean;
+  torneo: { id: string; nome: string } | null;
+  /** articolo scritto qui (con testo) oppure solo un link alla fonte */
+  articolo: boolean;
 }
 
 /** Sceglie la traduzione nella lingua dell'utente; se manca, un'altra (prima it, poi en, poi la prima). */
@@ -180,18 +189,50 @@ export function traduzione(n: Notizia, lingua: string): NotiziaMostrata | null {
   const t = n.notizie_traduzioni;
   const scelta = t.find((x) => x.lingua === lingua) ?? t.find((x) => x.lingua === "it") ?? t.find((x) => x.lingua === "en") ?? t[0];
   if (!scelta) return null;
-  return { id: n.id, titolo: scelta.titolo, riassunto: scelta.riassunto, lingua: scelta.lingua, altraLingua: scelta.lingua !== lingua, fonte_nome: n.fonte_nome, url_originale: n.url_originale, pubblicata_at: n.pubblicata_at };
+  return {
+    id: n.id,
+    titolo: scelta.titolo,
+    riassunto: scelta.riassunto,
+    corpo: scelta.corpo ?? null,
+    lingua: scelta.lingua,
+    altraLingua: scelta.lingua !== lingua,
+    fonte_nome: n.fonte_nome,
+    url_originale: n.url_originale,
+    pubblicata_at: n.pubblicata_at,
+    categoria: n.categoria ?? "itf",
+    immagine_url: n.immagine_url ?? null,
+    credito_immagine: n.credito_immagine ?? null,
+    autore: n.autore ?? null,
+    in_evidenza: Boolean(n.in_evidenza),
+    torneo: n.torneo ?? null,
+    articolo: Boolean(scelta.corpo?.trim()) || !n.url_originale,
+  };
 }
 
-export async function notiziePubblicate(lingua: string, limite = 30): Promise<NotiziaMostrata[]> {
+const CAMPI_NOTIZIA = "id, fonte_nome, url_originale, pubblicata_at, stato, categoria, immagine_url, credito_immagine, torneo_id, autore, in_evidenza, torneo:tornei(id, nome), notizie_traduzioni(lingua, titolo, riassunto, corpo)";
+
+/** Notizie pubblicate (quelle programmate compaiono solo dalla loro data), con filtri facoltativi. */
+export async function notiziePubblicate(lingua: string, limite = 30, filtri: { categoria?: string; torneo?: string; escludi?: string } = {}): Promise<NotiziaMostrata[]> {
   const supabase = await supabaseServer();
-  const { data } = await supabase
+  let q = supabase
     .from("notizie")
-    .select("id, fonte_nome, url_originale, pubblicata_at, stato, notizie_traduzioni(lingua, titolo, riassunto)")
+    .select(CAMPI_NOTIZIA)
     .eq("stato", "pubblicata")
+    .lte("pubblicata_at", new Date().toISOString())
     .order("pubblicata_at", { ascending: false })
     .limit(limite);
-  return ((data as Notizia[]) ?? []).map((n) => traduzione(n, lingua)).filter((x): x is NotiziaMostrata => Boolean(x));
+  if (filtri.categoria) q = q.eq("categoria", filtri.categoria);
+  if (filtri.torneo) q = q.eq("torneo_id", filtri.torneo);
+  if (filtri.escludi) q = q.neq("id", filtri.escludi);
+  const { data } = await q;
+  return ((data as unknown as Notizia[]) ?? []).map((n) => traduzione(n, lingua)).filter((x): x is NotiziaMostrata => Boolean(x));
+}
+
+/** Un articolo pubblicato, per la sua pagina. */
+export async function notiziaPubblicata(id: string, lingua: string): Promise<NotiziaMostrata | null> {
+  const supabase = await supabaseServer();
+  const { data } = await supabase.from("notizie").select(CAMPI_NOTIZIA).eq("id", id).eq("stato", "pubblicata").lte("pubblicata_at", new Date().toISOString()).maybeSingle();
+  return data ? traduzione(data as unknown as Notizia, lingua) : null;
 }
 
 export interface LegaMia {
@@ -204,7 +245,16 @@ export interface LegaMia {
 
 export async function mieLeghe(): Promise<LegaMia[]> {
   const supabase = await supabaseServer();
-  const { data } = await supabase.from("leghe").select("id, nome, codice, creata_da, leghe_membri(count)").order("creato_at");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+  // solo le leghe di cui sono membro: gli admin, per il database, vedrebbero tutte le leghe
+  const { data } = await supabase
+    .from("leghe")
+    .select("id, nome, codice, creata_da, leghe_membri(count), io:leghe_membri!inner(utente_id)")
+    .eq("io.utente_id", user.id)
+    .order("creato_at");
   return ((data as unknown as (Omit<LegaMia, "membri"> & { leghe_membri: { count: number }[] })[]) ?? []).map((l) => ({
     id: l.id,
     nome: l.nome,

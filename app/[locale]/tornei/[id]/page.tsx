@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { caricaTorneo, classificaTorneo, mieiPronostici, sessione } from "@/lib/dati";
+import { caricaTorneo, classificaTorneo, mieiPronostici, notiziePubblicate, sessione } from "@/lib/dati";
+import SchedaNotizia from "@/components/SchedaNotizia";
 import CampioniTorneo from "@/components/CampioniTorneo";
 import { indirizzoSito, urlAccesso } from "@/lib/sito";
 import { bandiera, coppiaLungaConBandiere, data, nomeCoppia } from "@/lib/formato";
@@ -46,6 +47,7 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
     supabase.rpc("voti_del_torneo", { p_torneo: id }),
     classificaTorneo(id),
   ]);
+  const articoli = await notiziePubblicate(locale, 3, { torneo: id });
   const concluso = torneo.stato === "concluso";
   // rif (partita o tabellone) -> coppia -> percentuale e punti in palio
   const voti = new Map<string, Record<string, VotoMostrato>>();
@@ -199,6 +201,16 @@ export default async function PaginaTorneo({ params, searchParams }: { params: P
             </section>
             {!concluso && <CampioniTorneo righe={pronosticatori} concluso={false} io={user?.id} />}
             <NumeriTorneo s={statisticheTorneo(scelto.partite, scelto.coppie)} />
+            {articoli.length > 0 && (
+              <section>
+                <h2 className="titolo-sezione">{t("notizie.titolo")}</h2>
+                <div className="space-y-3">
+                  {articoli.map((n) => (
+                    <SchedaNotizia key={n.id} notizia={n} />
+                  ))}
+                </div>
+              </section>
+            )}
             <Regole />
           </aside>
         </div>

@@ -268,7 +268,23 @@
     "entraOCrea": "Entre ou crie",
     "nessunPunto": "Nenhum ponto em {mese} nesta liga: o primeiro lugar está livre.",
     "tuSei": "Você é {posizione}º de {totale}",
-    "inTesta": "você lidera, defenda o primeiro lugar"
+    "inTesta": "você lidera, defenda o primeiro lugar",
+    "lega": "Liga",
+    "membriN": "{n, plural, one {# membro} other {# membros}}",
+    "membri": "membros",
+    "pronosticiMese": "palpites em {mese}",
+    "puntiMese": "pontos da liga",
+    "classificaMese": "Ranking de {mese}",
+    "capo": "criador",
+    "rimuovi": "Tirar da liga",
+    "rimuoviConferma": "Tirar {nome} da liga?",
+    "mesiPassati": "Meses passados da liga",
+    "impostazioni": "Gerenciar a liga",
+    "elimina": "Excluir a liga",
+    "eliminaConferma": "Excluir a liga para todos? Não dá para desfazer.",
+    "esciConferma": "Sair da liga?",
+    "apri": "Abrir",
+    "codiceBreve": "Código"
   },
   "notizie": {
     "titolo": "Notícias",
@@ -276,7 +292,19 @@
     "leggi": "Ler a matéria original",
     "nessuna": "Ainda não há notícias.",
     "inLingua": "em {lingua}",
-    "sottotitoloPagina": "As últimas do beach tennis"
+    "sottotitoloPagina": "As últimas do beach tennis",
+    "leggiArticolo": "Ler a matéria",
+    "cerca": "Buscar nas notícias",
+    "cercaBtn": "Buscar",
+    "categorie": "Categorias",
+    "risultati": "{n, plural, one {# notícia} other {# notícias}}",
+    "ultime": "Últimas notícias",
+    "nessunRisultato": "Nenhuma notícia encontrada.",
+    "tutte": "Todas as notícias",
+    "fonteLabel": "Fonte:",
+    "torneoCollegato": "Torneio relacionado",
+    "vaiTorneo": "Palpitar",
+    "correlati": "Leia também"
   },
   "profilo": {
     "titolo": "Seu perfil",
@@ -526,5 +554,13 @@
     "contro": "contra {coppia}",
     "curate": "Do mundo do beach tennis",
     "fonteDati": "As notícias «Das quadras» se baseiam só nos resultados das chaves ITF."
+  },
+  "categorie": {
+    "itf": "Notícias ITF",
+    "risultati": "Resultados",
+    "giocatori": "Jogadores",
+    "ranking": "Ranking",
+    "curiosita": "Curiosidades",
+    "beachpeck": "Beach Peck"
   }
 }

@@ -120,11 +120,21 @@ export interface RigaClassifica {
   game_esatti: number; // pronostici esatti sui game
 }
 
+export const CATEGORIE_NOTIZIE = ["itf", "risultati", "giocatori", "ranking", "curiosita", "beachpeck"] as const;
+export type CategoriaNotizia = (typeof CATEGORIE_NOTIZIE)[number];
+
 export interface Notizia {
   id: string;
-  fonte_nome: string;
-  url_originale: string;
+  fonte_nome: string | null;
+  url_originale: string | null;
   pubblicata_at: string | null;
   stato: "bozza" | "pubblicata";
-  notizie_traduzioni: { lingua: string; titolo: string; riassunto: string }[];
+  categoria: CategoriaNotizia;
+  immagine_url: string | null;
+  credito_immagine: string | null;
+  torneo_id: string | null;
+  autore: string | null;
+  in_evidenza: boolean;
+  torneo?: { id: string; nome: string } | null;
+  notizie_traduzioni: { lingua: string; titolo: string; riassunto: string; corpo?: string | null }[];
 }

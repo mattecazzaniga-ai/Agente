@@ -437,10 +437,12 @@ export async function eliminaPartita(form: FormData) {
 }
 
 // ---------------------------------------------------------------------------
-// Notizie: riassunti originali (max 320 caratteri, circa 3 righe) con fonte e link
+// Notizie: articoli completi (testo nostro, foto, categoria, torneo) oppure segnalazioni con link alla fonte
 // ---------------------------------------------------------------------------
 
 const LINGUE = ["it", "pt-BR", "es", "en"] as const;
+const CATEGORIE = ["itf", "risultati", "giocatori", "ranking", "curiosita", "beachpeck"];
+const TIPI_FOTO: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export async function salvaNotizia(_: EsitoAdmin, form: FormData): Promise<EsitoAdmin> {
   const supabase = await admin();
@@ -448,24 +450,63 @@ export async function salvaNotizia(_: EsitoAdmin, form: FormData): Promise<Esito
   const url = testo(form.get("url_originale"));
   const fonte = testo(form.get("fonte_nome"));
   const stato = testo(form.get("stato")) === "pubblicata" ? "pubblicata" : "bozza";
-  if (!/^https?:\/\/\S+\.\S+/.test(url)) return ko("Link all'articolo originale non valido.");
-  if (fonte.length < 2) return ko("Indica la fonte.");
-  const traduzioni = LINGUE.map((lingua) => ({ lingua, titolo: testo(form.get(`titolo_${lingua}`)), riassunto: testo(form.get(`riassunto_${lingua}`)) })).filter((t) => t.titolo || t.riassunto);
-  if (!traduzioni.length) return ko("Scrivi titolo e riassunto in almeno una lingua.");
+  const categoria = CATEGORIE.includes(testo(form.get("categoria"))) ? testo(form.get("categoria")) : "itf";
+  const autore = testo(form.get("autore")).slice(0, 80) || null;
+  const credito = testo(form.get("credito_immagine")).slice(0, 120) || null;
+  const torneo_id = uuid(form.get("torneo_id"));
+  const in_evidenza = form.get("in_evidenza") === "1";
+  const quando = iso(form.get("pubblicata_at"));
+  if (url && !/^https?:\/\/\S+\.\S+/.test(url)) return ko("Link alla fonte non valido.");
+  if (url && fonte.length < 2) return ko("Se metti il link, scrivi anche il nome della fonte.");
+  const traduzioni = LINGUE.map((lingua) => ({
+    lingua,
+    titolo: testo(form.get(`titolo_${lingua}`)),
+    riassunto: testo(form.get(`riassunto_${lingua}`)),
+    corpo: testo(form.get(`corpo_${lingua}`)) || null,
+  })).filter((t) => t.titolo || t.riassunto || t.corpo);
+  if (!traduzioni.length) return ko("Scrivi titolo e sottotitolo in almeno una lingua.");
   for (const t of traduzioni) {
     if (t.titolo.length < 5 || t.titolo.length > 120) return ko(`Titolo (${t.lingua}): da 5 a 120 caratteri.`);
-    if (t.riassunto.length < 20 || t.riassunto.length > 320) return ko(`Riassunto (${t.lingua}): da 20 a 320 caratteri (circa 3 righe).`);
+    if (t.riassunto.length < 20 || t.riassunto.length > 320) return ko(`Sottotitolo (${t.lingua}): da 20 a 320 caratteri.`);
+    if ((t.corpo?.length ?? 0) > 20000) return ko(`Testo (${t.lingua}): massimo 20.000 caratteri.`);
   }
-  const { data, error } = id
-    ? await supabase.from("notizie").update({ fonte_nome: fonte, url_originale: url, stato }).eq("id", id).select("id").single()
-    : await supabase.from("notizie").insert({ fonte_nome: fonte, url_originale: url, stato }).select("id").single();
+  if (!url && !traduzioni.some((t) => t.corpo)) return ko("Scrivi il testo dell'articolo, oppure metti il link alla fonte.");
+
+  // foto: caricata dal telefono oppure indirizzo
+  let immagine_url: string | null = testo(form.get("immagine_url")) || null;
+  const file = form.get("immagine");
+  if (file instanceof File && file.size > 0) {
+    const ext = TIPI_FOTO[file.type];
+    if (!ext) return ko("La foto deve essere JPG, PNG o WebP.");
+    if (file.size > 3 * 1024 * 1024) return ko("La foto è troppo grande (massimo 3 MB).");
+    const percorso = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("notizie").upload(percorso, file, { contentType: file.type, upsert: false });
+    if (error) return ko(`Caricamento della foto: ${error.message}`);
+    immagine_url = supabase.storage.from("notizie").getPublicUrl(percorso).data.publicUrl;
+  }
+  if (immagine_url && !/^https?:\/\//.test(immagine_url)) return ko("Indirizzo della foto non valido.");
+
+  const riga = {
+    fonte_nome: url ? fonte : null,
+    url_originale: url || null,
+    stato,
+    categoria,
+    autore,
+    credito_immagine: credito,
+    torneo_id,
+    in_evidenza,
+    immagine_url,
+    ...(quando ? { pubblicata_at: quando } : {}),
+  };
+  const { data, error } = id ? await supabase.from("notizie").update(riga).eq("id", id).select("id, pubblicata_at").single() : await supabase.from("notizie").insert(riga).select("id, pubblicata_at").single();
   if (error) return ko(`Errore: ${error.message}`);
   await supabase.from("notizie_traduzioni").delete().eq("notizia_id", data.id).not("lingua", "in", `(${traduzioni.map((t) => `"${t.lingua}"`).join(",")})`);
   const { error: e2 } = await supabase.from("notizie_traduzioni").upsert(traduzioni.map((t) => ({ ...t, notizia_id: data.id })));
   if (e2) return ko(`Traduzioni: ${e2.message}`);
   aggiorna();
   if (!id) redirect(`/it/admin/notizie?modifica=${data.id}&salvata=1`);
-  return ok(stato === "pubblicata" ? "Salvata e pubblicata." : "Bozza salvata.");
+  const futura = data.pubblicata_at && new Date(data.pubblicata_at).getTime() > Date.now();
+  return ok(stato === "bozza" ? "Bozza salvata." : futura ? `Programmata: esce il ${new Date(data.pubblicata_at).toLocaleString("it-IT", { timeZone: "Europe/Rome", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}.` : "Salvata e pubblicata.");
 }
 
 export async function eliminaNotizia(form: FormData) {

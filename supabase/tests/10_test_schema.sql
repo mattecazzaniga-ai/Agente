@@ -382,5 +382,41 @@ select prova.ok(not exists (
                  + coalesce((select sum(pt.punti) from pronostici_torneo pt join tabelloni tb on tb.id = pt.tabellone_id
                              where tb.torneo_id = '20000000-0000-0000-0000-000000000001' and pt.utente_id = c.utente_id), 0)
 ), 'punti del torneo = somma dei suoi pronostici');
+-- Beach Peck 2.0: notizie programmate, gestione leghe, classifica di stagione
+insert into notizie (id, stato, pubblicata_at, categoria) values
+  ('70000000-0000-0000-0000-000000000001', 'pubblicata', now() - interval '1 hour', 'risultati'),
+  ('70000000-0000-0000-0000-000000000002', 'pubblicata', now() + interval '1 day', 'itf');
+insert into notizie_traduzioni (notizia_id, lingua, titolo, riassunto, corpo) values
+  ('70000000-0000-0000-0000-000000000001', 'it', 'Articolo uscito', 'Un riassunto abbastanza lungo per il controllo.', 'Primo paragrafo.'),
+  ('70000000-0000-0000-0000-000000000002', 'it', 'Articolo futuro', 'Un riassunto abbastanza lungo per il controllo.', null);
+set role anon;
+select prova.ok((select count(*) from notizie where id::text like '70000000%') = 1, 'una notizia programmata non si vede prima della data');
+select prova.ok((select count(*) from notizie_traduzioni where notizia_id::text like '70000000%') = 1, 'neanche la sua traduzione');
+select prova.ok((select count(*) from classifica_periodo('2000-01-01', '2100-01-01')) >= 1, 'classifica di stagione');
+reset role;
+select prova.ok((select sum(punti) from classifica_periodo('2000-01-01', '2100-01-01')) =
+  (select coalesce(sum(punti), 0) from pronostici_partita where punti is not null and mese is not null)
+  + (select coalesce(sum(punti), 0) from pronostici_torneo where punti is not null and mese is not null), 'la stagione somma tutti i punti');
+-- gestione della lega: solo chi la crea toglie membri, rinomina ed elimina
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+select crea_lega('Lega da gestire');
+reset role;
+select codice as cod_gestire from leghe where nome = 'Lega da gestire' \gset
+select prova.come('00000000-0000-0000-0000-000000000002');
+set role authenticated;
+select unisciti_lega(:'cod_gestire');
+select prova.errore($$select rimuovi_membro((select id from leghe where nome = 'Lega da gestire'), '00000000-0000-0000-0000-000000000001')$$, 'Solo chi ha creato');
+select prova.errore($$select elimina_lega((select id from leghe where nome = 'Lega da gestire'))$$, 'Solo chi ha creato');
+reset role;
+select prova.come('00000000-0000-0000-0000-000000000001');
+set role authenticated;
+select prova.errore($$select esci_lega((select id from leghe where nome = 'Lega da gestire'))$$, 'puoi eliminarla');
+select rinomina_lega((select id from leghe where nome = 'Lega da gestire'), 'Lega rinominata');
+select rimuovi_membro((select id from leghe where nome = 'Lega rinominata'), '00000000-0000-0000-0000-000000000002');
+select prova.ok((select count(*) from leghe_membri lm join leghe l on l.id = lm.lega_id where l.nome = 'Lega rinominata') = 1, 'membro tolto');
+select elimina_lega((select id from leghe where nome = 'Lega rinominata'));
+reset role;
+select prova.ok(not exists (select 1 from leghe where nome = 'Lega rinominata'), 'lega eliminata');
 \o
 \echo 'Tutti i test dello schema sono passati.'
