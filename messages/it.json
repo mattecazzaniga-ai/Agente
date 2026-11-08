@@ -18,8 +18,8 @@
     "scegli": "Lingua"
   },
   "home": {
-    "titolo": "Pronostica il beach tennis con i tuoi amici.",
-    "intro": "Scegli chi vince, come finiscono i set e il long dei tornei ITF. A fine partita i punti arrivano da soli, e ogni mese si riparte da zero.",
+    "titolo": "Fuori dal campo, la sfida continua.",
+    "intro": "Pronostica il beach tennis ITF, conquista punti e sfida la community. A fine partita i punti arrivano da soli.",
     "inizia": "Inizia a giocare",
     "daPronosticare": "Partite da pronosticare",
     "nessunaAperta": "Adesso non ci sono partite da pronosticare. Torna quando esce il prossimo turno.",
@@ -114,7 +114,17 @@
     "daPronosticare": "{n, plural, one {# partita da pronosticare} other {# partite da pronosticare}}",
     "chiusiProssimoTurno": "Pronostici chiusi: si riaprono con il prossimo turno",
     "prestoAperti": "Pronostici in arrivo con le prime partite",
-    "tabelloneInArrivo": "Tabellone in arrivo"
+    "tabelloneInArrivo": "Tabellone in arrivo",
+    "cercaFiltra": "Cerca e filtra",
+    "cerca": "Nome del torneo o città",
+    "categoria": "Categoria",
+    "tutteCategorie": "Tutte le categorie",
+    "paese": "Paese",
+    "tuttiPaesi": "Tutti i Paesi",
+    "genere": "Tabellone",
+    "tuttiGeneri": "Tutti i tabelloni",
+    "applica": "Applica",
+    "azzera": "Azzera"
   },
   "torneo": {
     "chiVinceTorneo": "Chi vince il tabellone {genere}?",
@@ -232,7 +242,7 @@
     "colVincitori": "Vinc.",
     "colSet": "Set",
     "colGame": "Game",
-    "legenda": "Pron. = pronostici fatti · Vinc. = vincitori indovinati · Set = set vinti indovinati (2-0 o 2-1) · Game = partite con i game di entrambi i set esatti. A parità di punti vince chi ha più Set, poi più Vinc., poi più Game.",
+    "legenda": "Pron. = pronostici fatti · Vinc. = vincitori indovinati · Set = set vinti indovinati (2-0 o 2-1) · Game = partite con i game di entrambi i set esatti. A parità di punti vince chi ha più Set, poi più Vinc., poi più Game. Prec. = vincitori indovinati sul totale dei pronostici valutati.",
     "utente": "Giocatore",
     "tuaPosizione": "La tua posizione",
     "giocatori": "Giocatori",
@@ -244,7 +254,12 @@
     "statRiga": "{pronostici} pron. · {vincitori} vinc. · {set} set · {game} game",
     "pochiTitolo": "La sfida è appena cominciata",
     "pochiTesto": "Crea una lega, manda il codice nel gruppo del tuo circolo e scopri chi ne capisce davvero di beach tennis.",
-    "pochiAzione": "Sfida i tuoi amici"
+    "pochiAzione": "Sfida i tuoi amici",
+    "periodo": "Periodo",
+    "stagione": "Stagione {anno}",
+    "tuaSfida": "La tua sfida",
+    "inTesta": "Sei in testa: difendi il primo posto.",
+    "colPrecisione": "Prec."
   },
   "leghe": {
     "titolo": "Leghe",
@@ -329,7 +344,10 @@
     "storicoVuoto": "Non hai ancora fatto pronostici.",
     "storicoAiuto": "Tocca una partita per vedere voce per voce cosa avevi messo e quanti punti hai preso.",
     "impostazioni": "Nickname e Paese",
-    "trofei": "I tuoi trofei"
+    "trofei": "I tuoi trofei",
+    "condividi": "Condividi il profilo",
+    "condividiTesto": "Il mio profilo su Beach Peck ({nome}): sfidami ai pronostici di beach tennis!",
+    "leMieLeghe": "Le mie leghe"
   },
   "condividi": {
     "condividi": "Condividi",
@@ -368,7 +386,9 @@
     "esiste": "Questa email ha già un account: accedi.",
     "stessaPassword": "È uguale alla password attuale.",
     "risultato": "Scegli il risultato dei set e i game.",
-    "gameImpossibili": "Questi game non sono possibili con questo risultato dei set."
+    "gameImpossibili": "Questi game non sono possibili con questo risultato dei set.",
+    "pagina": "Questa pagina non si è caricata. Riprova tra un attimo.",
+    "riprova": "Riprova"
   },
   "punti": {
     "vincitore": "Vincitore",
@@ -562,5 +582,15 @@
     "ranking": "Ranking",
     "curiosita": "Curiosità",
     "beachpeck": "Beach Peck"
+  },
+  "avvisi": {
+    "titolo": "Avvisi",
+    "sotto": "Cosa è successo di nuovo per te",
+    "scadenza": "Da pronosticare: chiude tra",
+    "punti": "Punti assegnati: +{punti}",
+    "notizia": "Nuovo articolo",
+    "lega": "{nome} è entrato in {lega}",
+    "nessuno": "Nessun avviso per ora.",
+    "nota": "Gli avvisi coprono gli ultimi 3 giorni e le partite che chiudono entro 24 ore."
   }
 }

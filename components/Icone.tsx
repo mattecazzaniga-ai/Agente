@@ -165,3 +165,8 @@ export const IconaMedaglia = ({ className = "h-6 w-6" }: P) => (
     <path d="m12 12.5.8 1.6 1.7.2-1.3 1.2.3 1.7-1.5-.8-1.5.8.3-1.7-1.3-1.2 1.7-.2z" />
   </svg>
 );
+export const IconaCampanella = ({ className = "h-5 w-5" }: P) => (
+  <svg {...base} className={className}>
+    <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15zM10 21h4" />
+  </svg>
+);

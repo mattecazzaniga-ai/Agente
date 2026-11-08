@@ -18,8 +18,8 @@
     "scegli": "Idioma"
   },
   "home": {
-    "titolo": "Dê palpites no beach tennis com seus amigos.",
-    "intro": "Escolha quem vence, como terminam os sets e o long dos torneios ITF. No fim do jogo os pontos chegam sozinhos, e todo mês recomeça do zero.",
+    "titolo": "Fora da quadra, o desafio continua.",
+    "intro": "Palpite no beach tennis ITF, ganhe pontos e desafie a comunidade. Os pontos chegam sozinhos no fim do jogo.",
     "inizia": "Começar a jogar",
     "daPronosticare": "Jogos para palpitar",
     "nessunaAperta": "Agora não há jogos para palpitar. Volte quando sair a próxima rodada.",
@@ -114,7 +114,17 @@
     "daPronosticare": "{n, plural, one {# jogo para palpitar} other {# jogos para palpitar}}",
     "chiusiProssimoTurno": "Palpites fechados: reabrem na próxima rodada",
     "prestoAperti": "Palpites abrem com os primeiros jogos",
-    "tabelloneInArrivo": "Chave em breve"
+    "tabelloneInArrivo": "Chave em breve",
+    "cercaFiltra": "Buscar e filtrar",
+    "cerca": "Nome do torneio ou cidade",
+    "categoria": "Categoria",
+    "tutteCategorie": "Todas as categorias",
+    "paese": "País",
+    "tuttiPaesi": "Todos os países",
+    "genere": "Chave",
+    "tuttiGeneri": "Todas as chaves",
+    "applica": "Aplicar",
+    "azzera": "Limpar"
   },
   "torneo": {
     "chiVinceTorneo": "Quem vence a chave {genere}?",
@@ -232,7 +242,7 @@
     "colVincitori": "Venc.",
     "colSet": "Sets",
     "colGame": "Games",
-    "legenda": "Palp. = palpites feitos · Venc. = vencedores certos · Sets = sets vencidos certos (2-0 ou 2-1) · Games = jogos com os games dos dois sets exatos. Em empate de pontos vence quem tem mais Sets, depois mais Venc., depois mais Games.",
+    "legenda": "Palp. = palpites feitos · Venc. = vencedores certos · Sets = sets vencidos certos (2-0 ou 2-1) · Games = jogos com os games dos dois sets exatos. Em empate de pontos vence quem tem mais Sets, depois mais Venc., depois mais Games. Prec. = vencedores certos sobre os palpites avaliados.",
     "utente": "Jogador",
     "tuaPosizione": "Sua posição",
     "giocatori": "Jogadores",
@@ -244,7 +254,12 @@
     "statRiga": "{pronostici} palp. · {vincitori} venc. · {set} sets · {game} games",
     "pochiTitolo": "O desafio acabou de começar",
     "pochiTesto": "Crie uma liga, mande o código no grupo do seu clube e descubra quem entende mesmo de beach tennis.",
-    "pochiAzione": "Desafie seus amigos"
+    "pochiAzione": "Desafie seus amigos",
+    "periodo": "Período",
+    "stagione": "Temporada {anno}",
+    "tuaSfida": "Seu desafio",
+    "inTesta": "Você lidera: defenda o primeiro lugar.",
+    "colPrecisione": "Prec."
   },
   "leghe": {
     "titolo": "Ligas",
@@ -329,7 +344,10 @@
     "storicoVuoto": "Você ainda não fez palpites.",
     "storicoAiuto": "Toque em um jogo para ver, parte por parte, o que você colocou e quantos pontos fez.",
     "impostazioni": "Nickname e país",
-    "trofei": "Seus troféus"
+    "trofei": "Seus troféus",
+    "condividi": "Compartilhar perfil",
+    "condividiTesto": "Meu perfil no Beach Peck ({nome}): me desafie nos palpites de beach tennis!",
+    "leMieLeghe": "Minhas ligas"
   },
   "condividi": {
     "condividi": "Compartilhar",
@@ -368,7 +386,9 @@
     "esiste": "Este e-mail já tem uma conta: entre.",
     "stessaPassword": "É igual à senha atual.",
     "risultato": "Escolha o placar em sets e os games.",
-    "gameImpossibili": "Esses games não são possíveis com esse placar em sets."
+    "gameImpossibili": "Esses games não são possíveis com esse placar em sets.",
+    "pagina": "Esta página não carregou. Tente de novo em instantes.",
+    "riprova": "Tentar de novo"
   },
   "punti": {
     "vincitore": "Vencedor",
@@ -562,5 +582,15 @@
     "ranking": "Ranking",
     "curiosita": "Curiosidades",
     "beachpeck": "Beach Peck"
+  },
+  "avvisi": {
+    "titolo": "Avisos",
+    "sotto": "O que há de novo para você",
+    "scadenza": "Para palpitar: fecha em",
+    "punti": "Pontos atribuídos: +{punti}",
+    "notizia": "Nova matéria",
+    "lega": "{nome} entrou em {lega}",
+    "nessuno": "Nenhum aviso por enquanto.",
+    "nota": "Os avisos cobrem os últimos 3 dias e os jogos que fecham em 24 horas."
   }
 }

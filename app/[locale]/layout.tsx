@@ -5,12 +5,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { sessione } from "@/lib/dati";
+import { avvisiUtente } from "@/lib/notifiche";
+import { cookies } from "next/headers";
 import Navigazione from "@/components/Navigazione";
 import SceltaLingua from "@/components/SceltaLingua";
 import Avviso from "@/components/Avviso";
 import Attivita from "@/components/Attivita";
 import RegistraSW from "@/components/RegistraSW";
-import { IconaIngranaggio, Marchio } from "@/components/Icone";
+import { IconaCampanella, IconaIngranaggio, Marchio } from "@/components/Icone";
 import CreditiFoto from "@/components/CreditoFoto";
 import FasciaSponsor from "@/components/FasciaSponsor";
 import "@fontsource/barlow/400.css";
@@ -47,6 +49,13 @@ export default async function LayoutLingua({ children, params }: { children: Rea
   setRequestLocale(locale);
   const t = await getTranslations();
   const { user, profilo } = await sessione();
+  // numerino sulla campanella: partite in scadenza da pronosticare + novità dopo l'ultima visita agli avvisi
+  let nuovi = 0;
+  if (user) {
+    const [avvisi, biscotti] = await Promise.all([avvisiUtente(user.id).catch(() => []), cookies()]);
+    const visti = biscotti.get("avvisi_visti")?.value ?? "";
+    nuovi = avvisi.filter((a) => a.tipo === "scadenza" || a.quando > visti).length;
+  }
 
   return (
     <html lang={locale}>
@@ -65,6 +74,12 @@ export default async function LayoutLingua({ children, params }: { children: Rea
                     <IconaIngranaggio className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("nav.admin")}</span>
                     <span className="sr-only sm:hidden">{t("nav.admin")}</span>
+                  </Link>
+                )}
+                {user && (
+                  <Link href="/notifiche" aria-label={t("avvisi.titolo")} className="relative grid h-10 w-10 place-items-center rounded-lg border border-linea bg-carta text-inchiostro hover:border-viola hover:text-viola">
+                    <IconaCampanella />
+                    {nuovi > 0 && <span className="cifre absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-corallo px-1 text-[11px] text-white">{nuovi > 9 ? "9+" : nuovi}</span>}
                   </Link>
                 )}
                 {user ? (

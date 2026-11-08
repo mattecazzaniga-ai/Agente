@@ -18,8 +18,8 @@
     "scegli": "Idioma"
   },
   "home": {
-    "titolo": "Pronostica el beach tennis con tus amigos.",
-    "intro": "Elige quién gana, cómo terminan los sets y el long de los torneos ITF. Al final del partido los puntos llegan solos, y cada mes se empieza de cero.",
+    "titolo": "Fuera de la pista, el desafío continúa.",
+    "intro": "Pronostica el beach tennis ITF, gana puntos y desafía a la comunidad. Los puntos llegan solos al final del partido.",
     "inizia": "Empieza a jugar",
     "daPronosticare": "Partidos por pronosticar",
     "nessunaAperta": "Ahora no hay partidos por pronosticar. Vuelve cuando salga la próxima ronda.",
@@ -114,7 +114,17 @@
     "daPronosticare": "{n, plural, one {# partido por pronosticar} other {# partidos por pronosticar}}",
     "chiusiProssimoTurno": "Pronósticos cerrados: se reabren con la próxima ronda",
     "prestoAperti": "Pronósticos con los primeros partidos",
-    "tabelloneInArrivo": "Cuadro próximamente"
+    "tabelloneInArrivo": "Cuadro próximamente",
+    "cercaFiltra": "Buscar y filtrar",
+    "cerca": "Nombre del torneo o ciudad",
+    "categoria": "Categoría",
+    "tutteCategorie": "Todas las categorías",
+    "paese": "País",
+    "tuttiPaesi": "Todos los países",
+    "genere": "Cuadro",
+    "tuttiGeneri": "Todos los cuadros",
+    "applica": "Aplicar",
+    "azzera": "Borrar"
   },
   "torneo": {
     "chiVinceTorneo": "¿Quién gana el cuadro {genere}?",
@@ -232,7 +242,7 @@
     "colVincitori": "Gan.",
     "colSet": "Sets",
     "colGame": "Juegos",
-    "legenda": "Pron. = pronósticos hechos · Gan. = ganadores acertados · Sets = sets ganados acertados (2-0 o 2-1) · Juegos = partidos con los juegos de ambos sets exactos. A igualdad de puntos gana quien tiene más Sets, luego más Gan., luego más Juegos.",
+    "legenda": "Pron. = pronósticos hechos · Gan. = ganadores acertados · Sets = sets ganados acertados (2-0 o 2-1) · Juegos = partidos con los juegos de ambos sets exactos. A igualdad de puntos gana quien tiene más Sets, luego más Gan., luego más Juegos. Prec. = ganadores acertados sobre los pronósticos evaluados.",
     "utente": "Jugador",
     "tuaPosizione": "Tu posición",
     "giocatori": "Jugadores",
@@ -244,7 +254,12 @@
     "statRiga": "{pronostici} pron. · {vincitori} gan. · {set} sets · {game} juegos",
     "pochiTitolo": "El desafío acaba de empezar",
     "pochiTesto": "Crea una liga, manda el código al grupo de tu club y descubre quién sabe de verdad de beach tennis.",
-    "pochiAzione": "Desafía a tus amigos"
+    "pochiAzione": "Desafía a tus amigos",
+    "periodo": "Periodo",
+    "stagione": "Temporada {anno}",
+    "tuaSfida": "Tu desafío",
+    "inTesta": "Vas primero: defiende el liderato.",
+    "colPrecisione": "Prec."
   },
   "leghe": {
     "titolo": "Ligas",
@@ -329,7 +344,10 @@
     "storicoVuoto": "Todavía no has hecho pronósticos.",
     "storicoAiuto": "Toca un partido para ver, parte por parte, qué pusiste y cuántos puntos sumaste.",
     "impostazioni": "Nickname y país",
-    "trofei": "Tus trofeos"
+    "trofei": "Tus trofeos",
+    "condividi": "Compartir perfil",
+    "condividiTesto": "Mi perfil en Beach Peck ({nome}): ¡desafíame en los pronósticos de beach tennis!",
+    "leMieLeghe": "Mis ligas"
   },
   "condividi": {
     "condividi": "Compartir",
@@ -368,7 +386,9 @@
     "esiste": "Este correo ya tiene una cuenta: entra.",
     "stessaPassword": "Es igual a la contraseña actual.",
     "risultato": "Elige el resultado en sets y los juegos.",
-    "gameImpossibili": "Esos juegos no son posibles con este resultado en sets."
+    "gameImpossibili": "Esos juegos no son posibles con este resultado en sets.",
+    "pagina": "Esta página no se cargó. Inténtalo de nuevo en un momento.",
+    "riprova": "Reintentar"
   },
   "punti": {
     "vincitore": "Ganador",
@@ -562,5 +582,15 @@
     "ranking": "Ranking",
     "curiosita": "Curiosidades",
     "beachpeck": "Beach Peck"
+  },
+  "avvisi": {
+    "titolo": "Avisos",
+    "sotto": "Lo nuevo para ti",
+    "scadenza": "Por pronosticar: cierra en",
+    "punti": "Puntos asignados: +{punti}",
+    "notizia": "Nuevo artículo",
+    "lega": "{nome} entró en {lega}",
+    "nessuno": "Ningún aviso por ahora.",
+    "nota": "Los avisos cubren los últimos 3 días y los partidos que cierran en 24 horas."
   }
 }

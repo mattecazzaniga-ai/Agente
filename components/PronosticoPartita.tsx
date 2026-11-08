@@ -328,8 +328,8 @@ export default function PronosticoPartita(props: {
 
           {esito && !esito.ok && <p className="rounded-lg bg-corallo/10 px-3 py-2 text-sm font-semibold text-corallo">{t(`errori.${esito.errore}`)}</p>}
           {salvato ? (
-            <div className="festa space-y-3 rounded-xl border border-viola/30 bg-viola/[.06] p-3">
-              <p className="flex items-center gap-2 font-semibold text-viola">
+            <div className="festa space-y-3 rounded-xl border border-verde/30 bg-verde/[.07] p-3">
+              <p className="flex items-center gap-2 font-semibold text-verde">
                 <IconaSpunta className="h-5 w-5" /> {t("partita.salvato")}
               </p>
               <p className="text-xs text-tenue">{t("partita.puoiCambiare")}</p>

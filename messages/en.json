@@ -18,8 +18,8 @@
     "scegli": "Language"
   },
   "home": {
-    "titolo": "Predict beach tennis with your friends.",
-    "intro": "Pick the winner, the set scores and the long tie-break of ITF events. Points land on their own after each match, and every month starts from zero.",
+    "titolo": "Off the court, the challenge goes on.",
+    "intro": "Predict ITF beach tennis, earn points and take on the community. Points arrive on their own after the match.",
     "inizia": "Start playing",
     "daPronosticare": "Matches to predict",
     "nessunaAperta": "No matches to predict right now. Come back when the next round is out.",
@@ -114,7 +114,17 @@
     "daPronosticare": "{n, plural, one {# match to predict} other {# matches to predict}}",
     "chiusiProssimoTurno": "Predictions closed: they reopen with the next round",
     "prestoAperti": "Predictions open with the first matches",
-    "tabelloneInArrivo": "Draw coming soon"
+    "tabelloneInArrivo": "Draw coming soon",
+    "cercaFiltra": "Search and filter",
+    "cerca": "Tournament name or city",
+    "categoria": "Category",
+    "tutteCategorie": "All categories",
+    "paese": "Country",
+    "tuttiPaesi": "All countries",
+    "genere": "Draw",
+    "tuttiGeneri": "All draws",
+    "applica": "Apply",
+    "azzera": "Reset"
   },
   "torneo": {
     "chiVinceTorneo": "Who wins the {genere} draw?",
@@ -232,7 +242,7 @@
     "colVincitori": "Win.",
     "colSet": "Sets",
     "colGame": "Games",
-    "legenda": "Picks = predictions made · Win. = winners guessed · Sets = sets won guessed (2-0 or 2-1) · Games = matches with both sets' games exact. On equal points, more Sets wins, then more Win., then more Games.",
+    "legenda": "Picks = predictions made · Win. = winners guessed · Sets = sets won guessed (2-0 or 2-1) · Games = matches with both sets' games exact. On equal points, more Sets wins, then more Win., then more Games. Acc. = winners guessed out of predictions scored.",
     "utente": "Player",
     "tuaPosizione": "Your rank",
     "giocatori": "Players",
@@ -244,7 +254,12 @@
     "statRiga": "{pronostici} picks · {vincitori} win. · {set} sets · {game} games",
     "pochiTitolo": "The challenge has just begun",
     "pochiTesto": "Create a league, send the code to your club's group and find out who really knows beach tennis.",
-    "pochiAzione": "Challenge your friends"
+    "pochiAzione": "Challenge your friends",
+    "periodo": "Period",
+    "stagione": "{anno} season",
+    "tuaSfida": "Your challenge",
+    "inTesta": "You're on top: defend first place.",
+    "colPrecisione": "Acc."
   },
   "leghe": {
     "titolo": "Leagues",
@@ -329,7 +344,10 @@
     "storicoVuoto": "You haven't made any predictions yet.",
     "storicoAiuto": "Tap a match to see, part by part, what you picked and how many points you got.",
     "impostazioni": "Nickname and country",
-    "trofei": "Your trophies"
+    "trofei": "Your trophies",
+    "condividi": "Share profile",
+    "condividiTesto": "My Beach Peck profile ({nome}): challenge me at beach tennis predictions!",
+    "leMieLeghe": "My leagues"
   },
   "condividi": {
     "condividi": "Share",
@@ -368,7 +386,9 @@
     "esiste": "This email already has an account: sign in.",
     "stessaPassword": "It's the same as your current password.",
     "risultato": "Pick the set score and the games.",
-    "gameImpossibili": "These games aren't possible with this set score."
+    "gameImpossibili": "These games aren't possible with this set score.",
+    "pagina": "This page didn't load. Try again in a moment.",
+    "riprova": "Try again"
   },
   "punti": {
     "vincitore": "Winner",
@@ -562,5 +582,15 @@
     "ranking": "Rankings",
     "curiosita": "Trivia",
     "beachpeck": "Beach Peck"
+  },
+  "avvisi": {
+    "titolo": "Alerts",
+    "sotto": "What's new for you",
+    "scadenza": "To predict: closes in",
+    "punti": "Points awarded: +{punti}",
+    "notizia": "New article",
+    "lega": "{nome} joined {lega}",
+    "nessuno": "No alerts for now.",
+    "nota": "Alerts cover the last 3 days and matches closing within 24 hours."
   }
 }

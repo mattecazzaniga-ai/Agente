@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import Intestazione from "@/components/Intestazione";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { podiMesiChiusi, podiTornei, sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
+import { mieLeghe, podiMesiChiusi, podiTornei, sessione, storicoPronostici, type PartitaConCoppie } from "@/lib/dati";
+import Condividi from "@/components/Condividi";
+import { indirizzoSito } from "@/lib/sito";
+import { IconaAmici } from "@/components/Icone";
 import { calcolaTrofei, medagliePerUtente } from "@/lib/trofei";
 import { Bacheca } from "@/components/Trofei";
 import { meseIso, nomeMese } from "@/lib/formato";
@@ -29,7 +32,7 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   if (!user || !profilo) redirect(urlAccesso(locale, `/${locale}/profilo`));
   const t = await getTranslations();
   const mese = meseIso();
-  const [storico, { data: mia }, podi, podiT] = await Promise.all([storicoPronostici(user.id, 500), supabase.rpc("mia_posizione", { p_mese: mese }), podiMesiChiusi(), podiTornei()]);
+  const [storico, { data: mia }, podi, podiT, leghe, sito, { data: iscritto }] = await Promise.all([storicoPronostici(user.id, 500), supabase.rpc("mia_posizione", { p_mese: mese }), podiMesiChiusi(), podiTornei(), mieLeghe(), indirizzoSito(), supabase.from("profili").select("creato_at").eq("id", user.id).single()]);
   const nessuna = { oro: 0, argento: 0, bronzo: 0 };
   const trofei = calcolaTrofei(storico, medagliePerUtente(podi).get(user.id) ?? nessuna, medagliePerUtente([podiT]).get(user.id) ?? nessuna);
   const io = (mia as { posizione: number; punti: number; partecipanti: number }[] | null)?.[0];
@@ -48,7 +51,7 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
   ];
   return (
     <div className="mx-auto max-w-2xl space-y-4">
-      <Intestazione titolo={profilo.nickname} sotto={user.email ?? ""} />
+      <Intestazione titolo={profilo.nickname} sotto={`${user.email ?? ""}${iscritto?.creato_at ? ` · ${t("giocatore.dal", { mese: nomeMese(String(iscritto.creato_at).slice(0, 7) + "-01", locale) })}` : ""}`} />
       <dl className="pannello grid grid-cols-2 divide-linea overflow-hidden sm:grid-cols-4 sm:divide-x [&>div:nth-child(-n+2)]:border-b [&>div:nth-child(-n+2)]:border-linea sm:[&>div:nth-child(-n+2)]:border-b-0 [&>div:nth-child(odd)]:border-r [&>div:nth-child(odd)]:border-linea sm:[&>div:nth-child(odd)]:border-r-0">
         {numeri.map(([valore, etichetta], i) => (
           <div key={i} className="flex flex-col p-4">
@@ -62,11 +65,30 @@ export default async function Profilo({ params }: { params: Promise<{ locale: st
       <div className="pt-4">
         <Bacheca trofei={trofei} titolo={t("profilo.trofei")} />
       </div>
-      <p className="px-1 text-right text-sm">
-        <Link href={`/giocatore/${user.id}`} className="font-semibold text-viola">
-          {t("giocatore.vediPubblico")} →
+      <div className="grid grid-cols-2 gap-2">
+        <Link href={`/giocatore/${user.id}`} className="bottone-secondario text-sm">
+          {t("giocatore.vediPubblico")}
         </Link>
-      </p>
+        <Condividi testo={t("profilo.condividiTesto", { nome: profilo.nickname })} url={`${sito}/${locale}/giocatore/${user.id}`} etichetta={t("profilo.condividi")} />
+      </div>
+
+      <h2 className="titolo-sezione">{t("profilo.leMieLeghe")}</h2>
+      {leghe.length === 0 ? (
+        <Vuoto testo={t("leghe.nessuna")} azione={t("leghe.crea")} link="/leghe" />
+      ) : (
+        <ul className="pannello divide-y divide-linea overflow-hidden">
+          {leghe.map((l) => (
+            <li key={l.id}>
+              <Link href={`/leghe/${l.codice}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-sabbia-2">
+                <span className="min-w-0 flex-1 truncate font-semibold">{l.nome}</span>
+                <span className="inline-flex items-center gap-1 text-sm text-tenue">
+                  <IconaAmici className="h-4 w-4" /> {l.membri}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <h2 className="titolo-sezione">{t("statistiche.tueTitolo")}</h2>
       {st.valutati === 0 ? (
